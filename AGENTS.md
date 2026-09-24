@@ -15,8 +15,10 @@
 - Toda etapa concluída deve ter um commit próprio, com código completo, dependências travadas, documentação e evidências de validação.
 - Revisar o diff e os arquivos preparados antes de commitar. Não incluir node_modules, dist, cache, segredos, conversas reais ou arquivos temporários.
 - Preservar alterações do usuário sem relação com a etapa e informar qualquer trabalho restante fora do commit.
-- Preferir mensagens como docs(step-01): descrever entrega ou feat(step-03): descrever entrega. Informar o hash do commit e as verificações na resposta final.
-- Usar a identidade Git já configurada. Não inventar identidade, alterar configuração global, reescrever histórico nem publicar/push sem instrução específica.
+- Usar obrigatoriamente Conventional Commits no formato tipo(escopo): descrição, por exemplo docs(step-01): registrar plano ou chore(step-02): preparar base. Informar o hash do commit e as verificações na resposta final.
+- Autor e committer devem usar a identidade humana já configurada no Git. Não inventar ou substituir identidades, alterar configuração global, reescrever histórico nem publicar/push sem instrução específica.
+- Não incluir trailers Co-authored-by, assinaturas, créditos ou menções a ferramentas de assistência nas mensagens dos commits. Não atribuir autoria ou coautoria a identidades automatizadas.
+- Antes de encerrar, conferir autor, committer, mensagem do commit e ausência de alterações pendentes relacionadas à etapa.
 - As STEP-01 e STEP-02, concluídas antes da criação do repositório, devem ser registradas em dois commits iniciais coerentes. Registrar essa origem no progresso sem simular datas de commits passadas.
 
 ## Testes de mensagens no WhatsApp

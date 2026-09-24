@@ -1,0 +1,53 @@
+:root {
+  color-scheme: light dark;
+  font-family: system-ui, sans-serif;
+  line-height: 1.6;
+  --text-color: #173d33;
+  --background-color: #f3f7f5;
+  --border-color: #b8cdc4;
+  color: var(--text-color);
+  background: var(--background-color);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.development-page {
+  width: min(100% - 2.5rem, 42rem);
+  margin: clamp(2rem, 10vh, 7rem) auto;
+}
+
+.eyebrow {
+  font-weight: 650;
+}
+
+h1 {
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 1.1rem;
+}
+
+aside {
+  margin-top: 2rem;
+  padding: 1.25rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-color: #e2f4ed;
+    --background-color: #111f1b;
+    --border-color: #416457;
+  }
+}

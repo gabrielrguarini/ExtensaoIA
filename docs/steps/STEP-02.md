@@ -19,13 +19,13 @@ Preparar uma base tipada, modular e reproduzível para a extensão, com build e 
 
 ## Tarefas
 
-- [ ] Verificar as versões estáveis compatíveis de Node.js, npm, TypeScript, React, Vite, Vitest, ESLint e Prettier na documentação oficial; registrar o requisito de Node.
-- [ ] Configurar npm e versionar package-lock.json; evitar dependências sem uso imediato.
-- [ ] Ativar TypeScript strict, regras de lint e verificação de formatação sem alterações automáticas durante a validação.
-- [ ] Separar módulos de extensão, integração com WhatsApp, interface, comunicação, IA, modelos, núcleo de validação, armazenamento e tipos compartilhados. Evitar abstrações e arquivos vazios sem propósito.
-- [ ] Preparar o build para os futuros pontos de entrada de content script, service worker, offscreen, worker, popup e painel. Nesta etapa, gerar somente as entradas realmente criadas.
-- [ ] Documentar npm ci, npm run typecheck, npm run lint, npm run format:check, npm test e npm run build.
-- [ ] Criar um teste inicial significativo para a configuração ou comportamento real introduzido, sem testes que apenas confirmem constantes.
+- [x] Verificar as versões estáveis compatíveis de Node.js, npm, TypeScript, React, Vite, Vitest, ESLint e Prettier na documentação oficial; registrar o requisito de Node.
+- [x] Configurar npm e versionar package-lock.json; evitar dependências sem uso imediato.
+- [x] Ativar TypeScript strict, regras de lint e verificação de formatação sem alterações automáticas durante a validação.
+- [x] Separar módulos de extensão, integração com WhatsApp, interface, comunicação, IA, modelos, núcleo de validação, armazenamento e tipos compartilhados. Evitar abstrações e arquivos vazios sem propósito.
+- [x] Preparar o build para os futuros pontos de entrada de content script, service worker, offscreen, worker, popup e painel. Nesta etapa, gerar somente as entradas realmente criadas.
+- [x] Documentar npm ci, npm run typecheck, npm run lint, npm run format:check, npm test e npm run build.
+- [x] Criar um teste inicial significativo para a configuração ou comportamento real introduzido, sem testes que apenas confirmem constantes.
 
 ## Limites
 
@@ -35,9 +35,9 @@ Preparar uma base tipada, modular e reproduzível para a extensão, com build e 
 
 ## Critérios de conclusão e verificação
 
-- [ ] Uma instalação reproduzível pelo lockfile funciona no ambiente documentado.
-- [ ] Typecheck, lint, verificação de formatação, teste inicial e build passam.
-- [ ] A saída do build utiliza arquivos locais e não inclui segredos ou referências obrigatórias a um servidor de desenvolvimento.
+- [x] Uma instalação reproduzível pelo lockfile funciona no ambiente documentado.
+- [x] Typecheck, lint, verificação de formatação, teste inicial e build passam.
+- [x] A saída do build utiliza arquivos locais e não inclui segredos ou referências obrigatórias a um servidor de desenvolvimento.
 
 Quando uma verificação não puder ser realizada, registrar exatamente o procedimento pendente e usar Aguardando validação ou Bloqueada no progresso, conforme o motivo. Não substituir evidência real por suposição.
 
