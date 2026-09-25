@@ -5,10 +5,10 @@
 ## Estado atual
 
 - Última atualização: 25/09/2026.
-- Última etapa concluída: **STEP-03 — Implementar Manifest V3 e comunicação**.
-- Situação: STEP-03 validada no Chrome for Testing, com escopo completo e commit próprio.
-- Próxima etapa executável: **STEP-04 — Detectar o editor do WhatsApp**, somente quando solicitada.
-- Implementação: Manifest V3, comunicação validada, Worker simulado e diagnóstico prontos. Detecção do editor e inferência local continuam nas etapas futuras.
+- Última etapa concluída: **STEP-04 — Detectar o editor do WhatsApp**.
+- Situação: STEP-04 validada com fixtures e no WhatsApp real autenticado; entrega registrada em commit próprio.
+- Próxima etapa executável: **STEP-05 — Criar preview e substituição manual**, somente quando solicitada.
+- Implementação: Manifest V3, comunicação validada, Worker simulado, diagnóstico, adaptador do editor e botão IA. Ações de escrita, preview e inferência local continuam nas etapas futuras.
 
 ## Significado dos status
 
@@ -27,7 +27,7 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 | [STEP-01](steps/STEP-01.md) | Organizar o plano e o acompanhamento            | Concluída | 18 documentos, 16 etapas, 129 links locais válidos e sequência conferida.                                                       |
 | [STEP-02](steps/STEP-02.md) | Criar a base do projeto                         | Concluída | npm ci reproduzível; tipos, lint, formatação, 3 testes de build e build aprovados.                                              |
 | [STEP-03](steps/STEP-03.md) | Implementar Manifest V3 e comunicação           | Concluída | 45 testes e build aprovados; extensão executada no Chrome for Testing 154, com duas abas, cancelamento e recuperação validados. |
-| [STEP-04](steps/STEP-04.md) | Detectar o editor do WhatsApp                   | Pendente  | Não iniciada.                                                                                                                   |
+| [STEP-04](steps/STEP-04.md) | Detectar o editor do WhatsApp                   | Concluída | 69 testes e build aprovados; botão único, rascunho preservado, busca e fechamento/reabertura conferidos no WhatsApp real.       |
 | [STEP-05](steps/STEP-05.md) | Criar preview e substituição manual             | Pendente  | Não iniciada.                                                                                                                   |
 | [STEP-06](steps/STEP-06.md) | Executar o primeiro modelo local                | Pendente  | Não iniciada.                                                                                                                   |
 | [STEP-07](steps/STEP-07.md) | Implementar a ação Corrigir                     | Pendente  | Não iniciada.                                                                                                                   |
@@ -102,9 +102,26 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 - Status final: **Concluída**. Nenhum impedimento pendente no escopo desta etapa; detecção de editor e inferência permanecem nas etapas futuras.
 - Próxima etapa após a conclusão, somente quando solicitada: STEP-04.
 
+## STEP-04 — 25/09/2026
+
+- Escopo: adaptador de seletores semânticos, identificação do compositor, botão IA único/acessível com estilos isolados, captura explícita em memória e invalidação por revisão. O clique informa que as ações de escrita ainda não estão disponíveis. Nenhum preview ou correção antecipados.
+- Arquivos criados: src/integration/whatsapp/adapter.ts; src/extension/content/{diagnostic-client.ts,editor-button.ts,editor-button.css}; tests/{whatsapp-fixture.ts,whatsapp-adapter.test.ts,editor-button.test.ts}; docs/VALIDACAO-STEP-04.md.
+- Arquivos alterados: entrada do content script, página auxiliar, Manifest, package.json/package-lock.json, tsconfig.node.json, README, checklist da etapa e este progresso.
+- Dependência: jsdom 29.1.1, somente desenvolvimento, escolhida após consulta aos requisitos oficiais no npm; compatível com Node 22.14.0. A instalação adicionou 37 pacotes e reportou zero vulnerabilidades naquele momento. Projeto/Manifest: 0.3.0.
+- Integração: seletores centralizados em #main com header/footer diretos e textbox contenteditable; recusa de busca, diálogos, ocultos, somente leitura e ambiguidade. Sem classes ofuscadas ou texto de placeholder. MutationObserver restrito, descoberta estrutural a cada segundo, atualizações por frame, descarte de eventos/observadores obsoletos e limpeza em pagehide.
+- Privacidade: observadores não leem o texto nem valores do cabeçalho; captura somente por ativação real do botão. Texto em memória é descartado ao editar/mudar contexto/fechar; não é encaminhado ao diagnóstico, Worker, rede ou armazenamento. Nenhuma identidade de contato entra no adaptador. Verificação real final encontrou storage local/sync/session vazio no perfil de fixtures.
+- Verificações automatizadas: npm run check aprovado, incluindo tipos, lint, formatação, 69 testes em seis arquivos e build. Os 45 testes anteriores permanecem aprovados; 24 novos testes cobrem seleção, exclusões, privacidade da leitura, revisão, reutilização do editor, descoberta tardia, observadores, montagem e limpeza.
+- Validação no Chrome: pacote descompactado executado no Chrome for Testing 154.0.8037.0, com fixtures sintéticas e WhatsApp real autenticado. [Relatório completo](VALIDACAO-STEP-04.md), com procedimentos e limites separados por ambiente.
+- Evidências reais: identidade do contato autorizado confirmada na interface; botão único fora da área de digitação; clique mantém o rascunho sintético e exibe aviso; fechar/reabrir remove/recria o botão; busca não ganha botão. Rascunho de teste removido e vazio conferido, sem envio de mensagens. Nenhuma captura de histórico foi versionada.
+- Regressão: diagnóstico da STEP-03 concluiu o circuito simulado no navegador após separar seu cliente da integração. Estilos isolados, teclado, viewport menor e remoção/recriação de footer passaram na página controlada.
+- Limitações: mudanças estruturais futuras podem exigir novos seletores; atualização de presença no cabeçalho pode invalidar conservadoramente a captura; posições sobre controles nativos são recusadas. Dois contextos distintos com texto igual foram testados por fixtures; o teste real ficou no contato autorizado.
+- Commit da etapa: feat(step-04): detectar editor e adicionar botão de IA. Hash no histórico Git e no relato final; identidade humana configurada, sem atribuições adicionais.
+- Status final: **Concluída**. Nenhum impedimento pendente no escopo da etapa.
+- Próxima etapa, somente por nova solicitação: STEP-05. Não iniciada.
+
 ## Como continuar
 
-As STEP-01, STEP-02 e STEP-03 estão concluídas. Consulte o [relatório de validação no Chrome](VALIDACAO-STEP-03.md). Para continuar, solicitar **Execute somente a STEP-04 do plano.** A STEP-04 não foi iniciada.
+As STEP-01 a STEP-04 estão concluídas. Consulte os relatórios da [comunicação](VALIDACAO-STEP-03.md) e do [editor](VALIDACAO-STEP-04.md). Para continuar, solicitar **Execute somente a STEP-05 do plano.** A STEP-05 não foi iniciada.
 
 Em futuras execuções, ler o plano e a etapa indicada, validar os pré-requisitos e atualizar este documento ao terminar. Não mudar o estado de etapas futuras apenas porque suas descrições foram criadas.
 

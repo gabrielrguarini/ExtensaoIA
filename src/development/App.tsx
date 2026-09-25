@@ -5,11 +5,12 @@ export function App() {
       <h1>Base de desenvolvimento</h1>
       <p>Esta página permite conferir o carregamento do React e dos estilos do projeto.</p>
       <aside aria-label="Estado do projeto">
-        <h2>STEP-03: comunicação simulada</h2>
+        <h2>STEP-04: identificação do editor</h2>
         <p>
-          A pasta dist contém a estrutura da extensão e um diagnóstico de comunicação. Carregue-a no
-          Chrome e abra o diagnóstico pelo ícone da extensão. O motor é simulado; esta página não
-          acessa o WhatsApp nem executa um modelo de IA.
+          A pasta dist contém a extensão com o botão IA junto ao campo de mensagem do WhatsApp.
+          Nesta etapa, o botão confirma a identificação do campo; as ações de escrita ainda não
+          estão disponíveis. O diagnóstico de comunicação continua acessível pelo ícone da extensão
+          e usa um motor simulado. Esta página não acessa o WhatsApp.
         </p>
       </aside>
     </main>

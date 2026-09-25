@@ -19,13 +19,13 @@ Encontrar o campo de composição correto e posicionar um único botão IA sem l
 
 ## Tarefas
 
-- [ ] Concentrar seletores em um adaptador do WhatsApp, combinando contenteditable, atributos semânticos e localização na área de composição.
-- [ ] Não depender exclusivamente de classes CSS ofuscadas, texto de placeholder ou idioma da interface do WhatsApp.
-- [ ] Inserir um botão IA acessível próximo ao editor, sem deslocar ou impedir controles nativos.
-- [ ] Observar mudanças com MutationObserver de escopo limitado, coalescer atualizações e excluir o próprio conteúdo da extensão de ciclos de observação.
-- [ ] Remover eventos e observadores obsoletos quando o editor mudar; atualizar posição e visibilidade sem duplicar o botão.
-- [ ] Capturar o texto somente em uma ação explícita. Invalidar snapshots ao detectar edição, troca de contexto ou substituição do editor, sem coletar nomes de contatos.
-- [ ] Criar fixtures sintéticas para editor válido, busca, conversa sem editor, troca de conversa e editor removido.
+- [x] Concentrar seletores em um adaptador do WhatsApp, combinando contenteditable, atributos semânticos e localização na área de composição.
+- [x] Não depender exclusivamente de classes CSS ofuscadas, texto de placeholder ou idioma da interface do WhatsApp.
+- [x] Inserir um botão IA acessível próximo ao editor, sem deslocar ou impedir controles nativos.
+- [x] Observar mudanças com MutationObserver de escopo limitado, coalescer atualizações e excluir o próprio conteúdo da extensão de ciclos de observação.
+- [x] Remover eventos e observadores obsoletos quando o editor mudar; atualizar posição e visibilidade sem duplicar o botão.
+- [x] Capturar o texto somente em uma ação explícita. Invalidar snapshots ao detectar edição, troca de contexto ou substituição do editor, sem coletar nomes de contatos.
+- [x] Criar fixtures sintéticas para editor válido, busca, conversa sem editor, troca de conversa e editor removido.
 
 ## Limites
 
@@ -35,10 +35,10 @@ Encontrar o campo de composição correto e posicionar um único botão IA sem l
 
 ## Critérios de conclusão e verificação
 
-- [ ] Há um único botão por editor válido e nenhum em busca ou campos não relacionados.
-- [ ] O botão acompanha troca de conversa e remoção/recriação do editor.
-- [ ] Montagens repetidas e mudanças feitas pela própria extensão não geram loops ou eventos duplicados.
-- [ ] Fixtures automatizadas passam e o comportamento é conferido no WhatsApp real quando disponível.
+- [x] Há um único botão por editor válido e nenhum em busca ou campos não relacionados.
+- [x] O botão acompanha troca de conversa e remoção/recriação do editor.
+- [x] Montagens repetidas e mudanças feitas pela própria extensão não geram loops ou eventos duplicados.
+- [x] Fixtures automatizadas passam e o comportamento é conferido no WhatsApp real quando disponível.
 
 Quando uma verificação não puder ser realizada, registrar exatamente o procedimento pendente e usar Aguardando validação ou Bloqueada no progresso, conforme o motivo. Não substituir evidência real por suposição.
 

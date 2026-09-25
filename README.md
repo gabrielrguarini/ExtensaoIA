@@ -1,6 +1,6 @@
 # Extensão de IA local para WhatsApp Web
 
-Base incremental com React, TypeScript strict e pacote Manifest V3. Na **STEP-03**, a extensão oferece um diagnóstico de comunicação com **motor simulado**. Não executa IA, não lê conversas ou rascunhos e não altera ou envia mensagens.
+Base incremental com React, TypeScript strict e pacote Manifest V3. Na **STEP-04**, a extensão identifica o campo de mensagem do WhatsApp e mostra um único botão **IA** junto ao editor. O clique confirma que o campo foi reconhecido; as ações de escrita e o preview entram na STEP-05. O diagnóstico da STEP-03 continua disponível com **motor simulado**. Não há inferência, alteração ou envio de mensagens.
 
 O estado e as evidências ficam em [docs/PROGRESSO.md](docs/PROGRESSO.md). Consulte o [plano](docs/PLANO.md) e execute somente a etapa solicitada. A conclusão depende das verificações automatizadas e da validação correspondente no Chrome.
 
@@ -23,6 +23,8 @@ No PowerShell, use npm.cmd se a política local bloquear npm.ps1; não altere a 
 Abra chrome://extensions, habilite o modo do desenvolvedor, escolha **Carregar sem compactação** e selecione a pasta **dist**. Recarregue as abas do WhatsApp após instalar ou atualizar. O ícone da extensão abre o diagnóstico.
 
 Siga o [roteiro completo da STEP-03](docs/VALIDACAO-STEP-03.md), que cobre circuito, duas abas, concorrência, cancelamento, desconexão e reinício. Não é necessário abrir conversas ou enviar mensagens.
+
+Para o botão IA, consulte [validação e limites da STEP-04](docs/VALIDACAO-STEP-04.md). Abra uma conversa com campo de mensagem: o botão aparece acima da área de composição, sem deslocar os controles. Ao clicar, o rascunho é capturado somente em memória e a interface informa que as ações de escrita ainda não estão disponíveis. Escape, clique fora, edição ou troca de contexto descartam essa captura. Nenhum rascunho é encaminhado ao motor simulado.
 
 ## Comandos
 
@@ -49,13 +51,22 @@ Os servidores escutam apenas no computador local e falham se a porta estiver ocu
 | src/extension/background | Coordenador, remetentes, roteador e criação idempotente do offscreen.                                   |
 | src/extension/offscreen  | Hospedagem de um Worker; comunicação de extensão somente por chrome.runtime.                            |
 | src/extension/ai         | Worker e motor de eco explicitamente simulado.                                                          |
-| src/extension/content    | Cliente isolado no frame principal do WhatsApp; executa somente a fixture solicitada pelo diagnóstico.  |
+| src/extension/content    | Montagem/limpeza do botão com Shadow DOM e cliente de diagnóstico separado.                             |
+| src/integration/whatsapp | Seletores, detecção, captura explícita e revisão do editor.                                             |
 | src/extension/diagnostic | Página auxiliar aberta pelo ícone da extensão. Não é o popup de configurações nem o preview do produto. |
 | src/shared               | Contratos, validação dos payloads/remetentes e fixture sintética.                                       |
 | src/development          | Página React auxiliar da STEP-02, preservada.                                                           |
-| tests                    | Contratos, remetentes, roteamento, cancelamento, recuperação, simulador e pacote gerado.                |
+| tests                    | Contratos, remetentes, roteamento, cancelamento, recuperação, simulador, pacote e fixtures do editor.   |
 
-Editor começa na STEP-04; menu/preview na STEP-05; WebLLM na STEP-06. Modelos, preservação semântica, preferências, popup e painel continuam nas etapas previstas. Não há implementações vazias desses módulos.
+Menu/preview entram na STEP-05; WebLLM na STEP-06. Modelos, preservação semântica, preferências, popup e painel continuam nas etapas previstas. Não há implementações vazias desses módulos.
+
+## Detecção e revisão do editor
+
+O adaptador procura um único textbox contenteditable visível no footer de #main. Recusa campos de busca, diálogo, ocultos, desativados, somente leitura e seleções ambíguas. Os seletores ficam centralizados e não dependem de classes ofuscadas, idioma ou placeholder. Uma mudança estrutural do WhatsApp pode exigir atualização do adaptador; na ausência de um editor reconhecido, o botão desaparece.
+
+MutationObserver acompanha o compositor e o cabeçalho, além dos filhos diretos dos ancestrais. Não observa profundamente body nem o histórico. Uma descoberta estrutural a cada segundo cobre contêineres novos e mudanças externas de CSS; atualizações são agrupadas por frame. O host da extensão é ignorado e o Shadow DOM isola os estilos. ResizeObserver e eventos de scroll/resize atualizam a posição; os listeners, observadores e timers são encerrados ao sair da página. O retorno pelo cache de navegação remonta a integração.
+
+Capturas têm UUIDs aleatórios e revisão, sem identidade de contato. Edição, composição IME, substituição do campo e mudanças no cabeçalho invalidam a revisão, inclusive quando o texto permanece igual. Não se lê o conteúdo do cabeçalho: até mudanças de presença podem invalidar conservadoramente uma captura. A conferência drena mutações pendentes antes de decidir se ela ainda é atual. Cliques sintéticos disparados pela página são ignorados.
 
 ## Protocolo e ciclo de vida
 
@@ -76,7 +87,7 @@ A criação do offscreen é compartilhada entre chamadas concorrentes. runtime.g
 - Não há activeTab, scripting, <all_urls>, externally_connectable, APIs internas do WhatsApp, interceptação de tráfego ou ponte com scripts da página.
 - CSP permite scripts/workers locais e WASM empacotado, sem eval ou código remoto. connect-src 'none' bloqueia conexões externas das páginas da extensão. Downloads de modelos exigirão revisão na STEP-06.
 - Não há storage, logs de conteúdo ou persistência de pedidos. O relatório sintético permanece em memória até a página fechar.
-- Nenhum script desta versão lê o editor, modifica rascunhos ou envia mensagens. A validação do rascunho atualizado será implementada com o adaptador nas etapas seguintes.
+- O rascunho só é lido após clique real no botão IA (inclusive ativação por teclado). Detecção, observadores e consulta de revisão não leem o texto. A captura permanece somente em memória até ser descartada; não há leitura de histórico/contatos, alteração de rascunhos ou envio de mensagens.
 
 ## Build e verificações
 
@@ -102,8 +113,9 @@ Esses testes não certificam a execução das APIs do Chrome. Consulte o progres
 | @types/node                     | 22.20.4          |
 | @types/react / @types/react-dom | 19.3.0           |
 | @types/chrome                   | 0.3.0            |
+| jsdom (somente testes)          | 29.1.1           |
 
-Versões diretas são exatas e transitivas ficam em package-lock.json. Use npm ci, sem --force ou --legacy-peer-deps. TypeScript 6.0.3 foi mantido porque typescript-eslint 8.70.1 requer versão menor que 6.1.0. Tipos do Chrome não substituem a conferência da versão mínima de cada API.
+Versões diretas são exatas e transitivas ficam em package-lock.json. Use npm ci, sem --force ou --legacy-peer-deps. TypeScript 6.0.3 foi mantido porque typescript-eslint 8.70.1 requer versão menor que 6.1.0. jsdom 29.1.1 aceita Node 22.13+, enquanto a linha 30 consultada exige Node 22.22.2+; o ambiente permanece em 22.14.0. Tipos do Chrome não substituem a conferência da versão mínima de cada API.
 
 ## Referências técnicas
 
@@ -112,8 +124,10 @@ Versões diretas são exatas e transitivas ficam em package-lock.json. Use npm c
 - [Chrome Tabs e permissões de host](https://developer.chrome.com/docs/extensions/reference/api/tabs).
 - [Ciclo de vida do Service Worker](https://developer.chrome.com/docs/extensions/develop/concepts/service-workers/lifecycle).
 - [CSP de extensões](https://developer.chrome.com/docs/extensions/reference/manifest/content-security-policy).
+- [Content scripts e isolamento](https://developer.chrome.com/docs/extensions/develop/concepts/content-scripts).
+- [jsdom e versões do Node](https://github.com/jsdom/jsdom/releases).
 - [Vite: build](https://vite.dev/guide/build.html), [Vitest](https://vitest.dev/guide/), [ESLint](https://eslint.org/docs/latest/use/getting-started) e [compatibilidade do typescript-eslint](https://typescript-eslint.io/users/dependency-versions/).
 
 ## Entrega por etapa
 
-Cada etapa entrega seu escopo completo, com verificações e commit próprio após a validação. Usar Conventional Commits e a identidade humana já configurada no Git. Ver [AGENTS.md](AGENTS.md). A STEP-04 só pode começar após a conclusão registrada da STEP-03 e nova solicitação do usuário.
+Cada etapa entrega seu escopo completo, com verificações e commit próprio após a validação. Usar Conventional Commits e a identidade humana já configurada no Git. Ver [AGENTS.md](AGENTS.md) e o estado atual em [PROGRESSO.md](docs/PROGRESSO.md). Não iniciar automaticamente a próxima etapa.
