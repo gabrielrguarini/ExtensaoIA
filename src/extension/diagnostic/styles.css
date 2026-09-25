@@ -1,0 +1,40 @@
+label {
+  display: block;
+  margin: 1.5rem 0 0.5rem;
+  font-weight: 600;
+}
+button,
+select {
+  font: inherit;
+  padding: 0.7rem 1rem;
+  border: 1px solid #748378;
+  border-radius: 0.5rem;
+}
+button {
+  cursor: pointer;
+  background: #f1f8f3;
+  color: #173d2b;
+}
+button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+button:focus-visible,
+select:focus-visible {
+  outline: 3px solid #248652;
+  outline-offset: 3px;
+}
+.diagnostic-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  padding: 1rem;
+  border: 1px solid #748378;
+  border-radius: 0.5rem;
+  font: inherit;
+}

@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
+import { Script } from 'node:vm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 const execFileAsync = promisify(execFile);
@@ -56,6 +57,49 @@ afterAll(async () => {
 });
 
 describe('pacote de produção', () => {
+  it('gera Manifest MV3 restrito ao WhatsApp com todos os contextos locais', async () => {
+    if (!outputDirectory) throw new Error('Build ausente.');
+    const manifest: unknown = JSON.parse(
+      await readFile(path.join(outputDirectory, 'manifest.json'), 'utf8'),
+    );
+    expect(manifest).toMatchObject({
+      manifest_version: 3,
+      minimum_chrome_version: '116',
+      permissions: ['storage', 'offscreen'],
+      host_permissions: ['https://web.whatsapp.com/*'],
+      background: { service_worker: 'service-worker.js', type: 'module' },
+      content_scripts: [
+        {
+          matches: ['https://web.whatsapp.com/*'],
+          js: ['content.js'],
+          all_frames: false,
+          world: 'ISOLATED',
+        },
+      ],
+      content_security_policy: {
+        extension_pages:
+          "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; object-src 'none'; connect-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+      },
+    });
+    for (const file of ['service-worker.js', 'content.js', 'offscreen.html', 'diagnostic.html'])
+      expect(outputFiles).toContain(file);
+    const content = await readFile(path.join(outputDirectory, 'content.js'), 'utf8');
+    expect(() => new Script(content)).not.toThrow(); // Script clássico, sem imports ESM.
+    expect(outputFiles.some((file) => /worker-.*\.js$/.test(file))).toBe(true);
+    for (const page of ['offscreen.html', 'diagnostic.html']) {
+      const pageHtml = await readFile(path.join(outputDirectory, page), 'utf8');
+      expect(pageHtml).not.toMatch(/(?:src|href)="(?:https?:|data:|blob:)/);
+      for (const match of pageHtml.matchAll(/(?:src|href)="([^"]+)"/g)) {
+        expect(match[1]).toMatch(/^\.\/assets\//);
+        expect((await readFile(path.join(outputDirectory, match[1] ?? ''))).length).toBeGreaterThan(
+          0,
+        );
+      }
+      for (const match of pageHtml.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g))
+        expect(match[1]?.trim()).toBe('');
+    }
+  });
+
   it('gera HTML pt-BR que referencia JavaScript e CSS locais existentes', async () => {
     expect(html).toContain('lang="pt-BR"');
     const references = [...html.matchAll(/(?:src|href)="([^"]+)"/g)].map((match) => match[1]);

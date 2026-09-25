@@ -4,11 +4,11 @@
 
 ## Estado atual
 
-- Última atualização: 24/09/2026.
-- Última etapa concluída: **STEP-02 — Criar a base do projeto**.
-- Situação: base tipada, build e verificações concluídos; nenhuma etapa em execução.
-- Próxima etapa executável: **STEP-03 — Implementar Manifest V3 e comunicação**.
-- Implementação: base de desenvolvimento pronta; Manifest, comunicação, integração com WhatsApp e IA ainda pertencem às etapas futuras.
+- Última atualização: 25/09/2026.
+- Última etapa concluída: **STEP-03 — Implementar Manifest V3 e comunicação**.
+- Situação: STEP-03 validada no Chrome for Testing, com escopo completo e commit próprio.
+- Próxima etapa executável: **STEP-04 — Detectar o editor do WhatsApp**, somente quando solicitada.
+- Implementação: Manifest V3, comunicação validada, Worker simulado e diagnóstico prontos. Detecção do editor e inferência local continuam nas etapas futuras.
 
 ## Significado dos status
 
@@ -22,24 +22,24 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 
 ## Etapas
 
-| Etapa                       | Descrição                                       | Status    | Evidência                                                                          |
-| --------------------------- | ----------------------------------------------- | --------- | ---------------------------------------------------------------------------------- |
-| [STEP-01](steps/STEP-01.md) | Organizar o plano e o acompanhamento            | Concluída | 18 documentos, 16 etapas, 129 links locais válidos e sequência conferida.          |
-| [STEP-02](steps/STEP-02.md) | Criar a base do projeto                         | Concluída | npm ci reproduzível; tipos, lint, formatação, 3 testes de build e build aprovados. |
-| [STEP-03](steps/STEP-03.md) | Implementar Manifest V3 e comunicação           | Pendente  | Não iniciada.                                                                      |
-| [STEP-04](steps/STEP-04.md) | Detectar o editor do WhatsApp                   | Pendente  | Não iniciada.                                                                      |
-| [STEP-05](steps/STEP-05.md) | Criar preview e substituição manual             | Pendente  | Não iniciada.                                                                      |
-| [STEP-06](steps/STEP-06.md) | Executar o primeiro modelo local                | Pendente  | Não iniciada.                                                                      |
-| [STEP-07](steps/STEP-07.md) | Implementar a ação Corrigir                     | Pendente  | Não iniciada.                                                                      |
-| [STEP-08](steps/STEP-08.md) | Proteger entidades e validar o resultado        | Pendente  | Não iniciada.                                                                      |
-| [STEP-09](steps/STEP-09.md) | Adicionar os demais modos                       | Pendente  | Não iniciada.                                                                      |
-| [STEP-10](steps/STEP-10.md) | Exibir geração progressiva e cancelamento       | Pendente  | Não iniciada.                                                                      |
-| [STEP-11](steps/STEP-11.md) | Implementar verificação semântica opcional      | Pendente  | Não iniciada.                                                                      |
-| [STEP-12](steps/STEP-12.md) | Adicionar modelos e perfis de hardware          | Pendente  | Não iniciada.                                                                      |
-| [STEP-13](steps/STEP-13.md) | Consolidar cache, recuperação e desempenho      | Pendente  | Não iniciada.                                                                      |
-| [STEP-14](steps/STEP-14.md) | Finalizar configurações e interfaces auxiliares | Pendente  | Não iniciada.                                                                      |
-| [STEP-15](steps/STEP-15.md) | Criar e executar o benchmark pt-BR              | Pendente  | Não iniciada.                                                                      |
-| [STEP-16](steps/STEP-16.md) | Validar e preparar a entrega instalável         | Pendente  | Não iniciada.                                                                      |
+| Etapa                       | Descrição                                       | Status    | Evidência                                                                                                                       |
+| --------------------------- | ----------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| [STEP-01](steps/STEP-01.md) | Organizar o plano e o acompanhamento            | Concluída | 18 documentos, 16 etapas, 129 links locais válidos e sequência conferida.                                                       |
+| [STEP-02](steps/STEP-02.md) | Criar a base do projeto                         | Concluída | npm ci reproduzível; tipos, lint, formatação, 3 testes de build e build aprovados.                                              |
+| [STEP-03](steps/STEP-03.md) | Implementar Manifest V3 e comunicação           | Concluída | 45 testes e build aprovados; extensão executada no Chrome for Testing 154, com duas abas, cancelamento e recuperação validados. |
+| [STEP-04](steps/STEP-04.md) | Detectar o editor do WhatsApp                   | Pendente  | Não iniciada.                                                                                                                   |
+| [STEP-05](steps/STEP-05.md) | Criar preview e substituição manual             | Pendente  | Não iniciada.                                                                                                                   |
+| [STEP-06](steps/STEP-06.md) | Executar o primeiro modelo local                | Pendente  | Não iniciada.                                                                                                                   |
+| [STEP-07](steps/STEP-07.md) | Implementar a ação Corrigir                     | Pendente  | Não iniciada.                                                                                                                   |
+| [STEP-08](steps/STEP-08.md) | Proteger entidades e validar o resultado        | Pendente  | Não iniciada.                                                                                                                   |
+| [STEP-09](steps/STEP-09.md) | Adicionar os demais modos                       | Pendente  | Não iniciada.                                                                                                                   |
+| [STEP-10](steps/STEP-10.md) | Exibir geração progressiva e cancelamento       | Pendente  | Não iniciada.                                                                                                                   |
+| [STEP-11](steps/STEP-11.md) | Implementar verificação semântica opcional      | Pendente  | Não iniciada.                                                                                                                   |
+| [STEP-12](steps/STEP-12.md) | Adicionar modelos e perfis de hardware          | Pendente  | Não iniciada.                                                                                                                   |
+| [STEP-13](steps/STEP-13.md) | Consolidar cache, recuperação e desempenho      | Pendente  | Não iniciada.                                                                                                                   |
+| [STEP-14](steps/STEP-14.md) | Finalizar configurações e interfaces auxiliares | Pendente  | Não iniciada.                                                                                                                   |
+| [STEP-15](steps/STEP-15.md) | Criar e executar o benchmark pt-BR              | Pendente  | Não iniciada.                                                                                                                   |
+| [STEP-16](steps/STEP-16.md) | Validar e preparar a entrega instalável         | Pendente  | Não iniciada.                                                                                                                   |
 
 ## Registro de execução
 
@@ -80,11 +80,31 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 - Regras novas: AGENTS.md e instruções de todas as etapas exigem commit, verificações e funcionamento completo do escopo. O contato exclusivo para testes necessários é @gabrielrguarini.
 - Mensagens de commit devem seguir Conventional Commits; autor e committer mantêm a identidade humana configurada, sem trailers de coautoria ou créditos adicionais.
 - Nenhuma mensagem de teste foi necessária ou enviada nesta atualização.
-- A STEP-03 permanece pendente.
+- Naquele registro inicial, a STEP-03 permanecia pendente. Sua execução está registrada abaixo.
+
+## STEP-03 — Implementada em 24/09/2026; validada em 25/09/2026
+
+- Escopo implementado: Manifest V3, Service Worker ES module, content script IIFE isolado no frame principal do WhatsApp, documento offscreen com finalidade WORKERS, Worker simulado e página de diagnóstico.
+- Arquivos criados: manifest.json, offscreen.html, diagnostic.html; src/shared/{protocol,senders,diagnostic}.ts; src/extension/background/{index,router,offscreen-host}.ts; src/extension/offscreen/index.ts; src/extension/ai/{worker,simulated-engine}.ts; src/extension/content/index.ts; src/extension/diagnostic/{main.tsx,styles.css}; tests/{fixtures,protocol.test,router.test,offscreen-host.test}.ts; docs/VALIDACAO-STEP-03.md.
+- Arquivos alterados: Vite, configurações TypeScript, package.json/package-lock.json, página auxiliar React, teste do pacote, .gitignore (artefatos temporários do Playwright), README, checklist da etapa e este registro.
+- Dependência nova: @types/chrome 0.3.0, versão exata consultada no registro npm e instalada com quatro pacotes transitivos/diretos no total. Versão do projeto e Manifest: 0.2.0.
+- Reprodutibilidade: npm ci --offline --cache .cache/npm --no-audit reinstalou 143 pacotes com sucesso após encontrar a pasta de dependências incompleta. A conferência completa foi repetida e aprovada após a restauração; o pacote pronto em dist foi preservado.
+- Roteamento: requestId, editorId, snapshotId e revisão associados à aba, frame, documento e conexão derivados do remetente do Chrome. Validação de campos fechados e limite de texto; descarte de vínculos divergentes, pedidos desconhecidos e eventos atrasados; erro de ocupado sem fila.
+- Ciclo de vida: criação offscreen idempotente; prontidão do Worker antes do envio; cancelamento elimina timers do simulador; desconexão elimina o Worker; timeout e reinício não repetem pedidos. Nova ação explícita pode reconectar a um offscreen sobrevivente.
+- Privacidade: somente fixture sintética fixa; nenhum seletor ou leitura do WhatsApp, API interna, envio, armazenamento persistente de texto ou log de conteúdo. CSP restringe scripts/workers ao pacote e bloqueia conexões externas. storage está declarado conforme o plano, sem uso nesta etapa. Host restrito ao WhatsApp para listar/verificar apenas as abas permitidas.
+- Verificações automatizadas: npm run check aprovado com tipos, lint sem avisos, formatação, 45 testes em quatro arquivos e build completo. Contratos, remetentes, concorrência, cancelamento, desconexão, recuperação, timeout, Unicode e artefatos MV3 cobertos em ambiente simulado.
+- Pacote gerado: dist/manifest.json, service-worker.js, content.js, offscreen.html, diagnostic.html, index.html, assets locais e avisos de licença. O teste usa um build temporário separado e confere a sintaxe clássica do content script, as referências locais e a CSP.
+- Verificação de interface no navegador disponível: página auxiliar preservada e diagnóstico em localhost renderizados; aviso de APIs indisponíveis fora da extensão e botões desabilitados corretos; nenhum erro ou aviso capturado no console. Isso não certifica a instalação da extensão.
+- Validação real: concluída em 25/09/2026 com Playwright MCP 0.0.82, Playwright 1.64.0-alpha-1789764292000 e Chrome for Testing 154.0.8037.0 (Chromium 1246), em perfil separado sem login. [Relatório e roteiro](VALIDACAO-STEP-03.md). A limitação anterior de acesso ao navegador foi resolvida com a instalação do MCP solicitada pelo usuário.
+- Evidências reais: extensão descompactada ativada e sem erros indicados no gerenciador; circuito completo nas duas abas com documentos distintos; concorrência gerou um resultado e um ocupado; cancelamento não liberou resultado; fechamento de aba encerrou o pedido e a aba restante concluiu novo teste.
+- Reinício real: parada do Service Worker durante pedido busy observada pelo protocolo do navegador; pedido interrompido sem replay. Novo pedido explícito teve sucesso, reutilizando exatamente um offscreen com o mesmo documentId antes e depois. Comando malformado e remetente indevido foram recusados; storage local/sync/session vazio ao final.
+- Commit da etapa: feat(step-03): implementar comunicação MV3 simulada. Hash no histórico Git e no relato final; identidade humana configurada, sem atribuições adicionais.
+- Status final: **Concluída**. Nenhum impedimento pendente no escopo desta etapa; detecção de editor e inferência permanecem nas etapas futuras.
+- Próxima etapa após a conclusão, somente quando solicitada: STEP-04.
 
 ## Como continuar
 
-As STEP-01 e STEP-02 estão concluídas. Para continuar, solicitar: **Execute somente a STEP-03 do plano.**
+As STEP-01, STEP-02 e STEP-03 estão concluídas. Consulte o [relatório de validação no Chrome](VALIDACAO-STEP-03.md). Para continuar, solicitar **Execute somente a STEP-04 do plano.** A STEP-04 não foi iniciada.
 
 Em futuras execuções, ler o plano e a etapa indicada, validar os pré-requisitos e atualizar este documento ao terminar. Não mudar o estado de etapas futuras apenas porque suas descrições foram criadas.
 

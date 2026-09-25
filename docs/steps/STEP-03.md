@@ -19,14 +19,14 @@ Estabelecer comunicação validada entre o WhatsApp, a coordenação da extensã
 
 ## Tarefas
 
-- [ ] Criar Manifest V3, Service Worker, documento offscreen empacotado e Worker simulado. O offscreen deve usar a finalidade WORKERS.
-- [ ] Restringir o content script a https://web.whatsapp.com/* e ao frame principal. Solicitar somente as permissões necessárias, incluindo storage e offscreen; adicionar outras apenas na etapa que as exigir.
-- [ ] Configurar CSP para código e workers locais; habilitar execução do WASM empacotado sem permitir eval ou scripts remotos.
-- [ ] Definir uniões discriminadas para iniciar, cancelar, consultar estado, progresso, fragmento, resultado e erro. Validar dados recebidos em tempo de execução.
-- [ ] Vincular solicitações a requestId, aba, frame/documento, snapshot do editor e revisão. Obter a origem confiável do remetente do Chrome, sem confiar em identificadores arbitrários do payload.
-- [ ] Criar offscreen e Worker de forma idempotente; impedir instâncias duplicadas. Usar chrome.runtime para comunicação com o offscreen, que não deve acessar chrome.storage diretamente.
-- [ ] Implementar uma solicitação ativa por vez, erro de ocupado, descarte de respostas desconhecidas e limpeza em desconexão. Não armazenar conteúdo em storage.
-- [ ] Preparar reconexão e encerramento seguro de pedidos caso o Service Worker reinicie; não presumir que uma conexão o mantém vivo permanentemente.
+- [x] Criar Manifest V3, Service Worker, documento offscreen empacotado e Worker simulado. O offscreen deve usar a finalidade WORKERS.
+- [x] Restringir o content script a https://web.whatsapp.com/* e ao frame principal. Solicitar somente as permissões necessárias, incluindo storage e offscreen; adicionar outras apenas na etapa que as exigir.
+- [x] Configurar CSP para código e workers locais; habilitar execução do WASM empacotado sem permitir eval ou scripts remotos.
+- [x] Definir uniões discriminadas para iniciar, cancelar, consultar estado, progresso, fragmento, resultado e erro. Validar dados recebidos em tempo de execução.
+- [x] Vincular solicitações a requestId, aba, frame/documento, snapshot do editor e revisão. Obter a origem confiável do remetente do Chrome, sem confiar em identificadores arbitrários do payload.
+- [x] Criar offscreen e Worker de forma idempotente; impedir instâncias duplicadas. Usar chrome.runtime para comunicação com o offscreen, que não deve acessar chrome.storage diretamente.
+- [x] Implementar uma solicitação ativa por vez, erro de ocupado, descarte de respostas desconhecidas e limpeza em desconexão. Não armazenar conteúdo em storage.
+- [x] Preparar reconexão e encerramento seguro de pedidos caso o Service Worker reinicie; não presumir que uma conexão o mantém vivo permanentemente.
 
 ## Limites
 
@@ -36,12 +36,14 @@ Estabelecer comunicação validada entre o WhatsApp, a coordenação da extensã
 
 ## Critérios de conclusão e verificação
 
-- [ ] Uma solicitação simulada completa o circuito e retorna somente à origem correta.
-- [ ] Pedidos malformados, remetentes incorretos, IDs desconhecidos e pedidos concorrentes recebem tratamento previsível.
-- [ ] Duas abas não compartilham resultados; desconexão não deixa uma resposta aplicável em outra aba.
-- [ ] A extensão pode ser carregada localmente sem erro de Manifest ou CSP.
+- [x] Uma solicitação simulada completa o circuito e retorna somente à origem correta.
+- [x] Pedidos malformados, remetentes incorretos, IDs desconhecidos e pedidos concorrentes recebem tratamento previsível.
+- [x] Duas abas não compartilham resultados; desconexão não deixa uma resposta aplicável em outra aba.
+- [x] A extensão pode ser carregada localmente sem erro de Manifest ou CSP.
 
 Quando uma verificação não puder ser realizada, registrar exatamente o procedimento pendente e usar Aguardando validação ou Bloqueada no progresso, conforme o motivo. Não substituir evidência real por suposição.
+
+Evidências automatizadas e reais estão em [PROGRESSO.md](../PROGRESSO.md) e no [relatório de validação](../VALIDACAO-STEP-03.md). Todos os critérios foram verificados em 25/09/2026 no Chrome for Testing 154.0.8037.0, com motor simulado.
 
 ## Entrega esperada
 

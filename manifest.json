@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "IA local — WhatsApp Web (desenvolvimento)",
+  "version": "0.2.0",
+  "description": "STEP-03: diagnóstico de comunicação com motor simulado, sem leitura de conversas ou inferência.",
+  "minimum_chrome_version": "116",
+  "permissions": ["storage", "offscreen"],
+  "host_permissions": ["https://web.whatsapp.com/*"],
+  "background": { "service_worker": "service-worker.js", "type": "module" },
+  "action": { "default_title": "Diagnóstico da comunicação simulada" },
+  "content_scripts": [
+    {
+      "matches": ["https://web.whatsapp.com/*"],
+      "js": ["content.js"],
+      "all_frames": false,
+      "run_at": "document_idle",
+      "world": "ISOLATED"
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; object-src 'none'; connect-src 'none'; base-uri 'none'; frame-ancestors 'none'"
+  }
+}

@@ -1,132 +1,119 @@
 # Extensão de IA local para WhatsApp Web
 
-Base de desenvolvimento da STEP-02. O projeto já tem React, TypeScript strict, build e verificações automatizadas. A integração com Chrome/WhatsApp e a inferência local serão implementadas nas etapas seguintes.
+Base incremental com React, TypeScript strict e pacote Manifest V3. Na **STEP-03**, a extensão oferece um diagnóstico de comunicação com **motor simulado**. Não executa IA, não lê conversas ou rascunhos e não altera ou envia mensagens.
 
-O estado de execução fica em [docs/PROGRESSO.md](docs/PROGRESSO.md). Consulte o [plano geral](docs/PLANO.md) antes de continuar. Execute somente a etapa solicitada.
+O estado e as evidências ficam em [docs/PROGRESSO.md](docs/PROGRESSO.md). Consulte o [plano](docs/PLANO.md) e execute somente a etapa solicitada. A conclusão depende das verificações automatizadas e da validação correspondente no Chrome.
 
-## Requisitos
+## Requisitos e instalação
 
-- Node.js **22.13 ou superior na linha 22**, ou uma versão compatível das linhas 24/26+. As dependências recusam uma versão fora do intervalo declarado em package.json.
-- npm **10.9.2 ou superior**, desde que a versão do npm também suporte o Node instalado.
-- Ambiente usado nesta etapa: **Windows, Node 22.14.0 e npm 10.9.2**. Não é necessário trocar a instalação global para reproduzir este ambiente.
-- Internet para instalar dependências de desenvolvimento; nenhum modelo é baixado nesta etapa.
-
-As versões diretas são exatas e as transitivas ficam registradas em package-lock.json. Manter esse arquivo junto do código; usar npm ci para reproduzir a instalação. Não usar --force ou --legacy-peer-deps para esconder incompatibilidades.
-
-## Instalação e comandos
+- Node.js 22.13+ na linha 22, ou versão compatível das linhas 24/26+; npm 10.9.2+ compatível com o Node instalado.
+- Ambiente usado: Windows, Node 22.14.0 e npm 10.9.2. Nenhuma atualização global é necessária.
+- Chrome 116+ para runtime.getContexts, offscreen e identificação de documentos. O mínimo declarado é um requisito das APIs, não certificação de todas as versões ou de WebGPU.
+- Internet somente para instalar as dependências de desenvolvimento nesta etapa. Nenhum modelo é baixado.
 
 Na pasta do projeto:
 
 ```sh
 npm ci
+npm run check
 ```
 
-| Comando              | Finalidade                                                                         |
-| -------------------- | ---------------------------------------------------------------------------------- |
-| npm run dev          | Abrir o servidor local de desenvolvimento em http://127.0.0.1:5173.                |
-| npm run typecheck    | Conferir tipos do navegador e das ferramentas separadamente, sem emitir arquivos.  |
-| npm run lint         | Conferir qualidade do código; qualquer aviso provoca falha.                        |
-| npm run format:check | Conferir formatação sem alterar arquivos.                                          |
-| npm run format       | Aplicar formatação explicitamente durante a edição.                                |
-| npm test             | Executar os testes uma vez e encerrar.                                             |
-| npm run test:watch   | Executar testes novamente conforme os arquivos mudam.                              |
-| npm run build        | Conferir tipos e gerar a saída em dist.                                            |
-| npm run preview      | Servir o build local em http://127.0.0.1:4173 após npm run build.                  |
-| npm run check        | Executar tipos, lint, formatação, testes e build, interrompendo na primeira falha. |
+No PowerShell, use npm.cmd se a política local bloquear npm.ps1; não altere a política do sistema.
 
-No PowerShell, se a política local bloquear npm.ps1, use npm.cmd no lugar de npm. Nenhuma alteração da política do sistema é necessária.
+Abra chrome://extensions, habilite o modo do desenvolvedor, escolha **Carregar sem compactação** e selecione a pasta **dist**. Recarregue as abas do WhatsApp após instalar ou atualizar. O ícone da extensão abre o diagnóstico.
 
-O desenvolvimento e o preview escutam somente no computador local. Para encerrá-los, use Ctrl+C. Se a porta estiver ocupada, o comando falhará em vez de escolher outra silenciosamente.
+Siga o [roteiro completo da STEP-03](docs/VALIDACAO-STEP-03.md), que cobre circuito, duas abas, concorrência, cancelamento, desconexão e reinício. Não é necessário abrir conversas ou enviar mensagens.
 
-## O que pode ser conferido agora
+## Comandos
 
-A página de desenvolvimento mostra uma mensagem sobre a base do projeto e a próxima etapa. Ela serve para conferir a montagem do React e o carregamento do CSS. Não oferece ações de correção, acesso ao WhatsApp nem execução de IA.
+| Comando              | Finalidade                                                                 |
+| -------------------- | -------------------------------------------------------------------------- |
+| npm run dev          | Servir as páginas auxiliares em http://127.0.0.1:5173.                     |
+| npm run typecheck    | Conferir tipos do navegador e das ferramentas sem emitir arquivos.         |
+| npm run lint         | Conferir código com informação de tipos, sem aceitar avisos.               |
+| npm run format:check | Conferir formatação.                                                       |
+| npm run format       | Aplicar formatação.                                                        |
+| npm test             | Executar testes, incluindo um build completo temporário.                   |
+| npm run test:watch   | Reexecutar testes durante a edição.                                        |
+| npm run build        | Conferir tipos e gerar a extensão completa em dist.                        |
+| npm run preview      | Servir as páginas construídas em http://127.0.0.1:4173.                    |
+| npm run check        | Executar tipos, lint, formatação, testes e build; parar na primeira falha. |
 
-O build gera HTML, JavaScript, CSS e avisos de licença locais. **A pasta dist ainda não é uma extensão instalável:** o Manifest V3 será criado na STEP-03. O preview serve a página construída e não substitui a futura validação em chrome://extensions.
+Os servidores escutam apenas no computador local e falham se a porta estiver ocupada. Encerre com Ctrl+C. O preview valida React e estilos; **localhost não executa APIs de extensão**. O diagnóstico nesse endereço informa que precisa ser aberto pela extensão instalada.
 
-## Organização e limites dos módulos
+## Componentes implementados
 
-Arquivos e pastas são criados quando passam a ter implementação. Nesta etapa, não há arquivos vazios, motores simulados, modelos nem contratos de comunicação antecipados.
+| Local                    | Responsabilidade                                                                                        |
+| ------------------------ | ------------------------------------------------------------------------------------------------------- |
+| manifest.json            | MV3, permissões, CSP e entradas do pacote.                                                              |
+| src/extension/background | Coordenador, remetentes, roteador e criação idempotente do offscreen.                                   |
+| src/extension/offscreen  | Hospedagem de um Worker; comunicação de extensão somente por chrome.runtime.                            |
+| src/extension/ai         | Worker e motor de eco explicitamente simulado.                                                          |
+| src/extension/content    | Cliente isolado no frame principal do WhatsApp; executa somente a fixture solicitada pelo diagnóstico.  |
+| src/extension/diagnostic | Página auxiliar aberta pelo ícone da extensão. Não é o popup de configurações nem o preview do produto. |
+| src/shared               | Contratos, validação dos payloads/remetentes e fixture sintética.                                       |
+| src/development          | Página React auxiliar da STEP-02, preservada.                                                           |
+| tests                    | Contratos, remetentes, roteamento, cancelamento, recuperação, simulador e pacote gerado.                |
 
-| Local                                | Responsabilidade e momento de criação                                                    |
-| ------------------------------------ | ---------------------------------------------------------------------------------------- |
-| src/development                      | Página auxiliar existente para validar React e CSS; não é a interface final da extensão. |
-| tests                                | Testes existentes do pacote gerado.                                                      |
-| src/extension/background e offscreen | Coordenação e hospedagem do Worker, a partir da STEP-03.                                 |
-| src/extension/content                | Integração com WhatsApp, seletores e edição, a partir das STEP-03/04/05.                 |
-| src/extension/ui                     | Componentes do menu e preview, a partir da STEP-05.                                      |
-| src/extension/ai                     | Runtime, adaptador WebLLM, prompts e reescrita, a partir da STEP-06.                     |
-| src/models                           | Catálogo local e configuração de artefatos, a partir da STEP-06.                         |
-| src/extension/core                   | Parsing, preservação e validação, conforme STEP-07/08.                                   |
-| src/extension/storage                | Preferências; criar quando houver configuração efetivamente persistida.                  |
-| src/shared                           | Contratos e tipos realmente compartilhados entre contextos, a partir da STEP-03.         |
-| src/extension/popup e sidepanel      | Configurações e informações auxiliares, na STEP-14.                                      |
+Editor começa na STEP-04; menu/preview na STEP-05; WebLLM na STEP-06. Modelos, preservação semântica, preferências, popup e painel continuam nas etapas previstas. Não há implementações vazias desses módulos.
 
-O núcleo deve permanecer independente de React, DOM e WebLLM. Somente o adaptador de IA importa WebLLM. Integração com WhatsApp não deve importar diretamente o runtime; a comunicação será por mensagens. O código do navegador não deve usar APIs de Node.js.
+## Protocolo e ciclo de vida
 
-## Preparação do build para os próximos contextos
+O diagnóstico solicita ao coordenador um teste em uma aba permitida. O coordenador encaminha a fixture ao content script; este inicia um pedido por uma conexão própria. A resposta faz o caminho Worker → offscreen → coordenador → content script. Só então o content script devolve o relatório ao diagnóstico. A página não pode substituir o texto sintético por dados arbitrários.
 
-A configuração Vite declara explicitamente a única entrada existente: index.html. Novas entradas só devem ser adicionadas junto de sua implementação.
+Uniões discriminadas e validação em tempo de execução cobrem start, cancel, status, progress, fragment, result, cancelled, error e rejected. A ação corrigir é apenas um identificador reservado: o motor devolve o texto sem corrigi-lo. Payloads têm campos fechados, IDs limitados e texto de até 8.000 unidades UTF-16; o limite por tokenizer pertence à STEP-07.
 
-- Páginas de offscreen, popup e painel podem entrar como HTMLs adicionais.
-- O Service Worker deverá ter entrada própria e seu formato deverá corresponder ao Manifest.
-- O content script exige atenção ao formato aceito pelo Chrome; não copiar cegamente a configuração ES module das páginas. O build específico será implementado na STEP-03.
-- Workers usam formato ES e deverão ser empacotados como arquivos locais, referenciados por URL resolvida pelo bundler.
-- A saída usa caminhos relativos e não incorpora assets como data URLs. A pasta public está desabilitada; a inclusão de artefatos deve ser explícita.
-- Variáveis do ambiente não são expostas automaticamente ao navegador. Não colocar segredos em código, arquivos HTML ou configurações de build.
-- O alvo chrome116 define a transformação de sintaxe; não certifica compatibilidade das futuras APIs de extensão ou suporte de hardware.
+Cada pedido carrega requestId, editorId, snapshotId e revisão. O coordenador acrescenta aba, frame, documento e conexão com base no remetente do Chrome. O simulador utiliza editor fictício e snapshot sintético, sem inspecionar o WhatsApp. Respostas só são aceitas quando todos os campos do vínculo conferem.
 
-As próximas etapas deverão transformar a saída em um pacote MV3 completo. Este estágio não cria Manifest, permissões, Service Worker ou mensagens.
+Há um pedido ativo por vez, inclusive durante a preparação do motor. Pedidos concorrentes recebem **IA ocupada**, sem fila. Cancelar descarta resultados em trânsito; o Worker confirma após eliminar seus timers. Desconexão do solicitante encerra o Worker. Timeouts limitam a espera de prontidão a cinco segundos e o pedido a quinze segundos, sem replay.
 
-## Teste inicial
+A criação do offscreen é compartilhada entre chamadas concorrentes. runtime.getContexts verifica o documento existente e WORKERS justifica sua criação. O coordenador espera confirmação do Worker antes de encaminhar texto. Não há reconexão periódica nem keepalive artificial: uma nova ação explícita cria uma sessão limpa e pode reutilizar o documento offscreen sobrevivente. Pedidos interrompidos não são retomados.
 
-O teste chama o build real do Vite em um processo separado com modo de produção e diretório temporário exclusivo. Confere:
+## Permissões e privacidade
 
-1. HTML pt-BR com referências relativas a arquivos JavaScript e CSS realmente gerados.
-2. Dependências incorporadas, sem cliente de desenvolvimento, React Refresh, referências ao código-fonte ou imports externos de React.
-3. Ausência de um valor sintético de ambiente e de scripts inline no HTML gerado.
+- offscreen hospeda o Worker; storage está declarado conforme o plano, mas não é usado ainda.
+- Host e content script restritos a https://web.whatsapp.com/*. A permissão de host permite listar/verificar essas abas no diagnóstico, sem conceder a permissão global tabs.
+- Não há activeTab, scripting, <all_urls>, externally_connectable, APIs internas do WhatsApp, interceptação de tráfego ou ponte com scripts da página.
+- CSP permite scripts/workers locais e WASM empacotado, sem eval ou código remoto. connect-src 'none' bloqueia conexões externas das páginas da extensão. Downloads de modelos exigirão revisão na STEP-06.
+- Não há storage, logs de conteúdo ou persistência de pedidos. O relatório sintético permanece em memória até a página fechar.
+- Nenhum script desta versão lê o editor, modifica rascunhos ou envia mensagens. A validação do rascunho atualizado será implementada com o adaptador nas etapas seguintes.
 
-O diretório temporário é removido somente após confirmar seu caminho e prefixo. O teste não modifica dist, documentos ou arquivos de origem. Ele é uma verificação da base atual; não substitui a auditoria completa de privacidade da STEP-16.
+## Build e verificações
 
-TypeScript strict também habilita verificação de índices, propriedades opcionais exatas e imports laterais. ESLint usa informação de tipos e proíbe any explícito sem exceção justificada, eval, new Function e console no código do navegador. A formatação é responsabilidade separada do Prettier.
+Vite gera as páginas HTML, o Service Worker ES module e o Worker local. Uma compilação IIFE separada incorpora o content script em arquivo clássico, sem imports ESM. O Manifest é copiado explicitamente; não há diretório public genérico. A saída contém caminhos relativos, JavaScript/CSS locais e avisos de licença em dist/.vite/license.md.
 
-## Versões verificadas em 24/09/2026
+Variáveis de ambiente não são incorporadas automaticamente. Não coloque segredos nas fontes ou no Manifest. O alvo de sintaxe é chrome116. Após editar, gere dist novamente, recarregue a extensão e as abas do WhatsApp.
 
-| Ferramenta                      | Versão fixada    |
+Os testes conferem remetentes, campos extras, limites, vínculos divergentes, concorrência, cancelamento, descarte de eventos atrasados, desconexão, timeout, criação única e reconexão. O simulador integrado ao roteador testa eco Unicode/multilinha. O teste de build gera um pacote temporário e verifica Manifest/CSP, contextos locais, sintaxe clássica do content script, ausência de scripts inline, código de desenvolvimento e valores sintéticos de ambiente. A limpeza confirma caminho e prefixo antes de remover o diretório temporário.
+
+Esses testes não certificam a execução das APIs do Chrome. Consulte o progresso para distinguir testes automatizados de evidência real. Inferência em GPU e auditoria completa de privacidade pertencem às etapas futuras.
+
+## Versões travadas
+
+| Ferramenta                      | Versão           |
 | ------------------------------- | ---------------- |
 | React / React DOM               | 19.3.0           |
 | TypeScript                      | 6.0.3            |
-| Vite                            | 8.3.1            |
-| Plugin React do Vite            | 6.1.1            |
+| Vite / plugin React             | 8.3.1 / 6.1.1    |
 | Vitest                          | 5.0.1            |
 | ESLint / @eslint/js             | 10.11.0 / 10.0.1 |
 | typescript-eslint               | 8.70.1           |
 | Prettier                        | 3.9.9            |
 | @types/node                     | 22.20.4          |
 | @types/react / @types/react-dom | 19.3.0           |
+| @types/chrome                   | 0.3.0            |
 
-A seleção foi conferida na documentação oficial e nos metadados de engines e peerDependencies do registro npm. O TypeScript 7.0.2 estava disponível, mas typescript-eslint 8.70.1 exige TypeScript menor que 6.1.0; por isso foi fixado 6.0.3. Não foram ignorados conflitos de dependências.
+Versões diretas são exatas e transitivas ficam em package-lock.json. Use npm ci, sem --force ou --legacy-peer-deps. TypeScript 6.0.3 foi mantido porque typescript-eslint 8.70.1 requer versão menor que 6.1.0. Tipos do Chrome não substituem a conferência da versão mínima de cada API.
 
-O requisito mínimo deste projeto combina as ferramentas: ESLint 10 exige Node 22.13+ na linha 22 e Vitest 5 admite as linhas 22.12+, 24 e 26+. npm 10.9.2 foi mantido por ser a versão disponível e compatível; atualizar npm globalmente não faz parte desta etapa.
+## Referências técnicas
 
-Referências consultadas:
+- [Chrome Offscreen: WORKERS, documento único e runtime](https://developer.chrome.com/docs/extensions/reference/api/offscreen).
+- [Mensagens e conexões](https://developer.chrome.com/docs/extensions/develop/concepts/messaging). Listeners usam return true com sendResponse, compatível com Chrome 116, sem exigir suporte recente a retorno de Promise.
+- [Chrome Tabs e permissões de host](https://developer.chrome.com/docs/extensions/reference/api/tabs).
+- [Ciclo de vida do Service Worker](https://developer.chrome.com/docs/extensions/develop/concepts/service-workers/lifecycle).
+- [CSP de extensões](https://developer.chrome.com/docs/extensions/reference/manifest/content-security-policy).
+- [Vite: build](https://vite.dev/guide/build.html), [Vitest](https://vitest.dev/guide/), [ESLint](https://eslint.org/docs/latest/use/getting-started) e [compatibilidade do typescript-eslint](https://typescript-eslint.io/users/dependency-versions/).
 
-- [Vite — instalação](https://vite.dev/guide/) e [build](https://vite.dev/config/build-options)
-- [Vitest — requisitos e execução](https://vitest.dev/guide/)
-- [ESLint — requisitos](https://eslint.org/docs/latest/use/getting-started)
-- [typescript-eslint — versões compatíveis](https://typescript-eslint.io/users/dependency-versions/)
-- [TypeScript — instalação](https://www.typescriptlang.org/download/)
-- [React — versões](https://react.dev/versions)
-- [Prettier — instalação](https://prettier.io/docs/install)
-- [Node.js — linhas de versões](https://nodejs.org/en/about/previous-releases)
-- [npm ci — instalação pelo lockfile](https://docs.npmjs.com/cli/v10/commands/npm-ci)
+## Entrega por etapa
 
-## Commits e validação por etapa
-
-Cada etapa deve entregar todo o escopo previsto funcionando e terminar em um commit próprio, após revisão do diff, npm run check e validação real apropriada. A execução continua incremental. Ver [AGENTS.md](AGENTS.md) para as regras de entrega e o contato autorizado para eventuais testes de mensagens.
-
-Para a base atual, conferir também npm run preview: a página deve montar o React, carregar os estilos e não apresentar erros. A montagem da página foi conferida no navegador durante o registro inicial das etapas em Git. A validação real de Chrome/WhatsApp/IA começa nas etapas correspondentes.
-
-## Próxima etapa
-
-Consultar [STEP-03](docs/steps/STEP-03.md) somente quando sua execução for solicitada. A conclusão e as evidências desta etapa serão registradas no [progresso](docs/PROGRESSO.md).
+Cada etapa entrega seu escopo completo, com verificações e commit próprio após a validação. Usar Conventional Commits e a identidade humana já configurada no Git. Ver [AGENTS.md](AGENTS.md). A STEP-04 só pode começar após a conclusão registrada da STEP-03 e nova solicitação do usuário.
