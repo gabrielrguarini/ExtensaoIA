@@ -4,11 +4,11 @@
 
 ## Estado atual
 
-- Última atualização: 25/09/2026.
-- Última etapa concluída: **STEP-04 — Detectar o editor do WhatsApp**.
-- Situação: STEP-04 validada com fixtures e no WhatsApp real autenticado; entrega registrada em commit próprio.
-- Próxima etapa executável: **STEP-05 — Criar preview e substituição manual**, somente quando solicitada.
-- Implementação: Manifest V3, comunicação validada, Worker simulado, diagnóstico, adaptador do editor e botão IA. Ações de escrita, preview e inferência local continuam nas etapas futuras.
+- Última atualização: 28/09/2026.
+- Última etapa concluída: **STEP-05 — Criar preview e substituição manual**.
+- Situação: STEP-05 validada com fixtures e no WhatsApp real; entrega registrada em commit próprio.
+- Próxima etapa executável: **STEP-06 — Executar o primeiro modelo local**, somente quando solicitada.
+- Implementação: Manifest V3, comunicação, Worker simulado, diagnóstico, adaptador do editor, botão IA, menu/prévia e substituição manual. Textos multilinha e estruturas especiais oferecem somente cópia. Inferência local ainda não implementada.
 
 ## Significado dos status
 
@@ -28,7 +28,7 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 | [STEP-02](steps/STEP-02.md) | Criar a base do projeto                         | Concluída | npm ci reproduzível; tipos, lint, formatação, 3 testes de build e build aprovados.                                              |
 | [STEP-03](steps/STEP-03.md) | Implementar Manifest V3 e comunicação           | Concluída | 45 testes e build aprovados; extensão executada no Chrome for Testing 154, com duas abas, cancelamento e recuperação validados. |
 | [STEP-04](steps/STEP-04.md) | Detectar o editor do WhatsApp                   | Concluída | 69 testes e build aprovados; botão único, rascunho preservado, busca e fechamento/reabertura conferidos no WhatsApp real.       |
-| [STEP-05](steps/STEP-05.md) | Criar preview e substituição manual             | Pendente  | Não iniciada.                                                                                                                   |
+| [STEP-05](steps/STEP-05.md) | Criar preview e substituição manual             | Concluída | 98 testes e build; Chrome/WhatsApp com aplicação e undo, cópia, cancelamento e bloqueio de sugestões obsoletas.                 |
 | [STEP-06](steps/STEP-06.md) | Executar o primeiro modelo local                | Pendente  | Não iniciada.                                                                                                                   |
 | [STEP-07](steps/STEP-07.md) | Implementar a ação Corrigir                     | Pendente  | Não iniciada.                                                                                                                   |
 | [STEP-08](steps/STEP-08.md) | Proteger entidades e validar o resultado        | Pendente  | Não iniciada.                                                                                                                   |
@@ -119,9 +119,25 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 - Status final: **Concluída**. Nenhum impedimento pendente no escopo da etapa.
 - Próxima etapa, somente por nova solicitação: STEP-05. Não iniciada.
 
+## STEP-05 — 25 a 28/09/2026
+
+- Escopo: menu/prévia React junto ao editor, simulação identificada, Substituir/Copiar/Cancelar, seleção nativa, leitura de blocos e proteção contra sugestões obsoletas. Motor continua sendo o eco local da STEP-03; não há IA real nem envio de mensagens.
+- Arquivos criados: src/extension/content/{PreviewPanel.tsx,preview-client.ts,preview-session.ts}; src/integration/whatsapp/draft.ts; tests/{editor-replacement.test.ts,preview-session.test.ts}; docs/VALIDACAO-STEP-05.md.
+- Arquivos alterados: editor-button.ts/CSS, adaptador do WhatsApp, teste do build, Vite, tsconfig.node.json, página auxiliar React, Manifest, package.json/package-lock.json, README, checklist da STEP-05 e este progresso. Nenhuma dependência nova; versão do pacote/Manifest 0.4.0.
+- Comunicação: captura somente ao pedir a prévia; pedido vinculado a documento, aba, editor, snapshot e revisão. O cliente aceita somente eventos do vínculo atual e descarta respostas após cancelamento. Texto em memória; nenhuma nova permissão ou persistência.
+- Edição: conferência explícita de texto/contexto, seleção limitada ao editor, espera pela restauração do foco e seleção do WhatsApp, insertText isolado no adaptador e verificação do resultado. Undo nativo confirmado; não há escrita por innerHTML nem API interna do site.
+- Limite confirmado: o WhatsApp removeu quebras durante uma tentativa de inserção multilinha; o ensaio foi desfeito com Ctrl+Z. A entrega final oferece somente cópia para rascunhos/sugestões multilinha e estruturas especiais, preservando o original e as linhas na prévia/cópia. Esse fallback e os limites da API obsoleta estão documentados no README e no relatório.
+- Verificações: npm run check aprovado com tipos, lint sem avisos, formatação, 98 testes em oito arquivos e build. Casos cobrem linhas vazias, Unicode, menções, falhas, seleção/undo, cancelamento, revisão e respostas atrasadas. O build inclui React em modo de produção no content script clássico.
+- Navegador: pacote 0.4.0 executado no Chrome for Testing 154.0.8037.0. Fixtures validaram HTML literal, aplicação/undo, cópia e recusa de permissão, cancelamento, troca de contexto com texto igual, editor recriado, teclado/Escape e menções somente para cópia. Nenhum pageerror capturado; diagnóstico anterior aprovado; storage local/sync/session vazio. [Relatório e roteiro](VALIDACAO-STEP-05.md).
+- WhatsApp real: contato autorizado conferido na interface; frase sintética de uma linha com acento/emoji aplicada e desfeita. Prévia multilinha preservou separações, bloqueou substituição e permitiu copiar. Cancelamento/Escape preservaram o rascunho. Campo vazio confirmado ao encerrar; nenhuma mensagem enviada e nenhum conteúdo real versionado.
+- Interrupção: a revisão automática de aprovação atingiu limite de uso em 25/09 e impediu executar um teste pendente. O trabalho foi retomado por solicitação em 28/09 e as verificações restantes foram executadas; o impedimento não permanece.
+- Commit da etapa: feat(step-05): adicionar prévia e substituição manual. Hash no histórico Git e no relato final; identidade humana configurada, sem atribuições adicionais.
+- Status final: **Concluída** no escopo descrito, sem validação obrigatória pendente. A substituição multilinha não é oferecida nem declarada validada.
+- Próxima etapa: STEP-06, somente por nova solicitação; não iniciada.
+
 ## Como continuar
 
-As STEP-01 a STEP-04 estão concluídas. Consulte os relatórios da [comunicação](VALIDACAO-STEP-03.md) e do [editor](VALIDACAO-STEP-04.md). Para continuar, solicitar **Execute somente a STEP-05 do plano.** A STEP-05 não foi iniciada.
+As STEP-01 a STEP-05 estão concluídas. Consulte os relatórios da [comunicação](VALIDACAO-STEP-03.md), do [editor](VALIDACAO-STEP-04.md) e da [prévia](VALIDACAO-STEP-05.md). Para continuar, solicitar **Execute somente a STEP-06 do plano.** A STEP-06 não foi iniciada.
 
 Em futuras execuções, ler o plano e a etapa indicada, validar os pré-requisitos e atualizar este documento ao terminar. Não mudar o estado de etapas futuras apenas porque suas descrições foram criadas.
 

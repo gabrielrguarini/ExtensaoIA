@@ -1,45 +1,117 @@
 :host {
   color-scheme: light dark;
 }
-button,
-p {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+}
+button,
+p,
+h2,
+pre {
   font:
-    14px/1.4 system-ui,
+    14px/1.5 system-ui,
     sans-serif;
 }
 button {
-  position: fixed;
-  width: 48px;
-  height: 32px;
   border: 1px solid #187566;
-  border-radius: 16px;
+  border-radius: 8px;
+  padding: 8px 12px;
   background: #fff;
   color: #075e54;
-  font-weight: 700;
   cursor: pointer;
   pointer-events: auto;
-  box-shadow: 0 2px 6px #0002;
 }
-button:hover {
+button:hover:not(:disabled) {
   background: #e8f6f1;
 }
-button:focus-visible {
+button:focus-visible,
+pre:focus-visible {
   outline: 3px solid #007fff;
   outline-offset: 2px;
 }
-p {
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.launcher {
   position: fixed;
-  width: 288px;
+  width: 48px;
+  height: 32px;
+  padding: 0;
+  border-radius: 16px;
+  font-weight: 700;
+  box-shadow: 0 2px 6px #0002;
+}
+.panel-container {
+  position: fixed;
+  width: 380px;
   max-width: calc(100vw - 16px);
-  margin: 0;
-  padding: 12px;
+  pointer-events: auto;
+}
+.preview-panel {
+  padding: 16px;
   border: 1px solid #8696a0;
-  border-radius: 8px;
+  border-radius: 12px;
   background: #fff;
   color: #172b32;
-  box-shadow: 0 2px 8px #0003;
-  pointer-events: auto;
+  box-shadow: 0 4px 20px #0003;
+  max-height: var(--panel-height, 65vh);
+  overflow: auto;
+}
+.preview-heading {
+  display: grid;
+  gap: 6px;
+}
+h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 650;
+}
+p {
+  margin: 12px 0;
+}
+.simulation {
+  width: fit-content;
+  padding: 3px 8px;
+  border-radius: 12px;
+  background: #fff2cd;
+  color: #604200;
+  font:
+    12px/1.4 system-ui,
+    sans-serif;
+}
+pre {
+  max-height: 240px;
+  overflow: auto;
+  padding: 12px;
+  border: 1px solid #c8d1d4;
+  border-radius: 8px;
+  background: #f5f8f7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+.preview-actions {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+}
+.primary {
+  background: #075e54;
+  color: white;
+}
+.primary:hover:not(:disabled) {
+  background: #064d44;
+}
+.copy-only {
+  padding: 8px;
+  background: #fff2cd;
+  color: #604200;
+}
+.feedback:empty {
+  margin: 0;
 }
 [hidden] {
   display: none !important;
@@ -49,11 +121,19 @@ p {
     background: #182e2a;
     color: #8df0cb;
   }
-  button:hover {
+  button:hover:not(:disabled) {
     background: #24473e;
   }
-  p {
+  .primary {
+    background: #126456;
+    color: #fff;
+  }
+  .preview-panel {
     background: #1f2c34;
     color: #e9edef;
+  }
+  pre {
+    background: #142127;
+    border-color: #53656d;
   }
 }

@@ -18,6 +18,9 @@ function extensionPackage(): Plugin {
       // incorpora todas as dependências em um único IIFE, sem apagar os demais contextos.
       await build({
         configFile: false,
+        plugins: [react()],
+        // Bibliotecas não substituem process.env automaticamente; content scripts não têm Node.
+        define: { 'process.env.NODE_ENV': '"production"' },
         envPrefix: [],
         publicDir: false,
         build: {

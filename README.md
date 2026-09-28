@@ -1,6 +1,6 @@
 # Extensão de IA local para WhatsApp Web
 
-Base incremental com React, TypeScript strict e pacote Manifest V3. Na **STEP-04**, a extensão identifica o campo de mensagem do WhatsApp e mostra um único botão **IA** junto ao editor. O clique confirma que o campo foi reconhecido; as ações de escrita e o preview entram na STEP-05. O diagnóstico da STEP-03 continua disponível com **motor simulado**. Não há inferência, alteração ou envio de mensagens.
+Base incremental com React, TypeScript strict e pacote Manifest V3. Na **STEP-05**, o botão **IA** abre um menu e uma prévia junto ao editor do WhatsApp. O **motor simulado** apenas acrescenta “[Simulação]” ao texto: não há correção por IA. A prévia oferece Substituir, Copiar e Cancelar; nenhuma mensagem é enviada pela extensão. O diagnóstico da STEP-03 continua disponível.
 
 O estado e as evidências ficam em [docs/PROGRESSO.md](docs/PROGRESSO.md). Consulte o [plano](docs/PLANO.md) e execute somente a etapa solicitada. A conclusão depende das verificações automatizadas e da validação correspondente no Chrome.
 
@@ -24,7 +24,9 @@ Abra chrome://extensions, habilite o modo do desenvolvedor, escolha **Carregar s
 
 Siga o [roteiro completo da STEP-03](docs/VALIDACAO-STEP-03.md), que cobre circuito, duas abas, concorrência, cancelamento, desconexão e reinício. Não é necessário abrir conversas ou enviar mensagens.
 
-Para o botão IA, consulte [validação e limites da STEP-04](docs/VALIDACAO-STEP-04.md). Abra uma conversa com campo de mensagem: o botão aparece acima da área de composição, sem deslocar os controles. Ao clicar, o rascunho é capturado somente em memória e a interface informa que as ações de escrita ainda não estão disponíveis. Escape, clique fora, edição ou troca de contexto descartam essa captura. Nenhum rascunho é encaminhado ao motor simulado.
+Para testar a escrita, consulte [validação e limites da STEP-05](docs/VALIDACAO-STEP-05.md). Escreva um rascunho sintético, clique em **IA → Criar prévia simulada** e revise o resultado. Abrir o menu não lê o texto; solicitar a prévia o captura em memória e o encaminha ao Worker local. **Substituir** confirma a edição nativa, que pode ser desfeita com Ctrl+Z. **Copiar** grava a sugestão na área de transferência somente pelo clique. **Cancelar**, Escape e clique fora descartam a prévia; edição ou troca de contexto invalidam sugestões anteriores.
+
+Textos com várias linhas, menções estruturadas, formatação especial e editores sem suporte oferecem **somente cópia**. O teste real encontrou perda de quebras de linha na inserção nativa do WhatsApp; o rascunho multilinha permanece intacto e a cópia preserva suas linhas. Confira menções e formatação ao colar. Nenhuma API interna do site é utilizada para contornar esse limite.
 
 ## Comandos
 
@@ -51,14 +53,14 @@ Os servidores escutam apenas no computador local e falham se a porta estiver ocu
 | src/extension/background | Coordenador, remetentes, roteador e criação idempotente do offscreen.                                   |
 | src/extension/offscreen  | Hospedagem de um Worker; comunicação de extensão somente por chrome.runtime.                            |
 | src/extension/ai         | Worker e motor de eco explicitamente simulado.                                                          |
-| src/extension/content    | Montagem/limpeza do botão com Shadow DOM e cliente de diagnóstico separado.                             |
-| src/integration/whatsapp | Seletores, detecção, captura explícita e revisão do editor.                                             |
+| src/extension/content    | Botão, menu/prévia React com Shadow DOM, sessão em memória e clientes de comunicação.                   |
+| src/integration/whatsapp | Seletores, detecção, leitura de blocos, revisão e substituição nativa do editor.                        |
 | src/extension/diagnostic | Página auxiliar aberta pelo ícone da extensão. Não é o popup de configurações nem o preview do produto. |
 | src/shared               | Contratos, validação dos payloads/remetentes e fixture sintética.                                       |
 | src/development          | Página React auxiliar da STEP-02, preservada.                                                           |
 | tests                    | Contratos, remetentes, roteamento, cancelamento, recuperação, simulador, pacote e fixtures do editor.   |
 
-Menu/preview entram na STEP-05; WebLLM na STEP-06. Modelos, preservação semântica, preferências, popup e painel continuam nas etapas previstas. Não há implementações vazias desses módulos.
+WebLLM entra na STEP-06. Modelos, preservação semântica, preferências, popup e painel continuam nas etapas previstas. Não há implementações vazias desses módulos.
 
 ## Detecção e revisão do editor
 
@@ -68,13 +70,15 @@ MutationObserver acompanha o compositor e o cabeçalho, além dos filhos diretos
 
 Capturas têm UUIDs aleatórios e revisão, sem identidade de contato. Edição, composição IME, substituição do campo e mudanças no cabeçalho invalidam a revisão, inclusive quando o texto permanece igual. Não se lê o conteúdo do cabeçalho: até mudanças de presença podem invalidar conservadoramente uma captura. A conferência drena mutações pendentes antes de decidir se ela ainda é atual. Cliques sintéticos disparados pela página são ignorados.
 
+Copiar e Substituir conferem novamente o texto, documento, editor e revisão capturados. A substituição aguarda a restauração de foco/seleção do editor controlado, limita a seleção ao campo e usa execCommand('insertText') exclusivamente no adaptador. O resultado é conferido antes e depois da reconciliação da página. Uma inserção incorreta pode ser desfeita sincronamente pela própria transação; não há segunda tentativa automática nem rollback tardio que possa apagar uma edição posterior. Uma falha não confirmada orienta a conferir o rascunho. A API é obsoleta e o suporte foi validado no Chrome indicado no relatório, sem garantia para versões futuras.
+
 ## Protocolo e ciclo de vida
 
 O diagnóstico solicita ao coordenador um teste em uma aba permitida. O coordenador encaminha a fixture ao content script; este inicia um pedido por uma conexão própria. A resposta faz o caminho Worker → offscreen → coordenador → content script. Só então o content script devolve o relatório ao diagnóstico. A página não pode substituir o texto sintético por dados arbitrários.
 
 Uniões discriminadas e validação em tempo de execução cobrem start, cancel, status, progress, fragment, result, cancelled, error e rejected. A ação corrigir é apenas um identificador reservado: o motor devolve o texto sem corrigi-lo. Payloads têm campos fechados, IDs limitados e texto de até 8.000 unidades UTF-16; o limite por tokenizer pertence à STEP-07.
 
-Cada pedido carrega requestId, editorId, snapshotId e revisão. O coordenador acrescenta aba, frame, documento e conexão com base no remetente do Chrome. O simulador utiliza editor fictício e snapshot sintético, sem inspecionar o WhatsApp. Respostas só são aceitas quando todos os campos do vínculo conferem.
+Cada pedido carrega requestId, editorId, snapshotId e revisão. O coordenador acrescenta aba, frame, documento e conexão com base no remetente do Chrome. O diagnóstico usa identidades fictícias; a prévia usa o snapshot real solicitado explicitamente. Respostas só são aceitas quando todos os campos do vínculo conferem. O cliente da prévia também fixa o vínculo recebido e descarta eventos divergentes ou posteriores ao cancelamento.
 
 Há um pedido ativo por vez, inclusive durante a preparação do motor. Pedidos concorrentes recebem **IA ocupada**, sem fila. Cancelar descarta resultados em trânsito; o Worker confirma após eliminar seus timers. Desconexão do solicitante encerra o Worker. Timeouts limitam a espera de prontidão a cinco segundos e o pedido a quinze segundos, sem replay.
 
@@ -87,17 +91,20 @@ A criação do offscreen é compartilhada entre chamadas concorrentes. runtime.g
 - Não há activeTab, scripting, <all_urls>, externally_connectable, APIs internas do WhatsApp, interceptação de tráfego ou ponte com scripts da página.
 - CSP permite scripts/workers locais e WASM empacotado, sem eval ou código remoto. connect-src 'none' bloqueia conexões externas das páginas da extensão. Downloads de modelos exigirão revisão na STEP-06.
 - Não há storage, logs de conteúdo ou persistência de pedidos. O relatório sintético permanece em memória até a página fechar.
-- O rascunho só é lido após clique real no botão IA (inclusive ativação por teclado). Detecção, observadores e consulta de revisão não leem o texto. A captura permanece somente em memória até ser descartada; não há leitura de histórico/contatos, alteração de rascunhos ou envio de mensagens.
+- O rascunho só é lido ao solicitar a prévia e conferir uma ação explícita de cópia/substituição (inclusive ativação por teclado). Detecção, observadores e consulta de revisão não leem o texto. A captura e a resposta permanecem em memória até serem descartadas, sem leitura de histórico/contatos. A extensão só altera o rascunho após Substituir e nunca o envia.
+- Copiar usa a área de transferência do sistema por escolha explícita. Não há leitura dela pelo produto nem nova permissão de extensão. O sistema operacional e outros aplicativos podem acessar o texto copiado conforme suas próprias configurações.
 
 ## Build e verificações
 
 Vite gera as páginas HTML, o Service Worker ES module e o Worker local. Uma compilação IIFE separada incorpora o content script em arquivo clássico, sem imports ESM. O Manifest é copiado explicitamente; não há diretório public genérico. A saída contém caminhos relativos, JavaScript/CSS locais e avisos de licença em dist/.vite/license.md.
 
-Variáveis de ambiente não são incorporadas automaticamente. Não coloque segredos nas fontes ou no Manifest. O alvo de sintaxe é chrome116. Após editar, gere dist novamente, recarregue a extensão e as abas do WhatsApp.
+Variáveis de ambiente não são incorporadas automaticamente; o bundle do content script fixa apenas o modo de produção do React, sem depender de process no navegador. Não coloque segredos nas fontes ou no Manifest. O alvo de sintaxe é chrome116. Após editar, gere dist novamente, recarregue a extensão e as abas do WhatsApp.
 
 Os testes conferem remetentes, campos extras, limites, vínculos divergentes, concorrência, cancelamento, descarte de eventos atrasados, desconexão, timeout, criação única e reconexão. O simulador integrado ao roteador testa eco Unicode/multilinha. O teste de build gera um pacote temporário e verifica Manifest/CSP, contextos locais, sintaxe clássica do content script, ausência de scripts inline, código de desenvolvimento e valores sintéticos de ambiente. A limpeza confirma caminho e prefixo antes de remover o diretório temporário.
 
 Esses testes não certificam a execução das APIs do Chrome. Consulte o progresso para distinguir testes automatizados de evidência real. Inferência em GPU e auditoria completa de privacidade pertencem às etapas futuras.
+
+A STEP-05 acrescenta testes de captura explícita, leitura de parágrafos/linhas vazias, estruturas somente para cópia, seleção, desfazer, cancelamento durante a substituição, falhas de cópia e descarte de resultados obsoletos. O relatório registra também execução do pacote instalado no Chrome e aplicação/desfazer no WhatsApp real.
 
 ## Versões travadas
 
@@ -125,6 +132,7 @@ Versões diretas são exatas e transitivas ficam em package-lock.json. Use npm c
 - [Ciclo de vida do Service Worker](https://developer.chrome.com/docs/extensions/develop/concepts/service-workers/lifecycle).
 - [CSP de extensões](https://developer.chrome.com/docs/extensions/reference/manifest/content-security-policy).
 - [Content scripts e isolamento](https://developer.chrome.com/docs/extensions/develop/concepts/content-scripts).
+- [MDN: execCommand, limitações e histórico de edição](https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand).
 - [jsdom e versões do Node](https://github.com/jsdom/jsdom/releases).
 - [Vite: build](https://vite.dev/guide/build.html), [Vitest](https://vitest.dev/guide/), [ESLint](https://eslint.org/docs/latest/use/getting-started) e [compatibilidade do typescript-eslint](https://typescript-eslint.io/users/dependency-versions/).
 

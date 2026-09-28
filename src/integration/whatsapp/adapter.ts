@@ -1,3 +1,5 @@
+import { readDraft } from './draft';
+
 // Todos os seletores do site ficam aqui. Nenhum texto de contato ou histórico é lido.
 const selectors = {
   conversation: '#main',
@@ -22,7 +24,11 @@ export interface DraftSnapshot {
   readonly snapshotId: string;
   readonly revision: number;
   readonly text: string;
+  readonly replacementAllowed: boolean;
 }
+
+export type ReplacementResult =
+  'applied' | 'stale' | 'copy-only' | 'failed-preserved' | 'failed-review';
 
 export function isVisible(element: HTMLElement): boolean {
   if (!element.isConnected || element.closest(selectors.excluded)) return false;
@@ -68,6 +74,8 @@ export class WhatsAppAdapter {
   private timer: ReturnType<typeof setInterval> | undefined;
   private frame: number | undefined;
   private active = false;
+  private contextRevision = 0;
+  private readonly issued = new WeakMap<DraftSnapshot, { url: string; editor: HTMLElement }>();
   private readonly listeners = new Set<(target: EditorTarget | null) => void>();
 
   constructor(private readonly document: Document) {}
@@ -110,22 +118,144 @@ export class WhatsAppAdapter {
   capture(): DraftSnapshot | null {
     this.flush();
     if (!this.active || !this.target) return null;
-    return Object.freeze({
+    const snapshot = Object.freeze({
       editorId: this.target.editorId,
       snapshotId: crypto.randomUUID(),
       revision: this.revision,
-      text: this.target.editor.innerText,
+      ...readDraft(this.target.editor),
     });
+    this.issued.set(snapshot, { url: this.document.URL, editor: this.target.editor });
+    return snapshot;
   }
 
   isCurrent(snapshot: DraftSnapshot): boolean {
     this.flush();
     return (
       this.active &&
+      this.issued.get(snapshot)?.url === this.document.URL &&
       this.target !== null &&
       snapshot.editorId === this.target.editorId &&
       snapshot.revision === this.revision
     );
+  }
+
+  /** Releitura só no gesto explícito de copiar/substituir. */
+  matches(snapshot: DraftSnapshot): boolean {
+    if (!this.isCurrent(snapshot) || !this.target) return false;
+    if (readDraft(this.target.editor).text === snapshot.text) return true;
+    this.invalidate();
+    return false;
+  }
+
+  canReplace(snapshot: DraftSnapshot, suggestion = snapshot.text): boolean {
+    try {
+      return (
+        snapshot.replacementAllowed &&
+        !/[\r\n]/u.test(suggestion) &&
+        typeof this.document.execCommand === 'function' &&
+        typeof this.document.queryCommandSupported === 'function' &&
+        this.document.queryCommandSupported('insertText') &&
+        this.document.queryCommandSupported('selectAll')
+      );
+    } catch {
+      return false;
+    }
+  }
+
+  focusEditor(editorId: string): void {
+    this.flush();
+    if (this.target?.editorId === editorId) this.target.editor.focus({ preventScroll: true });
+  }
+
+  async replace(
+    snapshot: DraftSnapshot,
+    text: string,
+    signal?: AbortSignal,
+  ): Promise<ReplacementResult> {
+    if (signal?.aborted) return 'stale';
+    if (!this.matches(snapshot) || !this.target) return 'stale';
+    if (
+      !this.canReplace(snapshot, text) ||
+      !readDraft(this.target.editor).replacementAllowed ||
+      !text.trim()
+    )
+      return 'copy-only';
+    const editor = this.target.editor;
+    editor.focus({ preventScroll: true });
+    // O foco também restaura a seleção anterior no editor controlado; esperar essa
+    // restauração antes de selecionar evita que ela apague nossa seleção completa.
+    await new Promise<void>((resolve) => {
+      setTimeout(resolve, 0);
+    });
+    if (signal?.aborted || !this.matches(snapshot) || this.document.activeElement !== editor)
+      return 'stale';
+    const selection = this.document.getSelection();
+    if (!selection || !this.document.queryCommandEnabled('insertText')) return 'copy-only';
+    const range = this.document.createRange();
+    range.selectNodeContents(editor);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    // A seleção nativa também atualiza editores controlados que restauram uma
+    // seleção criada apenas por Range. O foco e os limites são conferidos abaixo.
+    try {
+      if (!this.document.execCommand('selectAll')) return 'copy-only';
+    } catch {
+      return 'copy-only';
+    }
+    // Editores controlados (incluindo o WhatsApp) reconciliam a seleção no evento
+    // selectionchange nativo. Inserir no mesmo turno pode usar a seleção anterior.
+    await new Promise<void>((resolve) => {
+      setTimeout(resolve, 0);
+    });
+    if (
+      signal?.aborted ||
+      !this.matches(snapshot) ||
+      this.document.activeElement !== editor ||
+      selection.rangeCount !== 1 ||
+      !editor.contains(selection.getRangeAt(0).startContainer) ||
+      !editor.contains(selection.getRangeAt(0).endContainer) ||
+      selection.toString() !== editor.innerText
+    )
+      return 'stale';
+    if (text === snapshot.text) return 'applied';
+    const contextRevision = this.contextRevision;
+    let accepted = false;
+    try {
+      // Única API de escrita: mantém a transação nativa de edição/desfazer.
+      accepted = this.document.execCommand('insertText', false, text);
+    } catch {
+      /* Verificar o campo antes de decidir se uma recuperação é necessária. */
+    }
+    this.flush();
+    if (this.target?.editor !== editor || contextRevision !== this.contextRevision)
+      return 'failed-review';
+    const actual = readDraft(editor).text;
+    if (!accepted || actual !== text) {
+      if (actual === snapshot.text) return 'failed-preserved';
+      // Recuperação síncrona da nossa própria transação, sem segunda inserção nem innerHTML.
+      try {
+        this.document.execCommand('undo');
+      } catch {
+        /* Relatar falha sem prometer restauração. */
+      }
+      this.invalidate();
+      return readDraft(editor).text === snapshot.text ? 'failed-preserved' : 'failed-review';
+    }
+    this.invalidate();
+    // Deixar o editor controlado pela página reconciliar o evento nativo de input.
+    // Nunca fazer rollback assíncrono: poderia desfazer uma edição posterior do usuário.
+    await new Promise<void>((resolve) => {
+      setTimeout(resolve, 50);
+    });
+    this.flush();
+    if (this.target?.editor !== editor || contextRevision !== this.contextRevision)
+      return 'failed-review';
+    const settled = readDraft(editor).text;
+    return settled === text
+      ? 'applied'
+      : settled === snapshot.text
+        ? 'failed-preserved'
+        : 'failed-review';
   }
 
   private flush(): void {
@@ -150,7 +280,11 @@ export class WhatsAppAdapter {
           )
         ),
     );
-    if (relevant) this.invalidate();
+    if (relevant) {
+      if (records.some((record) => this.target?.header?.contains(record.target)))
+        this.contextRevision++;
+      this.invalidate();
+    }
   };
 
   private schedule(): void {

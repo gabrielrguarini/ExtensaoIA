@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "IA local — WhatsApp Web (desenvolvimento)",
-  "version": "0.3.0",
-  "description": "STEP-04: identificação do editor e botão IA. Comunicação simulada; sem inferência, edição ou envio de mensagens.",
+  "version": "0.4.0",
+  "description": "STEP-05: prévia simulada, cópia e substituição manual do rascunho. Sem inferência ou envio de mensagens.",
   "minimum_chrome_version": "116",
   "permissions": ["storage", "offscreen"],
   "host_permissions": ["https://web.whatsapp.com/*"],

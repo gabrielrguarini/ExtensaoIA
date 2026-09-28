@@ -85,6 +85,7 @@ describe('pacote de produção', () => {
       expect(outputFiles).toContain(file);
     const content = await readFile(path.join(outputDirectory, 'content.js'), 'utf8');
     expect(() => new Script(content)).not.toThrow(); // Script clássico, sem imports ESM.
+    expect(content).not.toContain('process.env');
     expect(outputFiles.some((file) => /worker-.*\.js$/.test(file))).toBe(true);
     for (const page of ['offscreen.html', 'diagnostic.html']) {
       const pageHtml = await readFile(path.join(outputDirectory, page), 'utf8');
