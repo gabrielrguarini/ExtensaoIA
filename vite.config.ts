@@ -1,5 +1,5 @@
 import { fileURLToPath } from 'node:url';
-import { readFile, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import react from '@vitejs/plugin-react';
 import { build, defineConfig } from 'vite';
@@ -38,6 +38,13 @@ function extensionPackage(): Plugin {
       });
       const manifest = await readFile(new URL('./manifest.json', import.meta.url));
       await writeFile(path.join(outDir, 'manifest.json'), manifest);
+      await copyFile(new URL('./NOTICE.txt', import.meta.url), path.join(outDir, 'NOTICE.txt'));
+      await mkdir(path.join(outDir, 'licenses'), { recursive: true });
+      for (const license of ['LLAMA-3.2-LICENSE', 'WEBLLM-LICENSE'])
+        await copyFile(
+          new URL(`./licenses/${license}`, import.meta.url),
+          path.join(outDir, 'licenses', license),
+        );
     },
   };
 }

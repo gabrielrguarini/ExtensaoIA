@@ -2,10 +2,14 @@ import type { DraftSnapshot, WhatsAppAdapter } from '../../integration/whatsapp/
 import { MAX_TEXT_LENGTH } from '../../shared/protocol';
 import { generatePreview, SIMULATION_PREFIX } from './preview-client';
 import type { PreviewGenerator } from './preview-client';
+import { runModelProof } from './model-proof-client';
+import type { ProofGenerator, ProofProgress } from './model-proof-client';
 
 export type PreviewState =
   | { kind: 'closed' | 'menu' | 'loading' }
   | { kind: 'notice'; message: string }
+  | { kind: 'model-loading'; progress: ProofProgress }
+  | { kind: 'model-result'; text: string; variant: 'q4f16_1' | 'q4f32_1' }
   | {
       kind: 'preview';
       text: string;
@@ -26,6 +30,7 @@ export class PreviewSession {
     private readonly generate: PreviewGenerator = generatePreview,
     private readonly writeClipboard: (text: string) => Promise<void> = (text) =>
       navigator.clipboard.writeText(text),
+    private readonly prove: ProofGenerator = runModelProof,
   ) {}
 
   getState = (): PreviewState => this.state;
@@ -106,6 +111,31 @@ export class PreviewSession {
         kind: 'notice',
         message: 'Não foi possível conectar à extensão. Recarregue a aba.',
       });
+    }
+  }
+
+  startModelProof(): void {
+    if (this.state.kind !== 'menu') return;
+    const sequence = ++this.sequence;
+    this.set({
+      kind: 'model-loading',
+      progress: { phase: 'preparing', percent: 0, variant: null },
+    });
+    try {
+      this.cancelGeneration = this.prove(
+        (progress) => {
+          if (sequence === this.sequence) this.set({ kind: 'model-loading', progress });
+        },
+        (outcome) => {
+          if (sequence !== this.sequence) return;
+          this.cancelGeneration = undefined;
+          if (outcome.ok)
+            this.set({ kind: 'model-result', text: outcome.text, variant: outcome.variant });
+          else this.set({ kind: 'notice', message: outcome.message });
+        },
+      );
+    } catch {
+      this.set({ kind: 'notice', message: 'Não foi possível conectar ao motor local.' });
     }
   }
 

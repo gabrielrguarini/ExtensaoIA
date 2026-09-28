@@ -5,10 +5,10 @@
 ## Estado atual
 
 - Última atualização: 28/09/2026.
-- Última etapa concluída: **STEP-05 — Criar preview e substituição manual**.
-- Situação: STEP-05 validada com fixtures e no WhatsApp real; entrega registrada em commit próprio.
-- Próxima etapa executável: **STEP-06 — Executar o primeiro modelo local**, somente quando solicitada.
-- Implementação: Manifest V3, comunicação, Worker simulado, diagnóstico, adaptador do editor, botão IA, menu/prévia e substituição manual. Textos multilinha e estruturas especiais oferecem somente cópia. Inferência local ainda não implementada.
+- Última etapa concluída: **STEP-06 — Executar o primeiro modelo local**.
+- Situação: inferência WebGPU real validada no Chrome com frase sintética, cache offline e falha de download; entrega registrada em commit próprio.
+- Próxima etapa executável: **STEP-07 — Implementar a ação Corrigir**, somente quando solicitada.
+- Implementação: Manifest V3, comunicação, adaptador do editor, botão IA, prévia e substituição manual simuladas, mais prova separada com Llama 3.2 3B no Worker via WebGPU. Textos multilinha e estruturas especiais oferecem somente cópia. A escrita assistida ainda é simulada até a STEP-07.
 
 ## Significado dos status
 
@@ -22,24 +22,24 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 
 ## Etapas
 
-| Etapa                       | Descrição                                       | Status    | Evidência                                                                                                                       |
-| --------------------------- | ----------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| [STEP-01](steps/STEP-01.md) | Organizar o plano e o acompanhamento            | Concluída | 18 documentos, 16 etapas, 129 links locais válidos e sequência conferida.                                                       |
-| [STEP-02](steps/STEP-02.md) | Criar a base do projeto                         | Concluída | npm ci reproduzível; tipos, lint, formatação, 3 testes de build e build aprovados.                                              |
-| [STEP-03](steps/STEP-03.md) | Implementar Manifest V3 e comunicação           | Concluída | 45 testes e build aprovados; extensão executada no Chrome for Testing 154, com duas abas, cancelamento e recuperação validados. |
-| [STEP-04](steps/STEP-04.md) | Detectar o editor do WhatsApp                   | Concluída | 69 testes e build aprovados; botão único, rascunho preservado, busca e fechamento/reabertura conferidos no WhatsApp real.       |
-| [STEP-05](steps/STEP-05.md) | Criar preview e substituição manual             | Concluída | 98 testes e build; Chrome/WhatsApp com aplicação e undo, cópia, cancelamento e bloqueio de sugestões obsoletas.                 |
-| [STEP-06](steps/STEP-06.md) | Executar o primeiro modelo local                | Pendente  | Não iniciada.                                                                                                                   |
-| [STEP-07](steps/STEP-07.md) | Implementar a ação Corrigir                     | Pendente  | Não iniciada.                                                                                                                   |
-| [STEP-08](steps/STEP-08.md) | Proteger entidades e validar o resultado        | Pendente  | Não iniciada.                                                                                                                   |
-| [STEP-09](steps/STEP-09.md) | Adicionar os demais modos                       | Pendente  | Não iniciada.                                                                                                                   |
-| [STEP-10](steps/STEP-10.md) | Exibir geração progressiva e cancelamento       | Pendente  | Não iniciada.                                                                                                                   |
-| [STEP-11](steps/STEP-11.md) | Implementar verificação semântica opcional      | Pendente  | Não iniciada.                                                                                                                   |
-| [STEP-12](steps/STEP-12.md) | Adicionar modelos e perfis de hardware          | Pendente  | Não iniciada.                                                                                                                   |
-| [STEP-13](steps/STEP-13.md) | Consolidar cache, recuperação e desempenho      | Pendente  | Não iniciada.                                                                                                                   |
-| [STEP-14](steps/STEP-14.md) | Finalizar configurações e interfaces auxiliares | Pendente  | Não iniciada.                                                                                                                   |
-| [STEP-15](steps/STEP-15.md) | Criar e executar o benchmark pt-BR              | Pendente  | Não iniciada.                                                                                                                   |
-| [STEP-16](steps/STEP-16.md) | Validar e preparar a entrega instalável         | Pendente  | Não iniciada.                                                                                                                   |
+| Etapa                       | Descrição                                       | Status    | Evidência                                                                                                                                                   |
+| --------------------------- | ----------------------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [STEP-01](steps/STEP-01.md) | Organizar o plano e o acompanhamento            | Concluída | 18 documentos, 16 etapas, 129 links locais válidos e sequência conferida.                                                                                   |
+| [STEP-02](steps/STEP-02.md) | Criar a base do projeto                         | Concluída | npm ci reproduzível; tipos, lint, formatação, 3 testes de build e build aprovados.                                                                          |
+| [STEP-03](steps/STEP-03.md) | Implementar Manifest V3 e comunicação           | Concluída | 45 testes e build aprovados; extensão executada no Chrome for Testing 154, com duas abas, cancelamento e recuperação validados.                             |
+| [STEP-04](steps/STEP-04.md) | Detectar o editor do WhatsApp                   | Concluída | 69 testes e build aprovados; botão único, rascunho preservado, busca e fechamento/reabertura conferidos no WhatsApp real.                                   |
+| [STEP-05](steps/STEP-05.md) | Criar preview e substituição manual             | Concluída | 98 testes e build; Chrome/WhatsApp com aplicação e undo, cópia, cancelamento e bloqueio de sugestões obsoletas.                                             |
+| [STEP-06](steps/STEP-06.md) | Executar o primeiro modelo local                | Concluída | 102 testes e build; Llama 3.2 3B em WebGPU/Chrome, resposta sintética real, cache offline e falha de download validados. [Relatório](VALIDACAO-STEP-06.md). |
+| [STEP-07](steps/STEP-07.md) | Implementar a ação Corrigir                     | Pendente  | Não iniciada.                                                                                                                                               |
+| [STEP-08](steps/STEP-08.md) | Proteger entidades e validar o resultado        | Pendente  | Não iniciada.                                                                                                                                               |
+| [STEP-09](steps/STEP-09.md) | Adicionar os demais modos                       | Pendente  | Não iniciada.                                                                                                                                               |
+| [STEP-10](steps/STEP-10.md) | Exibir geração progressiva e cancelamento       | Pendente  | Não iniciada.                                                                                                                                               |
+| [STEP-11](steps/STEP-11.md) | Implementar verificação semântica opcional      | Pendente  | Não iniciada.                                                                                                                                               |
+| [STEP-12](steps/STEP-12.md) | Adicionar modelos e perfis de hardware          | Pendente  | Não iniciada.                                                                                                                                               |
+| [STEP-13](steps/STEP-13.md) | Consolidar cache, recuperação e desempenho      | Pendente  | Não iniciada.                                                                                                                                               |
+| [STEP-14](steps/STEP-14.md) | Finalizar configurações e interfaces auxiliares | Pendente  | Não iniciada.                                                                                                                                               |
+| [STEP-15](steps/STEP-15.md) | Criar e executar o benchmark pt-BR              | Pendente  | Não iniciada.                                                                                                                                               |
+| [STEP-16](steps/STEP-16.md) | Validar e preparar a entrega instalável         | Pendente  | Não iniciada.                                                                                                                                               |
 
 ## Registro de execução
 
@@ -135,9 +135,22 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 - Status final: **Concluída** no escopo descrito, sem validação obrigatória pendente. A substituição multilinha não é oferecida nem declarada validada.
 - Próxima etapa: STEP-06, somente por nova solicitação; não iniciada.
 
+## STEP-06 — 28/09/2026
+
+- Escopo: primeira inferência real no Worker da extensão, usando somente uma frase sintética fixa. A prévia de escrita da STEP-05 permanece explicitamente simulada até a STEP-07.
+- Arquivos criados: interface `AIEngine`, adaptador `WebLLMEngine`, catálogo fixo de modelo, dois WASM locais, cliente de prova, fixture/procedimento de navegador, licenças, aviso e [relatório reproduzível](VALIDACAO-STEP-06.md). Arquivos alterados: Worker, protocolo, roteador, menu, Manifest/CSP, build, tipos, testes, pacote/lockfile, README, checklist e progresso.
+- Dependências exatas novas: `@mlc-ai/web-llm` 0.2.85, `@webgpu/types` 0.1.69 (desenvolvimento) e `playwright-core` 1.55.0 (roteiro de validação). Versão do projeto/Manifest: 0.5.0. Catálogo, revisões de pesos e bibliotecas WASM compatíveis foram conferidos antes da integração; os hashes dos WASM empacotados são verificados no teste de build.
+- Segurança e privacidade: JS/WASM executáveis locais; dados do modelo limitados a `huggingface.co` e ao redirecionamento observado `us.aws.cdn.hf.co`. A prova usa somente a frase fixa e não lê rascunho/conversa. Cache API contém artefatos do modelo; Chrome Storage local/sync/session vazio. Nenhuma mensagem foi enviada.
+- Hardware real: Chrome for Testing da família 154 em Windows, adapter Intel `gen-12lp`, `shader-f16`, limites de storage buffer e buffer de 2.147.483.644 e 2.147.483.648 bytes. A variante f16 gerou `TESTE.` para a frase sintética no Worker. Digitação independente respondeu durante o processamento; o rascunho da fixture permaneceu intacto.
+- Validação adicional: após reiniciar Chrome, a mesma prova funcionou com rede desativada a partir do cache. Em perfil sem cache e sem rede, a falha de download mostrou aviso e preservou o rascunho. A simulação da STEP-05 continuou funcionando no Chrome. O cache tinha `webllm/config` (1) e `webllm/model` (60), somente URLs de `huggingface.co`; Chrome Storage vazio.
+- Verificações automatizadas: `npm run check` aprovado, cobrindo tipos, lint, formatação, 102 testes em nove arquivos e build. Roteiro versionado `npm run test:step06:browser -- online|offline|download-failure|cache|regression` aprovado nos modos executados.
+- Limites: a variante f32 foi validada por seleção automatizada e catálogo, sem uma segunda GPU real sem `shader-f16`. Os ramos de WebGPU ausente e limites baixos foram verificados em testes automatizados; a falha de download teve execução real. O compositor usado nesta etapa foi sintético, com extensão instalada no Chrome; não foi necessário abrir conversa no WhatsApp real.
+- Commit da etapa: `feat(step-06): executar primeira inferência local`. Hash no histórico Git e no relato final; identidade humana configurada.
+- Status final: **Concluída** no escopo da STEP-06. A próxima etapa é STEP-07, somente por nova solicitação.
+
 ## Como continuar
 
-As STEP-01 a STEP-05 estão concluídas. Consulte os relatórios da [comunicação](VALIDACAO-STEP-03.md), do [editor](VALIDACAO-STEP-04.md) e da [prévia](VALIDACAO-STEP-05.md). Para continuar, solicitar **Execute somente a STEP-06 do plano.** A STEP-06 não foi iniciada.
+As STEP-01 a STEP-06 estão concluídas. Consulte os relatórios da [comunicação](VALIDACAO-STEP-03.md), do [editor](VALIDACAO-STEP-04.md), da [prévia](VALIDACAO-STEP-05.md) e da [inferência local](VALIDACAO-STEP-06.md). Para continuar, solicitar **Execute somente a STEP-07 do plano.** A STEP-07 não foi iniciada.
 
 Em futuras execuções, ler o plano e a etapa indicada, validar os pré-requisitos e atualizar este documento ao terminar. Não mudar o estado de etapas futuras apenas porque suas descrições foram criadas.
 

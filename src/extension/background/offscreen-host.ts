@@ -86,7 +86,7 @@ export class OffscreenHost {
         await chrome.offscreen.createDocument({
           url: 'offscreen.html',
           reasons: [chrome.offscreen.Reason.WORKERS],
-          justification: 'Hospedar o Worker local de processamento; motor simulado na STEP-03.',
+          justification: 'Hospedar o Worker local de inferência WebGPU e a prévia simulada.',
         });
       } else {
         // Um documento sobrevivente ao Service Worker só reconecta por uma nova solicitação.

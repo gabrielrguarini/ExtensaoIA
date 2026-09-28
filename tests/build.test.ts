@@ -1,4 +1,5 @@
 import { execFile } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { mkdtemp, readFile, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -57,7 +58,7 @@ afterAll(async () => {
 });
 
 describe('pacote de produção', () => {
-  it('gera Manifest MV3 restrito ao WhatsApp com todos os contextos locais', async () => {
+  it('gera Manifest MV3 com dados de modelo restritos e código local', async () => {
     if (!outputDirectory) throw new Error('Build ausente.');
     const manifest: unknown = JSON.parse(
       await readFile(path.join(outputDirectory, 'manifest.json'), 'utf8'),
@@ -66,7 +67,11 @@ describe('pacote de produção', () => {
       manifest_version: 3,
       minimum_chrome_version: '116',
       permissions: ['storage', 'offscreen'],
-      host_permissions: ['https://web.whatsapp.com/*'],
+      host_permissions: [
+        'https://web.whatsapp.com/*',
+        'https://huggingface.co/*',
+        'https://us.aws.cdn.hf.co/*',
+      ],
       background: { service_worker: 'service-worker.js', type: 'module' },
       content_scripts: [
         {
@@ -78,15 +83,26 @@ describe('pacote de produção', () => {
       ],
       content_security_policy: {
         extension_pages:
-          "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; object-src 'none'; connect-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+          "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; object-src 'none'; connect-src 'self' https://huggingface.co https://us.aws.cdn.hf.co; base-uri 'none'; frame-ancestors 'none'",
       },
     });
     for (const file of ['service-worker.js', 'content.js', 'offscreen.html', 'diagnostic.html'])
       expect(outputFiles).toContain(file);
+    for (const file of ['NOTICE.txt', 'licenses/LLAMA-3.2-LICENSE', 'licenses/WEBLLM-LICENSE'])
+      expect((await readFile(path.join(outputDirectory, file))).length).toBeGreaterThan(100);
     const content = await readFile(path.join(outputDirectory, 'content.js'), 'utf8');
     expect(() => new Script(content)).not.toThrow(); // Script clássico, sem imports ESM.
     expect(content).not.toContain('process.env');
     expect(outputFiles.some((file) => /worker-.*\.js$/.test(file))).toBe(true);
+    for (const [variant, expectedHash] of [
+      ['q4f16_1', '79cc2f3794e32d9611675102a91d6ad1c8e869c1d5c3f7e8f8d26564d2f28efb'],
+      ['q4f32_1', 'fac5f2303c170d8936ffef02498b8f645b17e98f4be83cfe2d081ea7304d0f67'],
+    ] as const) {
+      const file = outputFiles.find((item) => item.includes(variant) && item.endsWith('.wasm'));
+      expect(file).toBeDefined();
+      const data = await readFile(path.join(outputDirectory, file ?? ''));
+      expect(createHash('sha256').update(data).digest('hex')).toBe(expectedHash);
+    }
     for (const page of ['offscreen.html', 'diagnostic.html']) {
       const pageHtml = await readFile(path.join(outputDirectory, page), 'utf8');
       expect(pageHtml).not.toMatch(/(?:src|href)="(?:https?:|data:|blob:)/);

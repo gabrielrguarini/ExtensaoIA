@@ -3,7 +3,7 @@
   "compilerOptions": {
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
-    "types": ["node", "chrome", "vite/client"]
+    "types": ["node", "chrome", "vite/client", "@webgpu/types"]
   },
   "include": ["vite.config.ts", "vitest.config.ts", "tests"]
 }

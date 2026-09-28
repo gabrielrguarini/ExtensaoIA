@@ -12,6 +12,9 @@ const labels = {
   UNAVAILABLE: 'Motor indisponível',
   DISCONNECTED: 'Conexão encerrada',
   TIMEOUT: 'Tempo limite atingido',
+  WEBGPU_UNAVAILABLE: 'WebGPU indisponível',
+  INSUFFICIENT_RESOURCES: 'Recursos da GPU insuficientes',
+  MODEL_DOWNLOAD: 'Falha no download do modelo',
 } as const;
 
 function describe(value: unknown): string {
@@ -31,12 +34,16 @@ function describe(value: unknown): string {
           return labels[event.code];
         case 'progress':
           return `Progresso: ${event.percent}%`;
+        case 'model-progress':
+          return `Modelo: ${event.phase} ${event.percent}%`;
         case 'fragment':
           return 'Fragmento recebido pelo content script.';
         case 'cancelled':
           return 'Teste cancelado; nenhum resultado aplicado.';
         case 'result':
           return `Circuito completo — SIMULAÇÃO. Aba ${event.binding.origin.tabId}; documento ${event.binding.origin.documentId}; pedido ${event.binding.key.requestId}.\nEco sintético: ${event.text}`;
+        case 'proof-result':
+          return `Inferência local concluída na variante ${event.variant}.`;
       }
     })
     .join('\n');

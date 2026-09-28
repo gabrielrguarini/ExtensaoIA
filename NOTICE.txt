@@ -1,0 +1,8 @@
+Built with Llama.
+
+Llama 3.2 is licensed under the Llama 3.2 Community License, Copyright © Meta Platforms, Inc. All Rights Reserved.
+
+The Llama 3.2 model weights are downloaded directly from the pinned MLC model repository on Hugging Face and stored in the browser's model cache. They are not bundled with this extension.
+
+The full Llama 3.2 Community License Agreement is included in licenses/LLAMA-3.2-LICENSE.
+WebLLM 0.2.85 is distributed under Apache License 2.0; its license is included in licenses/WEBLLM-LICENSE.

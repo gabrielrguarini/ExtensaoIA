@@ -9,6 +9,7 @@
 button,
 p,
 h2,
+h3,
 pre {
   font:
     14px/1.5 system-ui,
@@ -22,6 +23,13 @@ button {
   color: #075e54;
   cursor: pointer;
   pointer-events: auto;
+}
+a {
+  color: #075e54;
+}
+a:focus-visible {
+  outline: 3px solid #007fff;
+  outline-offset: 2px;
 }
 button:hover:not(:disabled) {
   background: #e8f6f1;
@@ -68,6 +76,15 @@ h2 {
   margin: 0;
   font-size: 18px;
   font-weight: 650;
+}
+h3 {
+  margin: 0;
+  font-size: 14px;
+}
+.model-proof {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #8696a0;
 }
 p {
   margin: 12px 0;
@@ -135,5 +152,8 @@ pre {
   pre {
     background: #142127;
     border-color: #53656d;
+  }
+  a {
+    color: #8df0cb;
   }
 }

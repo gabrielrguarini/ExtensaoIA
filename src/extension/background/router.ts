@@ -77,12 +77,15 @@ export class RequestRouter {
       binding,
       client,
       cancelling: false,
-      timer: setTimeout(() => {
-        if (this.active !== active) return;
-        const engine = active.engine;
-        this.finish({ type: 'error', binding, code: 'TIMEOUT' });
-        engine?.reset();
-      }, this.timeoutMs),
+      timer: setTimeout(
+        () => {
+          if (this.active !== active) return;
+          const engine = active.engine;
+          this.finish({ type: 'error', binding, code: 'TIMEOUT' });
+          engine?.reset();
+        },
+        value.action === 'prova-modelo' ? 60 * 60_000 : this.timeoutMs,
+      ),
     };
     this.active = active;
     client.send({ type: 'progress', binding, percent: 0 });
@@ -107,7 +110,12 @@ export class RequestRouter {
     if (!isRequestEvent(value) || !active || !sameBinding(value.binding, active.binding)) return;
     // Após cancelar, nem mesmo um resultado que estava em trânsito pode ser aplicado.
     if (active.cancelling && value.type !== 'cancelled' && value.type !== 'error') return;
-    if (value.type === 'result' || value.type === 'cancelled' || value.type === 'error')
+    if (
+      value.type === 'result' ||
+      value.type === 'proof-result' ||
+      value.type === 'cancelled' ||
+      value.type === 'error'
+    )
       this.finish(value);
     else active.client.send(value);
   }

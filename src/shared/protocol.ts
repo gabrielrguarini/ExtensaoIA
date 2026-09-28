@@ -22,20 +22,41 @@ export interface Binding {
 }
 export interface BoundRequest extends Binding {
   text: string;
-  action: 'corrigir';
+  action: 'corrigir' | 'prova-modelo';
 }
 
 export type ClientCommand =
-  | { type: 'start'; key: RequestKey; text: string; action: 'corrigir' }
+  | { type: 'start'; key: RequestKey; text: string; action: 'corrigir' | 'prova-modelo' }
   | { type: 'cancel'; key: RequestKey }
   | { type: 'status' };
 
 export type ErrorCode =
-  'INVALID_MESSAGE' | 'BUSY' | 'UNKNOWN_REQUEST' | 'UNAVAILABLE' | 'DISCONNECTED' | 'TIMEOUT';
+  | 'INVALID_MESSAGE'
+  | 'BUSY'
+  | 'UNKNOWN_REQUEST'
+  | 'UNAVAILABLE'
+  | 'DISCONNECTED'
+  | 'TIMEOUT'
+  | 'WEBGPU_UNAVAILABLE'
+  | 'INSUFFICIENT_RESOURCES'
+  | 'MODEL_DOWNLOAD';
 export type RequestEvent =
   | { type: 'progress'; binding: Binding; percent: number }
+  | {
+      type: 'model-progress';
+      binding: Binding;
+      phase: 'preparing' | 'downloading' | 'loading' | 'ready' | 'generating';
+      percent: number;
+      variant: 'q4f16_1' | 'q4f32_1' | null;
+    }
   | { type: 'fragment'; binding: Binding; text: string }
   | { type: 'result'; binding: Binding; text: string; simulated: true }
+  | {
+      type: 'proof-result';
+      binding: Binding;
+      text: string;
+      variant: 'q4f16_1' | 'q4f32_1';
+    }
   | { type: 'cancelled'; binding: Binding }
   | { type: 'error'; binding: Binding; code: ErrorCode };
 export type ClientEvent =
@@ -115,7 +136,8 @@ export function isClientCommand(value: unknown): value is ClientCommand {
         isKey(value.key) &&
         textValue(value.text) &&
         value.text.trim().length > 0 &&
-        value.action === 'corrigir'
+        (value.action === 'corrigir' ||
+          (value.action === 'prova-modelo' && value.text === MODEL_PROOF_TEXT))
       );
     case 'cancel':
       return fields(value, ['type', 'key']) && isKey(value.key);
@@ -135,6 +157,9 @@ function isErrorCode(value: unknown): value is ErrorCode {
       'UNAVAILABLE',
       'DISCONNECTED',
       'TIMEOUT',
+      'WEBGPU_UNAVAILABLE',
+      'INSUFFICIENT_RESOURCES',
+      'MODEL_DOWNLOAD',
     ].includes(value)
   );
 }
@@ -149,6 +174,18 @@ export function isRequestEvent(value: unknown): value is RequestEvent {
         value.percent >= 0 &&
         value.percent <= 100
       );
+    case 'model-progress':
+      return (
+        fields(value, ['type', 'binding', 'phase', 'percent', 'variant']) &&
+        ['preparing', 'downloading', 'loading', 'ready', 'generating'].includes(
+          String(value.phase),
+        ) &&
+        typeof value.percent === 'number' &&
+        Number.isFinite(value.percent) &&
+        value.percent >= 0 &&
+        value.percent <= 100 &&
+        (value.variant === null || value.variant === 'q4f16_1' || value.variant === 'q4f32_1')
+      );
     case 'fragment':
       return fields(value, ['type', 'binding', 'text']) && textValue(value.text);
     case 'result':
@@ -156,6 +193,12 @@ export function isRequestEvent(value: unknown): value is RequestEvent {
         fields(value, ['type', 'binding', 'text', 'simulated']) &&
         textValue(value.text) &&
         value.simulated === true
+      );
+    case 'proof-result':
+      return (
+        fields(value, ['type', 'binding', 'text', 'variant']) &&
+        textValue(value.text) &&
+        (value.variant === 'q4f16_1' || value.variant === 'q4f32_1')
       );
     case 'cancelled':
       return fields(value, ['type', 'binding']);
@@ -199,6 +242,8 @@ export function isEngineCommand(value: unknown): value is EngineCommand {
     fields(request, ['key', 'origin', 'text', 'action']) &&
     isBinding({ key: request.key, origin: request.origin }) &&
     textValue(request.text) &&
-    request.action === 'corrigir'
+    (request.action === 'corrigir' ||
+      (request.action === 'prova-modelo' && request.text === MODEL_PROOF_TEXT))
   );
 }
+import { MODEL_PROOF_TEXT } from './model-proof';

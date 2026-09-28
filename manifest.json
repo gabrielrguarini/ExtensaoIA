@@ -1,11 +1,15 @@
 {
   "manifest_version": 3,
   "name": "IA local — WhatsApp Web (desenvolvimento)",
-  "version": "0.4.0",
-  "description": "STEP-05: prévia simulada, cópia e substituição manual do rascunho. Sem inferência ou envio de mensagens.",
+  "version": "0.5.0",
+  "description": "STEP-06: prova de inferência local por WebGPU e prévia simulada de escrita. Sem envio de mensagens.",
   "minimum_chrome_version": "116",
   "permissions": ["storage", "offscreen"],
-  "host_permissions": ["https://web.whatsapp.com/*"],
+  "host_permissions": [
+    "https://web.whatsapp.com/*",
+    "https://huggingface.co/*",
+    "https://us.aws.cdn.hf.co/*"
+  ],
   "background": { "service_worker": "service-worker.js", "type": "module" },
   "action": { "default_title": "Diagnóstico da comunicação simulada" },
   "content_scripts": [
@@ -18,6 +22,6 @@
     }
   ],
   "content_security_policy": {
-    "extension_pages": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; object-src 'none'; connect-src 'none'; base-uri 'none'; frame-ancestors 'none'"
+    "extension_pages": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; object-src 'none'; connect-src 'self' https://huggingface.co https://us.aws.cdn.hf.co; base-uri 'none'; frame-ancestors 'none'"
   }
 }

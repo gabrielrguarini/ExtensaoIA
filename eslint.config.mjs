@@ -41,4 +41,16 @@ export default defineConfig(
     files: ['**/*.mjs'],
     extends: [js.configs.recommended],
   },
+  {
+    files: ['tests/browser/*.mjs'],
+    languageOptions: {
+      globals: {
+        URL: 'readonly',
+        process: 'readonly',
+        navigator: 'readonly',
+        caches: 'readonly',
+        chrome: 'readonly',
+      },
+    },
+  },
 );
