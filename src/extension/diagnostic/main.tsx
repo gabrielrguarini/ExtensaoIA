@@ -15,6 +15,11 @@ const labels = {
   WEBGPU_UNAVAILABLE: 'WebGPU indisponível',
   INSUFFICIENT_RESOURCES: 'Recursos da GPU insuficientes',
   MODEL_DOWNLOAD: 'Falha no download do modelo',
+  CONTEXT_LIMIT: 'Mensagem muito longa para o contexto',
+  EMPTY_OUTPUT: 'Resposta vazia',
+  TRUNCATED_OUTPUT: 'Resposta truncada',
+  INVALID_OUTPUT: 'Formato inadequado',
+  PRESERVATION_RISK: 'Dados ou negações alterados',
 } as const;
 
 function describe(value: unknown): string {
@@ -44,6 +49,10 @@ function describe(value: unknown): string {
           return `Circuito completo — SIMULAÇÃO. Aba ${event.binding.origin.tabId}; documento ${event.binding.origin.documentId}; pedido ${event.binding.key.requestId}.\nEco sintético: ${event.text}`;
         case 'proof-result':
           return `Inferência local concluída na variante ${event.variant}.`;
+        case 'correction-result':
+          return 'Correção local concluída.';
+        case 'correction-rejected':
+          return labels[event.code];
       }
     })
     .join('\n');

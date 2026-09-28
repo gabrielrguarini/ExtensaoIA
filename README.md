@@ -1,6 +1,6 @@
 # Extensão de IA local para WhatsApp Web
 
-Base incremental com React, TypeScript strict e pacote Manifest V3. Na **STEP-06**, o botão **IA** também oferece uma prova de inferência com Llama 3.2 3B no Worker local via WebGPU. A prova usa uma frase sintética fixa e não lê o rascunho. A prévia de escrita da STEP-05 continua **simulada** e oferece Substituir, Copiar e Cancelar; a ação Corrigir será implementada na STEP-07. Nenhuma mensagem é enviada pela extensão. O diagnóstico da STEP-03 continua disponível.
+Base incremental com React, TypeScript strict e pacote Manifest V3. Na **STEP-07**, o botão **IA → Corrigir com IA local** usa Llama 3.2 3B no Worker via WebGPU e apresenta a sugestão para revisão, cópia ou substituição manual. A prova sintética da STEP-06 e a prévia simulada da STEP-05 continuam disponíveis e identificadas. Nenhuma mensagem é enviada pela extensão. O diagnóstico da STEP-03 continua disponível.
 
 O estado e as evidências ficam em [docs/PROGRESSO.md](docs/PROGRESSO.md). Consulte o [plano](docs/PLANO.md) e execute somente a etapa solicitada. A conclusão depende das verificações automatizadas e da validação correspondente no Chrome.
 
@@ -26,25 +26,30 @@ Siga o [roteiro completo da STEP-03](docs/VALIDACAO-STEP-03.md), que cobre circu
 
 Para testar a escrita, consulte [validação e limites da STEP-05](docs/VALIDACAO-STEP-05.md). Escreva um rascunho sintético, clique em **IA → Criar prévia simulada** e revise o resultado. Abrir o menu não lê o texto; solicitar a prévia o captura em memória e o encaminha ao Worker local. **Substituir** confirma a edição nativa, que pode ser desfeita com Ctrl+Z. **Copiar** grava a sugestão na área de transferência somente pelo clique. **Cancelar**, Escape e clique fora descartam a prévia; edição ou troca de contexto invalidam sugestões anteriores.
 
+Para uma correção real, escreva um rascunho e clique em **IA → Corrigir com IA local**. O primeiro uso pode baixar cerca de 1,82 GB de dados do modelo; confira a licença e as estimativas de memória mostradas antes do clique. O rascunho é enviado somente ao Worker local e tratado como dado a corrigir, sem ler a conversa. Revise a prévia antes de **Substituir** ou **Copiar**. A extensão recusa respostas vazias, truncadas, formatadas de modo inadequado ou com indícios de alteração de números, valores, datas, URLs e negações; nesses casos o rascunho fica intacto. A proteção determinística abrangente de entidades e significado pertence à STEP-08. Consulte [a validação da STEP-07](docs/VALIDACAO-STEP-07.md).
+
 Para conferir a STEP-06, clique em **IA → Baixar modelo e testar IA local**. A interface mostra antes do clique o tamanho publicado dos dados (aproximadamente 1,82 GB) e a estimativa de memória de GPU das variantes. O teste usa somente a frase sintética fixa; o resultado aparece separado da prévia e não oferece Substituir ou Copiar. O download aceita apenas `huggingface.co` e o redirecionamento observado `us.aws.cdn.hf.co`, sem JavaScript remoto. A biblioteca WASM já está no pacote. Se o redirecionamento mudar para outra origem, o download falhará de forma segura até que a configuração seja revista. Consulte [o relatório da prova real](docs/VALIDACAO-STEP-06.md).
 
 Textos com várias linhas, menções estruturadas, formatação especial e editores sem suporte oferecem **somente cópia**. O teste real encontrou perda de quebras de linha na inserção nativa do WhatsApp; o rascunho multilinha permanece intacto e a cópia preserva suas linhas. Confira menções e formatação ao colar. Nenhuma API interna do site é utilizada para contornar esse limite.
 
 ## Comandos
 
-| Comando                               | Finalidade                                                                 |
-| ------------------------------------- | -------------------------------------------------------------------------- |
-| npm run dev                           | Servir as páginas auxiliares em http://127.0.0.1:5173.                     |
-| npm run typecheck                     | Conferir tipos do navegador e das ferramentas sem emitir arquivos.         |
-| npm run lint                          | Conferir código com informação de tipos, sem aceitar avisos.               |
-| npm run format:check                  | Conferir formatação.                                                       |
-| npm run format                        | Aplicar formatação.                                                        |
-| npm test                              | Executar testes, incluindo um build completo temporário.                   |
-| npm run test:step06:browser -- online | Executar a prova WebGPU em Chrome for Testing; requer `STEP06_CHROME`.     |
-| npm run test:watch                    | Reexecutar testes durante a edição.                                        |
-| npm run build                         | Conferir tipos e gerar a extensão completa em dist.                        |
-| npm run preview                       | Servir as páginas construídas em http://127.0.0.1:4173.                    |
-| npm run check                         | Executar tipos, lint, formatação, testes e build; parar na primeira falha. |
+| Comando                                    | Finalidade                                                                       |
+| ------------------------------------------ | -------------------------------------------------------------------------------- |
+| npm run dev                                | Servir as páginas auxiliares em http://127.0.0.1:5173.                           |
+| npm run typecheck                          | Conferir tipos do navegador e das ferramentas sem emitir arquivos.               |
+| npm run lint                               | Conferir código com informação de tipos, sem aceitar avisos.                     |
+| npm run format:check                       | Conferir formatação.                                                             |
+| npm run format                             | Aplicar formatação.                                                              |
+| npm test                                   | Executar testes, incluindo um build completo temporário.                         |
+| npm run test:step06:browser -- online      | Executar a prova WebGPU em Chrome for Testing; requer `STEP06_CHROME`.           |
+| npm run test:step07:browser -- corrections | Exercitar correção real em Chrome com fixture sintética; requer `STEP07_CHROME`. |
+| npm run test:step07:browser -- context     | Conferir vazio e orçamento de contexto no Chrome; requer `STEP07_CHROME`.        |
+| npm run test:step07:browser -- regression  | Conferir a prévia simulada no Chrome; requer `STEP07_CHROME`.                    |
+| npm run test:watch                         | Reexecutar testes durante a edição.                                              |
+| npm run build                              | Conferir tipos e gerar a extensão completa em dist.                              |
+| npm run preview                            | Servir as páginas construídas em http://127.0.0.1:4173.                          |
+| npm run check                              | Executar tipos, lint, formatação, testes e build; parar na primeira falha.       |
 
 Os servidores escutam apenas no computador local e falham se a porta estiver ocupada. Encerre com Ctrl+C. O preview valida React e estilos; **localhost não executa APIs de extensão**. O diagnóstico nesse endereço informa que precisa ser aberto pela extensão instalada.
 
@@ -55,7 +60,7 @@ Os servidores escutam apenas no computador local e falham se a porta estiver ocu
 | manifest.json            | MV3, permissões, CSP e entradas do pacote.                                                              |
 | src/extension/background | Coordenador, remetentes, roteador e criação idempotente do offscreen.                                   |
 | src/extension/offscreen  | Hospedagem de um Worker; comunicação de extensão somente por chrome.runtime.                            |
-| src/extension/ai         | Worker, interface AIEngine, adaptador WebLLM, catálogo fixo e motor de eco simulado.                    |
+| src/extension/ai         | Worker, WebLLM, prompt de correção, orçamento com tokenizer, validação inicial de saída e simulador.    |
 | src/extension/content    | Botão, menu/prévia React com Shadow DOM, sessão em memória e clientes de comunicação.                   |
 | src/integration/whatsapp | Seletores, detecção, leitura de blocos, revisão e substituição nativa do editor.                        |
 | src/extension/diagnostic | Página auxiliar aberta pelo ícone da extensão. Não é o popup de configurações nem o preview do produto. |
@@ -63,7 +68,7 @@ Os servidores escutam apenas no computador local e falham se a porta estiver ocu
 | src/development          | Página React auxiliar da STEP-02, preservada.                                                           |
 | tests                    | Contratos, remetentes, roteamento, cancelamento, recuperação, simulador, pacote e fixtures do editor.   |
 
-WebLLM 0.2.85 entra na STEP-06 apenas para a prova sintética. A ação Corrigir, proteção de entidades, revisão semântica, perfis adicionais, preferências, popup e painel continuam nas etapas previstas. Não há implementações vazias desses módulos.
+WebLLM 0.2.85 executa a prova sintética e a ação Corrigir. Proteção determinística completa de entidades, revisão semântica, outros tons, perfis adicionais, preferências, popup e painel continuam nas etapas previstas.
 
 ## Detecção e revisão do editor
 
@@ -79,11 +84,11 @@ Copiar e Substituir conferem novamente o texto, documento, editor e revisão cap
 
 O diagnóstico solicita ao coordenador um teste em uma aba permitida. O coordenador encaminha a fixture ao content script; este inicia um pedido por uma conexão própria. A resposta faz o caminho Worker → offscreen → coordenador → content script. Só então o content script devolve o relatório ao diagnóstico. A página não pode substituir o texto sintético por dados arbitrários.
 
-Uniões discriminadas e validação em tempo de execução cobrem start, cancel, status, progress, fragment, result, cancelled, error e rejected. A ação corrigir é apenas um identificador reservado: o motor devolve o texto sem corrigi-lo. Payloads têm campos fechados, IDs limitados e texto de até 8.000 unidades UTF-16; o limite por tokenizer pertence à STEP-07.
+Uniões discriminadas e validação em tempo de execução cobrem start, cancel, status, progress, fragment, result, cancelled, error e rejected. `simular`, `corrigir` e `prova-modelo` seguem caminhos distintos; só `corrigir` usa o rascunho com o modelo real. Payloads têm campos fechados, IDs limitados e texto de até 8.000 unidades UTF-16. O tokenizer compatível com o modelo inclui template, instruções e reserva de saída no limite de 4.096 tokens; excedê-lo gera aviso sem truncar o rascunho.
 
 Cada pedido carrega requestId, editorId, snapshotId e revisão. O coordenador acrescenta aba, frame, documento e conexão com base no remetente do Chrome. O diagnóstico usa identidades fictícias; a prévia usa o snapshot real solicitado explicitamente. Respostas só são aceitas quando todos os campos do vínculo conferem. O cliente da prévia também fixa o vínculo recebido e descarta eventos divergentes ou posteriores ao cancelamento.
 
-Há um pedido ativo por vez, inclusive durante a preparação do motor. Pedidos concorrentes recebem **IA ocupada**, sem fila. Cancelar descarta resultados em trânsito; a desconexão do solicitante encerra o Worker. A espera de prontidão é limitada a cinco segundos; a simulação dura no máximo quinze segundos e a prova do modelo pode levar até uma hora para download/inferência, sem replay. A GPU é liberada após cinco minutos sem uso; o cache dos artefatos permanece.
+Há um pedido ativo por vez, inclusive durante a preparação do motor. Pedidos concorrentes recebem **IA ocupada**, sem fila. Cancelar descarta resultados em trânsito; a desconexão do solicitante encerra o Worker. A espera de prontidão é limitada a cinco segundos; a simulação dura no máximo quinze segundos e as ações reais podem levar até uma hora para download/inferência, sem replay. A GPU é liberada após cinco minutos sem uso; o cache dos artefatos permanece.
 
 A criação do offscreen é compartilhada entre chamadas concorrentes. runtime.getContexts verifica o documento existente e WORKERS justifica sua criação. O coordenador espera confirmação do Worker antes de encaminhar texto. Não há reconexão periódica nem keepalive artificial: uma nova ação explícita cria uma sessão limpa e pode reutilizar o documento offscreen sobrevivente. Pedidos interrompidos não são retomados.
 
@@ -105,7 +110,7 @@ Variáveis de ambiente não são incorporadas automaticamente; o bundle do conte
 
 Os testes conferem remetentes, campos extras, limites, vínculos divergentes, concorrência, cancelamento, descarte de eventos atrasados, desconexão, timeout, criação única e reconexão. O simulador integrado ao roteador testa eco Unicode/multilinha. O teste de build gera um pacote temporário e verifica Manifest/CSP, contextos locais, sintaxe clássica do content script, ausência de scripts inline, código de desenvolvimento e valores sintéticos de ambiente. A limpeza confirma caminho e prefixo antes de remover o diretório temporário.
 
-Esses testes não certificam a execução das APIs do Chrome. Consulte o progresso e os relatórios para distinguir testes automatizados de evidência real. A STEP-06 acrescenta prova de WebGPU no Chrome, com fixture sintética, teste offline após reinício, falha de download e inspeção de cache/storage. Auditoria final de privacidade permanece na STEP-16.
+Esses testes não certificam a execução das APIs do Chrome. Consulte o progresso e os relatórios para distinguir testes automatizados de evidência real. A STEP-06 acrescenta prova de WebGPU no Chrome, com fixture sintética, teste offline após reinício, falha de download e inspeção de cache/storage. A STEP-07 acrescenta correção real no Chrome, aplicação manual e recusas seguras. Auditoria final de privacidade permanece na STEP-16.
 
 A STEP-05 acrescenta testes de captura explícita, leitura de parágrafos/linhas vazias, estruturas somente para cópia, seleção, desfazer, cancelamento durante a substituição, falhas de cópia e descarte de resultados obsoletos. O relatório registra também execução do pacote instalado no Chrome e aplicação/desfazer no WhatsApp real.
 
@@ -125,6 +130,7 @@ A STEP-05 acrescenta testes de captura explícita, leitura de parágrafos/linhas
 | @types/chrome                   | 0.3.0            |
 | jsdom (somente testes)          | 29.1.1           |
 | WebLLM                          | 0.2.85           |
+| @mlc-ai/web-tokenizers          | 0.1.6            |
 | @webgpu/types (somente tipos)   | 0.1.69           |
 | playwright-core (prova Chrome)  | 1.55.0           |
 

@@ -68,7 +68,7 @@ export const generatePreview: PreviewGenerator = (snapshot, done) => {
     port.postMessage({
       type: 'start',
       key,
-      action: 'corrigir',
+      action: 'simular',
       text: SIMULATION_PREFIX + snapshot.text,
     });
   } catch {

@@ -5,10 +5,10 @@
 ## Estado atual
 
 - Última atualização: 28/09/2026.
-- Última etapa concluída: **STEP-06 — Executar o primeiro modelo local**.
-- Situação: inferência WebGPU real validada no Chrome com frase sintética, cache offline e falha de download; entrega registrada em commit próprio.
-- Próxima etapa executável: **STEP-07 — Implementar a ação Corrigir**, somente quando solicitada.
-- Implementação: Manifest V3, comunicação, adaptador do editor, botão IA, prévia e substituição manual simuladas, mais prova separada com Llama 3.2 3B no Worker via WebGPU. Textos multilinha e estruturas especiais oferecem somente cópia. A escrita assistida ainda é simulada até a STEP-07.
+- Última etapa concluída: **STEP-07 — Implementar a ação Corrigir**.
+- Situação: correção pt-BR com modelo WebGPU real validada no Chrome, preview e substituição manual confirmados, com recusas conservadoras para saídas arriscadas; entrega registrada em commit próprio.
+- Próxima etapa executável: **STEP-08 — Proteger entidades e validar o resultado**, somente quando solicitada.
+- Implementação: Manifest V3, comunicação, adaptador do editor, botão IA, prévia, substituição manual, prova sintética e correção com Llama 3.2 3B no Worker via WebGPU. A simulação continua identificada. Textos multilinha e estruturas especiais oferecem somente cópia. A preservação determinística completa de entidades ainda pertence à STEP-08.
 
 ## Significado dos status
 
@@ -22,24 +22,24 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 
 ## Etapas
 
-| Etapa                       | Descrição                                       | Status    | Evidência                                                                                                                                                   |
-| --------------------------- | ----------------------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [STEP-01](steps/STEP-01.md) | Organizar o plano e o acompanhamento            | Concluída | 18 documentos, 16 etapas, 129 links locais válidos e sequência conferida.                                                                                   |
-| [STEP-02](steps/STEP-02.md) | Criar a base do projeto                         | Concluída | npm ci reproduzível; tipos, lint, formatação, 3 testes de build e build aprovados.                                                                          |
-| [STEP-03](steps/STEP-03.md) | Implementar Manifest V3 e comunicação           | Concluída | 45 testes e build aprovados; extensão executada no Chrome for Testing 154, com duas abas, cancelamento e recuperação validados.                             |
-| [STEP-04](steps/STEP-04.md) | Detectar o editor do WhatsApp                   | Concluída | 69 testes e build aprovados; botão único, rascunho preservado, busca e fechamento/reabertura conferidos no WhatsApp real.                                   |
-| [STEP-05](steps/STEP-05.md) | Criar preview e substituição manual             | Concluída | 98 testes e build; Chrome/WhatsApp com aplicação e undo, cópia, cancelamento e bloqueio de sugestões obsoletas.                                             |
-| [STEP-06](steps/STEP-06.md) | Executar o primeiro modelo local                | Concluída | 102 testes e build; Llama 3.2 3B em WebGPU/Chrome, resposta sintética real, cache offline e falha de download validados. [Relatório](VALIDACAO-STEP-06.md). |
-| [STEP-07](steps/STEP-07.md) | Implementar a ação Corrigir                     | Pendente  | Não iniciada.                                                                                                                                               |
-| [STEP-08](steps/STEP-08.md) | Proteger entidades e validar o resultado        | Pendente  | Não iniciada.                                                                                                                                               |
-| [STEP-09](steps/STEP-09.md) | Adicionar os demais modos                       | Pendente  | Não iniciada.                                                                                                                                               |
-| [STEP-10](steps/STEP-10.md) | Exibir geração progressiva e cancelamento       | Pendente  | Não iniciada.                                                                                                                                               |
-| [STEP-11](steps/STEP-11.md) | Implementar verificação semântica opcional      | Pendente  | Não iniciada.                                                                                                                                               |
-| [STEP-12](steps/STEP-12.md) | Adicionar modelos e perfis de hardware          | Pendente  | Não iniciada.                                                                                                                                               |
-| [STEP-13](steps/STEP-13.md) | Consolidar cache, recuperação e desempenho      | Pendente  | Não iniciada.                                                                                                                                               |
-| [STEP-14](steps/STEP-14.md) | Finalizar configurações e interfaces auxiliares | Pendente  | Não iniciada.                                                                                                                                               |
-| [STEP-15](steps/STEP-15.md) | Criar e executar o benchmark pt-BR              | Pendente  | Não iniciada.                                                                                                                                               |
-| [STEP-16](steps/STEP-16.md) | Validar e preparar a entrega instalável         | Pendente  | Não iniciada.                                                                                                                                               |
+| Etapa                       | Descrição                                       | Status    | Evidência                                                                                                                                                                |
+| --------------------------- | ----------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [STEP-01](steps/STEP-01.md) | Organizar o plano e o acompanhamento            | Concluída | 18 documentos, 16 etapas, 129 links locais válidos e sequência conferida.                                                                                                |
+| [STEP-02](steps/STEP-02.md) | Criar a base do projeto                         | Concluída | npm ci reproduzível; tipos, lint, formatação, 3 testes de build e build aprovados.                                                                                       |
+| [STEP-03](steps/STEP-03.md) | Implementar Manifest V3 e comunicação           | Concluída | 45 testes e build aprovados; extensão executada no Chrome for Testing 154, com duas abas, cancelamento e recuperação validados.                                          |
+| [STEP-04](steps/STEP-04.md) | Detectar o editor do WhatsApp                   | Concluída | 69 testes e build aprovados; botão único, rascunho preservado, busca e fechamento/reabertura conferidos no WhatsApp real.                                                |
+| [STEP-05](steps/STEP-05.md) | Criar preview e substituição manual             | Concluída | 98 testes e build; Chrome/WhatsApp com aplicação e undo, cópia, cancelamento e bloqueio de sugestões obsoletas.                                                          |
+| [STEP-06](steps/STEP-06.md) | Executar o primeiro modelo local                | Concluída | 102 testes e build; Llama 3.2 3B em WebGPU/Chrome, resposta sintética real, cache offline e falha de download validados. [Relatório](VALIDACAO-STEP-06.md).              |
+| [STEP-07](steps/STEP-07.md) | Implementar a ação Corrigir                     | Concluída | 111 testes e build; correção real no Chrome, prévia e aplicação manual, contexto recusado e saídas arriscadas preservando o rascunho. [Relatório](VALIDACAO-STEP-07.md). |
+| [STEP-08](steps/STEP-08.md) | Proteger entidades e validar o resultado        | Pendente  | Não iniciada.                                                                                                                                                            |
+| [STEP-09](steps/STEP-09.md) | Adicionar os demais modos                       | Pendente  | Não iniciada.                                                                                                                                                            |
+| [STEP-10](steps/STEP-10.md) | Exibir geração progressiva e cancelamento       | Pendente  | Não iniciada.                                                                                                                                                            |
+| [STEP-11](steps/STEP-11.md) | Implementar verificação semântica opcional      | Pendente  | Não iniciada.                                                                                                                                                            |
+| [STEP-12](steps/STEP-12.md) | Adicionar modelos e perfis de hardware          | Pendente  | Não iniciada.                                                                                                                                                            |
+| [STEP-13](steps/STEP-13.md) | Consolidar cache, recuperação e desempenho      | Pendente  | Não iniciada.                                                                                                                                                            |
+| [STEP-14](steps/STEP-14.md) | Finalizar configurações e interfaces auxiliares | Pendente  | Não iniciada.                                                                                                                                                            |
+| [STEP-15](steps/STEP-15.md) | Criar e executar o benchmark pt-BR              | Pendente  | Não iniciada.                                                                                                                                                            |
+| [STEP-16](steps/STEP-16.md) | Validar e preparar a entrega instalável         | Pendente  | Não iniciada.                                                                                                                                                            |
 
 ## Registro de execução
 
@@ -148,9 +148,22 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 - Commit da etapa: `feat(step-06): executar primeira inferência local`. Hash no histórico Git e no relato final; identidade humana configurada.
 - Status final: **Concluída** no escopo da STEP-06. A próxima etapa é STEP-07, somente por nova solicitação.
 
+## STEP-07 — 28/09/2026
+
+- Escopo: ação Corrigir em pt-BR ligada ao rascunho, ao modelo WebGPU real e ao preview existente. Simulação e prova de modelo continuam separadas; nenhum outro tom foi introduzido.
+- Arquivos criados: prompt de correção, orçamento por tokenizer, validação inicial de saída, cliente de correção, testes de unidade/sessão, fixture de navegador e [relatório reproduzível](VALIDACAO-STEP-07.md). Arquivos alterados: Worker, WebLLMEngine, protocolo/roteador, menu e sessão de preview, testes anteriores, pacote/lockfile, Manifest, README, NOTICE, checklist e progresso.
+- Dependência exata nova: `@mlc-ai/web-tokenizers` 0.1.6, licença Apache 2.0. Projeto/Manifest: 0.6.0. O tokenizer e o template vêm dos artefatos da revisão de modelo já fixada; a conta inclui instruções e reserva de saída no contexto de 4.096 tokens, com recusa de excesso sem truncamento silencioso.
+- Segurança e privacidade: rascunho como mensagem de usuário, prompt de sistema separado, somente após clique; texto em memória, sem persistência, log de conteúdo real, envio automático ou mudança de permissões. Resposta vazia, truncada, formatada de modo inadequado ou com âncoras evidentes alteradas não entra no preview. A guarda é inicial e pode rejeitar sugestões válidas; não equivale à proteção abrangente da STEP-08.
+- Verificações automatizadas: `npm run check` aprovado com tipos, lint, formatação, 111 testes em 11 arquivos e build. Testes cobrem prompt, orçamento/template, saída vazia/truncada/formato, âncoras, roteamento e snapshot obsoleto.
+- Chrome real: pacote 0.6.0 instalado sem compactação em Chrome for Testing 154, GPU Intel `gen-12lp`, variante q4f16_1. Com compositor sintético, `vc consegue me mandar o relatório hj?` produziu `Você consegue me mandar o relatório hoje?` e foi aplicado somente por clique em Substituir; `Não quero cancelar a reunião.` manteve a negação; `mano vc pode ver isso?` preservou a linguagem informal. Os rascunhos de valor/data, URL e comando malicioso receberam recusa conservadora, sem alteração. Campo vazio e excesso de contexto foram recusados; zero erros de página nos roteiros. [Procedimento e resultados](VALIDACAO-STEP-07.md).
+- Regressões: prévia simulada apresentou `[Simulação] Rascunho sintético` e cancelou sem edição. A prova sintética da STEP-06 ainda gerou `TESTE.` com rede bloqueada, a partir do cache, sem tocar no rascunho.
+- Limite da evidência: a correção real usou fixture instalada no Chrome, sem conta WhatsApp. A substituição no WhatsApp real já havia sido validada na STEP-05. Truncamento da geração foi exercitado em teste automatizado, não forçado na GPU. A variante f32 continua sem segunda GPU física disponível; a guarda semântica completa não foi reivindicada.
+- Commit da etapa: `feat(step-07): integrar correção local ao preview`. Hash no histórico Git e no relato final; identidade humana configurada.
+- Status final: **Concluída** no escopo da STEP-07, sem validação obrigatória pendente. A próxima etapa é STEP-08, somente por nova solicitação.
+
 ## Como continuar
 
-As STEP-01 a STEP-06 estão concluídas. Consulte os relatórios da [comunicação](VALIDACAO-STEP-03.md), do [editor](VALIDACAO-STEP-04.md), da [prévia](VALIDACAO-STEP-05.md) e da [inferência local](VALIDACAO-STEP-06.md). Para continuar, solicitar **Execute somente a STEP-07 do plano.** A STEP-07 não foi iniciada.
+As STEP-01 a STEP-07 estão concluídas. Consulte os relatórios da [comunicação](VALIDACAO-STEP-03.md), do [editor](VALIDACAO-STEP-04.md), da [prévia](VALIDACAO-STEP-05.md), da [inferência local](VALIDACAO-STEP-06.md) e da [correção](VALIDACAO-STEP-07.md). Para continuar, solicitar **Execute somente a STEP-08 do plano.** A STEP-08 não foi iniciada.
 
 Em futuras execuções, ler o plano e a etapa indicada, validar os pré-requisitos e atualizar este documento ao terminar. Não mudar o estado de etapas futuras apenas porque suas descrições foram criadas.
 

@@ -15,7 +15,8 @@ const profile = path.resolve(
 const profileDir = mode === 'download-failure' ? `${profile}-download-blocked` : profile;
 const extension = path.join(root, 'dist');
 const manifest = JSON.parse(await readFile(path.join(extension, 'manifest.json'), 'utf8'));
-if (manifest.version !== '0.5.0') throw new Error('Execute npm run build antes da prova.');
+if (!['0.5.0', '0.6.0'].includes(manifest.version))
+  throw new Error('Execute npm run build antes da prova.');
 
 const browser = await chromium.launchPersistentContext(profileDir, {
   headless: false,

@@ -84,7 +84,7 @@ export class RequestRouter {
           this.finish({ type: 'error', binding, code: 'TIMEOUT' });
           engine?.reset();
         },
-        value.action === 'prova-modelo' ? 60 * 60_000 : this.timeoutMs,
+        value.action === 'simular' ? this.timeoutMs : 60 * 60_000,
       ),
     };
     this.active = active;
@@ -109,9 +109,17 @@ export class RequestRouter {
     const active = this.active;
     if (!isRequestEvent(value) || !active || !sameBinding(value.binding, active.binding)) return;
     // Após cancelar, nem mesmo um resultado que estava em trânsito pode ser aplicado.
-    if (active.cancelling && value.type !== 'cancelled' && value.type !== 'error') return;
+    if (
+      active.cancelling &&
+      value.type !== 'cancelled' &&
+      value.type !== 'error' &&
+      value.type !== 'correction-rejected'
+    )
+      return;
     if (
       value.type === 'result' ||
+      value.type === 'correction-result' ||
+      value.type === 'correction-rejected' ||
       value.type === 'proof-result' ||
       value.type === 'cancelled' ||
       value.type === 'error'

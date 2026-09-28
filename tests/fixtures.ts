@@ -8,5 +8,5 @@ export const start = {
   type: 'start',
   key: binding.key,
   text: 'Teste sintético 🙂\nSegunda linha.',
-  action: 'corrigir',
+  action: 'simular',
 } satisfies ClientCommand;

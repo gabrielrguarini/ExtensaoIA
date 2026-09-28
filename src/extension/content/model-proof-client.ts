@@ -5,7 +5,7 @@ import { MODEL_PROOF_TEXT } from '../../shared/model-proof';
 export type ProofOutcome =
   { ok: true; text: string; variant: 'q4f16_1' | 'q4f32_1' } | { ok: false; message: string };
 export type ProofProgress = {
-  phase: 'preparing' | 'downloading' | 'loading' | 'ready' | 'generating';
+  phase: 'preparing' | 'downloading' | 'loading' | 'ready' | 'generating' | 'validating';
   percent: number;
   variant: 'q4f16_1' | 'q4f32_1' | null;
 };

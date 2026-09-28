@@ -35,6 +35,22 @@ afterEach(() => {
 });
 
 describe('roteamento sem mistura de abas, documentos e revisões', () => {
+  it('encerra uma correção reprovada sem liberar resultado ou manter o motor ocupado', async () => {
+    const { router } = harness();
+    const a = client();
+    router.receive(a.peer, { ...start, action: 'corrigir' });
+    await Promise.resolve();
+    router.receiveEngine({ type: 'correction-rejected', binding, code: 'PRESERVATION_RISK' });
+    expect(a.events.at(-1)).toEqual({
+      type: 'correction-rejected',
+      binding,
+      code: 'PRESERVATION_RISK',
+    });
+    router.receiveEngine({ type: 'correction-result', binding, text: 'Atrasado' });
+    router.receive(a.peer, { type: 'status' });
+    expect(a.events.at(-1)).toEqual({ type: 'status', state: 'idle', simulated: true });
+  });
+
   it('reserva o pedido antes da preparação assíncrona e informa ocupado sem vazar conteúdo', async () => {
     const { router, sent, ensure } = harness();
     const a = client();
@@ -50,7 +66,7 @@ describe('roteamento sem mistura de abas, documentos e revisões', () => {
     await Promise.resolve();
     expect(ensure).toHaveBeenCalledTimes(1);
     expect(sent).toEqual([
-      { type: 'start', request: { ...binding, text: start.text, action: 'corrigir' } },
+      { type: 'start', request: { ...binding, text: start.text, action: 'simular' } },
     ]);
     expect(b.events).toEqual([
       { type: 'rejected', code: 'BUSY', key: start.key },
@@ -212,7 +228,7 @@ describe('motor simulado e coordenador integrados', () => {
     });
     simulator.receive({
       type: 'start',
-      request: { ...binding, text: 'Teste', action: 'corrigir' },
+      request: { ...binding, text: 'Teste', action: 'simular' },
     });
     simulator.receive({ type: 'cancel', binding });
     await vi.advanceTimersByTimeAsync(2_000);

@@ -1,12 +1,21 @@
 import type { MLCEngineInterface, ModelRecord } from '@mlc-ai/web-llm';
+import type { Tokenizer } from '@mlc-ai/web-tokenizers';
 import type { AIEngine, GenerateOptions, InitializeOptions } from './ai-engine';
 import { MODEL_CHOICES } from './model-catalog';
 import type { ModelChoice } from './model-catalog';
+import { correctionMessages, CORRECTION_SYSTEM_PROMPT } from './correction-prompt';
+import { correctionTokenBudget, parseLlamaTemplate } from './token-budget';
+import type { LlamaTemplate } from './token-budget';
+import { requireCompleteGeneration } from './correction-output';
 
 export class ModelEnvironmentError extends Error {
   constructor(
     readonly code:
-      'WEBGPU_UNAVAILABLE' | 'INSUFFICIENT_RESOURCES' | 'MODEL_DOWNLOAD' | 'UNAVAILABLE',
+      | 'WEBGPU_UNAVAILABLE'
+      | 'INSUFFICIENT_RESOURCES'
+      | 'MODEL_DOWNLOAD'
+      | 'CONTEXT_LIMIT'
+      | 'UNAVAILABLE',
   ) {
     super(code);
   }
@@ -46,6 +55,8 @@ export class WebLLMEngine implements AIEngine {
   private runtime: MLCEngineInterface | undefined;
   private choice: ModelChoice | undefined;
   private loading: Promise<void> | undefined;
+  private tokenizer: Tokenizer | undefined;
+  private template: LlamaTemplate | undefined;
 
   isReady(): boolean {
     return !!this.runtime;
@@ -116,17 +127,34 @@ export class WebLLMEngine implements AIEngine {
     options.signal?.addEventListener('abort', abort, { once: true });
     try {
       await runtime.resetChat();
+      const correction = options.task === 'correction';
+      let maxTokens = 24;
+      if (correction) {
+        const { tokenizer, template } = await this.correctionTokens();
+        const budget = correctionTokenBudget(
+          (value) => tokenizer.encode(value),
+          template,
+          CORRECTION_SYSTEM_PROMPT,
+          text,
+        );
+        if (!budget) throw new ModelEnvironmentError('CONTEXT_LIMIT');
+        maxTokens = budget.outputTokens;
+      }
+      if (options.signal?.aborted) throw options.signal.reason;
       const stream = await runtime.chat.completions.create({
-        messages: [{ role: 'user', content: text }],
+        messages: correction ? correctionMessages(text) : [{ role: 'user', content: text }],
         stream: true,
-        max_tokens: 24,
+        max_tokens: maxTokens,
         temperature: 0,
       });
+      let finishReason: string | null = null;
       for await (const chunk of stream) {
         if (options.signal?.aborted) throw options.signal.reason;
         const fragment = chunk.choices[0]?.delta.content;
         if (fragment) yield fragment;
+        if (chunk.choices[0]?.finish_reason) finishReason = chunk.choices[0].finish_reason;
       }
+      if (correction) requireCompleteGeneration(finishReason);
     } finally {
       options.signal?.removeEventListener('abort', abort);
       await runtime.resetChat().catch(() => undefined);
@@ -137,7 +165,30 @@ export class WebLLMEngine implements AIEngine {
     const runtime = this.runtime;
     this.runtime = undefined;
     this.choice = undefined;
+    this.tokenizer?.dispose();
+    this.tokenizer = undefined;
+    this.template = undefined;
     if (runtime) await runtime.unload();
+  }
+
+  private async correctionTokens(): Promise<{ tokenizer: Tokenizer; template: LlamaTemplate }> {
+    if (this.tokenizer && this.template)
+      return { tokenizer: this.tokenizer, template: this.template };
+    const choice = this.choice;
+    if (!choice) throw new ModelEnvironmentError('UNAVAILABLE');
+    const modelCache = await caches.open('webllm/model');
+    const configCache = await caches.open('webllm/config');
+    const [tokenizerResponse, configResponse] = await Promise.all([
+      modelCache.match(new URL('tokenizer.json', choice.url).href),
+      configCache.match(new URL('mlc-chat-config.json', choice.url).href),
+    ]);
+    if (!tokenizerResponse || !configResponse) throw new ModelEnvironmentError('UNAVAILABLE');
+    const template = parseLlamaTemplate(await configResponse.json());
+    const { Tokenizer } = await import('@mlc-ai/web-tokenizers');
+    const tokenizer = await Tokenizer.fromJSON(await tokenizerResponse.arrayBuffer());
+    this.tokenizer = tokenizer;
+    this.template = template;
+    return { tokenizer, template };
   }
 
   selectedVariant(): ModelChoice['variant'] | undefined {

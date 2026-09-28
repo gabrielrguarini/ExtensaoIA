@@ -18,6 +18,7 @@ describe('contratos nas fronteiras dos contextos', () => {
       { type: 'progress', binding, percent: 50 },
       { type: 'fragment', binding, text: 'Teste' },
       { type: 'result', binding, text: 'Teste', simulated: true },
+      { type: 'correction-rejected', binding, code: 'PRESERVATION_RISK' },
       { type: 'cancelled', binding },
       { type: 'error', binding, code: 'TIMEOUT' },
     ]) {

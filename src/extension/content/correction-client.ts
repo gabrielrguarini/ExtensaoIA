@@ -1,0 +1,99 @@
+import { CLIENT_PORT, isClientEvent, sameBinding, sameKey } from '../../shared/protocol';
+import type { Binding, RequestKey } from '../../shared/protocol';
+import type { DraftSnapshot } from '../../integration/whatsapp/adapter';
+import type { ProofProgress } from './model-proof-client';
+import type { PreviewOutcome } from './preview-client';
+
+export type CorrectionGenerator = (
+  snapshot: DraftSnapshot,
+  progress: (value: ProofProgress) => void,
+  done: (outcome: PreviewOutcome) => void,
+) => () => void;
+
+export const generateCorrection: CorrectionGenerator = (snapshot, progress, done) => {
+  const port = chrome.runtime.connect({ name: CLIENT_PORT });
+  const key: RequestKey = {
+    requestId: crypto.randomUUID(),
+    editorId: snapshot.editorId,
+    snapshotId: snapshot.snapshotId,
+    revision: snapshot.revision,
+  };
+  let binding: Binding | undefined;
+  let closed = false;
+  const timer = setTimeout(
+    () => finish({ ok: false, message: 'A IA local excedeu o tempo esperado. Tente novamente.' }),
+    65 * 60_000,
+  );
+  function close(): void {
+    if (closed) return;
+    closed = true;
+    clearTimeout(timer);
+    port.onMessage.removeListener(receive);
+    port.onDisconnect.removeListener(disconnect);
+    port.disconnect();
+  }
+  function finish(outcome: PreviewOutcome): void {
+    if (closed) return;
+    close();
+    done(outcome);
+  }
+  function receive(value: unknown): void {
+    if (closed || !isClientEvent(value)) return;
+    if ('binding' in value) {
+      if (!sameKey(value.binding.key, key) || (binding && !sameBinding(binding, value.binding)))
+        return;
+      binding = value.binding;
+    }
+    if (value.type === 'rejected' && value.key && !sameKey(value.key, key)) return;
+    if (value.type === 'model-progress') progress(value);
+    if (value.type === 'correction-result') finish({ ok: true, text: value.text });
+    if (
+      value.type === 'rejected' ||
+      value.type === 'error' ||
+      value.type === 'correction-rejected'
+    ) {
+      const message =
+        value.code === 'BUSY'
+          ? 'IA ocupada. Tente novamente quando o pedido atual terminar.'
+          : value.code === 'CONTEXT_LIMIT'
+            ? 'Mensagem muito longa para o modelo selecionado. Reduza o rascunho.'
+            : value.code === 'TRUNCATED_OUTPUT'
+              ? 'A resposta atingiu o limite de geração. Reduza o rascunho e tente novamente.'
+              : value.code === 'EMPTY_OUTPUT'
+                ? 'A IA local retornou uma resposta vazia. O rascunho permanece intacto.'
+                : value.code === 'INVALID_OUTPUT'
+                  ? 'A IA local retornou uma resposta inadequada. O rascunho permanece intacto.'
+                  : value.code === 'PRESERVATION_RISK'
+                    ? 'A sugestão pode ter omitido ou alterado conteúdo do rascunho. Nenhuma alteração foi aplicada.'
+                    : value.code === 'WEBGPU_UNAVAILABLE'
+                      ? 'A IA local precisa de WebGPU neste navegador/computador. Seu texto não foi enviado a servidores.'
+                      : value.code === 'INSUFFICIENT_RESOURCES'
+                        ? 'A GPU não oferece os recursos necessários. O rascunho permanece intacto.'
+                        : value.code === 'MODEL_DOWNLOAD'
+                          ? 'Não foi possível baixar o modelo. Verifique a conexão; o rascunho permanece intacto.'
+                          : 'Não foi possível processar o texto localmente. O rascunho permanece intacto.';
+      finish({ ok: false, message });
+    }
+    if (value.type === 'cancelled') finish({ ok: false, message: 'Correção cancelada.' });
+  }
+  function disconnect(): void {
+    void chrome.runtime.lastError;
+    finish({ ok: false, message: 'A conexão foi encerrada. Gere uma nova sugestão.' });
+  }
+  port.onMessage.addListener(receive);
+  port.onDisconnect.addListener(disconnect);
+  try {
+    port.postMessage({ type: 'start', key, action: 'corrigir', text: snapshot.text });
+  } catch {
+    disconnect();
+  }
+  return () => {
+    if (closed) return;
+    try {
+      port.postMessage({ type: 'cancel', key });
+    } catch {
+      // A desconexão também encerra o pedido ativo.
+    }
+    close();
+  };
+};

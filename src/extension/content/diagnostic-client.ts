@@ -62,7 +62,7 @@ function run(statusOnly: boolean, reply: (value: unknown) => void): void {
     port.postMessage(
       statusOnly
         ? { type: 'status' }
-        : { type: 'start', key, action: 'corrigir', text: FIXTURE_TEXT },
+        : { type: 'start', key, action: 'simular', text: FIXTURE_TEXT },
     );
   } catch {
     disconnected();

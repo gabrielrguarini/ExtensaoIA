@@ -15,6 +15,7 @@ export class SimulatedEngine {
       this.emit({ type: 'cancelled', binding });
       return;
     }
+    if (value.request.action !== 'simular') return;
     const { key, origin, text } = value.request;
     const binding: Binding = { key, origin };
     if (this.active) {

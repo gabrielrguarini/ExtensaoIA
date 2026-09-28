@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "IA local — WhatsApp Web (desenvolvimento)",
-  "version": "0.5.0",
-  "description": "STEP-06: prova de inferência local por WebGPU e prévia simulada de escrita. Sem envio de mensagens.",
+  "version": "0.6.0",
+  "description": "STEP-07: correção pt-BR local por WebGPU com prévia e substituição manual. Sem envio de mensagens.",
   "minimum_chrome_version": "116",
   "permissions": ["storage", "offscreen"],
   "host_permissions": [

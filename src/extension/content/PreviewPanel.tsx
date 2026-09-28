@@ -27,29 +27,22 @@ export function PreviewPanel({
         <h2 id="writing-preview-title">
           {state.kind === 'menu' ? 'Assistente de escrita' : 'Prévia da sugestão'}
         </h2>
-        <span className="simulation">Simulação · sem IA</span>
+        {(state.kind === 'loading' ||
+          (state.kind === 'preview' && state.source === 'simulation')) && (
+          <span className="simulation">Simulação · sem IA</span>
+        )}
+        {state.kind === 'preview' && state.source === 'correction' && (
+          <span>IA local · Corrigir</span>
+        )}
       </div>
       {state.kind === 'menu' && (
         <>
-          <p>
-            Experimente visualizar e aplicar uma sugestão. Este teste apenas acrescenta
-            “[Simulação]” ao seu texto; não faz correções.
-          </p>
-          <button
-            type="button"
-            className="primary"
-            onClick={(event) => {
-              if (event.isTrusted) session.start();
-            }}
-          >
-            Criar prévia simulada
-          </button>
           <div className="model-proof">
-            <h3>Teste do modelo local · Built with Llama</h3>
+            <h3>Corrigir com IA local · Built with Llama</h3>
             <p>
-              Baixe Llama 3.2 3B para executar uma frase sintética fixa. Dados publicados do modelo:
-              aproximadamente {(MODEL_DATA_BYTES / 1_000_000_000).toFixed(2)} GB. O navegador pode
-              aproveitar arquivos já guardados em cache. Este teste não lê nem altera seu rascunho.
+              A correção usa Llama 3.2 3B no seu computador. Se necessário, o navegador baixará
+              aproximadamente {(MODEL_DATA_BYTES / 1_000_000_000).toFixed(2)} GB de dados do modelo;
+              depois poderá aproveitar o cache. Seu rascunho não é enviado a servidores.
             </p>
             <p>
               Sem shader-f16, a variante q4f32_1 é usada e exige mais memória de GPU (estimativas do
@@ -68,6 +61,16 @@ export function PreviewPanel({
             </p>
             <button
               type="button"
+              className="primary"
+              onClick={(event) => {
+                if (event.isTrusted) session.startCorrection();
+              }}
+            >
+              Corrigir com IA local
+            </button>
+            <p>A prova abaixo usa só uma frase sintética fixa e não lê nem altera seu rascunho.</p>
+            <button
+              type="button"
               onClick={(event) => {
                 if (event.isTrusted) session.startModelProof();
               }}
@@ -75,10 +78,19 @@ export function PreviewPanel({
               Baixar modelo e testar IA local
             </button>
           </div>
+          <p>Prévia de teste: acrescenta “[Simulação]” ao seu texto, sem fazer correções.</p>
+          <button
+            type="button"
+            onClick={(event) => {
+              if (event.isTrusted) session.start();
+            }}
+          >
+            Criar prévia simulada
+          </button>
         </>
       )}
       {state.kind === 'loading' && <p role="status">Preparando prévia simulada…</p>}
-      {state.kind === 'model-loading' && (
+      {(state.kind === 'model-loading' || state.kind === 'correction-loading') && (
         <p role="status">
           {state.progress.phase === 'preparing'
             ? 'Preparando IA local...'
@@ -88,7 +100,11 @@ export function PreviewPanel({
                 ? `Carregando GPU... ${state.progress.percent}% da etapa atual`
                 : state.progress.phase === 'ready'
                   ? 'IA pronta.'
-                  : 'Gerando resposta sintética...'}
+                  : state.progress.phase === 'validating'
+                    ? 'Validando resposta...'
+                    : state.kind === 'correction-loading'
+                      ? 'Gerando correção...'
+                      : 'Gerando resposta sintética...'}
           {state.progress.variant === 'q4f32_1' && (
             <span> Variante sem shader-f16: maior consumo estimado de GPU.</span>
           )}
