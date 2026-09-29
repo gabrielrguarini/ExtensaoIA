@@ -3,14 +3,16 @@ import type { Binding, RequestKey } from '../../shared/protocol';
 import type { DraftSnapshot } from '../../integration/whatsapp/adapter';
 import type { ProofProgress } from './model-proof-client';
 import type { PreviewOutcome } from './preview-client';
+import type { WritingAction } from '../../shared/actions';
 
-export type CorrectionGenerator = (
+export type ActionGenerator = (
+  action: WritingAction,
   snapshot: DraftSnapshot,
   progress: (value: ProofProgress) => void,
   done: (outcome: PreviewOutcome) => void,
 ) => () => void;
 
-export const generateCorrection: CorrectionGenerator = (snapshot, progress, done) => {
+export const generateAction: ActionGenerator = (action, snapshot, progress, done) => {
   const port = chrome.runtime.connect({ name: CLIENT_PORT });
   const key: RequestKey = {
     requestId: crypto.randomUUID(),
@@ -46,11 +48,12 @@ export const generateCorrection: CorrectionGenerator = (snapshot, progress, done
     }
     if (value.type === 'rejected' && value.key && !sameKey(value.key, key)) return;
     if (value.type === 'model-progress') progress(value);
-    if (value.type === 'correction-result') finish({ ok: true, text: value.text });
+    if (value.type === 'action-result' && value.action === action)
+      finish({ ok: true, text: value.text });
     if (
       value.type === 'rejected' ||
       value.type === 'error' ||
-      value.type === 'correction-rejected'
+      (value.type === 'action-rejected' && value.action === action)
     ) {
       const message =
         value.code === 'BUSY'
@@ -74,7 +77,7 @@ export const generateCorrection: CorrectionGenerator = (snapshot, progress, done
                           : 'Não foi possível processar o texto localmente. O rascunho permanece intacto.';
       finish({ ok: false, message });
     }
-    if (value.type === 'cancelled') finish({ ok: false, message: 'Correção cancelada.' });
+    if (value.type === 'cancelled') finish({ ok: false, message: 'Ação cancelada.' });
   }
   function disconnect(): void {
     void chrome.runtime.lastError;
@@ -83,7 +86,7 @@ export const generateCorrection: CorrectionGenerator = (snapshot, progress, done
   port.onMessage.addListener(receive);
   port.onDisconnect.addListener(disconnect);
   try {
-    port.postMessage({ type: 'start', key, action: 'corrigir', text: snapshot.text });
+    port.postMessage({ type: 'start', key, action, text: snapshot.text });
   } catch {
     disconnect();
   }

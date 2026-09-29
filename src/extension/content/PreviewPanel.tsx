@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useSyncExternalStore } from 'react';
 import type { PreviewSession } from './preview-session';
 import { MODEL_DATA_BYTES } from '../../shared/model-proof';
+import { WRITING_ACTIONS, writingAction } from '../../shared/actions';
 
 export function PreviewPanel({
   session,
@@ -31,16 +32,34 @@ export function PreviewPanel({
           (state.kind === 'preview' && state.source === 'simulation')) && (
           <span className="simulation">Simulação · sem IA</span>
         )}
-        {state.kind === 'preview' && state.source === 'correction' && (
-          <span>IA local · Corrigir</span>
+        {state.kind === 'preview' && state.source === 'action' && state.action && (
+          <span>IA local · {writingAction(state.action).label}</span>
         )}
       </div>
       {state.kind === 'menu' && (
         <>
+          <p>
+            Escolha como revisar seu rascunho. A sugestão só será aplicada após sua confirmação.
+          </p>
+          <div className="action-grid" role="group" aria-label="Ações de escrita com IA local">
+            {WRITING_ACTIONS.map((action) => (
+              <button
+                key={action.id}
+                type="button"
+                aria-label={`${action.label} com IA local`}
+                onClick={(event) => {
+                  if (event.isTrusted) session.startAction(action.id);
+                }}
+              >
+                <strong>{action.label}</strong>
+                <small>{action.summary}</small>
+              </button>
+            ))}
+          </div>
           <div className="model-proof">
-            <h3>Corrigir com IA local · Built with Llama</h3>
+            <h3>IA local · Built with Llama</h3>
             <p>
-              A correção usa Llama 3.2 3B no seu computador. Se necessário, o navegador baixará
+              As ações usam Llama 3.2 3B no seu computador. Se necessário, o navegador baixará
               aproximadamente {(MODEL_DATA_BYTES / 1_000_000_000).toFixed(2)} GB de dados do modelo;
               depois poderá aproveitar o cache. Seu rascunho não é enviado a servidores.
             </p>
@@ -59,15 +78,6 @@ export function PreviewPanel({
               </a>
               .
             </p>
-            <button
-              type="button"
-              className="primary"
-              onClick={(event) => {
-                if (event.isTrusted) session.startCorrection();
-              }}
-            >
-              Corrigir com IA local
-            </button>
             <p>A prova abaixo usa só uma frase sintética fixa e não lê nem altera seu rascunho.</p>
             <button
               type="button"
@@ -90,7 +100,7 @@ export function PreviewPanel({
         </>
       )}
       {state.kind === 'loading' && <p role="status">Preparando prévia simulada…</p>}
-      {(state.kind === 'model-loading' || state.kind === 'correction-loading') && (
+      {(state.kind === 'model-loading' || state.kind === 'action-loading') && (
         <p role="status">
           {state.progress.phase === 'preparing'
             ? 'Preparando IA local...'
@@ -102,8 +112,8 @@ export function PreviewPanel({
                   ? 'IA pronta.'
                   : state.progress.phase === 'validating'
                     ? 'Validando resposta...'
-                    : state.kind === 'correction-loading'
-                      ? 'Gerando correção...'
+                    : state.kind === 'action-loading'
+                      ? `Gerando sugestão · ${writingAction(state.action).label}...`
                       : 'Gerando resposta sintética...'}
           {state.progress.variant === 'q4f32_1' && (
             <span> Variante sem shader-f16: maior consumo estimado de GPU.</span>

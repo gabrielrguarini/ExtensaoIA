@@ -130,6 +130,33 @@ describe('adaptador do compositor do WhatsApp', () => {
     expect(snapshot && adapter.isCurrent(snapshot)).toBe(false);
   });
 
+  it('ignora atualizações transitórias do status sem perder a detecção de troca de título', async () => {
+    adapter.start();
+    const snapshot = adapter.capture();
+    const status = document.querySelector('header span[title]');
+    if (!status) throw new Error('Status sintético ausente.');
+    status.firstChild!.nodeValue = 'Outro status sintético';
+    status.setAttribute('title', 'outro status');
+    await settle();
+    expect(snapshot && adapter.isCurrent(snapshot)).toBe(true);
+    document
+      .querySelector('[data-testid="conversation-info-header-chat-title"]')
+      ?.replaceChildren('Contexto sintético B');
+    expect(snapshot && adapter.isCurrent(snapshot)).toBe(false);
+  });
+
+  it('ignora controles transitórios do footer, mas invalida alteração do campo', () => {
+    adapter.start();
+    const snapshot = adapter.capture();
+    const footer = document.querySelector('#main footer');
+    if (!footer) throw new Error('Footer ausente.');
+    footer.append(document.createElement('button'));
+    footer.querySelector('button')?.setAttribute('style', 'opacity: .5');
+    expect(snapshot && adapter.isCurrent(snapshot)).toBe(true);
+    editor().textContent = 'Outro rascunho sintético';
+    expect(snapshot && adapter.isCurrent(snapshot)).toBe(false);
+  });
+
   it('acompanha remoção, recriação e nova conversa sem reaproveitar editorId', async () => {
     adapter.start();
     const previousId = target?.editorId;

@@ -3,7 +3,7 @@ import type { Tokenizer } from '@mlc-ai/web-tokenizers';
 import type { AIEngine, GenerateOptions, InitializeOptions } from './ai-engine';
 import { MODEL_CHOICES } from './model-catalog';
 import type { ModelChoice } from './model-catalog';
-import { correctionMessages, CORRECTION_SYSTEM_PROMPT } from './correction-prompt';
+import { actionMessages, systemPromptFor } from './correction-prompt';
 import { correctionTokenBudget, parseLlamaTemplate } from './token-budget';
 import type { LlamaTemplate } from './token-budget';
 import { requireCompleteGeneration } from './correction-output';
@@ -126,23 +126,23 @@ export class WebLLMEngine implements AIEngine {
     };
     options.signal?.addEventListener('abort', abort, { once: true });
     try {
-      const correction = options.task === 'correction';
+      const action = options.task && options.task !== 'proof' ? options.task : undefined;
       let maxTokens = 24;
-      if (correction) {
+      if (action) {
         const { tokenizer, template } = await this.correctionTokens();
         const budget = correctionTokenBudget(
           (value) => tokenizer.encode(value),
           template,
-          CORRECTION_SYSTEM_PROMPT,
+          systemPromptFor(action),
           text,
         );
         if (!budget) throw new ModelEnvironmentError('CONTEXT_LIMIT');
         maxTokens = budget.outputTokens;
       }
       if (options.signal?.aborted) throw options.signal.reason;
-      if (correction) {
+      if (action) {
         const result = await runtime.chat.completions.create({
-          messages: correctionMessages(text),
+          messages: actionMessages(action, text),
           stream: false,
           max_tokens: maxTokens,
           temperature: 0,

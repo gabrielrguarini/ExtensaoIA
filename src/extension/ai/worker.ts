@@ -5,6 +5,7 @@ import { WebLLMEngine, ModelEnvironmentError } from './webllm-engine';
 import { MODEL_PROOF_TEXT } from '../../shared/model-proof';
 import { acceptCorrection, CorrectionOutputError } from './correction-output';
 import { protectDraft, restoreAndValidate } from './entities';
+import { isWritingAction } from '../../shared/actions';
 
 const engine = new SimulatedEngine((event) => {
   globalThis.postMessage(event);
@@ -33,9 +34,9 @@ async function runModel(request: BoundRequest): Promise<void> {
   if (idle) clearTimeout(idle);
   const controller = new AbortController();
   active = { binding, controller };
+  const action = isWritingAction(request.action) ? request.action : undefined;
   try {
-    const correction = request.action === 'corrigir';
-    const protectedDraft = correction ? protectDraft(request.text) : undefined;
+    const protectedDraft = action ? protectDraft(request.text) : undefined;
     await model.initialize({
       signal: controller.signal,
       onProgress: (phase, percent) => {
@@ -60,11 +61,11 @@ async function runModel(request: BoundRequest): Promise<void> {
     let response = '';
     for await (const fragment of model.generate(protectedDraft?.text ?? MODEL_PROOF_TEXT, {
       signal: controller.signal,
-      task: correction ? 'correction' : 'proof',
+      task: action ?? 'proof',
     }))
       response += fragment;
     if (controller.signal.aborted) throw controller.signal.reason;
-    if (correction) {
+    if (action) {
       emit({
         type: 'model-progress',
         binding,
@@ -74,7 +75,7 @@ async function runModel(request: BoundRequest): Promise<void> {
       });
       const restored = restoreAndValidate(protectedDraft!, response);
       const text = acceptCorrection(restored, request.text);
-      emit({ type: 'correction-result', binding, text });
+      emit({ type: 'action-result', binding, action, text });
     } else {
       const variant = model.selectedVariant();
       if (!variant || !response.trim()) throw new CorrectionOutputError('EMPTY_OUTPUT');
@@ -88,8 +89,8 @@ async function runModel(request: BoundRequest): Promise<void> {
           ? error.code
           : 'UNAVAILABLE';
       emit(
-        request.action === 'corrigir'
-          ? { type: 'correction-rejected', binding, code }
+        action
+          ? { type: 'action-rejected', binding, action, code }
           : { type: 'error', binding, code },
       );
       if (code === 'UNAVAILABLE' || code === 'MODEL_DOWNLOAD' || code === 'INSUFFICIENT_RESOURCES')

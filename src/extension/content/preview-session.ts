@@ -4,18 +4,21 @@ import { generatePreview, SIMULATION_PREFIX } from './preview-client';
 import type { PreviewGenerator } from './preview-client';
 import { runModelProof } from './model-proof-client';
 import type { ProofGenerator, ProofProgress } from './model-proof-client';
-import { generateCorrection } from './correction-client';
-import type { CorrectionGenerator } from './correction-client';
+import { generateAction } from './action-client';
+import type { ActionGenerator } from './action-client';
+import { writingAction } from '../../shared/actions';
+import type { WritingAction } from '../../shared/actions';
 
 export type PreviewState =
   | { kind: 'closed' | 'menu' | 'loading' }
   | { kind: 'notice'; message: string }
-  | { kind: 'correction-loading'; progress: ProofProgress }
+  | { kind: 'action-loading'; action: WritingAction; progress: ProofProgress }
   | { kind: 'model-loading'; progress: ProofProgress }
   | { kind: 'model-result'; text: string; variant: 'q4f16_1' | 'q4f32_1' }
   | {
       kind: 'preview';
-      source: 'simulation' | 'correction';
+      source: 'simulation' | 'action';
+      action: WritingAction | null;
       text: string;
       canReplace: boolean;
       busy: 'copy' | 'replace' | null;
@@ -35,7 +38,7 @@ export class PreviewSession {
     private readonly writeClipboard: (text: string) => Promise<void> = (text) =>
       navigator.clipboard.writeText(text),
     private readonly prove: ProofGenerator = runModelProof,
-    private readonly correct: CorrectionGenerator = generateCorrection,
+    private readonly write: ActionGenerator = generateAction,
   ) {}
 
   getState = (): PreviewState => this.state;
@@ -105,6 +108,7 @@ export class PreviewSession {
         this.set({
           kind: 'preview',
           source: 'simulation',
+          action: null,
           text: outcome.text,
           canReplace: this.adapter.canReplace(snapshot, outcome.text),
           busy: null,
@@ -120,11 +124,17 @@ export class PreviewSession {
     }
   }
 
-  startCorrection(): void {
+  startAction(action: WritingAction): void {
     if (this.state.kind !== 'menu') return;
     const snapshot = this.adapter.capture();
     if (!snapshot || !snapshot.text.replace(/[\s\u200b\u200e\u200f]/g, '')) {
-      this.set({ kind: 'notice', message: 'Escreva uma mensagem antes de corrigir.' });
+      this.set({
+        kind: 'notice',
+        message:
+          action === 'corrigir'
+            ? 'Escreva uma mensagem antes de corrigir.'
+            : `Escreva uma mensagem antes de usar ${writingAction(action).label}.`,
+      });
       return;
     }
     if (snapshot.text.length > MAX_TEXT_LENGTH) {
@@ -134,16 +144,18 @@ export class PreviewSession {
     this.snapshot = snapshot;
     const sequence = ++this.sequence;
     this.set({
-      kind: 'correction-loading',
+      kind: 'action-loading',
+      action,
       progress: { phase: 'preparing', percent: 0, variant: null },
     });
     try {
-      this.cancelGeneration = this.correct(
+      this.cancelGeneration = this.write(
+        action,
         snapshot,
         (progress) => {
           if (sequence !== this.sequence) return;
           this.validate();
-          if (sequence === this.sequence) this.set({ kind: 'correction-loading', progress });
+          if (sequence === this.sequence) this.set({ kind: 'action-loading', action, progress });
         },
         (outcome) => {
           if (sequence !== this.sequence) return;
@@ -160,7 +172,8 @@ export class PreviewSession {
           }
           this.set({
             kind: 'preview',
-            source: 'correction',
+            source: 'action',
+            action,
             text: outcome.text,
             canReplace: this.adapter.canReplace(snapshot, outcome.text),
             busy: null,

@@ -1,4 +1,6 @@
 import { MODEL_PROOF_TEXT } from './model-proof';
+import { isWritingAction } from './actions';
+import type { WritingAction } from './actions';
 
 export const CLIENT_PORT = 'writing-client-v1';
 export const ENGINE_PORT = 'writing-engine-v1';
@@ -24,7 +26,7 @@ export interface Binding {
 }
 export interface BoundRequest extends Binding {
   text: string;
-  action: 'simular' | 'corrigir' | 'prova-modelo';
+  action: 'simular' | WritingAction | 'prova-modelo';
 }
 
 export type ClientCommand =
@@ -58,8 +60,8 @@ export type RequestEvent =
     }
   | { type: 'fragment'; binding: Binding; text: string }
   | { type: 'result'; binding: Binding; text: string; simulated: true }
-  | { type: 'correction-result'; binding: Binding; text: string }
-  | { type: 'correction-rejected'; binding: Binding; code: ErrorCode }
+  | { type: 'action-result'; binding: Binding; action: WritingAction; text: string }
+  | { type: 'action-rejected'; binding: Binding; action: WritingAction; code: ErrorCode }
   | {
       type: 'proof-result';
       binding: Binding;
@@ -146,7 +148,7 @@ export function isClientCommand(value: unknown): value is ClientCommand {
         textValue(value.text) &&
         value.text.trim().length > 0 &&
         (value.action === 'simular' ||
-          value.action === 'corrigir' ||
+          isWritingAction(value.action) ||
           (value.action === 'prova-modelo' && value.text === MODEL_PROOF_TEXT))
       );
     case 'cancel':
@@ -209,10 +211,18 @@ export function isRequestEvent(value: unknown): value is RequestEvent {
         textValue(value.text) &&
         value.simulated === true
       );
-    case 'correction-result':
-      return fields(value, ['type', 'binding', 'text']) && textValue(value.text);
-    case 'correction-rejected':
-      return fields(value, ['type', 'binding', 'code']) && isErrorCode(value.code);
+    case 'action-result':
+      return (
+        fields(value, ['type', 'binding', 'action', 'text']) &&
+        isWritingAction(value.action) &&
+        textValue(value.text)
+      );
+    case 'action-rejected':
+      return (
+        fields(value, ['type', 'binding', 'action', 'code']) &&
+        isWritingAction(value.action) &&
+        isErrorCode(value.code)
+      );
     case 'proof-result':
       return (
         fields(value, ['type', 'binding', 'text', 'variant']) &&
@@ -262,7 +272,7 @@ export function isEngineCommand(value: unknown): value is EngineCommand {
     isBinding({ key: request.key, origin: request.origin }) &&
     textValue(request.text) &&
     (request.action === 'simular' ||
-      request.action === 'corrigir' ||
+      isWritingAction(request.action) ||
       (request.action === 'prova-modelo' && request.text === MODEL_PROOF_TEXT))
   );
 }

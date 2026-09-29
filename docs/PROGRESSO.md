@@ -5,10 +5,10 @@
 ## Estado atual
 
 - Última atualização: 29/09/2026.
-- Última etapa concluída: **STEP-08 — Proteger entidades e validar o resultado**.
-- Situação: proteção e validação determinística integradas à correção, com prévia, substituição manual e recusas seguras confirmadas no Chrome/WebGPU; entrega registrada em commit próprio.
-- Próxima etapa executável: **STEP-09 — Adicionar os demais modos**, somente quando solicitada.
-- Implementação: Manifest V3, comunicação, adaptador do editor, botão IA, prévia, substituição manual, prova sintética e correção com Llama 3.2 3B no Worker via WebGPU. A simulação continua identificada. Textos multilinha e estruturas especiais oferecem somente cópia. A verificação semântica opcional pertence à STEP-11.
+- Última etapa concluída: **STEP-09 — Adicionar os demais modos**.
+- Situação: nove ações de escrita com prompts próprios, proteção compartilhada, prévia manual e recusas seguras confirmadas no Chrome/WebGPU e WhatsApp Web real; entrega registrada em commit próprio.
+- Próxima etapa executável: **STEP-10**, somente quando solicitada.
+- Implementação: Manifest V3, comunicação, adaptador do editor, botão IA, prévia, substituição manual, prova sintética e nove ações com Llama 3.2 3B no Worker via WebGPU. A simulação continua identificada. Textos multilinha e estruturas especiais oferecem somente cópia. A verificação semântica opcional pertence à STEP-11.
 
 ## Significado dos status
 
@@ -32,7 +32,7 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 | [STEP-06](steps/STEP-06.md) | Executar o primeiro modelo local                | Concluída | 102 testes e build; Llama 3.2 3B em WebGPU/Chrome, resposta sintética real, cache offline e falha de download validados. [Relatório](VALIDACAO-STEP-06.md).              |
 | [STEP-07](steps/STEP-07.md) | Implementar a ação Corrigir                     | Concluída | 111 testes e build; correção real no Chrome, prévia e aplicação manual, contexto recusado e saídas arriscadas preservando o rascunho. [Relatório](VALIDACAO-STEP-07.md). |
 | [STEP-08](steps/STEP-08.md) | Proteger entidades e validar o resultado        | Concluída | 120 testes e build; oito casos de correção no Chrome/WebGPU, seis prévias, duas recusas seguras, contexto, simulação e prova offline. [Relatório](VALIDACAO-STEP-08.md). |
-| [STEP-09](steps/STEP-09.md) | Adicionar os demais modos                       | Pendente  | Não iniciada.                                                                                                                                                            |
+| [STEP-09](steps/STEP-09.md) | Adicionar os demais modos                       | Concluída | 128 testes e build; nove prévias e duas recusas seguras no grupo de teste do WhatsApp Web. [Relatório](VALIDACAO-STEP-09.md).                                            |
 | [STEP-10](steps/STEP-10.md) | Exibir geração progressiva e cancelamento       | Pendente  | Não iniciada.                                                                                                                                                            |
 | [STEP-11](steps/STEP-11.md) | Implementar verificação semântica opcional      | Pendente  | Não iniciada.                                                                                                                                                            |
 | [STEP-12](steps/STEP-12.md) | Adicionar modelos e perfis de hardware          | Pendente  | Não iniciada.                                                                                                                                                            |
@@ -174,9 +174,21 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 - Commit da etapa: `feat(step-08): proteger entidades na correção`. Hash no histórico Git e na resposta de entrega; identidade humana configurada, sem atribuições adicionais.
 - Status final: **Concluída** no escopo da STEP-08, sem validação obrigatória pendente. Próxima etapa: STEP-09, somente por nova solicitação.
 
+## STEP-09 — 29/09/2026
+
+- Escopo: registro tipado único das nove ações, com rótulos, descrições, exemplos e instruções próprias; menu completo no editor; seleção do prompt e orçamento pelo modo; identificação do modo no pedido, resultado e prévia. A ação Corrigir mantém seu prompt de ajustes mínimos.
+- Proteção: o Worker usa a extração, restauração e validação da STEP-08 para todas as ações. Respostas de outro modo são descartadas pelo roteador e pelo cliente. As recusas não oferecem Copiar/Substituir e preservam o rascunho.
+- Arquivos principais: `src/shared/actions.ts`, prompts e Worker, protocolo/roteador, cliente de ações, sessão/menu, adaptador do WhatsApp, testes e [relatório](VALIDACAO-STEP-09.md). Projeto/Manifest: 0.8.0, sem novas dependências.
+- Verificação automatizada: `npm.cmd run check` aprovado com tipos, lint, formatação, 128 testes em 13 arquivos e build. Casos novos cobrem registro/prompt, vínculo de modo, preservação, atualização transitória de status e controles do rodapé.
+- WhatsApp real: Chrome for Testing 154, grupo **Teste Extensão** confirmado no cabeçalho antes de usar rascunhos sintéticos, GPU Intel `gen-12lp` e modelo q4f16_1 no Worker. Rodada final: nove prévias para as nove ações, Formal e Profissional distintos no mesmo rascunho, duas recusas seguras por perda de conteúdo ou prazo, zero erros de página. Nenhuma mensagem enviada; rascunhos de teste limpos.
+- Ajuste real: mutações transitórias do status do grupo e de controles do rodapé não invalidam uma prévia enquanto o editor e o título permanecem. Mudança no campo, editor ou título continua invalidando. Oscilações que ocorreram durante o desenvolvimento não reapareceram na rodada final.
+- Limite: a validação determinística não prova equivalência semântica geral e pode recusar saídas úteis. Uma pergunta em Melhorar foi recusada porque o modelo omitiu a interrogação. A variante f32 não foi executada em segunda GPU física.
+- Commit da etapa: `feat(step-09): adicionar nove modos de escrita`. Hash no histórico Git e na resposta de entrega; identidade humana configurada.
+- Status final: **Concluída** no escopo da STEP-09, sem validação obrigatória pendente. Próxima etapa: STEP-10, somente por nova solicitação.
+
 ## Como continuar
 
-As STEP-01 a STEP-08 estão concluídas. Consulte os relatórios da [comunicação](VALIDACAO-STEP-03.md), do [editor](VALIDACAO-STEP-04.md), da [prévia](VALIDACAO-STEP-05.md), da [inferência local](VALIDACAO-STEP-06.md), da [correção](VALIDACAO-STEP-07.md) e da [proteção determinística](VALIDACAO-STEP-08.md). Para continuar, solicitar **Execute somente a STEP-09 do plano.** A STEP-09 não foi iniciada.
+As STEP-01 a STEP-09 estão concluídas. Consulte os relatórios da [comunicação](VALIDACAO-STEP-03.md), do [editor](VALIDACAO-STEP-04.md), da [prévia](VALIDACAO-STEP-05.md), da [inferência local](VALIDACAO-STEP-06.md), da [correção](VALIDACAO-STEP-07.md), da [proteção determinística](VALIDACAO-STEP-08.md) e dos [nove modos](VALIDACAO-STEP-09.md). Para continuar, solicitar **Execute somente a STEP-10 do plano.** A STEP-10 não foi iniciada.
 
 Em futuras execuções, ler o plano e a etapa indicada, validar os pré-requisitos e atualizar este documento ao terminar. Não mudar o estado de etapas futuras apenas porque suas descrições foram criadas.
 

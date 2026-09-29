@@ -3,7 +3,8 @@ import { describe, expect, it, vi } from 'vitest';
 import { PreviewSession } from '../src/extension/content/preview-session';
 import type { DraftSnapshot, WhatsAppAdapter } from '../src/integration/whatsapp/adapter';
 import type { PreviewOutcome } from '../src/extension/content/preview-client';
-import type { CorrectionGenerator } from '../src/extension/content/correction-client';
+import type { ActionGenerator } from '../src/extension/content/action-client';
+import type { WritingAction } from '../src/shared/actions';
 
 const draft: DraftSnapshot = {
   editorId: 'editor',
@@ -22,8 +23,10 @@ function harness() {
     replace: vi.fn(() => Promise.resolve('applied' as const)),
   };
   const done: ((outcome: PreviewOutcome) => void)[] = [];
+  const requested: WritingAction[] = [];
   const cancel = vi.fn();
-  const correct: CorrectionGenerator = (_snapshot, _progress, callback) => {
+  const write: ActionGenerator = (action, _snapshot, _progress, callback) => {
+    requested.push(action);
     done.push(callback);
     return cancel;
   };
@@ -32,9 +35,9 @@ function harness() {
     () => cancel,
     vi.fn(() => Promise.resolve()),
     () => cancel,
-    correct,
+    write,
   );
-  return { session, adapter, done, cancel };
+  return { session, adapter, done, cancel, requested };
 }
 
 describe('prévia da correção local', () => {
@@ -42,13 +45,15 @@ describe('prévia da correção local', () => {
     const h = harness();
     h.session.open();
     expect(h.adapter.capture).not.toHaveBeenCalled();
-    h.session.startCorrection();
+    h.session.startAction('corrigir');
     expect(h.adapter.capture).toHaveBeenCalledOnce();
-    expect(h.session.getState().kind).toBe('correction-loading');
+    expect(h.session.getState().kind).toBe('action-loading');
+    expect(h.requested).toEqual(['corrigir']);
     h.done[0]?.({ ok: true, text: 'Você consegue me mandar o relatório hoje?' });
     expect(h.session.getState()).toMatchObject({
       kind: 'preview',
-      source: 'correction',
+      source: 'action',
+      action: 'corrigir',
       canReplace: true,
     });
     expect(h.adapter.replace).not.toHaveBeenCalled();
@@ -62,7 +67,7 @@ describe('prévia da correção local', () => {
   it('descarta resposta atrasada quando rascunho ou contexto muda', async () => {
     const h = harness();
     h.session.open();
-    h.session.startCorrection();
+    h.session.startAction('corrigir');
     h.adapter.isCurrent.mockReturnValue(false);
     h.done[0]?.({ ok: true, text: 'Resultado obsoleto' });
     expect(h.session.getState().kind).toBe('notice');
@@ -73,14 +78,33 @@ describe('prévia da correção local', () => {
   it('não libera resultado vazio, falho ou posterior ao cancelamento', () => {
     const h = harness();
     h.session.open();
-    h.session.startCorrection();
+    h.session.startAction('corrigir');
     h.done[0]?.({ ok: false, message: 'Modelo falhou.' });
     expect(h.session.getState()).toEqual({ kind: 'notice', message: 'Modelo falhou.' });
     h.session.open();
-    h.session.startCorrection();
+    h.session.startAction('corrigir');
     h.session.close();
     h.done[1]?.({ ok: true, text: 'Atrasado' });
     expect(h.session.getState()).toEqual({ kind: 'closed' });
     expect(h.cancel).toHaveBeenCalled();
+  });
+
+  it('mantém o modo selecionado e descarta resultado anterior ao trocar de ação', () => {
+    const h = harness();
+    h.session.open();
+    h.session.startAction('formal');
+    h.session.open();
+    h.session.startAction('profissional');
+    h.done[0]?.({ ok: true, text: 'Resultado de Formal' });
+    expect(h.session.getState()).toMatchObject({
+      kind: 'action-loading',
+      action: 'profissional',
+    });
+    h.done[1]?.({ ok: true, text: 'Resultado profissional' });
+    expect(h.session.getState()).toMatchObject({
+      kind: 'preview',
+      action: 'profissional',
+      text: 'Resultado profissional',
+    });
   });
 });

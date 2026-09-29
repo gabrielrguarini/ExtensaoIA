@@ -11,7 +11,8 @@ const executablePath = process.env.STEP08_CHROME;
 if (!executablePath) throw new Error('Defina STEP08_CHROME com o Chrome for Testing.');
 const extension = path.join(root, 'dist');
 const manifest = JSON.parse(await readFile(path.join(extension, 'manifest.json'), 'utf8'));
-if (manifest.version !== '0.7.0') throw new Error('Execute npm run build antes da prova.');
+if (!['0.7.0', '0.8.0'].includes(manifest.version))
+  throw new Error('Execute npm run build antes da prova.');
 const profile = path.resolve(
   process.env.STEP08_PROFILE ?? path.join(root, '.cache', 'step08-browser'),
 );

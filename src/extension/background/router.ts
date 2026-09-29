@@ -18,6 +18,7 @@ export interface Engine {
 }
 interface Active {
   binding: Binding;
+  action: BoundRequest['action'];
   client: Client;
   engine?: Engine;
   cancelling: boolean;
@@ -75,6 +76,7 @@ export class RequestRouter {
     const binding: Binding = { key: { ...value.key }, origin: { ...client.origin } };
     const active: Active = {
       binding,
+      action: value.action,
       client,
       cancelling: false,
       timer: setTimeout(
@@ -108,18 +110,25 @@ export class RequestRouter {
   receiveEngine(value: unknown): void {
     const active = this.active;
     if (!isRequestEvent(value) || !active || !sameBinding(value.binding, active.binding)) return;
+    if (
+      (value.type === 'result' && active.action !== 'simular') ||
+      ((value.type === 'action-result' || value.type === 'action-rejected') &&
+        active.action !== value.action) ||
+      (value.type === 'proof-result' && active.action !== 'prova-modelo')
+    )
+      return;
     // Após cancelar, nem mesmo um resultado que estava em trânsito pode ser aplicado.
     if (
       active.cancelling &&
       value.type !== 'cancelled' &&
       value.type !== 'error' &&
-      value.type !== 'correction-rejected'
+      value.type !== 'action-rejected'
     )
       return;
     if (
       value.type === 'result' ||
-      value.type === 'correction-result' ||
-      value.type === 'correction-rejected' ||
+      value.type === 'action-result' ||
+      value.type === 'action-rejected' ||
       value.type === 'proof-result' ||
       value.type === 'cancelled' ||
       value.type === 'error'

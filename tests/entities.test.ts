@@ -7,6 +7,12 @@ function kindsAndValues(text: string): string[] {
 }
 
 describe('proteção determinística de entidades', () => {
+  it('não classifica uma abertura comum de pedido como nome próprio', () => {
+    const values = kindsAndValues('Gostaria de pedir que você revisasse o texto hoje.');
+    expect(values).not.toContain('name:Gostaria');
+    expect(values).toContain('temporal:hoje');
+    expect(kindsAndValues('João, revisa o texto hoje.')).toContain('name:João');
+  });
   it('resolve sobreposições e conserva spans exatos de todos os tipos previstos', () => {
     const text =
       'João, Maria: projeto XPTO às 14h30 em 15/10. R$ 2.500 para @gabriel e #teste; ' +

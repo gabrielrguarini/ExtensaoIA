@@ -58,7 +58,7 @@ export interface TokenBudget {
   outputTokens: number;
 }
 
-/** Codifica cada segmento separadamente, como Conversation.getPromptArray() no WebLLM 0.2.85. */
+/** Codifica cada segmento separadamente, como Conversation.getPromptArray() no WebLLM 0.2.82. */
 export function correctionTokenBudget(
   encode: (value: string) => Int32Array,
   template: LlamaTemplate,

@@ -84,21 +84,22 @@ export function mountEditorButton(document: Document): () => void {
       ),
     );
     const left = safeLeft ?? 8;
-    const visible =
-      safeLeft !== undefined &&
+    const editorVisible =
       editor.width > 0 &&
       editor.height > 0 &&
       top >= 8 &&
       composer.top < innerHeight &&
       editor.right > 0 &&
       editor.left < innerWidth;
-    button.hidden = !visible;
+    button.hidden = !editorVisible || safeLeft === undefined;
     button.style.left = `${String(left)}px`;
     button.style.top = `${String(top)}px`;
     panelContainer.style.left = `${String(Math.max(8, Math.min(left - 320, innerWidth - 388)))}px`;
     panelContainer.style.bottom = `${String(innerHeight - top + 8)}px`;
     panelContainer.style.setProperty('--panel-height', `${String(Math.max(120, top - 16))}px`);
-    if (!visible) dismiss();
+    // Um controle transitório pode cobrir a posição do botão enquanto a prévia
+    // está aberta. Só fechar quando o editor realmente deixar a área visível.
+    if (!editorVisible) dismiss();
   }
 
   function schedulePosition(): void {

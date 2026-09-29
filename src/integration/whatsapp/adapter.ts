@@ -5,6 +5,7 @@ const selectors = {
   conversation: '#main',
   composer: ':scope > footer',
   header: ':scope > header',
+  title: '[data-testid="conversation-info-header-chat-title"]',
   editor:
     '[contenteditable="true"][role="textbox"], [contenteditable="plaintext-only"][role="textbox"]',
   excluded:
@@ -16,6 +17,7 @@ export interface EditorTarget {
   readonly composer: HTMLElement;
   readonly editor: HTMLElement;
   readonly header: HTMLElement | null;
+  readonly title: HTMLElement | null;
   readonly editorId: string;
 }
 
@@ -60,6 +62,7 @@ function locate(document: Document): Omit<EditorTarget, 'editorId'> | null {
         composer,
         editor,
         header: conversation.querySelector<HTMLElement>(selectors.header),
+        title: conversation.querySelector<HTMLElement>(selectors.title),
       });
     }
   }
@@ -270,21 +273,46 @@ export class WhatsAppAdapter {
   };
 
   private readonly onMutations = (records: MutationRecord[]): void => {
-    // O host é filho do body e seu Shadow DOM não é observado. Ignorar sua inserção/remoção.
-    const relevant = records.some(
-      (record) =>
-        !(
-          record.type === 'childList' &&
-          [...record.addedNodes, ...record.removedNodes].every(
-            (node) => node instanceof HTMLElement && node.hasAttribute('data-local-writing-host'),
-          )
-        ),
-    );
-    if (relevant) {
-      if (records.some((record) => this.target?.header?.contains(record.target)))
-        this.contextRevision++;
-      this.invalidate();
+    const header = this.target?.header;
+    const title = this.target?.title;
+    const composer = this.target?.composer;
+    const editor = this.target?.editor;
+    let relevant = false;
+    let contextChanged = false;
+    for (const record of records) {
+      // O host é filho do body e seu Shadow DOM não é observado.
+      if (
+        record.type === 'childList' &&
+        [...record.addedNodes, ...record.removedNodes].every(
+          (node) => node instanceof HTMLElement && node.hasAttribute('data-local-writing-host'),
+        )
+      )
+        continue;
+      if (record.type === 'childList' && record.target === composer) {
+        const editorAffected = [...record.addedNodes, ...record.removedNodes].some(
+          (node) =>
+            node === editor || (node instanceof Element && !!editor && node.contains(editor)),
+        );
+        if (!editorAffected) {
+          this.schedule();
+          continue;
+        }
+      }
+      if (header?.contains(record.target)) {
+        // O status do grupo muda sozinho. Só o título ou sua substituição sinaliza troca.
+        if (
+          title &&
+          !title.contains(record.target) &&
+          header.querySelector(selectors.title) === title
+        )
+          continue;
+        contextChanged = true;
+      }
+      relevant = true;
     }
+    if (!relevant) return;
+    if (contextChanged) this.contextRevision++;
+    this.invalidate();
   };
 
   private schedule(): void {
@@ -303,7 +331,8 @@ export class WhatsAppAdapter {
       next?.editor === this.target?.editor &&
       next?.composer === this.target?.composer &&
       next?.conversation === this.target?.conversation &&
-      next?.header === this.target?.header
+      next?.header === this.target?.header &&
+      next?.title === this.target?.title
     )
       return;
     this.unbindEditor();
@@ -328,7 +357,7 @@ export class WhatsAppAdapter {
     observer.disconnect();
     observer.observe(this.document.body, { childList: true });
     if (!this.target) return;
-    const { conversation, composer, header } = this.target;
+    const { conversation, composer, editor, header } = this.target;
     // Só filhos diretos dos ancestrais; mensagens recebidas não disparam observação profunda.
     for (
       let ancestor: HTMLElement | null = conversation;
@@ -341,7 +370,9 @@ export class WhatsAppAdapter {
         attributeFilter: ['hidden', 'inert', 'aria-hidden', 'class', 'style'],
       });
     }
-    observer.observe(composer, {
+    // Controles do footer mudam durante o uso normal do WhatsApp; apenas o campo
+    // editável e seus descendentes representam alteração do rascunho.
+    observer.observe(editor, {
       childList: true,
       subtree: true,
       characterData: true,
@@ -358,6 +389,7 @@ export class WhatsAppAdapter {
         'style',
       ],
     });
+    observer.observe(composer, { childList: true });
     // Invalidação conservadora se o WhatsApp reutiliza o mesmo editor ao trocar de conversa.
     // Não solicitar oldValue, ler registros de texto/atributos ou guardar identidade do contato.
     if (header)

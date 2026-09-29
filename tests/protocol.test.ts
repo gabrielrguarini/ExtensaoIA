@@ -9,6 +9,7 @@ import {
 import { contentOrigin, isCoordinator, isExtensionPage } from '../src/shared/senders';
 import { isDiagnosticCommand, isProbe } from '../src/shared/diagnostic';
 import { binding, start } from './fixtures';
+import { WRITING_ACTIONS } from '../src/shared/actions';
 
 describe('contratos nas fronteiras dos contextos', () => {
   it('aceita todos os comandos e eventos discriminados válidos', () => {
@@ -18,7 +19,7 @@ describe('contratos nas fronteiras dos contextos', () => {
       { type: 'progress', binding, percent: 50 },
       { type: 'fragment', binding, text: 'Teste' },
       { type: 'result', binding, text: 'Teste', simulated: true },
-      { type: 'correction-rejected', binding, code: 'PRESERVATION_RISK' },
+      { type: 'action-rejected', binding, action: 'corrigir', code: 'PRESERVATION_RISK' },
       { type: 'cancelled', binding },
       { type: 'error', binding, code: 'TIMEOUT' },
     ]) {
@@ -35,6 +36,18 @@ describe('contratos nas fronteiras dos contextos', () => {
       }),
     ).toBe(true);
     expect(isEngineCommand({ type: 'cancel', binding })).toBe(true);
+    for (const action of WRITING_ACTIONS) {
+      expect(isClientCommand({ ...start, action: action.id })).toBe(true);
+      expect(
+        isEngineCommand({
+          type: 'start',
+          request: { ...binding, text: 'teste', action: action.id },
+        }),
+      ).toBe(true);
+      expect(
+        isClientEvent({ type: 'action-result', binding, action: action.id, text: 'teste' }),
+      ).toBe(true);
+    }
   });
   it.each([
     null,
@@ -70,6 +83,12 @@ describe('contratos nas fronteiras dos contextos', () => {
         type: 'start',
         request: { ...binding, text: 'x', action: 'corrigir', endpoint: 'https://example.com' },
       }),
+    ).toBe(false);
+    expect(isClientEvent({ type: 'action-result', binding, action: 'enviar', text: 'x' })).toBe(
+      false,
+    );
+    expect(
+      isClientEvent({ type: 'action-rejected', binding, action: 'formal', code: 'UNKNOWN' }),
     ).toBe(false);
   });
   it('restringe os comandos de diagnóstico à lista conhecida', () => {

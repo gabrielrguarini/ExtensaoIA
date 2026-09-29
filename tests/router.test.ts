@@ -40,15 +40,48 @@ describe('roteamento sem mistura de abas, documentos e revisões', () => {
     const a = client();
     router.receive(a.peer, { ...start, action: 'corrigir' });
     await Promise.resolve();
-    router.receiveEngine({ type: 'correction-rejected', binding, code: 'PRESERVATION_RISK' });
-    expect(a.events.at(-1)).toEqual({
-      type: 'correction-rejected',
+    router.receiveEngine({
+      type: 'action-rejected',
       binding,
+      action: 'corrigir',
       code: 'PRESERVATION_RISK',
     });
-    router.receiveEngine({ type: 'correction-result', binding, text: 'Atrasado' });
+    expect(a.events.at(-1)).toEqual({
+      type: 'action-rejected',
+      binding,
+      action: 'corrigir',
+      code: 'PRESERVATION_RISK',
+    });
+    router.receiveEngine({ type: 'action-result', binding, action: 'corrigir', text: 'Atrasado' });
     router.receive(a.peer, { type: 'status' });
     expect(a.events.at(-1)).toEqual({ type: 'status', state: 'idle', simulated: true });
+  });
+
+  it('não encaminha resultado de outro modo com o mesmo vínculo', async () => {
+    const { router } = harness();
+    const a = client();
+    router.receive(a.peer, { ...start, action: 'formal' });
+    await Promise.resolve();
+    router.receiveEngine({
+      type: 'action-result',
+      binding,
+      action: 'profissional',
+      text: 'Outro modo',
+    });
+    router.receiveEngine({
+      type: 'action-rejected',
+      binding,
+      action: 'conciso',
+      code: 'PRESERVATION_RISK',
+    });
+    expect(a.events).toHaveLength(1);
+    router.receiveEngine({
+      type: 'action-result',
+      binding,
+      action: 'formal',
+      text: 'Resultado correto',
+    });
+    expect(a.events.at(-1)).toMatchObject({ type: 'action-result', action: 'formal' });
   });
 
   it('reserva o pedido antes da preparação assíncrona e informa ocupado sem vazar conteúdo', async () => {

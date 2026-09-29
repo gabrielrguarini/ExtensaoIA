@@ -49,9 +49,9 @@ function describe(value: unknown): string {
           return `Circuito completo — SIMULAÇÃO. Aba ${event.binding.origin.tabId}; documento ${event.binding.origin.documentId}; pedido ${event.binding.key.requestId}.\nEco sintético: ${event.text}`;
         case 'proof-result':
           return `Inferência local concluída na variante ${event.variant}.`;
-        case 'correction-result':
-          return 'Correção local concluída.';
-        case 'correction-rejected':
+        case 'action-result':
+          return 'Ação de escrita local concluída.';
+        case 'action-rejected':
           return labels[event.code];
       }
     })

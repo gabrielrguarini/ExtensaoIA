@@ -37,6 +37,7 @@ const nameStopWords = new Set([
   'ele',
   'ela',
   'eu',
+  'gostaria',
   'ignore',
   'isso',
   'já',

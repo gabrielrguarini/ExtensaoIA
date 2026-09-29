@@ -1,6 +1,6 @@
 # Extensão de IA local para WhatsApp Web
 
-Base incremental com React, TypeScript strict e pacote Manifest V3. Na **STEP-08**, o botão **IA → Corrigir com IA local** usa Llama 3.2 3B no Worker via WebGPU, protege entidades do rascunho e valida a sugestão antes da prévia. A prova sintética da STEP-06 e a prévia simulada da STEP-05 continuam disponíveis e identificadas. Nenhuma mensagem é enviada pela extensão. O diagnóstico da STEP-03 continua disponível.
+Base incremental com React, TypeScript strict e pacote Manifest V3. Na **STEP-09**, o menu **IA** oferece nove ações de escrita com Llama 3.2 3B no Worker via WebGPU. Todas protegem entidades do rascunho e validam a sugestão antes da prévia. A prova sintética da STEP-06 e a prévia simulada da STEP-05 continuam disponíveis e identificadas. Nenhuma mensagem é enviada pela extensão. O diagnóstico da STEP-03 continua disponível.
 
 O estado e as evidências ficam em [docs/PROGRESSO.md](docs/PROGRESSO.md). Consulte o [plano](docs/PLANO.md) e execute somente a etapa solicitada. A conclusão depende das verificações automatizadas e da validação correspondente no Chrome.
 
@@ -26,7 +26,7 @@ Siga o [roteiro completo da STEP-03](docs/VALIDACAO-STEP-03.md), que cobre circu
 
 Para testar a escrita, consulte [validação e limites da STEP-05](docs/VALIDACAO-STEP-05.md). Escreva um rascunho sintético, clique em **IA → Criar prévia simulada** e revise o resultado. Abrir o menu não lê o texto; solicitar a prévia o captura em memória e o encaminha ao Worker local. **Substituir** confirma a edição nativa, que pode ser desfeita com Ctrl+Z. **Copiar** grava a sugestão na área de transferência somente pelo clique. **Cancelar**, Escape e clique fora descartam a prévia; edição ou troca de contexto invalidam sugestões anteriores.
 
-Para uma correção real, escreva um rascunho e clique em **IA → Corrigir com IA local**. O primeiro uso pode baixar cerca de 1,82 GB de dados do modelo; confira a licença e as estimativas de memória mostradas antes do clique. O rascunho é enviado somente ao Worker local e tratado como dado a corrigir, sem ler a conversa. Revise a prévia antes de **Substituir** ou **Copiar**. A extensão protege URLs, e-mails, números, valores, datas, horários, documentos, códigos, menções, hashtags, emojis e nomes/referências temporais detectáveis com identificadores temporários; restaura os valores exatos e confere as ocorrências, negações e relações antes de liberar a prévia. Saídas vazias, truncadas ou suspeitas são recusadas, sem oferecer Substituir ou Copiar e sem mudar o rascunho. A detecção de nomes é heurística e a validação não prova equivalência semântica geral; revise cada sugestão aceita. Consulte [a validação da STEP-08](docs/VALIDACAO-STEP-08.md).
+Para usar o modelo, escreva um rascunho e clique em **IA**. Escolha **Corrigir**, **Melhorar**, **Formal**, **Profissional**, **Amigável**, **Natural**, **Conciso**, **Engraçado** ou **Reescrever**. Corrigir faz ajustes mínimos; Formal adapta gírias e usa linguagem mais formal; Profissional é objetivo e educado; Conciso remove redundâncias; Engraçado só acrescenta leveza quando o assunto permite. As outras ações seguem os rótulos e exemplos do menu. O primeiro uso pode baixar cerca de 1,82 GB de dados do modelo; confira a licença e as estimativas de memória mostradas antes do clique. O rascunho é enviado somente ao Worker local e tratado como dado a editar, sem ler a conversa. Revise a prévia antes de **Substituir** ou **Copiar**. Em todas as ações, a extensão protege URLs, e-mails, números, valores, datas, horários, documentos, códigos, menções, hashtags, emojis e nomes/referências temporais detectáveis com identificadores temporários; restaura os valores exatos e confere as ocorrências, negações e relações antes de liberar a prévia. Saídas vazias, truncadas ou suspeitas são recusadas, sem oferecer Substituir ou Copiar e sem mudar o rascunho. A detecção de nomes é heurística e a validação não prova equivalência semântica geral; revise cada sugestão aceita. Consulte [a validação da STEP-09](docs/VALIDACAO-STEP-09.md).
 
 Para conferir a STEP-06, clique em **IA → Baixar modelo e testar IA local**. A interface mostra antes do clique o tamanho publicado dos dados (aproximadamente 1,82 GB) e a estimativa de memória de GPU das variantes. O teste usa somente a frase sintética fixa; o resultado aparece separado da prévia e não oferece Substituir ou Copiar. O download aceita apenas `huggingface.co` e o redirecionamento observado `us.aws.cdn.hf.co`, sem JavaScript remoto. A biblioteca WASM já está no pacote. Se o redirecionamento mudar para outra origem, o download falhará de forma segura até que a configuração seja revista. Consulte [o relatório da prova real](docs/VALIDACAO-STEP-06.md).
 
@@ -34,25 +34,27 @@ Textos com várias linhas, menções estruturadas, formatação especial e edito
 
 ## Comandos
 
-| Comando                                    | Finalidade                                                                       |
-| ------------------------------------------ | -------------------------------------------------------------------------------- |
-| npm run dev                                | Servir as páginas auxiliares em http://127.0.0.1:5173.                           |
-| npm run typecheck                          | Conferir tipos do navegador e das ferramentas sem emitir arquivos.               |
-| npm run lint                               | Conferir código com informação de tipos, sem aceitar avisos.                     |
-| npm run format:check                       | Conferir formatação.                                                             |
-| npm run format                             | Aplicar formatação.                                                              |
-| npm test                                   | Executar testes, incluindo um build completo temporário.                         |
-| npm run test:step06:browser -- online      | Executar a prova WebGPU em Chrome for Testing; requer `STEP06_CHROME`.           |
-| npm run test:step07:browser -- corrections | Exercitar correção real em Chrome com fixture sintética; requer `STEP07_CHROME`. |
-| npm run test:step07:browser -- context     | Conferir vazio e orçamento de contexto no Chrome; requer `STEP07_CHROME`.        |
-| npm run test:step07:browser -- regression  | Conferir a prévia simulada no Chrome; requer `STEP07_CHROME`.                    |
-| npm run test:step08:browser -- corrections | Exercitar proteção e rejeições seguras no Chrome; requer `STEP08_CHROME`.        |
-| npm run test:step08:browser -- context     | Conferir vazio e limite de contexto no Chrome; requer `STEP08_CHROME`.           |
-| npm run test:step08:browser -- regression  | Conferir a prévia simulada no Chrome; requer `STEP08_CHROME`.                    |
-| npm run test:watch                         | Reexecutar testes durante a edição.                                              |
-| npm run build                              | Conferir tipos e gerar a extensão completa em dist.                              |
-| npm run preview                            | Servir as páginas construídas em http://127.0.0.1:4173.                          |
-| npm run check                              | Executar tipos, lint, formatação, testes e build; parar na primeira falha.       |
+| Comando                                    | Finalidade                                                                         |
+| ------------------------------------------ | ---------------------------------------------------------------------------------- |
+| npm run dev                                | Servir as páginas auxiliares em http://127.0.0.1:5173.                             |
+| npm run typecheck                          | Conferir tipos do navegador e das ferramentas sem emitir arquivos.                 |
+| npm run lint                               | Conferir código com informação de tipos, sem aceitar avisos.                       |
+| npm run format:check                       | Conferir formatação.                                                               |
+| npm run format                             | Aplicar formatação.                                                                |
+| npm test                                   | Executar testes, incluindo um build completo temporário.                           |
+| npm run test:step06:browser -- online      | Executar a prova WebGPU em Chrome for Testing; requer `STEP06_CHROME`.             |
+| npm run test:step07:browser -- corrections | Exercitar correção real em Chrome com fixture sintética; requer `STEP07_CHROME`.   |
+| npm run test:step07:browser -- context     | Conferir vazio e orçamento de contexto no Chrome; requer `STEP07_CHROME`.          |
+| npm run test:step07:browser -- regression  | Conferir a prévia simulada no Chrome; requer `STEP07_CHROME`.                      |
+| npm run test:step08:browser -- corrections | Exercitar proteção e rejeições seguras no Chrome; requer `STEP08_CHROME`.          |
+| npm run test:step08:browser -- context     | Conferir vazio e limite de contexto no Chrome; requer `STEP08_CHROME`.             |
+| npm run test:step08:browser -- regression  | Conferir a prévia simulada no Chrome; requer `STEP08_CHROME`.                      |
+| npm run test:step09:browser -- fixture     | Exercitar os nove modos em fixture no Chrome; requer `STEP09_CHROME`.              |
+| npm run test:step09:browser -- whatsapp    | Exercitar rascunhos sintéticos no grupo de teste autorizado; requer perfil logado. |
+| npm run test:watch                         | Reexecutar testes durante a edição.                                                |
+| npm run build                              | Conferir tipos e gerar a extensão completa em dist.                                |
+| npm run preview                            | Servir as páginas construídas em http://127.0.0.1:4173.                            |
+| npm run check                              | Executar tipos, lint, formatação, testes e build; parar na primeira falha.         |
 
 Os servidores escutam apenas no computador local e falham se a porta estiver ocupada. Encerre com Ctrl+C. O preview valida React e estilos; **localhost não executa APIs de extensão**. O diagnóstico nesse endereço informa que precisa ser aberto pela extensão instalada.
 
@@ -71,7 +73,7 @@ Os servidores escutam apenas no computador local e falham se a porta estiver ocu
 | src/development          | Página React auxiliar da STEP-02, preservada.                                                              |
 | tests                    | Contratos, remetentes, roteamento, cancelamento, recuperação, simulador, pacote e fixtures do editor.      |
 
-WebLLM 0.2.82 executa a prova sintética e a ação Corrigir. A versão foi fixada devido à falha de GPU observada com 0.2.85; as bibliotecas WASM locais foram trocadas pelas compatíveis com o catálogo `v0_2_80`. Revisão semântica opcional, outros tons, perfis adicionais, preferências, popup e painel continuam nas etapas previstas.
+WebLLM 0.2.82 executa a prova sintética e as nove ações. A versão foi fixada devido à falha de GPU observada com 0.2.85; as bibliotecas WASM locais foram trocadas pelas compatíveis com o catálogo `v0_2_80`. Revisão semântica opcional, perfis adicionais, preferências, popup e painel continuam nas etapas previstas.
 
 ## Detecção e revisão do editor
 
@@ -87,7 +89,7 @@ Copiar e Substituir conferem novamente o texto, documento, editor e revisão cap
 
 O diagnóstico solicita ao coordenador um teste em uma aba permitida. O coordenador encaminha a fixture ao content script; este inicia um pedido por uma conexão própria. A resposta faz o caminho Worker → offscreen → coordenador → content script. Só então o content script devolve o relatório ao diagnóstico. A página não pode substituir o texto sintético por dados arbitrários.
 
-Uniões discriminadas e validação em tempo de execução cobrem start, cancel, status, progress, fragment, result, cancelled, error e rejected. `simular`, `corrigir` e `prova-modelo` seguem caminhos distintos; só `corrigir` usa o rascunho com o modelo real. Payloads têm campos fechados, IDs limitados e texto de até 8.000 unidades UTF-16. O tokenizer compatível com o modelo inclui template, instruções e reserva de saída no limite de 4.096 tokens; excedê-lo gera aviso sem truncar o rascunho.
+Uniões discriminadas e validação em tempo de execução cobrem start, cancel, status, progress, fragment, result, cancelled, error e rejected. `simular`, as nove ações e `prova-modelo` seguem caminhos distintos; só as ações usam o rascunho com o modelo real. O modo é vinculado ao pedido e à resposta, evitando aplicar uma saída de outro modo. Payloads têm campos fechados, IDs limitados e texto de até 8.000 unidades UTF-16. O tokenizer compatível com o modelo inclui template, instruções e reserva de saída no limite de 4.096 tokens; excedê-lo gera aviso sem truncar o rascunho.
 
 Cada pedido carrega requestId, editorId, snapshotId e revisão. O coordenador acrescenta aba, frame, documento e conexão com base no remetente do Chrome. O diagnóstico usa identidades fictícias; a prévia usa o snapshot real solicitado explicitamente. Respostas só são aceitas quando todos os campos do vínculo conferem. O cliente da prévia também fixa o vínculo recebido e descarta eventos divergentes ou posteriores ao cancelamento.
 

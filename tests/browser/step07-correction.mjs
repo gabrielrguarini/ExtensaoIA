@@ -11,7 +11,7 @@ const executablePath = process.env.STEP07_CHROME;
 if (!executablePath) throw new Error('Defina STEP07_CHROME com o Chrome for Testing.');
 const extension = path.join(root, 'dist');
 const manifest = JSON.parse(await readFile(path.join(extension, 'manifest.json'), 'utf8'));
-if (!['0.6.0', '0.7.0'].includes(manifest.version))
+if (!['0.6.0', '0.7.0', '0.8.0'].includes(manifest.version))
   throw new Error('Execute npm run build antes da prova.');
 const profile = path.resolve(
   process.env.STEP07_PROFILE ?? path.join(root, '.cache', 'step06-browser'),
@@ -102,7 +102,7 @@ try {
       {
         draft: 'mano vc pode ver isso?',
         check: (value) => /mano/iu.test(value) && /\?/u.test(value),
-        safeRejection: manifest.version === '0.7.0',
+        safeRejection: ['0.7.0', '0.8.0'].includes(manifest.version),
       },
     ];
     const results = [];

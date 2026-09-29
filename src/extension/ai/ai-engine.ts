@@ -7,7 +7,7 @@ export interface InitializeOptions {
 
 export interface GenerateOptions {
   signal?: AbortSignal;
-  task?: 'proof' | 'correction';
+  task?: 'proof' | WritingAction;
 }
 
 /** O runtime concreto fica isolado atrás deste contrato. */
@@ -17,3 +17,4 @@ export interface AIEngine {
   generate(text: string, options?: GenerateOptions): AsyncIterable<string>;
   unload(): Promise<void>;
 }
+import type { WritingAction } from '../../shared/actions';

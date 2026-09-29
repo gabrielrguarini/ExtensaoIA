@@ -1,7 +1,7 @@
 {
   "name": "extensao-ia-local",
   "private": true,
-  "version": "0.7.0",
+  "version": "0.8.0",
   "type": "module",
   "description": "Assistente de escrita local para WhatsApp Web — desenvolvimento incremental.",
   "engines": {
@@ -19,6 +19,7 @@
     "test:step06:browser": "node tests/browser/step06-proof.mjs",
     "test:step07:browser": "node tests/browser/step07-correction.mjs",
     "test:step08:browser": "node tests/browser/step08-preservation.mjs",
+    "test:step09:browser": "node tests/browser/step09-actions.mjs",
     "test:watch": "vitest",
     "build": "npm run typecheck && vite build",
     "preview": "vite preview",
