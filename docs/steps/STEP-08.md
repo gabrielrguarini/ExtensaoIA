@@ -19,13 +19,13 @@ Implementar a proteção determinística obrigatória antes de liberar qualquer 
 
 ## Tarefas
 
-- [ ] Extrair entidades com resolução de sobreposição: URLs, e-mails, números, valores, datas, horários, CPF/CNPJ, códigos, @menções, hashtags e emojis.
-- [ ] Identificar nomes e referências temporais detectáveis, incluindo João, Maria, projeto XPTO e sexta. Documentar limitações; não declarar reconhecimento perfeito de nomes.
-- [ ] Proteger spans com placeholders únicos que não colidam com texto original. Preservar valor exato e contagem de ocorrências sem confundir entidades sobrepostas.
-- [ ] Restaurar valores após a geração. Rejeitar placeholders desconhecidos, alterados, ausentes ou duplicados e entidades protegidas novas ou removidas.
-- [ ] Comparar o original e o resultado para números, URLs, datas e demais invariantes. Acrescentar checagens conservadoras de negações, texto vazio, caracteres inesperados e truncamento.
-- [ ] Reprovar saídas suspeitas com mensagem clara e manter Substituir e Copiar indisponíveis. O texto original continua intacto.
-- [ ] Testar colisões literais com **ENTITY_001**, entidades repetidas, URL com números, valor monetário, Unicode/emoji composto e múltiplas negações.
+- [x] Extrair entidades com resolução de sobreposição: URLs, e-mails, números, valores, datas, horários, CPF/CNPJ, códigos, @menções, hashtags e emojis.
+- [x] Identificar nomes e referências temporais detectáveis, incluindo João, Maria, projeto XPTO e sexta. Documentar limitações; não declarar reconhecimento perfeito de nomes.
+- [x] Proteger spans com placeholders únicos que não colidam com texto original. Preservar valor exato e contagem de ocorrências sem confundir entidades sobrepostas.
+- [x] Restaurar valores após a geração. Rejeitar placeholders desconhecidos, alterados, ausentes ou duplicados e entidades protegidas novas ou removidas.
+- [x] Comparar o original e o resultado para números, URLs, datas e demais invariantes. Acrescentar checagens conservadoras de negações, texto vazio, caracteres inesperados e truncamento.
+- [x] Reprovar saídas suspeitas com mensagem clara e manter Substituir e Copiar indisponíveis. O texto original continua intacto.
+- [x] Testar colisões literais com **ENTITY_001**, entidades repetidas, URL com números, valor monetário, Unicode/emoji composto e múltiplas negações.
 
 ## Limites
 
@@ -35,10 +35,10 @@ Implementar a proteção determinística obrigatória antes de liberar qualquer 
 
 ## Critérios de conclusão e verificação
 
-- [ ] Extração, restauração e comparação passam nos testes de entidades simples, repetidas e sobrepostas.
-- [ ] Os exemplos de valores, datas, nomes, links e intenção negativa preservam os elementos protegidos.
-- [ ] Resultados incompletos ou reprovados não permitem copiar ou substituir.
-- [ ] O fluxo real de correção, validação, preview e confirmação funciona com o modelo inicial.
+- [x] Extração, restauração e comparação passam nos testes de entidades simples, repetidas e sobrepostas.
+- [x] Os exemplos de valores, datas, nomes, links e intenção negativa preservam os elementos protegidos.
+- [x] Resultados incompletos ou reprovados não permitem copiar ou substituir.
+- [x] O fluxo real de correção, validação, preview e confirmação funciona com o modelo inicial.
 
 Quando uma verificação não puder ser realizada, registrar exatamente o procedimento pendente e usar Aguardando validação ou Bloqueada no progresso, conforme o motivo. Não substituir evidência real por suposição.
 

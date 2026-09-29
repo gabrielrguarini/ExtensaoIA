@@ -4,11 +4,11 @@
 
 ## Estado atual
 
-- Última atualização: 28/09/2026.
-- Última etapa concluída: **STEP-07 — Implementar a ação Corrigir**.
-- Situação: correção pt-BR com modelo WebGPU real validada no Chrome, preview e substituição manual confirmados, com recusas conservadoras para saídas arriscadas; entrega registrada em commit próprio.
-- Próxima etapa executável: **STEP-08 — Proteger entidades e validar o resultado**, somente quando solicitada.
-- Implementação: Manifest V3, comunicação, adaptador do editor, botão IA, prévia, substituição manual, prova sintética e correção com Llama 3.2 3B no Worker via WebGPU. A simulação continua identificada. Textos multilinha e estruturas especiais oferecem somente cópia. A preservação determinística completa de entidades ainda pertence à STEP-08.
+- Última atualização: 29/09/2026.
+- Última etapa concluída: **STEP-08 — Proteger entidades e validar o resultado**.
+- Situação: proteção e validação determinística integradas à correção, com prévia, substituição manual e recusas seguras confirmadas no Chrome/WebGPU; entrega registrada em commit próprio.
+- Próxima etapa executável: **STEP-09 — Adicionar os demais modos**, somente quando solicitada.
+- Implementação: Manifest V3, comunicação, adaptador do editor, botão IA, prévia, substituição manual, prova sintética e correção com Llama 3.2 3B no Worker via WebGPU. A simulação continua identificada. Textos multilinha e estruturas especiais oferecem somente cópia. A verificação semântica opcional pertence à STEP-11.
 
 ## Significado dos status
 
@@ -31,7 +31,7 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 | [STEP-05](steps/STEP-05.md) | Criar preview e substituição manual             | Concluída | 98 testes e build; Chrome/WhatsApp com aplicação e undo, cópia, cancelamento e bloqueio de sugestões obsoletas.                                                          |
 | [STEP-06](steps/STEP-06.md) | Executar o primeiro modelo local                | Concluída | 102 testes e build; Llama 3.2 3B em WebGPU/Chrome, resposta sintética real, cache offline e falha de download validados. [Relatório](VALIDACAO-STEP-06.md).              |
 | [STEP-07](steps/STEP-07.md) | Implementar a ação Corrigir                     | Concluída | 111 testes e build; correção real no Chrome, prévia e aplicação manual, contexto recusado e saídas arriscadas preservando o rascunho. [Relatório](VALIDACAO-STEP-07.md). |
-| [STEP-08](steps/STEP-08.md) | Proteger entidades e validar o resultado        | Pendente  | Não iniciada.                                                                                                                                                            |
+| [STEP-08](steps/STEP-08.md) | Proteger entidades e validar o resultado        | Concluída | 120 testes e build; oito casos de correção no Chrome/WebGPU, seis prévias, duas recusas seguras, contexto, simulação e prova offline. [Relatório](VALIDACAO-STEP-08.md). |
 | [STEP-09](steps/STEP-09.md) | Adicionar os demais modos                       | Pendente  | Não iniciada.                                                                                                                                                            |
 | [STEP-10](steps/STEP-10.md) | Exibir geração progressiva e cancelamento       | Pendente  | Não iniciada.                                                                                                                                                            |
 | [STEP-11](steps/STEP-11.md) | Implementar verificação semântica opcional      | Pendente  | Não iniciada.                                                                                                                                                            |
@@ -161,9 +161,22 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 - Commit da etapa: `feat(step-07): integrar correção local ao preview`. Hash no histórico Git e no relato final; identidade humana configurada.
 - Status final: **Concluída** no escopo da STEP-07, sem validação obrigatória pendente. A próxima etapa é STEP-08, somente por nova solicitação.
 
+## STEP-08 — 29/09/2026
+
+- Escopo: extração e proteção determinística de entidades antes da inferência; restauração e validação antes da prévia. Inclui URLs, e-mails, números, valores, datas, horários, CPF/CNPJ, códigos, menções, hashtags, emojis compostos, nomes e referências temporais detectáveis, com resolução de sobreposição, slots únicos e rejeição de colisões/ocorrências inválidas.
+- Guardas: entidades originais exatas e mesma contagem, nenhum slot faltante/duplicado/desconhecido/alterado, nenhuma entidade nova, negações e relações preservadas, pergunta mantida, caracteres válidos, sem artigo inventado antes de entidade. Formato, comprimento, âncoras e término completo da geração seguem obrigatórios. Reprovação não oferece Substituir/Copiar nem modifica o rascunho.
+- Arquivos criados: `src/extension/ai/entities.ts`, `tests/entities.test.ts`, `tests/browser/step08-preservation.mjs`, bibliotecas WASM compatíveis e [relatório](VALIDACAO-STEP-08.md). Arquivos alterados: Worker, prompt, adaptador WebLLM, catálogo de modelo, testes de build/navegador, pacote/lockfile, Manifest, avisos de licença, README, checklist da etapa e este progresso. Projeto/Manifest: 0.7.0.
+- Compatibilidade: WebLLM 0.2.85 apresentou `Object has already been disposed` na GPU Intel. O [relato oficial da regressão](https://github.com/mlc-ai/web-llm/issues/844) aponta a série 0.2.83+; WebLLM passou a 0.2.82 exato, com duas bibliotecas WASM locais do catálogo `v0_2_80` na revisão oficial fixada. Pesos/modelo seguem na revisão da STEP-06. Hashes e fonte constam no relatório; build confere os binários.
+- Verificações automatizadas: `npm run check` aprovado com tipos, lint sem avisos, formatação, 120 testes em 12 arquivos e build. Os novos testes cobrem colisão literal `ENTITY_001`, repetição, sobreposição, URLs com números, CPF/CNPJ, Unicode/emoji composto, múltiplas negações, slots inválidos, relação, interrogação e artigos inventados.
+- Chrome real: pacote 0.7.0 instalado sem compactação em Chrome for Testing 154, GPU Intel `gen-12lp`, `shader-f16`, variante f16 do Llama 3.2 3B. Oito casos sintéticos executados na mesma sessão: seis prévias aprovadas, inclusive valor/data, URL, nomes/código e mistura de nome/valor/prazo/URL; duas saídas recusadas, com rascunho intacto e ações indisponíveis. Dois casos aplicaram a sugestão por clique em Substituir. Zero erros de página.
+- Regressões reais: rascunho vazio e excesso de contexto recusados, simulação identificada e cancelável, prova da STEP-06 `TESTE.` com rede bloqueada após reinício e modelo em cache; todas com zero erros de página. Não houve envio de mensagem nem dados reais versionados.
+- Limites: nomes são detectados por heurística; referências temporais cobrem formas explícitas. A comparação não prova equivalência semântica geral e pode rejeitar correções úteis. Um caso informal foi recusado porque o modelo removeu a interrogação. O fluxo da STEP-08 usou fixture sintética instalada no Chrome; o adaptador e a substituição no WhatsApp real já foram validados na STEP-05. A variante f32 não foi executada em uma segunda GPU física.
+- Commit da etapa: `feat(step-08): proteger entidades na correção`. Hash no histórico Git e na resposta de entrega; identidade humana configurada, sem atribuições adicionais.
+- Status final: **Concluída** no escopo da STEP-08, sem validação obrigatória pendente. Próxima etapa: STEP-09, somente por nova solicitação.
+
 ## Como continuar
 
-As STEP-01 a STEP-07 estão concluídas. Consulte os relatórios da [comunicação](VALIDACAO-STEP-03.md), do [editor](VALIDACAO-STEP-04.md), da [prévia](VALIDACAO-STEP-05.md), da [inferência local](VALIDACAO-STEP-06.md) e da [correção](VALIDACAO-STEP-07.md). Para continuar, solicitar **Execute somente a STEP-08 do plano.** A STEP-08 não foi iniciada.
+As STEP-01 a STEP-08 estão concluídas. Consulte os relatórios da [comunicação](VALIDACAO-STEP-03.md), do [editor](VALIDACAO-STEP-04.md), da [prévia](VALIDACAO-STEP-05.md), da [inferência local](VALIDACAO-STEP-06.md), da [correção](VALIDACAO-STEP-07.md) e da [proteção determinística](VALIDACAO-STEP-08.md). Para continuar, solicitar **Execute somente a STEP-09 do plano.** A STEP-09 não foi iniciada.
 
 Em futuras execuções, ler o plano e a etapa indicada, validar os pré-requisitos e atualizar este documento ao terminar. Não mudar o estado de etapas futuras apenas porque suas descrições foram criadas.
 

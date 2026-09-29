@@ -83,7 +83,7 @@ export class WebLLMEngine implements AIEngine {
     // O import dinâmico produz um chunk local do Worker; nenhuma API WebLLM vaza para outros contextos.
     const { MLCEngine } = await import('@mlc-ai/web-llm');
     const runtime = new MLCEngine({
-      appConfig: { model_list: [modelRecord(choice)], cacheBackend: 'cache' },
+      appConfig: { model_list: [modelRecord(choice)] },
       initProgressCallback: (report) => {
         const percent = Math.max(0, Math.min(100, Math.floor(report.progress * 100)));
         const phase = /loading model|loading gpu|finish loading/i.test(report.text)
@@ -126,7 +126,6 @@ export class WebLLMEngine implements AIEngine {
     };
     options.signal?.addEventListener('abort', abort, { once: true });
     try {
-      await runtime.resetChat();
       const correction = options.task === 'correction';
       let maxTokens = 24;
       if (correction) {
@@ -141,23 +140,37 @@ export class WebLLMEngine implements AIEngine {
         maxTokens = budget.outputTokens;
       }
       if (options.signal?.aborted) throw options.signal.reason;
-      const stream = await runtime.chat.completions.create({
-        messages: correction ? correctionMessages(text) : [{ role: 'user', content: text }],
-        stream: true,
-        max_tokens: maxTokens,
-        temperature: 0,
-      });
-      let finishReason: string | null = null;
-      for await (const chunk of stream) {
+      if (correction) {
+        const result = await runtime.chat.completions.create({
+          messages: correctionMessages(text),
+          stream: false,
+          max_tokens: maxTokens,
+          temperature: 0,
+        });
         if (options.signal?.aborted) throw options.signal.reason;
-        const fragment = chunk.choices[0]?.delta.content;
-        if (fragment) yield fragment;
-        if (chunk.choices[0]?.finish_reason) finishReason = chunk.choices[0].finish_reason;
+        requireCompleteGeneration(result.choices[0]?.finish_reason ?? null);
+        const content = result.choices[0]?.message.content;
+        if (typeof content === 'string' && content) yield content;
+      } else {
+        const stream = await runtime.chat.completions.create({
+          messages: [{ role: 'user', content: text }],
+          stream: true,
+          max_tokens: maxTokens,
+          temperature: 0,
+        });
+        for await (const chunk of stream) {
+          if (options.signal?.aborted) throw options.signal.reason;
+          const fragment = chunk.choices[0]?.delta.content;
+          if (fragment) yield fragment;
+        }
       }
-      if (correction) requireCompleteGeneration(finishReason);
     } finally {
       options.signal?.removeEventListener('abort', abort);
-      await runtime.resetChat().catch(() => undefined);
+      try {
+        await runtime.resetChat();
+      } catch {
+        await this.unload().catch(() => undefined);
+      }
     }
   }
 

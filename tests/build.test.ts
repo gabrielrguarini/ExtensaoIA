@@ -95,8 +95,8 @@ describe('pacote de produção', () => {
     expect(content).not.toContain('process.env');
     expect(outputFiles.some((file) => /worker-.*\.js$/.test(file))).toBe(true);
     for (const [variant, expectedHash] of [
-      ['q4f16_1', '79cc2f3794e32d9611675102a91d6ad1c8e869c1d5c3f7e8f8d26564d2f28efb'],
-      ['q4f32_1', 'fac5f2303c170d8936ffef02498b8f645b17e98f4be83cfe2d081ea7304d0f67'],
+      ['q4f16_1', '34de0d60ab598c6a85ae882b48474f250193076f902057a21070bb2daae96d5b'],
+      ['q4f32_1', '224e4cd5c235621684257aad3ebfdaf6e337d50f783614d1e7ed63e78d693ad6'],
     ] as const) {
       const file = outputFiles.find((item) => item.includes(variant) && item.endsWith('.wasm'));
       expect(file).toBeDefined();

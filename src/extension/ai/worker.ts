@@ -4,6 +4,7 @@ import type { Binding, BoundRequest, EngineEvent } from '../../shared/protocol';
 import { WebLLMEngine, ModelEnvironmentError } from './webllm-engine';
 import { MODEL_PROOF_TEXT } from '../../shared/model-proof';
 import { acceptCorrection, CorrectionOutputError } from './correction-output';
+import { protectDraft, restoreAndValidate } from './entities';
 
 const engine = new SimulatedEngine((event) => {
   globalThis.postMessage(event);
@@ -33,6 +34,8 @@ async function runModel(request: BoundRequest): Promise<void> {
   const controller = new AbortController();
   active = { binding, controller };
   try {
+    const correction = request.action === 'corrigir';
+    const protectedDraft = correction ? protectDraft(request.text) : undefined;
     await model.initialize({
       signal: controller.signal,
       onProgress: (phase, percent) => {
@@ -55,8 +58,7 @@ async function runModel(request: BoundRequest): Promise<void> {
       variant: model.selectedVariant() ?? null,
     });
     let response = '';
-    const correction = request.action === 'corrigir';
-    for await (const fragment of model.generate(correction ? request.text : MODEL_PROOF_TEXT, {
+    for await (const fragment of model.generate(protectedDraft?.text ?? MODEL_PROOF_TEXT, {
       signal: controller.signal,
       task: correction ? 'correction' : 'proof',
     }))
@@ -70,7 +72,8 @@ async function runModel(request: BoundRequest): Promise<void> {
         percent: 100,
         variant: model.selectedVariant() ?? null,
       });
-      const text = acceptCorrection(response, request.text);
+      const restored = restoreAndValidate(protectedDraft!, response);
+      const text = acceptCorrection(restored, request.text);
       emit({ type: 'correction-result', binding, text });
     } else {
       const variant = model.selectedVariant();
