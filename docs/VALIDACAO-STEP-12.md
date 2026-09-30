@@ -42,7 +42,7 @@ As bibliotecas vêm do [repositório oficial de binários MLC](https://github.co
 4. Execute `npm.cmd run test:step12:switch` com o mesmo perfil já preparado. O roteiro usa duas abas sintéticas, espera um trecho real do streaming de Reescrever com Qualidade e troca para Econômico pela segunda aba. Exige cancelamento explícito, rascunho intacto, ausência de prévia antiga, destruição do Worker anterior e prova bem-sucedida com um único Worker novo.
 5. Para conferir manualmente, abra IA, escolha um perfil, veja dados/limites/licença, solicite uma ação e confirme somente o download faltante. Fechar a confirmação não baixa os pesos. Após cache completo, a ação não pede novo download. Editar o rascunho durante a confirmação invalida a ação.
 
-Os roteiros usam fixtures e textos sintéticos; não abrem conversa, não requerem login e não enviam mensagem. A integração com o WhatsApp real permanece registrada na STEP-09.
+Os roteiros reproduzíveis acima usam fixtures e textos sintéticos; não abrem conversa, não requerem login e não enviam mensagem. A rodada complementar abaixo usa o WhatsApp real por solicitação explícita do usuário; a integração anterior permanece registrada na STEP-09.
 
 ## Resultado observado em 30/09/2026
 
@@ -73,4 +73,45 @@ A troca durante streaming real nas duas abas mostrou cancelamento explícito, se
 - O cache pode ser eliminado pelo navegador. Ausência de artefatos pede confirmação novamente. As origens permitidas continuam `huggingface.co` e `us.aws.cdn.hf.co`; alterações de CDN precisam ser revistas. A STEP-13 tratará a gestão completa do cache e desempenho.
 - A liberação entre perfis encerra o Worker anterior e sua GPU antes da criação da próxima instância. WebGPU não oferece uma leitura confiável de VRAM livre para comprovar números de memória residente.
 
-Não houve conteúdo de conversa nem mensagem real usado como evidência. Somente fontes, bibliotecas, licenças e procedimentos sintéticos entram no commit.
+Na rodada inicial com fixtures, não houve conversa aberta nem mensagem enviada. Somente fontes, bibliotecas, licenças, procedimentos e resultados sem transcrição entram no commit.
+
+## Validação complementar no WhatsApp real — 30/09/2026
+
+O usuário solicitou frases sintéticas variadas no grupo **Teste Extensão** e autorizou explicitamente o envio de mensagens de teste nesse grupo. Essa autorização específica define o destino desta rodada; a regra geral de contato exclusivo permanece para futuros testes sem uma instrução diferente. Não foi iniciada a STEP-13.
+
+Chrome for Testing 154, extensão `0.11.0`, perfil de teste previamente autenticado e revisão semântica opcional desligada. O grupo apareceu uma única vez na lista e foi confirmado pelo título exato do cabeçalho antes de cada escrita, substituição e envio. O compositor começou vazio. Não se leu o histórico nem se acessaram APIs ou bancos internos do WhatsApp.
+
+As frases tratam de revisão e clareza de textos e de uma descrição fictícia de um bolo, sem dados pessoais, valores ou compromissos. Depois das duas primeiras tentativas, avaliou-se a prévia sem uma etiqueta no rascunho; antes do envio manual, acrescentou-se uma identificação explícita de teste. A extensão continua sem recurso de envio. O conteúdo dos rascunhos e respostas, conversas, capturas de tela e arquivos locais do roteiro não integram este registro.
+
+### Resultados por ação
+
+Foram concluídos **14 pedidos**, cobrindo as nove ações e os três perfis f16. O rascunho permaneceu intacto durante cada geração, inclusive nas seis recusas. Das oito prévias liberadas, a revisão manual considerou duas alterações úteis, três respostas sem mudança e três alterações insatisfatórias. Essa classificação avalia apenas os casos desta rodada, sem atribuir precisão estatística aos modelos.
+
+| Perfil      | Ação         | Pedidos | Resultado observado                                                                                                                     |
+| ----------- | ------------ | ------: | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Econômico   | Corrigir     |       5 | Duas tentativas com etiqueta recusadas; uma correção útil de abreviações; duas prévias insatisfatórias na revisão manual.               |
+| Econômico   | Melhorar     |       1 | Recusa por risco de preservação, com rascunho intacto.                                                                                  |
+| Econômico   | Formal       |       1 | Recusa por risco de preservação, com rascunho intacto.                                                                                  |
+| Equilibrado | Profissional |       1 | Prévia igual ao original; não conta como alteração útil.                                                                                |
+| Equilibrado | Amigável     |       1 | Recusa por risco de preservação, com rascunho intacto.                                                                                  |
+| Equilibrado | Natural      |       1 | Prévia liberada, mas formulação artificial; não aplicada.                                                                               |
+| Qualidade   | Conciso      |       1 | Recusa por risco de preservação, com rascunho intacto.                                                                                  |
+| Qualidade   | Engraçado    |       1 | Prévia igual ao original, que já tinha comparação bem humorada.                                                                         |
+| Qualidade   | Reescrever   |       1 | Prévia igual ao original; não cumpriu a mudança de formulação neste caso.                                                               |
+| Qualidade   | Formal       |       1 | Transformação de frase informal/abreviada em pedido formal e cordial, mantendo a pergunta e a intenção; aplicada e enviada manualmente. |
+
+A correção útil do Econômico normalizou abreviações e manteve a pergunta e a referência temporal. Ela foi aplicada por **Substituir**, com igualdade exata entre a prévia revisada e o compositor. Na comparação adicional, Formal no Qualidade adaptou gíria, abreviação e cordialidade sem acrescentar fatos; também foi aplicada por **Substituir**. Total: duas substituições confirmadas.
+
+As três prévias insatisfatórias permaneceram sem aplicação: Natural produziu uma construção artificial; uma correção acrescentou um pronome desnecessário; outra não preservou claramente o contraste pretendido e escolheu um tempo verbal diante de uma grafia ambígua. As guardas liberaram essas prévias, portanto aprovação automática não equivale a qualidade ou sentido garantidos. Nas seis recusas, não se inspecionou o texto gerado rejeitado; o aviso genérico não permite atribuir uma causa individual nem afirmar que toda recusa era necessária.
+
+Foi enviada **uma mensagem sintética identificada como teste**, correspondente à formalização revisada do Qualidade. Antes do Enter manual, confirmou-se novamente o título do grupo e a igualdade exata do texto identificado com o rascunho revisado. Depois do envio, o compositor ficou vazio e a mensagem sintética apareceu no grupo. A evidência confirma a aceitação na interface, sem reivindicar leitura pelos participantes.
+
+Uma tentativa anterior de acrescentar a identificação pelo roteiro de navegador duplicou somente o próprio texto sintético. A verificação anterior ao envio recusou a divergência e nenhuma mensagem foi enviada nessa tentativa. A substituição da extensão já havia sido conferida corretamente; a falha estava na escrita do roteiro sobre o editor controlado do WhatsApp. A identificação passou a usar teclado e comparação exata; o fluxo final de identificação/envio funcionou. O rascunho duplicado foi reconhecido como o próprio teste e limpo antes de continuar.
+
+O perfil autenticado já tinha o Llama em cache. Qwen3 4B e 8B exigiram confirmação de 2,27 GB e 4,62 GB, respectivamente; ambos completaram o download e carregaram na GPU. Não houve erro de página nas sessões. Ao encerrar, os rascunhos de teste foram limpos, Econômico foi restaurado e a revisão semântica permaneceu desligada.
+
+### Conclusão da rodada
+
+A integração real, a geração, a prévia, duas substituições e um envio manual funcionaram. A qualidade da transformação variou: apenas duas das 14 solicitações produziram alterações que foram consideradas úteis nesta amostra; houve recusas, respostas sem mudança e prévias que exigiram rejeição manual. Não se declara que todas as ações já reescrevem frases variadas de forma satisfatória. A revisão semântica opcional não foi exercitada nesta rodada; sua evidência anterior está na STEP-11. A avaliação sistemática pt-BR continua prevista na STEP-15, sem iniciá-la aqui.
+
+Esta rodada alterou somente a documentação de resultados. O pacote `0.11.0` permanece o mesmo. A verificação de conclusão executou novamente `npm.cmd run check`: tipos, lint, formatação, 151 testes em 18 arquivos e build aprovados. Nenhum conteúdo de conversa ou mensagem de teste foi versionado.
