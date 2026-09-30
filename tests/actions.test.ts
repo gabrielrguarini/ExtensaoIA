@@ -5,6 +5,24 @@ import { acceptCorrection, CorrectionOutputError } from '../src/extension/ai/cor
 import { protectDraft, restoreAndValidate } from '../src/extension/ai/entities';
 
 describe('nove ações de escrita', () => {
+  it('aplica preferências e mantém todos os emojis originais protegidos', () => {
+    expect(systemPromptFor('corrigir')).toContain('Não acrescente novos emojis');
+    expect(systemPromptFor('formal')).toContain('A ação Formal adapta gírias');
+    expect(systemPromptFor('natural', { preserveSlang: false, addEmojis: true })).toContain(
+      'Pode adaptar gírias',
+    );
+    expect(systemPromptFor('amigavel', { preserveSlang: true, addEmojis: true })).toContain(
+      'Pode acrescentar emojis',
+    );
+    const draft = protectDraft('mano, pode revisar? 🙂');
+    expect(restoreAndValidate(draft, draft.text)).toBe(draft.original);
+    expect(() => restoreAndValidate(draft, draft.text + ' 😄')).toThrow();
+    expect(restoreAndValidate(draft, draft.text + ' 😄', true)).toBe(draft.original + ' 😄');
+    expect(() =>
+      restoreAndValidate(draft, draft.text.replace(/ENTITY_\d+/g, '') + ' 😄', true),
+    ).toThrow();
+    expect(() => restoreAndValidate(draft, draft.text + ' 123', true)).toThrow();
+  });
   it('usa um registro tipado com rótulos únicos em português', () => {
     expect(WRITING_ACTIONS.map(({ id }) => id)).toEqual([
       'corrigir',

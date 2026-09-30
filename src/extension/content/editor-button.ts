@@ -5,6 +5,7 @@ import { createRoot } from 'react-dom/client';
 import { PreviewPanel } from './PreviewPanel';
 import { PreviewSession } from './preview-session';
 import styles from './editor-button.css?inline';
+import { watchTheme } from '../settings/theme';
 
 const mounted = new WeakMap<Document, () => void>();
 
@@ -34,6 +35,7 @@ export function mountEditorButton(document: Document): () => void {
   panelContainer.className = 'panel-container';
   shadow.append(style, button, panelContainer);
   const root = createRoot(panelContainer);
+  const unsubscribeTheme = watchTheme(host);
   let target: EditorTarget | null = null;
   let frame: number | undefined;
   let stopped = false;
@@ -149,6 +151,7 @@ export function mountEditorButton(document: Document): () => void {
     stopped = true;
     unsubscribe();
     unsubscribeSession();
+    unsubscribeTheme();
     adapter.stop();
     resize.disconnect();
     if (frame !== undefined) cancelAnimationFrame(frame);

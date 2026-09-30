@@ -12,8 +12,9 @@ export async function validateActionOutput(
   model: Pick<AIEngine, 'generate'>,
   signal: AbortSignal,
   onReview: () => void,
+  addEmojis = false,
 ): Promise<string> {
-  const restored = restoreAndValidate(protectedDraft, generated);
+  const restored = restoreAndValidate(protectedDraft, generated, addEmojis);
   const text = acceptCorrection(restored, original);
   if (semanticReview) {
     onReview();

@@ -271,7 +271,11 @@ function invalidCharacters(value: string): boolean {
 }
 
 /** Restaura apenas slots exatos e reprova qualquer entidade nova, removida ou duplicada. */
-export function restoreAndValidate(protectedDraft: ProtectedDraft, generated: string): string {
+export function restoreAndValidate(
+  protectedDraft: ProtectedDraft,
+  generated: string,
+  addEmojis = false,
+): string {
   if (!generated.trim()) throw new CorrectionOutputError('EMPTY_OUTPUT');
   if (invalidCharacters(generated)) throw new CorrectionOutputError('INVALID_OUTPUT');
   const slotMap = new Map(
@@ -319,6 +323,14 @@ export function restoreAndValidate(protectedDraft: ProtectedDraft, generated: st
   ].length;
   if (abbreviatedToday)
     before.set('temporal:hoje', (before.get('temporal:hoje') ?? 0) + abbreviatedToday);
+  if (addEmojis) {
+    for (const [key, count] of after) {
+      if (key.startsWith('emoji:') && count >= (before.get(key) ?? 0)) {
+        after.delete(key);
+        before.delete(key);
+      }
+    }
+  }
   if (!sameOccurrences(before, after)) throw new CorrectionOutputError('PRESERVATION_RISK');
   if (negations(protectedDraft.original).join('|') !== negations(restored).join('|'))
     throw new CorrectionOutputError('PRESERVATION_RISK');

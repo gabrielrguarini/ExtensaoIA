@@ -80,6 +80,8 @@ export default defineConfig({
       input: {
         development: fileURLToPath(new URL('./index.html', import.meta.url)),
         diagnostic: fileURLToPath(new URL('./diagnostic.html', import.meta.url)),
+        popup: fileURLToPath(new URL('./popup.html', import.meta.url)),
+        sidepanel: fileURLToPath(new URL('./sidepanel.html', import.meta.url)),
         offscreen: fileURLToPath(new URL('./offscreen.html', import.meta.url)),
         'service-worker': fileURLToPath(
           new URL('./src/extension/background/index.ts', import.meta.url),

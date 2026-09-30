@@ -12,6 +12,34 @@ import { binding, start } from './fixtures';
 import { WRITING_ACTIONS } from '../src/shared/actions';
 
 describe('contratos nas fronteiras dos contextos', () => {
+  it('aceita opções autorizadas no motor e impede sua injeção pelo content script', () => {
+    const request = {
+      ...binding,
+      text: 'fixture',
+      action: 'corrigir',
+      semanticReview: false,
+      profile: 'economico',
+      allowDownload: false,
+      writingOptions: { preserveSlang: true, addEmojis: false },
+    };
+    expect(isEngineCommand({ type: 'start', request })).toBe(true);
+    expect(
+      isEngineCommand({
+        type: 'start',
+        request: { ...request, writingOptions: { preserveSlang: 'true', addEmojis: false } },
+      }),
+    ).toBe(false);
+    expect(
+      isEngineCommand({
+        type: 'start',
+        request: {
+          ...request,
+          writingOptions: { preserveSlang: true, addEmojis: false, text: 'fixture' },
+        },
+      }),
+    ).toBe(false);
+    expect(isClientCommand({ ...start, writingOptions: request.writingOptions })).toBe(false);
+  });
   it('aceita todos os comandos e eventos discriminados válidos', () => {
     for (const value of [start, { type: 'cancel', key: binding.key }, { type: 'status' }])
       expect(isClientCommand(value)).toBe(true);

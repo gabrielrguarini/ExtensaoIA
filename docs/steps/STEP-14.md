@@ -19,14 +19,14 @@ Consolidar preferências e informações do modelo em interfaces acessíveis, pr
 
 ## Tarefas
 
-- [ ] Criar popup e painel lateral para configurações e informações; o fluxo principal permanece junto ao campo do WhatsApp.
-- [ ] Adicionar a permissão sidePanel apenas quando sua funcionalidade estiver implementada e verificar abertura por gesto do usuário.
-- [ ] Definir padrões: idioma pt-BR, tema do sistema, Corrigir, Econômico, preservar gírias e emojis existentes, não adicionar novos emojis, revisão semântica desligada.
-- [ ] Tratar a privacidade local como propriedade obrigatória e informativa, sem interruptor para enviar conteúdo à nuvem.
-- [ ] Salvar somente preferências em chrome.storage.local, com esquema versionado, validação de dados e migração de configurações anteriores.
-- [ ] Fazer com que desabilitar adição de emojis preserve os emojis originais. Formalização explicitamente escolhida pode adaptar gírias sem mudar o sentido.
-- [ ] Exibir modelo, licença, estado do cache e controles de descarga/remoção; diferenciar liberar GPU de remover arquivos baixados.
-- [ ] Implementar contraste, tema claro/escuro, navegação por teclado, foco previsível e rótulos acessíveis.
+- [x] Criar popup e painel lateral para configurações e informações; o fluxo principal permanece junto ao campo do WhatsApp.
+- [x] Adicionar a permissão sidePanel apenas quando sua funcionalidade estiver implementada e verificar abertura por gesto do usuário.
+- [x] Definir padrões: idioma pt-BR, tema do sistema, Corrigir, Econômico, preservar gírias e emojis existentes, não adicionar novos emojis, revisão semântica desligada.
+- [x] Tratar a privacidade local como propriedade obrigatória e informativa, sem interruptor para enviar conteúdo à nuvem.
+- [x] Salvar somente preferências em chrome.storage.local, com esquema versionado, validação de dados e migração de configurações anteriores.
+- [x] Fazer com que desabilitar adição de emojis preserve os emojis originais. Formalização explicitamente escolhida pode adaptar gírias sem mudar o sentido.
+- [x] Exibir modelo, licença, estado do cache e controles de descarga/remoção; diferenciar liberar GPU de remover arquivos baixados.
+- [x] Implementar contraste, tema claro/escuro, navegação por teclado, foco previsível e rótulos acessíveis.
 
 ## Limites
 
@@ -36,10 +36,10 @@ Consolidar preferências e informações do modelo em interfaces acessíveis, pr
 
 ## Critérios de conclusão e verificação
 
-- [ ] Preferências permanecem após reiniciar a extensão e dados inválidos recebem padrões seguros.
-- [ ] Migração preserva preferências válidas e não cria chaves com conteúdo de mensagens.
-- [ ] Popup, painel e interface junto ao editor refletem as mesmas configurações.
-- [ ] Fluxos essenciais são utilizáveis por teclado e os padrões correspondem ao plano.
+- [x] Preferências permanecem após reiniciar a extensão e dados inválidos recebem padrões seguros.
+- [x] Migração preserva preferências válidas e não cria chaves com conteúdo de mensagens.
+- [x] Popup, painel e interface junto ao editor refletem as mesmas configurações.
+- [x] Fluxos essenciais são utilizáveis por teclado e os padrões correspondem ao plano.
 
 Quando uma verificação não puder ser realizada, registrar exatamente o procedimento pendente e usar Aguardando validação ou Bloqueada no progresso, conforme o motivo. Não substituir evidência real por suposição.
 
@@ -53,6 +53,10 @@ Quando uma verificação não puder ser realizada, registrar exatamente o proced
 Seguir [AGENTS.md](../../AGENTS.md): concluir todo o escopo acumulado da etapa, preservar o que já funciona e validar a execução correspondente. Quando houver código, executar npm run check e a validação real exigida pela etapa antes de encerrar. Cada etapa concluída deve gerar um commit próprio; revisar os arquivos preparados e informar seu hash na resposta final. Não declarar conclusão com validação obrigatória ou commit pendente.
 
 Para testes de mensagens que forem realmente necessários, usar exclusivamente o contato @gabrielrguarini, conforme as regras de teste do projeto. Esta autorização não altera a proibição de envio automático pela extensão.
+
+## Evidências da execução
+
+Procedimentos, resultados, ambiente e limites: [VALIDACAO-STEP-14.md](../VALIDACAO-STEP-14.md).
 
 ## Encerramento
 

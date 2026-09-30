@@ -22,6 +22,49 @@ function harness() {
   return { worker, terminate, host, create, events, lost, emit };
 }
 describe('Worker independente do coordenador', () => {
+  it('distingue Worker pronto, GPU carregada, preparação cancelada e liberação', async () => {
+    const h = harness();
+    expect(h.host.runtime).toBe('released');
+    const ready = h.host.ensure();
+    h.emit({ type: 'ready', simulated: true });
+    const engine = await ready;
+    expect(h.host.runtime).toBe('worker-ready');
+    const binding = {
+      key: { requestId: 'req', editorId: 'ed', snapshotId: 'snap', revision: 0 },
+      origin: { tabId: 1, frameId: 0, documentId: 'doc', connectionId: 'conn' },
+    };
+    engine.send({
+      type: 'start',
+      request: {
+        ...binding,
+        text: 'fixture',
+        action: 'corrigir',
+        semanticReview: false,
+        profile: 'qualidade',
+      },
+    });
+    h.emit({ type: 'model-progress', binding, phase: 'loading', percent: 50, variant: 'q4f16_1' });
+    expect(h.host.runtime).toBe('loading');
+    h.emit({ type: 'cancelled', binding });
+    expect(h.host.runtime).toBe('worker-ready');
+    expect(h.host.loadedProfile).toBeNull();
+    engine.send({
+      type: 'start',
+      request: {
+        ...binding,
+        text: 'fixture',
+        action: 'corrigir',
+        semanticReview: false,
+        profile: 'qualidade',
+      },
+    });
+    h.emit({ type: 'model-progress', binding, phase: 'ready', percent: 100, variant: 'q4f16_1' });
+    expect(h.host.runtime).toBe('loaded');
+    expect(h.host.loadedProfile).toBe('qualidade');
+    engine.reset();
+    expect(h.host.runtime).toBe('released');
+    expect(h.host.loadedProfile).toBeNull();
+  });
   it('libera o Worker após cinco minutos desde o último término, nunca durante operação', async () => {
     const h = harness();
     const ready = h.host.ensure();

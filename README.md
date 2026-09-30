@@ -1,6 +1,6 @@
 # Extensão de IA local para WhatsApp Web
 
-Base incremental com React, TypeScript strict e pacote Manifest V3. Na **STEP-13**, o menu **IA** oferece nove ações de escrita com os perfis Econômico (Llama 3.2 3B), Equilibrado (Qwen3 4B) e Qualidade (Qwen3 8B) no Worker via WebGPU, além de revisão semântica opcional. A geração mostra trechos provisórios e pode ser cancelada. Todas as ações protegem entidades do rascunho e validam o resultado antes de liberar Copiar ou Substituir. A prova sintética da STEP-06 e a prévia simulada da STEP-05 continuam disponíveis e identificadas. Nenhuma mensagem é enviada pela extensão. O diagnóstico da STEP-03 continua disponível.
+Base incremental com React, TypeScript strict e pacote Manifest V3. Na **STEP-14**, o menu **IA** oferece nove ações de escrita com os perfis Econômico (Llama 3.2 3B), Equilibrado (Qwen3 4B) e Qualidade (Qwen3 8B) no Worker via WebGPU, além de revisão semântica opcional. A geração mostra trechos provisórios e pode ser cancelada. Todas as ações protegem entidades do rascunho e validam o resultado antes de liberar Copiar ou Substituir. A prova sintética da STEP-06 e a prévia simulada da STEP-05 continuam disponíveis e identificadas. Nenhuma mensagem é enviada pela extensão. O diagnóstico da STEP-03 continua disponível.
 
 O estado e as evidências ficam em [docs/PROGRESSO.md](docs/PROGRESSO.md). Consulte o [plano](docs/PLANO.md) e execute somente a etapa solicitada. A conclusão depende das verificações automatizadas e da validação correspondente no Chrome.
 
@@ -20,7 +20,7 @@ npm run check
 
 No PowerShell, use npm.cmd se a política local bloquear npm.ps1; não altere a política do sistema.
 
-Abra chrome://extensions, habilite o modo do desenvolvedor, escolha **Carregar sem compactação** e selecione a pasta **dist**. Recarregue as abas do WhatsApp após instalar ou atualizar. O ícone da extensão abre o diagnóstico.
+Abra chrome://extensions, habilite o modo do desenvolvedor, escolha **Carregar sem compactação** e selecione a pasta **dist**. Recarregue as abas do WhatsApp após instalar ou atualizar. O ícone da extensão abre o popup de configurações. Clique em **Abrir painel lateral** para manter as preferências e informações visíveis. O link **Diagnóstico da comunicação simulada** continua disponível no rodapé dessas interfaces.
 
 Siga o [roteiro completo da STEP-03](docs/VALIDACAO-STEP-03.md), que cobre circuito, duas abas, concorrência, cancelamento, desconexão e reinício. Não é necessário abrir conversas ou enviar mensagens.
 
@@ -35,35 +35,43 @@ Para conferir a inferência, clique em **IA → Testar IA local**. Se o perfil e
 O menu oferece **Remover cache da variante selecionada**. Essa ação cancela o pedido ativo, encerra o Worker e remove somente arquivos e recibos sob a revisão fixa daquela variante; preserva preferências, outros modelos e dados de outros sites. Antes de uma inicialização fria, todos os shards passam pela conferência de tamanho e MD5 publicado no índice; JSONs passam por conferência estrutural, e recibos SHA-256 locais detectam mudanças posteriores em todos os arquivos. Os recibos descrevem somente artefatos públicos, sem hashes de mensagens. Cache ausente, interrompido ou inconsistente exige **Baixar e continuar**; o reparo reaproveita arquivos válidos. A persistência depende do navegador, espaço e políticas de armazenamento. Limpeza ou remoção pode exigir novo download. A disponibilidade offline refere-se à inferência após preparação completa, não ao WhatsApp. Veja [a validação da STEP-13](docs/VALIDACAO-STEP-13.md).
 Textos com várias linhas, menções estruturadas, formatação especial e editores sem suporte oferecem **somente cópia**. O teste real encontrou perda de quebras de linha na inserção nativa do WhatsApp; o rascunho multilinha permanece intacto e a cópia preserva suas linhas. Confira menções e formatação ao colar. Nenhuma API interna do site é utilizada para contornar esse limite.
 
+## Preferências e interfaces auxiliares
+
+O popup, o painel lateral e o menu junto ao editor compartilham idioma pt-BR, tema Sistema/Claro/Escuro, ação padrão, perfil, preservação de gírias, permissão de novos emojis e revisão semântica. Os padrões são Sistema, Corrigir, Econômico, preservar gírias, sem novos emojis e sem revisão semântica adicional. Os emojis originais sempre são protegidos; a ação Formal explicitamente escolhida pode adaptar gírias. O botão **Usar ação padrão** executa a escolha salva. Copiar e Substituir permanecem na prévia junto ao campo.
+
+Privacidade local é obrigatória e informativa. Somente `writingPreferences`, no esquema v3, vai para `chrome.storage.local`; migrações de v1/v2 preservam valores válidos e descartam campos desconhecidos. Dados inválidos recebem padrões seguros. Não se armazenam textos, prompts, respostas, contatos ou histórico. As interfaces oferecem licença local, estado verificado por **Atualizar estado do modelo** e controles separados: **Liberar memória da GPU** encerra o Worker, cancela pedidos e conserva os artefatos; **Apagar arquivos do modelo** pede confirmação e apaga apenas a revisão/variante selecionada, preservando preferências. O estado exibido corresponde à última consulta; atualize depois de usar a IA. Veja o [relatório da STEP-14](docs/VALIDACAO-STEP-14.md).
+
 ## Comandos
 
-| Comando                                    | Finalidade                                                                         |
-| ------------------------------------------ | ---------------------------------------------------------------------------------- |
-| npm run dev                                | Servir as páginas auxiliares em http://127.0.0.1:5173.                             |
-| npm run typecheck                          | Conferir tipos do navegador e das ferramentas sem emitir arquivos.                 |
-| npm run lint                               | Conferir código com informação de tipos, sem aceitar avisos.                       |
-| npm run format:check                       | Conferir formatação.                                                               |
-| npm run format                             | Aplicar formatação.                                                                |
-| npm test                                   | Executar testes, incluindo um build completo temporário.                           |
-| npm run test:step06:browser -- online      | Executar a prova WebGPU em Chrome for Testing; requer `STEP06_CHROME`.             |
-| npm run test:step07:browser -- corrections | Exercitar correção real em Chrome com fixture sintética; requer `STEP07_CHROME`.   |
-| npm run test:step07:browser -- context     | Conferir vazio e orçamento de contexto no Chrome; requer `STEP07_CHROME`.          |
-| npm run test:step07:browser -- regression  | Conferir a prévia simulada no Chrome; requer `STEP07_CHROME`.                      |
-| npm run test:step08:browser -- corrections | Exercitar proteção e rejeições seguras no Chrome; requer `STEP08_CHROME`.          |
-| npm run test:step08:browser -- context     | Conferir vazio e limite de contexto no Chrome; requer `STEP08_CHROME`.             |
-| npm run test:step08:browser -- regression  | Conferir a prévia simulada no Chrome; requer `STEP08_CHROME`.                      |
-| npm run test:step09:browser -- fixture     | Exercitar os nove modos em fixture no Chrome; requer `STEP09_CHROME`.              |
-| npm run test:step09:browser -- whatsapp    | Exercitar rascunhos sintéticos no grupo de teste autorizado; requer perfil logado. |
-| npm run test:step10:browser                | Conferir streaming e cancelamento no Chrome/WebGPU com fixture sintética.          |
-| npm run test:step11:browser                | Avaliar o verificador e a preferência no Chrome/WebGPU; requer `STEP11_CHROME`.    |
-| npm run test:step12:browser -- qualidade   | Validar o perfil no Chrome/WebGPU com fixture sintética; requer `STEP12_CHROME`.   |
-| npm run test:step12:switch                 | Conferir troca durante geração e liberação do Worker; requer os perfis em cache.   |
-| npm run test:watch                         | Reexecutar testes durante a edição.                                                |
-| npm run build                              | Conferir tipos e gerar a extensão completa em dist.                                |
-| npm run preview                            | Servir as páginas construídas em http://127.0.0.1:4173.                            |
-| npm run check                              | Executar tipos, lint, formatação, testes e build; parar na primeira falha.         |
+| Comando                                    | Finalidade                                                                                        |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| npm run dev                                | Servir as páginas auxiliares em http://127.0.0.1:5173.                                            |
+| npm run typecheck                          | Conferir tipos do navegador e das ferramentas sem emitir arquivos.                                |
+| npm run lint                               | Conferir código com informação de tipos, sem aceitar avisos.                                      |
+| npm run format:check                       | Conferir formatação.                                                                              |
+| npm run format                             | Aplicar formatação.                                                                               |
+| npm test                                   | Executar testes, incluindo um build completo temporário.                                          |
+| npm run test:step06:browser -- online      | Executar a prova WebGPU em Chrome for Testing; requer `STEP06_CHROME`.                            |
+| npm run test:step07:browser -- corrections | Exercitar correção real em Chrome com fixture sintética; requer `STEP07_CHROME`.                  |
+| npm run test:step07:browser -- context     | Conferir vazio e orçamento de contexto no Chrome; requer `STEP07_CHROME`.                         |
+| npm run test:step07:browser -- regression  | Conferir a prévia simulada no Chrome; requer `STEP07_CHROME`.                                     |
+| npm run test:step08:browser -- corrections | Exercitar proteção e rejeições seguras no Chrome; requer `STEP08_CHROME`.                         |
+| npm run test:step08:browser -- context     | Conferir vazio e limite de contexto no Chrome; requer `STEP08_CHROME`.                            |
+| npm run test:step08:browser -- regression  | Conferir a prévia simulada no Chrome; requer `STEP08_CHROME`.                                     |
+| npm run test:step09:browser -- fixture     | Exercitar os nove modos em fixture no Chrome; requer `STEP09_CHROME`.                             |
+| npm run test:step09:browser -- whatsapp    | Exercitar rascunhos sintéticos no grupo de teste autorizado; requer perfil logado.                |
+| npm run test:step10:browser                | Conferir streaming e cancelamento no Chrome/WebGPU com fixture sintética.                         |
+| npm run test:step11:browser                | Avaliar o verificador e a preferência no Chrome/WebGPU; requer `STEP11_CHROME`.                   |
+| npm run test:step12:browser -- qualidade   | Validar o perfil no Chrome/WebGPU com fixture sintética; requer `STEP12_CHROME`.                  |
+| npm run test:step12:switch                 | Conferir troca durante geração e liberação do Worker; requer os perfis em cache.                  |
+| npm run test:step14:browser                | Validar popup/painel, migração, sincronização, temas, teclado e reinício; requer `STEP14_CHROME`. |
+| npm run test:step14:model                  | Validar escrita WebGPU e liberar/apagar modelo com fixture; requer `STEP14_CHROME`.               |
+| npm run test:watch                         | Reexecutar testes durante a edição.                                                               |
+| npm run build                              | Conferir tipos e gerar a extensão completa em dist.                                               |
+| npm run preview                            | Servir as páginas construídas em http://127.0.0.1:4173.                                           |
+| npm run check                              | Executar tipos, lint, formatação, testes e build; parar na primeira falha.                        |
 
-Os roteiros de navegador das STEP-06 a STEP-11 reproduzem as versões registradas nos respectivos commits. Para o pacote atual, use os roteiros da STEP-12; os testes automatizados continuam cobrindo as funcionalidades acumuladas.
+Os roteiros de navegador das STEP-06 a STEP-11 reproduzem as versões registradas nos respectivos commits. Para o pacote atual, use os roteiros das STEP-14 e STEP-13; os testes automatizados continuam cobrindo as funcionalidades acumuladas.
 
 Os servidores escutam apenas no computador local e falham se a porta estiver ocupada. Encerre com Ctrl+C. O preview valida React e estilos; **localhost não executa APIs de extensão**. O diagnóstico nesse endereço informa que precisa ser aberto pela extensão instalada.
 
@@ -77,12 +85,12 @@ Os servidores escutam apenas no computador local e falham se a porta estiver ocu
 | src/extension/ai         | Worker, WebLLM, prompt, orçamento com tokenizer, extração/restauração de entidades, validação e simulador. |
 | src/extension/content    | Botão, menu/prévia React com Shadow DOM, sessão em memória e clientes de comunicação.                      |
 | src/integration/whatsapp | Seletores, detecção, leitura de blocos, revisão e substituição nativa do editor.                           |
-| src/extension/diagnostic | Página auxiliar aberta pelo ícone da extensão. Não é o popup de configurações nem o preview do produto.    |
+| src/extension/diagnostic | Página de comunicação simulada acessível pelo link no popup/painel.                                        |
 | src/shared               | Contratos, validação dos payloads/remetentes e fixture sintética.                                          |
 | src/development          | Página React auxiliar da STEP-02, preservada.                                                              |
 | tests                    | Contratos, remetentes, roteamento, cancelamento, recuperação, simulador, pacote e fixtures do editor.      |
 
-WebLLM 0.2.82 executa a prova sintética, as nove ações e a revisão semântica opcional na mesma instância do perfil selecionado. A versão foi fixada devido à falha de GPU observada com 0.2.85; as bibliotecas WASM locais são compatíveis com o catálogo `v0_2_80`. Configurações completas, popup e painel continuam nas etapas previstas.
+WebLLM 0.2.82 executa a prova sintética, as nove ações e a revisão semântica opcional na mesma instância do perfil selecionado. A versão foi fixada devido à falha de GPU observada com 0.2.85; as bibliotecas WASM locais são compatíveis com o catálogo `v0_2_80`. Popup, painel lateral e menu do editor compartilham as preferências da STEP-14.
 
 ## Detecção e revisão do editor
 

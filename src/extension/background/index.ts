@@ -1,15 +1,23 @@
 import { fields, record } from '../../shared/protocol';
-import { contentOrigin, isExtensionPage, isWhatsAppUrl } from '../../shared/senders';
+import {
+  contentOrigin,
+  isExtensionPage,
+  isWhatsAppUrl,
+  isSettingsPage,
+} from '../../shared/senders';
 import { isDiagnosticCommand } from '../../shared/diagnostic';
 import type { DiagnosticCommand, Probe } from '../../shared/diagnostic';
 import { OffscreenHost } from './offscreen-host';
 import { isPreferenceCommand } from '../../shared/preferences';
-import { readPreferences, saveProfile, saveSemanticReview } from './preferences';
+import { readPreferences, updatePreferences, migratePreferences } from './preferences';
 
 const host = new OffscreenHost();
 
-chrome.action.onClicked.addListener(() => {
-  void chrome.tabs.create({ url: chrome.runtime.getURL('diagnostic.html') });
+chrome.runtime.onInstalled.addListener(() => {
+  void migratePreferences();
+});
+chrome.runtime.onStartup.addListener(() => {
+  void migratePreferences();
 });
 
 async function diagnostic(command: DiagnosticCommand): Promise<unknown> {
@@ -31,7 +39,11 @@ chrome.runtime.onMessage.addListener((value: unknown, sender, sendResponse) => {
     value.target === 'local-engine' &&
     value.type === 'prepare'
   ) {
-    if (!contentOrigin(sender, chrome.runtime.id, crypto.randomUUID())) return false;
+    if (
+      !contentOrigin(sender, chrome.runtime.id, crypto.randomUUID()) &&
+      !isSettingsPage(sender, chrome.runtime.id)
+    )
+      return false;
     void host.ensure().then(
       () => sendResponse({ ready: true }),
       () => sendResponse({ error: 'UNAVAILABLE' }),
@@ -41,18 +53,25 @@ chrome.runtime.onMessage.addListener((value: unknown, sender, sendResponse) => {
   if (isPreferenceCommand(value)) {
     if (
       !contentOrigin(sender, chrome.runtime.id, crypto.randomUUID()) &&
+      !isSettingsPage(sender, chrome.runtime.id) &&
       !(value.type === 'get' && isExtensionPage(sender, chrome.runtime.id, 'offscreen.html'))
     )
       return false;
     const operation =
       value.type === 'get'
-        ? readPreferences()
-        : value.type === 'set'
-          ? saveSemanticReview(value.semanticReview)
-          : saveProfile(value.profile).then(async (saved) => {
-              await host.reset();
-              return saved;
-            });
+        ? migratePreferences()
+        : (async () => {
+            const previous = await readPreferences();
+            const patch =
+              value.type === 'set'
+                ? { semanticReview: value.semanticReview }
+                : value.type === 'profile'
+                  ? { profile: value.profile }
+                  : value.patch;
+            const saved = await updatePreferences(patch);
+            if (saved.profile !== previous.profile) await host.reset();
+            return saved;
+          })();
     void operation.then(sendResponse, () => sendResponse({ error: 'PREFERENCES_UNAVAILABLE' }));
     return true;
   }

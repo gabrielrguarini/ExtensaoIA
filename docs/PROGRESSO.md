@@ -5,10 +5,10 @@
 ## Estado atual
 
 - Última atualização: 30/09/2026.
-- Última etapa concluída: **STEP-13 — Consolidar cache, recuperação e desempenho**.
-- Situação: cache verificado por revisão/variante, reparo explícito, remoção restrita e encerramento do Worker após cinco minutos; inferência offline após reinício, perda real de GPU e de offscreen validadas. [Relatório da STEP-13](VALIDACAO-STEP-13.md).
+- Última etapa concluída: **STEP-14 — Finalizar configurações e interfaces auxiliares**.
+- Situação: popup e painel lateral reais, preferências v3 migradas e sincronizadas com o editor, temas/teclado e controles separados de GPU/cache validados no Chrome/WebGPU. [Relatório da STEP-14](VALIDACAO-STEP-14.md).
 - Validação complementar no WhatsApp real: 14 pedidos no grupo autorizado, duas alterações consideradas úteis, seis recusas, três respostas sem mudança e três prévias insatisfatórias; duas substituições e uma mensagem sintética enviada manualmente. A qualidade varia e exige revisão. [Resultados](VALIDACAO-STEP-12.md#validação-complementar-no-whatsapp-real--30092026).
-- Próxima etapa executável: **STEP-14**, somente quando solicitada.
+- Próxima etapa executável: **STEP-15**, somente quando solicitada.
 - Implementação: Manifest V3, comunicação, adaptador do editor, botão IA, prévia, substituição manual, prova sintética e nove ações com streaming nos perfis Econômico/Llama 3.2 3B, Equilibrado/Qwen3 4B e Qualidade/Qwen3 8B via WebGPU. A revisão semântica opcional usa a mesma instância do modelo em sequência. A simulação continua identificada. Textos multilinha e estruturas especiais oferecem somente cópia.
 
 ## Significado dos status
@@ -38,7 +38,7 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 | [STEP-11](steps/STEP-11.md) | Implementar verificação semântica opcional      | Concluída | 143 testes e build; seis casos sintéticos no Llama/WebGPU, preferência persistida e cancelamento durante revisão no Chrome. [Relatório](VALIDACAO-STEP-11.md).           |
 | [STEP-12](steps/STEP-12.md) | Adicionar modelos e perfis de hardware          | Concluída | 151 testes e build; três modelos f16 usados no Chrome/WebGPU e troca durante streaming com liberação do Worker. [Matriz e artefatos](VALIDACAO-STEP-12.md).              |
 | [STEP-13](steps/STEP-13.md) | Consolidar cache, recuperação e desempenho      | Concluída | 171 testes e build; offline após reinício, GPU/offscreen perdidos, inatividade real, interrupção/reparo e remoção restrita. [Relatório](VALIDACAO-STEP-13.md).           |
-| [STEP-14](steps/STEP-14.md) | Finalizar configurações e interfaces auxiliares | Pendente  | Não iniciada.                                                                                                                                                            |
+| [STEP-14](steps/STEP-14.md) | Finalizar configurações e interfaces auxiliares | Concluída | 178 testes e build; popup/painel por gesto, migração, sincronização, temas/teclado, reinício e controle real de GPU/cache. [Relatório](VALIDACAO-STEP-14.md).            |
 | [STEP-15](steps/STEP-15.md) | Criar e executar o benchmark pt-BR              | Pendente  | Não iniciada.                                                                                                                                                            |
 | [STEP-16](steps/STEP-16.md) | Validar e preparar a entrega instalável         | Pendente  | Não iniciada.                                                                                                                                                            |
 
@@ -242,9 +242,22 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 - Status final: **Concluída** no escopo da STEP-13, sem validação obrigatória pendente.
 - Próxima etapa: STEP-14, somente por nova solicitação; não iniciada.
 
+## STEP-14 — 30/09/2026
+
+- Escopo: popup e painel lateral para preferências, privacidade e informações/gestão do modelo; prévia permanece no editor. Abertura do painel por clique direto, com permissão sidePanel implementada. Diagnóstico simulado anterior preservado por link.
+- Preferências v3: idioma pt-BR, Sistema/Claro/Escuro, ação padrão (Corrigir), perfil (Econômico), preservar gírias, não adicionar emojis e revisão semântica desligada por padrão. Emojis originais sempre protegidos; Formal pode adaptar gírias. Somente preferências em chrome.storage.local, com migração v1/v2, saneamento por campo, descarte de conteúdo desconhecido e gravações serializadas. Opções do Worker vêm do coordenador autorizado.
+- Arquivos principais: páginas popup/sidepanel e src/extension/settings, manifest/build, preferências/protocolo/roteamento, menu/sessão/tema do editor, prompt/validação e estado do host; testes, README e [relatório](VALIDACAO-STEP-14.md). Pacote/Manifest 0.13.0; dependências mantidas e lock atualizado somente na versão do projeto.
+- Verificações automatizadas: npm.cmd run check aprovado com tipos, lint sem avisos, formatação, 178 testes em 24 arquivos e build. Migração, conteúdo extra, campos inválidos, concorrência, opções autorizadas, guarda de emojis e estados de GPU cobertos.
+- Chrome real: popup nativo abriu painel visível por clique real; tema/ação/emojis sincronizados com painel e editor. Migração descartou campo de prompt sintético; dados inválidos receberam padrões; só writingPreferences no storage. Reinício conservou preferências. Enter/Tab/Escape e confirmação de remoção/foco validados. Temas claro/escuro/sistema conferidos; contraste mínimo amostrado 7,67:1, com inspeção visual.
+- WebGPU real: NVIDIA/lovelace, shader-f16, Llama 3.2 3B f16. Corrigir preservou gíria/pergunta/emoji; Formal adaptou gíria mantendo pergunta/emoji. Rascunho intacto. Cache completo/verificado e modelo carregado exibidos. Liberar GPU eliminou Worker e conservou cache/preferências; prova seguinte gerou sem download. Apagar variante removeu arquivos/recibos e Worker, conservou preferências e exigiu nova confirmação no próximo uso. Zero erros de página nos roteiros finais.
+- Limites: somente fixtures sintéticas sem autenticação/envio, nenhuma conversa real registrada. Uma única GPU/modelo revalidado; evidências acumuladas das demais variantes/WhatsApp permanecem anteriores. O estado do modelo é uma consulta explícita. A fixture foi corrigida para UTF-8; investigação de saídas do motor mostrou recusas seguras e limitação semântica já existente. Perguntas foram reforçadas no prompt sem enfraquecer guardas. Revisão manual segue necessária; não foi executado benchmark nem iniciada STEP-15.
+- Commit da etapa: feat(step-14): finalizar preferências e interfaces auxiliares. Hash no histórico Git e no relato final; identidade humana configurada, sem push ou atribuições adicionais.
+- Status final: **Concluída** no escopo da STEP-14, sem validação obrigatória pendente.
+- Próxima etapa: STEP-15, somente por nova solicitação; não iniciada.
+
 ## Como continuar
 
-As STEP-01 a STEP-13 estão concluídas. Consulte os relatórios da [comunicação](VALIDACAO-STEP-03.md), do [editor](VALIDACAO-STEP-04.md), da [prévia](VALIDACAO-STEP-05.md), da [inferência local](VALIDACAO-STEP-06.md), da [correção](VALIDACAO-STEP-07.md), da [proteção determinística](VALIDACAO-STEP-08.md), dos [nove modos](VALIDACAO-STEP-09.md), do [streaming](VALIDACAO-STEP-10.md), da [revisão semântica](VALIDACAO-STEP-11.md) e dos [perfis](VALIDACAO-STEP-12.md). Consulte também a [validação do cache e recuperação](VALIDACAO-STEP-13.md). Para continuar, solicitar **Execute somente a STEP-14 do plano.** A STEP-14 não foi iniciada.
+As STEP-01 a STEP-14 estão concluídas. Consulte os relatórios da [comunicação](VALIDACAO-STEP-03.md), do [editor](VALIDACAO-STEP-04.md), da [prévia](VALIDACAO-STEP-05.md), da [inferência local](VALIDACAO-STEP-06.md), da [correção](VALIDACAO-STEP-07.md), da [proteção determinística](VALIDACAO-STEP-08.md), dos [nove modos](VALIDACAO-STEP-09.md), do [streaming](VALIDACAO-STEP-10.md), da [revisão semântica](VALIDACAO-STEP-11.md) e dos [perfis](VALIDACAO-STEP-12.md). Consulte também a [validação do cache e recuperação](VALIDACAO-STEP-13.md). Consulte a [validação das configurações](VALIDACAO-STEP-14.md). Para continuar, solicitar **Execute somente a STEP-15 do plano.** A STEP-15 não foi iniciada.
 
 Em futuras execuções, ler o plano e a etapa indicada, validar os pré-requisitos e atualizar este documento ao terminar. Não mudar o estado de etapas futuras apenas porque suas descrições foram criadas.
 

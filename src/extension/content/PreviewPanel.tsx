@@ -1,7 +1,8 @@
 import { useLayoutEffect, useRef, useSyncExternalStore } from 'react';
 import type { PreviewSession } from './preview-session';
-import { MODEL_CHOICES, MODEL_PROFILES, PROFILE_LABELS } from '../ai/model-catalog';
+import { MODEL_CHOICES, PROFILE_LABELS } from '../ai/model-catalog';
 import { WRITING_ACTIONS, writingAction } from '../../shared/actions';
+import { PreferenceFields } from '../settings/PreferenceFields';
 
 export function PreviewPanel({
   session,
@@ -18,10 +19,19 @@ export function PreviewPanel({
         ]
       : null;
   const panel = useRef<HTMLElement>(null);
+  const menuFocused = useRef(false);
+  const menuReady = state.kind === 'menu' && state.preferenceStatus === 'ready';
   useLayoutEffect(() => {
     if (state.kind !== 'closed')
       panel.current?.querySelector<HTMLButtonElement>('button:not(:disabled)')?.focus();
   }, [state.kind]);
+  useLayoutEffect(() => {
+    if (state.kind !== 'menu') menuFocused.current = false;
+    if (menuReady && !menuFocused.current) {
+      panel.current?.querySelector<HTMLButtonElement>('.primary')?.focus();
+      menuFocused.current = true;
+    }
+  }, [state.kind, menuReady]);
   if (state.kind === 'closed') return null;
   return (
     <section
@@ -47,23 +57,11 @@ export function PreviewPanel({
           <p>
             Escolha como revisar seu rascunho. A sugestão só será aplicada após sua confirmação.
           </p>
-          <label className="profile-setting">
-            Perfil de IA local
-            <select
-              value={state.profile}
-              disabled={state.preferenceStatus !== 'ready'}
-              onChange={(event) => {
-                if (event.nativeEvent.isTrusted)
-                  session.setProfile(event.currentTarget.value as typeof state.profile);
-              }}
-            >
-              {MODEL_PROFILES.map((profile) => (
-                <option key={profile} value={profile}>
-                  {PROFILE_LABELS[profile]}
-                </option>
-              ))}
-            </select>
-          </label>
+          <PreferenceFields
+            value={state.preferences}
+            disabled={state.preferenceStatus !== 'ready'}
+            onChange={(patch) => session.updatePreferences(patch)}
+          />
           <p className="hardware-info">
             {state.hardware.state === 'checking'
               ? 'Verificando adaptador WebGPU…'
@@ -71,18 +69,16 @@ export function PreviewPanel({
                 ? 'Adaptador WebGPU: indisponível. Limites e VRAM livre: indisponíveis.'
                 : `WebGPU: shader-f16 ${state.hardware.shaderF16 ? 'disponível' : 'indisponível'}; buffer de armazenamento máximo ${Math.floor(state.hardware.maxStorageBufferBindingSize / 1_048_576)} MiB; buffer máximo ${Math.floor(state.hardware.maxBufferSize / 1_048_576)} MiB. VRAM livre: indisponível.`}
           </p>
-          <label className="semantic-setting">
-            <input
-              type="checkbox"
-              checked={state.semanticReview}
-              disabled={state.preferenceStatus !== 'ready'}
-              onChange={(event) => {
-                if (event.nativeEvent.isTrusted)
-                  session.setSemanticReview(event.currentTarget.checked);
-              }}
-            />
-            Revisão semântica adicional (mais lenta, desligada por padrão)
-          </label>
+          <button
+            type="button"
+            className="primary"
+            disabled={state.preferenceStatus !== 'ready'}
+            onClick={(event) => {
+              if (event.isTrusted) session.startAction(state.preferences.defaultAction);
+            }}
+          >
+            Usar ação padrão: {writingAction(state.preferences.defaultAction).label}
+          </button>
           {state.preferenceStatus === 'loading' && <p role="status">Lendo preferência local...</p>}
           {state.preferenceStatus === 'saving' && <p role="status">Salvando preferência...</p>}
           {state.preferenceStatus === 'error' && (

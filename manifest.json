@@ -1,17 +1,18 @@
 {
   "manifest_version": 3,
   "name": "IA local — WhatsApp Web (desenvolvimento)",
-  "version": "0.12.0",
-  "description": "STEP-13: IA local com cache verificado, reparo explícito, recuperação e liberação por inatividade. Sem envio de mensagens.",
+  "version": "0.13.0",
+  "description": "STEP-14: IA local com preferências, popup, painel lateral e prévia no editor. Sem envio de mensagens.",
   "minimum_chrome_version": "116",
-  "permissions": ["storage", "offscreen"],
+  "permissions": ["storage", "offscreen", "sidePanel"],
   "host_permissions": [
     "https://web.whatsapp.com/*",
     "https://huggingface.co/*",
     "https://us.aws.cdn.hf.co/*"
   ],
   "background": { "service_worker": "service-worker.js", "type": "module" },
-  "action": { "default_title": "Diagnóstico da comunicação simulada" },
+  "action": { "default_title": "IA local · Configurações", "default_popup": "popup.html" },
+  "side_panel": { "default_path": "sidepanel.html" },
   "content_scripts": [
     {
       "matches": ["https://web.whatsapp.com/*"],

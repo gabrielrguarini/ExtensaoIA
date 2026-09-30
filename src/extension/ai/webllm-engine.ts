@@ -199,7 +199,7 @@ export class WebLLMEngine implements AIEngine {
           const budget = correctionTokenBudget(
             (value) => tokenizer.encode(value),
             template,
-            systemPromptFor(action),
+            systemPromptFor(action, options.writingOptions),
             text,
           );
           if (!budget) throw new ModelEnvironmentError('CONTEXT_LIMIT');
@@ -218,7 +218,9 @@ export class WebLLMEngine implements AIEngine {
       if (options.signal?.aborted) throw options.signal.reason;
       if (action || semantic) {
         const stream = await runtime.chat.completions.create({
-          messages: action ? actionMessages(action, text) : semanticMessages(text),
+          messages: action
+            ? actionMessages(action, text, options.writingOptions)
+            : semanticMessages(text),
           stream: true,
           max_tokens: maxTokens,
           temperature: 0,

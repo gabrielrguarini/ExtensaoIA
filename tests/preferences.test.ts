@@ -18,6 +18,43 @@ import type { ProofGenerator, ProofOutcome } from '../src/extension/content/mode
 afterEach(() => vi.unstubAllGlobals());
 
 describe('preferência local de revisão', () => {
+  it('uma confirmação atrasada não desfaz preferências novas recebidas de outra interface', async () => {
+    let changed: ((value: WritingPreferences) => void) | undefined;
+    let resolveSave: ((value: WritingPreferences) => void) | undefined;
+    const preferences = {
+      read: () => Promise.resolve({ ...DEFAULT_PREFERENCES }),
+      setSemanticReview: vi.fn(),
+      setProfile: vi.fn(),
+      update: () =>
+        new Promise<WritingPreferences>((resolve) => {
+          resolveSave = resolve;
+        }),
+      subscribe: (listener: (value: WritingPreferences) => void) => {
+        changed = listener;
+        return vi.fn();
+      },
+    };
+    const session = new PreviewSession(
+      {} as WhatsAppAdapter,
+      vi.fn(),
+      vi.fn(),
+      vi.fn(),
+      vi.fn(),
+      preferences,
+    );
+    session.open();
+    await Promise.resolve();
+    session.updatePreferences({ theme: 'dark' });
+    changed?.({ ...DEFAULT_PREFERENCES, theme: 'dark', defaultAction: 'formal', addEmojis: true });
+    resolveSave?.({ ...DEFAULT_PREFERENCES, theme: 'dark' });
+    await Promise.resolve();
+    expect(session.getState()).toMatchObject({
+      kind: 'menu',
+      preferenceStatus: 'ready',
+      preferences: { theme: 'dark', defaultAction: 'formal', addEmojis: true },
+    });
+    session.close();
+  });
   it('preserva as duas preferências em gravações concorrentes', async () => {
     let stored = { ...DEFAULT_PREFERENCES };
     vi.stubGlobal('chrome', {
@@ -33,7 +70,7 @@ describe('preferência local de revisão', () => {
     });
     await Promise.all([saveSemanticReview(true), saveProfile('qualidade')]);
     expect(await readPreferences()).toEqual({
-      version: 2,
+      ...DEFAULT_PREFERENCES,
       semanticReview: true,
       profile: 'qualidade',
     });
@@ -66,13 +103,13 @@ describe('preferência local de revisão', () => {
     );
     session.open();
     await Promise.resolve();
-    changed?.({ version: 2, semanticReview: false, profile: 'equilibrado' });
+    changed?.({ ...DEFAULT_PREFERENCES, semanticReview: false, profile: 'equilibrado' });
     expect(session.getState()).toMatchObject({ kind: 'menu', profile: 'equilibrado' });
     session.startModelProof();
     expect(prove.mock.calls[0]?.slice(2)).toEqual([false, 'equilibrado']);
     done?.({ ok: false, code: 'DOWNLOAD_REQUIRED', message: 'Sem cache' });
     expect(session.getState()).toMatchObject({ kind: 'download-confirm', profile: 'equilibrado' });
-    changed?.({ version: 2, semanticReview: false, profile: 'qualidade' });
+    changed?.({ ...DEFAULT_PREFERENCES, semanticReview: false, profile: 'qualidade' });
     session.confirmDownload();
     expect(session.getState().kind).toBe('notice');
     expect(prove).toHaveBeenCalledOnce();
@@ -83,7 +120,7 @@ describe('preferência local de revisão', () => {
     const preferences = {
       read: () =>
         Promise.resolve({
-          version: 2 as const,
+          ...DEFAULT_PREFERENCES,
           semanticReview: false,
           profile: 'qualidade' as const,
         }),
@@ -132,34 +169,34 @@ describe('preferência local de revisão', () => {
     });
     expect(await readPreferences()).toEqual(DEFAULT_PREFERENCES);
     expect(await saveSemanticReview(true)).toEqual({
-      version: 2,
+      ...DEFAULT_PREFERENCES,
       semanticReview: true,
       profile: 'economico',
     });
     expect(await readPreferences()).toEqual({
-      version: 2,
+      ...DEFAULT_PREFERENCES,
       semanticReview: true,
       profile: 'economico',
     });
     expect(await saveProfile('qualidade')).toEqual({
-      version: 2,
+      ...DEFAULT_PREFERENCES,
       semanticReview: true,
       profile: 'qualidade',
     });
     expect(await saveSemanticReview(false)).toEqual({
-      version: 2,
+      ...DEFAULT_PREFERENCES,
       semanticReview: false,
       profile: 'qualidade',
     });
     stored = { version: 1, semanticReview: true };
     expect(await readPreferences()).toEqual({
-      version: 2,
+      ...DEFAULT_PREFERENCES,
       semanticReview: true,
       profile: 'economico',
     });
     stored = { version: 2, semanticReview: true };
-    await expect(readPreferences()).rejects.toThrow();
-    expect(() => parsePreferences({ version: 1, semanticReview: 'true' })).toThrow();
+    expect(await readPreferences()).toEqual({ ...DEFAULT_PREFERENCES, semanticReview: true });
+    expect(parsePreferences({ version: 1, semanticReview: 'true' })).toEqual(DEFAULT_PREFERENCES);
     expect(isPreferenceCommand({ target: 'preferences', type: 'set', semanticReview: true })).toBe(
       true,
     );
@@ -179,18 +216,17 @@ describe('preferência local de revisão', () => {
   });
 
   it('mostra o valor salvo e ignora retorno atrasado de menu encerrado', async () => {
-    let resolveRead:
-      ((value: { version: 2; semanticReview: boolean; profile: 'economico' }) => void) | undefined;
+    let resolveRead: ((value: WritingPreferences) => void) | undefined;
     const preferences = {
       read: vi.fn(
         () =>
-          new Promise<{ version: 2; semanticReview: boolean; profile: 'economico' }>((resolve) => {
+          new Promise<WritingPreferences>((resolve) => {
             resolveRead = resolve;
           }),
       ),
       setSemanticReview: vi.fn((semanticReview: boolean) =>
         Promise.resolve({
-          version: 2 as const,
+          ...DEFAULT_PREFERENCES,
           semanticReview,
           profile: 'economico' as const,
         }),
@@ -211,7 +247,7 @@ describe('preferência local de revisão', () => {
       semanticReview: false,
       preferenceStatus: 'loading',
     });
-    resolveRead?.({ version: 2, semanticReview: true, profile: 'economico' });
+    resolveRead?.({ ...DEFAULT_PREFERENCES, semanticReview: true, profile: 'economico' });
     await Promise.resolve();
     expect(session.getState()).toMatchObject({
       kind: 'menu',
@@ -225,7 +261,7 @@ describe('preferência local de revisão', () => {
     session.close();
     session.open();
     session.close();
-    resolveRead?.({ version: 2, semanticReview: true, profile: 'economico' });
+    resolveRead?.({ ...DEFAULT_PREFERENCES, semanticReview: true, profile: 'economico' });
     await Promise.resolve();
     expect(session.getState()).toEqual({ kind: 'closed' });
   });

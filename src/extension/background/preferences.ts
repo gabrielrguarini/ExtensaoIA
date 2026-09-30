@@ -8,17 +8,23 @@ export async function readPreferences(): Promise<WritingPreferences> {
 
 let pendingWrite: Promise<unknown> = Promise.resolve();
 
-function updatePreferences(
+export function updatePreferences(
   change: Partial<Omit<WritingPreferences, 'version'>>,
 ): Promise<WritingPreferences> {
   const operation = pendingWrite.then(async () => {
-    const current = await readPreferences();
+    const stored = await chrome.storage.local.get(PREFERENCES_KEY);
+    const current = parsePreferences(stored[PREFERENCES_KEY]);
     const preferences: WritingPreferences = { ...current, ...change };
-    await chrome.storage.local.set({ [PREFERENCES_KEY]: preferences });
+    if (JSON.stringify(stored[PREFERENCES_KEY]) !== JSON.stringify(preferences))
+      await chrome.storage.local.set({ [PREFERENCES_KEY]: preferences });
     return preferences;
   });
   pendingWrite = operation.catch(() => undefined);
   return operation;
+}
+
+export function migratePreferences(): Promise<WritingPreferences> {
+  return updatePreferences({});
 }
 
 export async function saveSemanticReview(semanticReview: boolean): Promise<WritingPreferences> {

@@ -10,7 +10,8 @@ import { writingAction } from '../../shared/actions';
 import type { WritingAction } from '../../shared/actions';
 import { preferenceStore } from './preferences-client';
 import type { PreferenceStore } from './preferences-client';
-import type { WritingPreferences } from '../../shared/preferences';
+import { DEFAULT_PREFERENCES } from '../../shared/preferences';
+import type { PreferencePatch, WritingPreferences } from '../../shared/preferences';
 import type { ModelProfile } from '../ai/model-catalog';
 import { PROFILE_LABELS, smallerProfile } from '../ai/model-catalog';
 import { probeHardware } from './model-hardware';
@@ -23,6 +24,7 @@ export type PreviewState =
       kind: 'menu';
       semanticReview: boolean;
       profile: ModelProfile;
+      preferences: WritingPreferences;
       hardware: HardwareStatus;
       preferenceStatus: 'loading' | 'ready' | 'saving' | 'error';
     }
@@ -96,6 +98,7 @@ export class PreviewSession {
       kind: 'menu',
       semanticReview: false,
       profile: this.profile,
+      preferences: { ...DEFAULT_PREFERENCES, profile: this.profile },
       hardware: this.hardware,
       preferenceStatus: 'loading',
     });
@@ -120,6 +123,7 @@ export class PreviewSession {
             ...this.state,
             semanticReview: value.semanticReview,
             profile: value.profile,
+            preferences: value,
             preferenceStatus: 'ready',
           });
         }
@@ -139,6 +143,7 @@ export class PreviewSession {
         ...this.state,
         profile: value.profile,
         semanticReview: value.semanticReview,
+        preferences: value,
         preferenceStatus: this.state.preferenceStatus === 'saving' ? 'saving' : 'ready',
       });
     } else if (
@@ -155,6 +160,7 @@ export class PreviewSession {
   setSemanticReview(value: boolean): void {
     if (this.state.kind !== 'menu' || this.state.preferenceStatus !== 'ready') return;
     const sequence = this.sequence;
+    const preferenceRevision = this.preferenceRevision;
     const previous = this.state.semanticReview;
     this.set({ ...this.state, semanticReview: previous, preferenceStatus: 'saving' });
     void this.preferences.setSemanticReview(value).then(
@@ -162,7 +168,12 @@ export class PreviewSession {
         if (this.sequence === sequence && this.state.kind === 'menu')
           this.set({
             ...this.state,
-            semanticReview: saved.semanticReview,
+            semanticReview:
+              preferenceRevision === this.preferenceRevision
+                ? saved.semanticReview
+                : this.state.semanticReview,
+            preferences:
+              preferenceRevision === this.preferenceRevision ? saved : this.state.preferences,
             preferenceStatus: 'ready',
           });
       },
@@ -180,13 +191,20 @@ export class PreviewSession {
     )
       return;
     const sequence = this.sequence;
+    const preferenceRevision = this.preferenceRevision;
     const previous = this.profile;
     this.set({ ...this.state, preferenceStatus: 'saving' });
     void this.preferences.setProfile(profile).then(
       (saved) => {
         if (this.sequence !== sequence || this.state.kind !== 'menu') return;
-        this.profile = saved.profile;
-        this.set({ ...this.state, profile: saved.profile, preferenceStatus: 'ready' });
+        if (preferenceRevision === this.preferenceRevision) this.profile = saved.profile;
+        this.set({
+          ...this.state,
+          profile: this.profile,
+          preferences:
+            preferenceRevision === this.preferenceRevision ? saved : this.state.preferences,
+          preferenceStatus: 'ready',
+        });
       },
       () => {
         if (this.sequence === sequence && this.state.kind === 'menu')
@@ -220,6 +238,40 @@ export class PreviewSession {
             kind: 'notice',
             message: 'Não foi possível confirmar a remoção. Abra o menu e tente novamente.',
           });
+      },
+    );
+  }
+  updatePreferences(patch: PreferencePatch): void {
+    if (patch.profile) {
+      this.setProfile(patch.profile);
+      return;
+    }
+    if (patch.semanticReview !== undefined) {
+      this.setSemanticReview(patch.semanticReview);
+      return;
+    }
+    if (
+      this.state.kind !== 'menu' ||
+      this.state.preferenceStatus !== 'ready' ||
+      !this.preferences.update
+    )
+      return;
+    const sequence = this.sequence;
+    const preferenceRevision = this.preferenceRevision;
+    this.set({ ...this.state, preferenceStatus: 'saving' });
+    void this.preferences.update(patch).then(
+      (saved) => {
+        if (sequence === this.sequence && this.state.kind === 'menu')
+          this.set({
+            ...this.state,
+            preferences:
+              preferenceRevision === this.preferenceRevision ? saved : this.state.preferences,
+            preferenceStatus: 'ready',
+          });
+      },
+      () => {
+        if (sequence === this.sequence && this.state.kind === 'menu')
+          this.set({ ...this.state, preferenceStatus: 'error' });
       },
     );
   }

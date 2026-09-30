@@ -66,7 +66,9 @@ describe('pacote de produção', () => {
     expect(manifest).toMatchObject({
       manifest_version: 3,
       minimum_chrome_version: '116',
-      permissions: ['storage', 'offscreen'],
+      permissions: ['storage', 'offscreen', 'sidePanel'],
+      action: { default_popup: 'popup.html' },
+      side_panel: { default_path: 'sidepanel.html' },
       host_permissions: [
         'https://web.whatsapp.com/*',
         'https://huggingface.co/*',
@@ -86,7 +88,14 @@ describe('pacote de produção', () => {
           "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; object-src 'none'; connect-src 'self' https://huggingface.co https://us.aws.cdn.hf.co; base-uri 'none'; frame-ancestors 'none'",
       },
     });
-    for (const file of ['service-worker.js', 'content.js', 'offscreen.html', 'diagnostic.html'])
+    for (const file of [
+      'service-worker.js',
+      'content.js',
+      'offscreen.html',
+      'diagnostic.html',
+      'popup.html',
+      'sidepanel.html',
+    ])
       expect(outputFiles).toContain(file);
     for (const file of [
       'NOTICE.txt',
@@ -127,7 +136,7 @@ describe('pacote de produção', () => {
       const data = await readFile(path.join(outputDirectory, file ?? ''));
       expect(createHash('sha256').update(data).digest('hex')).toBe(expectedHash);
     }
-    for (const page of ['offscreen.html', 'diagnostic.html']) {
+    for (const page of ['offscreen.html', 'diagnostic.html', 'popup.html', 'sidepanel.html']) {
       const pageHtml = await readFile(path.join(outputDirectory, page), 'utf8');
       expect(pageHtml).not.toMatch(/(?:src|href)="(?:https?:|data:|blob:)/);
       for (const match of pageHtml.matchAll(/(?:src|href)="([^"]+)"/g)) {

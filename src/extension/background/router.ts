@@ -1,6 +1,8 @@
 import { isClientCommand, isRequestEvent, sameBinding, sameKey } from '../../shared/protocol';
 import { isWritingAction } from '../../shared/actions';
 import type { ModelProfile } from '../ai/model-catalog';
+import { DEFAULT_WRITING_OPTIONS } from '../../shared/writing-options';
+import type { WritingOptions } from '../../shared/writing-options';
 import type {
   Binding,
   BoundRequest,
@@ -44,6 +46,8 @@ export class RequestRouter {
     private readonly semanticReviewEnabled: () => Promise<boolean> = () => Promise.resolve(false),
     private readonly selectedProfile: () => Promise<ModelProfile> = () =>
       Promise.resolve('economico'),
+    private readonly writingOptions: () => Promise<WritingOptions> = () =>
+      Promise.resolve(DEFAULT_WRITING_OPTIONS),
   ) {}
 
   receive(client: Client, value: unknown): void {
@@ -124,12 +128,14 @@ export class RequestRouter {
     if (this.active !== active) return;
     try {
       if (request.action !== 'simular') {
-        const [semanticReview, profile] = await Promise.all([
+        const [semanticReview, profile, options] = await Promise.all([
           isWritingAction(request.action) ? this.semanticReviewEnabled() : Promise.resolve(false),
           this.selectedProfile(),
+          this.writingOptions(),
         ]);
         request.semanticReview = semanticReview;
         request.profile = profile;
+        request.writingOptions = options;
         if (
           this.active === active &&
           expectedProfile !== undefined &&

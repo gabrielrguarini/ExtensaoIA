@@ -1,6 +1,8 @@
 import { isEngineEvent } from '../../shared/protocol';
 import type { EngineEvent } from '../../shared/protocol';
 import type { Engine } from '../background/router';
+import type { RuntimeState } from '../../shared/model-management';
+import type { ModelProfile } from '../ai/model-catalog';
 
 /** A vida do Worker depende do pedido/aba, nunca de uma porta do Service Worker. */
 export class WorkerHost {
@@ -9,6 +11,8 @@ export class WorkerHost {
   private rejectReady: (() => void) | undefined;
   private ready = false;
   private idle: ReturnType<typeof setTimeout> | undefined;
+  runtime: RuntimeState = 'released';
+  loadedProfile: ModelProfile | null = null;
 
   private armIdle(): void {
     if (this.idle) clearTimeout(this.idle);
@@ -35,6 +39,8 @@ export class WorkerHost {
     this.worker?.terminate();
     this.worker = undefined;
     this.ready = false;
+    this.runtime = 'released';
+    this.loadedProfile = null;
     this.rejectReady?.();
     this.rejectReady = undefined;
   }
@@ -44,6 +50,8 @@ export class WorkerHost {
       send: (command) => {
         if (this.worker !== worker || !this.ready) throw new Error('Motor desconectado.');
         if (command.type === 'start' && this.idle) clearTimeout(this.idle);
+        if (command.type === 'start' && command.request.action !== 'simular')
+          this.loadedProfile = command.request.profile ?? 'economico';
         worker.postMessage(command);
       },
       reset: () => {
@@ -64,9 +72,35 @@ export class WorkerHost {
           if (this.worker !== worker || !isEngineEvent(event.data)) return;
           if (event.data.type === 'ready') {
             this.ready = true;
+            this.runtime = 'worker-ready';
             this.armIdle();
             resolve(this.engine(worker));
           } else if (this.ready) {
+            if (event.data.type === 'cancelled' && this.runtime === 'loading') {
+              this.runtime = 'worker-ready';
+              this.loadedProfile = null;
+            }
+            if (event.data.type === 'model-progress') {
+              if (
+                event.data.phase === 'ready' ||
+                ['generating', 'validating', 'reviewing'].includes(event.data.phase)
+              )
+                this.runtime = 'loaded';
+              else this.runtime = 'loading';
+            }
+            if (
+              (event.data.type === 'error' || event.data.type === 'action-rejected') &&
+              [
+                'UNAVAILABLE',
+                'MODEL_DOWNLOAD',
+                'INSUFFICIENT_RESOURCES',
+                'DOWNLOAD_REQUIRED',
+                'WEBGPU_UNAVAILABLE',
+              ].includes(event.data.code)
+            ) {
+              this.runtime = 'worker-ready';
+              this.loadedProfile = null;
+            }
             if (
               [
                 'result',

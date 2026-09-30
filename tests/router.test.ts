@@ -93,14 +93,24 @@ describe('roteamento sem mistura de abas, documentos e revisões', () => {
     const sent: EngineCommand[] = [];
     const engine: Engine = { send: (value) => sent.push(value), reset: vi.fn() };
     const preference = vi.fn(() => Promise.resolve(true));
-    const router = new RequestRouter(() => Promise.resolve(engine), 2_000, preference);
+    const router = new RequestRouter(
+      () => Promise.resolve(engine),
+      2_000,
+      preference,
+      () => Promise.resolve('economico'),
+      () => Promise.resolve({ preserveSlang: false, addEmojis: true }),
+    );
     const a = client();
     router.receive(a.peer, { ...start, action: 'corrigir' });
     for (let i = 0; i < 4; i++) await Promise.resolve();
     expect(preference).toHaveBeenCalledOnce();
     expect(sent.at(-1)).toMatchObject({
       type: 'start',
-      request: { action: 'corrigir', semanticReview: true },
+      request: {
+        action: 'corrigir',
+        semanticReview: true,
+        writingOptions: { preserveSlang: false, addEmojis: true },
+      },
     });
     router.disconnect(a.peer);
 

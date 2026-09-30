@@ -10,6 +10,7 @@ export interface InitializeOptions {
 export interface GenerateOptions {
   signal?: AbortSignal;
   task?: 'proof' | 'semantic-review' | WritingAction;
+  writingOptions?: WritingOptions;
 }
 
 /** O runtime concreto fica isolado atrás deste contrato. */
@@ -21,3 +22,4 @@ export interface AIEngine {
 }
 import type { WritingAction } from '../../shared/actions';
 import type { ModelProfile } from './model-catalog';
+import type { WritingOptions } from '../../shared/writing-options';

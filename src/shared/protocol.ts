@@ -2,6 +2,8 @@ import { MODEL_PROOF_TEXT } from './model-proof';
 import { isWritingAction } from './actions';
 import type { WritingAction } from './actions';
 import type { ModelProfile } from '../extension/ai/model-catalog';
+import { isWritingOptions } from './writing-options';
+import type { WritingOptions } from './writing-options';
 
 export const CLIENT_PORT = 'writing-client-v1';
 export const MAX_TEXT_LENGTH = 8_000;
@@ -28,6 +30,7 @@ export interface BoundRequest extends Binding {
   text: string;
   action: 'simular' | WritingAction | 'prova-modelo';
   semanticReview: boolean;
+  writingOptions?: WritingOptions;
   profile?: ModelProfile;
   allowDownload?: boolean;
 }
@@ -322,7 +325,18 @@ export function isEngineCommand(value: unknown): value is EngineCommand {
         'semanticReview',
         'profile',
         'allowDownload',
+      ]) ||
+      fields(request, [
+        'key',
+        'origin',
+        'text',
+        'action',
+        'semanticReview',
+        'profile',
+        'allowDownload',
+        'writingOptions',
       ])) &&
+    (request.writingOptions === undefined || isWritingOptions(request.writingOptions)) &&
     isBinding({ key: request.key, origin: request.origin }) &&
     (request.profile === undefined ||
       request.profile === 'economico' ||

@@ -10,6 +10,7 @@ import { restoredStreamingPrefix } from './streaming-preview';
 import { MAX_TEXT_LENGTH } from '../../shared/protocol';
 import { SemanticReviewError } from './semantic-review';
 import { validateActionOutput } from './action-validation';
+import { DEFAULT_WRITING_OPTIONS } from '../../shared/writing-options';
 
 const engine = new SimulatedEngine((event) => {
   globalThis.postMessage(event);
@@ -63,6 +64,7 @@ async function runModel(request: BoundRequest): Promise<void> {
     for await (const fragment of model.generate(protectedDraft?.text ?? MODEL_PROOF_TEXT, {
       signal: controller.signal,
       task: action ?? 'proof',
+      writingOptions: request.writingOptions ?? DEFAULT_WRITING_OPTIONS,
     })) {
       if (controller.signal.aborted || oversized) continue;
       response += fragment;
@@ -111,6 +113,7 @@ async function runModel(request: BoundRequest): Promise<void> {
             percent: 100,
             variant: model.selectedVariant() ?? null,
           }),
+        request.writingOptions?.addEmojis ?? false,
       );
       terminal = { type: 'action-result', binding, action, text };
     } else {

@@ -102,8 +102,9 @@ try {
     await selector.press('Enter');
     await page.waitForFunction(
       () =>
-        document.querySelector('[data-local-writing-host]')?.shadowRoot?.querySelector('select')
-          ?.disabled === false,
+        document
+          .querySelector('[data-local-writing-host]')
+          ?.shadowRoot?.querySelector('[aria-label="Perfil de IA local"]')?.disabled === false,
     );
   }
   async function proof(allowDownload = false) {

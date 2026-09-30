@@ -59,3 +59,10 @@ export function isCoordinator(sender: Sender | undefined, extensionId: string): 
       sender.url === `chrome-extension://${extensionId}/service-worker.js`)
   );
 }
+
+export function isSettingsPage(sender: Sender | undefined, extensionId: string): boolean {
+  return (
+    isExtensionPage(sender, extensionId, 'popup.html') ||
+    isExtensionPage(sender, extensionId, 'sidepanel.html')
+  );
+}

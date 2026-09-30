@@ -1,11 +1,12 @@
 import { CLIENT_PORT, fields, record } from '../../shared/protocol';
-import { contentOrigin, isCoordinator } from '../../shared/senders';
+import { contentOrigin, isCoordinator, isSettingsPage } from '../../shared/senders';
 import { parsePreferences } from '../../shared/preferences';
 import { RequestRouter } from '../background/router';
 import type { Client } from '../background/router';
 import { WorkerHost } from './worker-host';
-import { MODEL_CHOICES, MODEL_PROFILES } from '../ai/model-catalog';
-import { removeModelArtifacts } from '../ai/model-cache';
+import { MODEL_CHOICES } from '../ai/model-catalog';
+import { removeModelArtifacts, inspectModelArtifacts } from '../ai/model-cache';
+import { isModelCommand } from '../../shared/model-management';
 
 let removing = false;
 
@@ -24,6 +25,10 @@ const router = new RequestRouter(
   15_000,
   async () => (await preferences()).semanticReview,
   async () => (await preferences()).profile,
+  async () => {
+    const saved = await preferences();
+    return { preserveSlang: saved.preserveSlang, addEmojis: saved.addEmojis };
+  },
 );
 
 // Canal direto. O Service Worker pode dormir sem encerrar a inferência ativa.
@@ -58,23 +63,37 @@ chrome.runtime.onConnect.addListener((port) => {
 
 chrome.runtime.onMessage.addListener((value: unknown, sender, sendResponse) => {
   if (
-    record(value) &&
-    fields(value, ['target', 'type', 'profile', 'variant']) &&
-    value.target === 'model-cache' &&
-    value.type === 'remove' &&
-    typeof value.profile === 'string' &&
-    MODEL_PROFILES.some((profile) => profile === value.profile) &&
-    (value.variant === 'q4f16_1' || value.variant === 'q4f32_1') &&
-    contentOrigin(sender, chrome.runtime.id, crypto.randomUUID())
+    isModelCommand(value) &&
+    (contentOrigin(sender, chrome.runtime.id, crypto.randomUUID()) ||
+      isSettingsPage(sender, chrome.runtime.id))
   ) {
     if (removing) {
       sendResponse({ ok: false });
       return false;
     }
+    if (value.type === 'status') {
+      void inspectModelArtifacts(MODEL_CHOICES[value.profile][value.variant]).then(
+        (cached) =>
+          sendResponse({
+            ok: true,
+            cached,
+            runtime: host.runtime,
+            loadedProfile: host.runtime === 'loaded' ? host.loadedProfile : null,
+          }),
+        () => sendResponse({ ok: false }),
+      );
+      return true;
+    }
+    if (value.type === 'unload') {
+      router.resetForProfileChange();
+      host.reset();
+      sendResponse({ ok: true });
+      return false;
+    }
     removing = true;
     router.setMaintenance(true);
     host.reset();
-    const profile = value.profile as keyof typeof MODEL_CHOICES;
+    const profile = value.profile;
     const variant = value.variant;
     void (async () => {
       try {
