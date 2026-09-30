@@ -4,6 +4,7 @@ import path from 'node:path';
 import react from '@vitejs/plugin-react';
 import { build, defineConfig } from 'vite';
 import type { Plugin } from 'vite';
+import { webGpuCompatibility } from './build/webgpu-compatibility.ts';
 
 function extensionPackage(): Plugin {
   let outDir = '';
@@ -51,7 +52,7 @@ function extensionPackage(): Plugin {
 
 export default defineConfig({
   base: './',
-  plugins: [react(), extensionPackage()],
+  plugins: [react(), webGpuCompatibility(), extensionPackage()],
   // Nenhuma variável do ambiente do desenvolvedor é exposta automaticamente ao navegador.
   envPrefix: [],
   publicDir: false,
@@ -88,5 +89,6 @@ export default defineConfig({
   },
   worker: {
     format: 'es',
+    plugins: () => [webGpuCompatibility()],
   },
 });

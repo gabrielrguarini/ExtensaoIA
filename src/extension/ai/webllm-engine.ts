@@ -16,6 +16,7 @@ import type { PromptTemplate } from './token-budget';
 import { requireCompleteGeneration } from './correction-output';
 import { SEMANTIC_SYSTEM_PROMPT, semanticMessages } from './semantic-review';
 import { isWritingAction } from '../../shared/actions';
+import { gpuAdapterOptions } from '../../shared/webgpu-adapter';
 
 export class ModelEnvironmentError extends Error {
   constructor(
@@ -38,7 +39,7 @@ export async function selectModel(
   if (!gpu) throw new ModelEnvironmentError('WEBGPU_UNAVAILABLE');
   let adapter: GPUAdapter | null;
   try {
-    adapter = await gpu.requestAdapter({ powerPreference: 'high-performance' });
+    adapter = await gpu.requestAdapter(gpuAdapterOptions(navigator.platform));
   } catch {
     throw new ModelEnvironmentError('WEBGPU_UNAVAILABLE');
   }

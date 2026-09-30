@@ -100,6 +100,9 @@ describe('pacote de produção', () => {
     expect(() => new Script(content)).not.toThrow(); // Script clássico, sem imports ESM.
     expect(content).not.toContain('process.env');
     expect(outputFiles.some((file) => /worker-.*\.js$/.test(file))).toBe(true);
+    expect(
+      scriptContents.some((script) => script.startsWith('/* WebLLM 0.2.82 modified locally:')),
+    ).toBe(true);
     for (const [model, variant, expectedHash] of [
       [
         'Llama-3.2-3B',

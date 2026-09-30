@@ -1,3 +1,5 @@
+import { gpuAdapterOptions } from '../../shared/webgpu-adapter';
+
 export type HardwareStatus =
   | { state: 'checking' }
   | { state: 'unavailable' }
@@ -14,7 +16,7 @@ export async function probeHardware(): Promise<HardwareStatus> {
   if (!gpu) return { state: 'unavailable' };
   try {
     const adapter = await Promise.race([
-      gpu.requestAdapter({ powerPreference: 'high-performance' }),
+      gpu.requestAdapter(gpuAdapterOptions(navigator.platform)),
       new Promise<null>((resolve) => setTimeout(() => resolve(null), 7_000)),
     ]);
     if (!adapter) return { state: 'unavailable' };

@@ -8,4 +8,5 @@ The Qwen3 model license is included in licenses/QWEN3-LICENSE.
 
 The full Llama 3.2 Community License Agreement is included in licenses/LLAMA-3.2-LICENSE.
 WebLLM 0.2.82 is distributed under Apache License 2.0; its license is included in licenses/WEBLLM-LICENSE.
+The bundled WebLLM JavaScript is modified at build time to omit the ignored WebGPU powerPreference option on Windows. Other platforms retain the upstream preference. Model data and WASM libraries are unchanged.
 @mlc-ai/web-tokenizers 0.1.6 is distributed under Apache License 2.0; the license text is included in licenses/WEBLLM-LICENSE.
