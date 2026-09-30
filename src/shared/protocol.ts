@@ -4,7 +4,6 @@ import type { WritingAction } from './actions';
 import type { ModelProfile } from '../extension/ai/model-catalog';
 
 export const CLIENT_PORT = 'writing-client-v1';
-export const ENGINE_PORT = 'writing-engine-v1';
 export const MAX_TEXT_LENGTH = 8_000;
 
 export interface RequestKey {

@@ -1,4 +1,5 @@
-import { CLIENT_PORT, isClientEvent, sameBinding, sameKey } from '../../shared/protocol';
+import { isClientEvent, sameBinding, sameKey } from '../../shared/protocol';
+import { connectClient } from './client-port';
 import type { Binding, RequestKey } from '../../shared/protocol';
 import type { DraftSnapshot } from '../../integration/whatsapp/adapter';
 
@@ -12,7 +13,7 @@ export type PreviewGenerator = (
 export const SIMULATION_PREFIX = '[Simulação] ';
 
 export const generatePreview: PreviewGenerator = (snapshot, done) => {
-  const port = chrome.runtime.connect({ name: CLIENT_PORT });
+  const port = connectClient();
   const key: RequestKey = {
     requestId: crypto.randomUUID(),
     editorId: snapshot.editorId,

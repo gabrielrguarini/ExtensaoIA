@@ -1,4 +1,5 @@
-import { CLIENT_PORT, isClientEvent, sameBinding, sameKey } from '../../shared/protocol';
+import { isClientEvent, sameBinding, sameKey } from '../../shared/protocol';
+import { connectClient } from './client-port';
 import type { Binding, RequestKey } from '../../shared/protocol';
 import { MODEL_PROOF_TEXT } from '../../shared/model-proof';
 import type { ModelProfile } from '../ai/model-catalog';
@@ -25,7 +26,7 @@ export const runModelProof: ProofGenerator = (
   allowDownload = false,
   expectedProfile,
 ) => {
-  const port = chrome.runtime.connect({ name: CLIENT_PORT });
+  const port = connectClient();
   const key: RequestKey = {
     requestId: crypto.randomUUID(),
     editorId: 'model-proof',

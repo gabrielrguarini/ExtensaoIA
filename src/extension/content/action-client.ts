@@ -1,4 +1,5 @@
-import { CLIENT_PORT, isClientEvent, sameBinding, sameKey } from '../../shared/protocol';
+import { isClientEvent, sameBinding, sameKey } from '../../shared/protocol';
+import { connectClient } from './client-port';
 import type { Binding, RequestKey } from '../../shared/protocol';
 import type { DraftSnapshot } from '../../integration/whatsapp/adapter';
 import type { ProofProgress } from './model-proof-client';
@@ -25,7 +26,7 @@ export const generateAction: ActionGenerator = (
   allowDownload = false,
   expectedProfile,
 ) => {
-  const port = chrome.runtime.connect({ name: CLIENT_PORT });
+  const port = connectClient();
   const key: RequestKey = {
     requestId: crypto.randomUUID(),
     editorId: snapshot.editorId,

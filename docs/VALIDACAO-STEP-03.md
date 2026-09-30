@@ -1,5 +1,7 @@
 # Validação da STEP-03 no Chrome
 
+Registro histórico da versão 0.2.0. Em 30/09/2026, o [canal da inferência foi corrigido na STEP-12](VALIDACAO-STEP-12.md#correção-da-conexão-durante-inferência--30092026): o roteador passou ao offscreen e o encerramento isolado do Service Worker deixou de interromper pedidos. Os procedimentos/resultados de reinício abaixo descrevem a arquitetura original; perda real da aba ou da IA continua interrompendo o pedido sem replay.
+
 O motor é **simulado**: devolve uma frase sintética fixa. Não lê campos, conversas ou contatos e não corrige, substitui ou envia mensagens. Não é necessário estar conectado a uma conta do WhatsApp para testar este circuito.
 
 ## Instalar o pacote

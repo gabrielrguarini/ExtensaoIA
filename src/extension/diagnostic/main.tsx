@@ -199,11 +199,7 @@ function Diagnostic() {
       <pre aria-live="polite" aria-label="Resultado do diagnóstico">
         {report}
       </pre>
-      <p>
-        O resultado percorre: content script → coordenador → offscreen → Worker → content script →
-        diagnóstico. Duas solicitações simultâneas devem produzir um resultado e um aviso de
-        ocupado.
-      </p>
+      <p>Duas solicitações simultâneas devem produzir um resultado e um aviso de ocupado.</p>
       <p>
         Após instalar ou atualizar a extensão, recarregue as abas do WhatsApp para ativar o content
         script. O relatório desaparece ao fechar esta página.

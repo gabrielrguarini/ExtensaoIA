@@ -27,7 +27,13 @@ function portHarness() {
       removeListener: (listener: () => void) => disconnectListeners.delete(listener),
     },
   };
-  vi.stubGlobal('chrome', { runtime: { connect: () => port, lastError: undefined } });
+  vi.stubGlobal('chrome', {
+    runtime: {
+      connect: () => port,
+      sendMessage: () => Promise.resolve({ ready: true }),
+      lastError: undefined,
+    },
+  });
   const emit = (value: unknown) => listeners.forEach((listener) => listener(value));
   const disconnect = () => disconnectListeners.forEach((listener) => listener());
   return { messages, port, emit, disconnect };
@@ -48,7 +54,7 @@ afterEach(() => {
 });
 
 describe('cliente de ação com streaming', () => {
-  it('aceita só fragmentos vinculados ao modo e mantém a porta até a confirmação do cancelamento', () => {
+  it('aceita só fragmentos vinculados ao modo e mantém a porta até a confirmação do cancelamento', async () => {
     const h = portHarness();
     const fragments: string[] = [];
     const done = vi.fn();
@@ -59,6 +65,7 @@ describe('cliente de ação com streaming', () => {
       (text) => fragments.push(text),
       done,
     );
+    await Promise.resolve();
     const binding = bound(h.messages);
     h.emit({ type: 'action-fragment', binding, action: 'profissional', text: 'Outro modo' });
     h.emit({ type: 'action-fragment', binding, action: 'formal', text: 'Trecho seguro' });
@@ -77,6 +84,7 @@ describe('cliente de ação com streaming', () => {
     const h = portHarness();
     const done = vi.fn();
     const cancel = generateAction('corrigir', snapshot, vi.fn(), vi.fn(), done);
+    await Promise.resolve();
     cancel();
     await vi.advanceTimersByTimeAsync(2_000);
     h.disconnect();

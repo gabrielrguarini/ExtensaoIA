@@ -1,65 +1,70 @@
-import { ENGINE_PORT, fields, isEngineCommand, isEngineEvent, record } from '../../shared/protocol';
-import { isCoordinator } from '../../shared/senders';
+import { CLIENT_PORT, fields, record } from '../../shared/protocol';
+import { contentOrigin, isCoordinator } from '../../shared/senders';
+import { parsePreferences } from '../../shared/preferences';
+import { RequestRouter } from '../background/router';
+import type { Client } from '../background/router';
+import { WorkerHost } from './worker-host';
 
-let connection: { port: chrome.runtime.Port; worker: Worker } | undefined;
+async function preferences() {
+  const value: unknown = await chrome.runtime.sendMessage({ target: 'preferences', type: 'get' });
+  if (value === undefined) throw new Error('Preferências indisponíveis.');
+  return parsePreferences(value);
+}
+const host = new WorkerHost(
+  () => new Worker(new URL('../ai/worker.ts', import.meta.url), { type: 'module' }),
+  (event) => router.receiveEngine(event),
+  () => router.engineLost(),
+);
+const router = new RequestRouter(
+  () => host.ensure(),
+  15_000,
+  async () => (await preferences()).semanticReview,
+  async () => (await preferences()).profile,
+);
 
-function connect(replace = false): void {
-  if (connection && !replace) return;
-  if (connection) {
-    connection.worker.terminate();
-    connection.port.disconnect();
-    connection = undefined;
-  }
-  const port = chrome.runtime.connect({ name: ENGINE_PORT });
-  let worker: Worker;
-  try {
-    worker = new Worker(new URL('../ai/worker.ts', import.meta.url), { type: 'module' });
-  } catch {
+// Canal direto. O Service Worker pode dormir sem encerrar a inferência ativa.
+chrome.runtime.onConnect.addListener((port) => {
+  const origin = contentOrigin(port.sender, chrome.runtime.id, crypto.randomUUID());
+  if (port.name !== CLIENT_PORT || !origin) {
     port.disconnect();
     return;
   }
-  connection = { port, worker };
-  function cleanup(): void {
-    worker.terminate();
-    if (connection?.port === port) connection = undefined;
-  }
+  let connected = true;
+  const client: Client = {
+    origin,
+    send: (event) => {
+      if (!connected) return;
+      try {
+        port.postMessage(event);
+      } catch {
+        connected = false;
+        router.disconnect(client);
+      }
+    },
+  };
   port.onMessage.addListener((value: unknown) => {
-    if (connection?.port === port && isEngineCommand(value)) worker.postMessage(value);
+    if (connected) router.receive(client, value);
   });
-  worker.onmessage = (event: MessageEvent<unknown>) => {
-    if (connection?.port !== port || !isEngineEvent(event.data)) return;
-    try {
-      port.postMessage(event.data);
-    } catch {
-      cleanup();
-    }
-  };
-  worker.onerror = (event) => {
-    event.preventDefault();
-    cleanup();
-    port.disconnect();
-  };
-  worker.onmessageerror = () => {
-    cleanup();
-    port.disconnect();
-  };
   port.onDisconnect.addListener(() => {
     void chrome.runtime.lastError;
-    cleanup();
+    connected = false;
+    router.disconnect(client);
   });
-}
+});
 
 chrome.runtime.onMessage.addListener((value: unknown, sender, sendResponse) => {
   if (
     !isCoordinator(sender, chrome.runtime.id) ||
     !record(value) ||
     !fields(value, ['target', 'type']) ||
-    value.target !== 'offscreen' ||
-    value.type !== 'connect'
+    value.target !== 'offscreen'
   )
     return false;
-  connect(true);
-  sendResponse({ connected: true });
+  if (value.type === 'ready') sendResponse({ ready: true });
+  else if (value.type === 'reset') {
+    router.resetForProfileChange();
+    host.reset();
+    sendResponse({ reset: true });
+  }
   return false;
 });
-connect();

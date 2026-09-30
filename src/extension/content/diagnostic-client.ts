@@ -1,13 +1,14 @@
-import { CLIENT_PORT, isClientEvent, sameBinding, sameKey } from '../../shared/protocol';
+import { isClientEvent, sameBinding, sameKey } from '../../shared/protocol';
+import { connectClient } from './client-port';
 import type { Binding, ClientEvent, RequestKey } from '../../shared/protocol';
 import { FIXTURE_TEXT, isProbe } from '../../shared/diagnostic';
 import { isCoordinator } from '../../shared/senders';
 
 // Nenhum seletor, leitura do editor, acesso ao mundo MAIN ou ponte window.postMessage.
-let active: { port: chrome.runtime.Port; key: RequestKey; close(): void } | undefined;
+let active: { port: ReturnType<typeof connectClient>; key: RequestKey; close(): void } | undefined;
 
 function run(statusOnly: boolean, reply: (value: unknown) => void): void {
-  const port = chrome.runtime.connect({ name: CLIENT_PORT });
+  const port = connectClient();
   const key: RequestKey = {
     requestId: crypto.randomUUID(),
     editorId: 'synthetic-editor',

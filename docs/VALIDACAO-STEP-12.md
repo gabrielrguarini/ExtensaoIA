@@ -131,3 +131,39 @@ Chrome for Testing 154, Windows e WhatsApp real no grupo **Teste Extensão**, co
 A captura por protocolo do Chrome acompanhou a página, o Service Worker, o documento offscreen e o Worker de inferência, sem erros de habilitação dos domínios de diagnóstico. Para verificar a captura, uma chamada deliberada com a opção antiga produziu o aviso na página; outra chamada de controle o produziu no Worker depois da prova. Esses avisos de controle são separados do resultado da aplicação corrigida. Somente contagens e procedimento são registrados, sem conteúdo de conversa ou capturas de tela.
 
 O pacote atualizado foi gerado em `dist`. Para usar a correção em outro Chrome com a extensão instalada sem compactação, recarregue a extensão em `chrome://extensions` e depois a aba do WhatsApp. O ajuste omite uma preferência ignorada e continua usando o adaptador disponibilizado pelo navegador; não promete selecionar uma GPU dedicada no Windows.
+
+## Correção da conexão durante inferência — 30/09/2026
+
+O usuário relatou falha de conexão em Corrigir no **Equilibrado**, enquanto Melhorar havia funcionado. A reprodução no WhatsApp real confirmou o encerramento do Service Worker durante Corrigir: ainda processava aos 31 segundos e, aos 61 segundos, apresentava desconexão com o coordenador encerrado e o rascunho intacto. Melhorar também perdeu a conexão em uma comparação posterior. O defeito depende do intervalo sem eventos, não somente da ação escolhida.
+
+O [ciclo de vida documentado pelo Chrome](https://developer.chrome.com/docs/extensions/develop/concepts/service-workers/lifecycle) permite encerrar o Service Worker depois de 30 segundos de inatividade. Uma porta aberta não garante sua permanência; depurá-lo pode alterar esse comportamento. Na arquitetura anterior, a perda da porta do coordenador terminava o Worker de IA durante carregamento ou prefill sem fragmentos. As validações anteriores com o coordenador inspecionado não demonstravam continuidade nessa condição.
+
+### Comunicação corrigida
+
+O Service Worker prepara o documento e fornece preferências, sem hospedar o pedido ou encaminhar os fragmentos. O content script abre uma porta direta com o offscreen; ali, o mesmo roteador valida os comandos, deriva a origem do remetente do Chrome e mantém um único pedido ativo. O Worker é criado sob demanda e reutilizado. Esse caminho usa os [canais de `chrome.runtime`](https://developer.chrome.com/docs/extensions/develop/concepts/messaging) disponíveis em [documentos offscreen](https://developer.chrome.com/docs/extensions/reference/api/offscreen), sem novas permissões.
+
+O bootstrap não recebe o texto. Preferências continuam sendo lidas pelo coordenador; resposta ausente ou inválida impede iniciar inferência. Cancelamento, troca de perfil, perda real da aba/canal/Worker e timeout continuam encerrando pedidos e descartando eventos tardios. Não há heartbeat, keepalive artificial, reconexão periódica ou replay. O fim isolado do coordenador já não representa perda do contexto da tarefa. A arquitetura e as instruções atuais foram atualizadas; o relatório da STEP-03 permanece identificado como histórico.
+
+### Validação real da falha relatada
+
+Chrome for Testing 154, GPU real, Equilibrado/q4f16_1 em cache e revisão semântica desligada. O grupo **Teste Extensão** foi confirmado de forma única na lista e pelo cabeçalho; o compositor começou vazio. Usou-se a pergunta sintética relatada, com sigla, grafias sem acento e gíria, sem acessar histórico ou APIs internas. Os textos não são transcritos neste relatório.
+
+Depois de recarregar o pacote, a sessão usada para essa preparação foi fechada. A sessão de medição conectou o protocolo nativo somente à página do WhatsApp: nenhum depurador foi conectado ao Service Worker, offscreen ou Worker de IA. Descoberta de targets acompanhou somente a criação/encerramento dos contextos. A cada dez segundos, verificou-se a interface da extensão, a igualdade do próprio rascunho e a ausência de depuração do coordenador.
+
+| Ação     | Prévia observada                         | Coordenador encerrado durante o pedido      | Resultado                                                                                                                  |
+| -------- | ---------------------------------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Corrigir | Aos 110 segundos, incluindo carregamento | Sim, já encerrado na leitura de 80 segundos | Prévia liberada, pergunta e gíria preservadas; removeu espaço antes da interrogação, mas não corrigiu os acentos ausentes. |
+| Melhorar | Aos 40 segundos, com modelo carregado    | Sim, já encerrado na leitura de 30 segundos | Prévia liberada com acentuação e reformulação coerente da pergunta.                                                        |
+
+Esses tempos são leituras periódicas neste equipamento, não benchmarks nem garantia de latência. Ambos os pedidos terminaram sem erro de conexão, inclusive após a suspensão natural do coordenador. O resultado de Corrigir foi conservador: continuidade da inferência foi corrigida, mas não se declara correção linguística completa nesse exemplo. As limitações de qualidade da rodada anterior permanecem.
+
+Não houve substituição nem envio nesta correção. Os rascunhos próprios foram limpos, Econômico foi restaurado e a revisão semântica permaneceu desligada. Uma execução preliminar encontrou o pacote anterior ainda registrado no navegador; recarregar somente os arquivos não atualiza o Service Worker. A prova válida acima ocorreu depois de recarregar a extensão e reabrir o navegador de teste.
+
+### Regressão e entrega
+
+- `npm.cmd run check`: tipos, lint, formatação, **162 testes em 22 arquivos** e build aprovados. Cobertura nova para preparação/cancelamento do canal, ausência de replay, prontidão e falha do Worker, continuidade após 45 segundos sem eventos, origem/frame confiáveis, exclusão entre abas e preferências ausentes.
+- `npm.cmd run test:step12:switch`, no perfil reservado a fixtures com modelos já preparados: streaming real do Qwen3 8B, troca para Econômico em outra aba, cancelamento explícito, rascunho intacto, Worker anterior liberado, ausência de prévia tardia, uma única instância nova e prova local bem-sucedida. Zero erros de página.
+- Tentativas de executar essa fixture no perfil autenticado não carregaram a página sintética e pararam antes da geração; não contam como falhas de inferência ou provas de cancelamento. O roteiro passou a bloquear o Service Worker do site, solicitar bypass para as duas páginas de fixture e exigir seu marcador antes de agir. A execução aprovada foi no perfil de fixtures.
+- Projeto/Manifest `0.11.0`, modelos, WASM, licenças e dependências travadas mantidos. Pacote atualizado em `dist`; não se versionam caches, roteiros temporários, capturas ou conteúdo de conversa. Correção em commit próprio, sem iniciar a STEP-13.
+
+Para aplicar no Chrome usado pelo usuário, recarregue a extensão em `chrome://extensions` e depois a aba do WhatsApp. Apenas recompilar `dist` não substitui o coordenador já registrado no navegador.

@@ -52,7 +52,7 @@ describe('prova do modelo', () => {
     ).toBe(false);
   });
 
-  it('explica falhas de WebGPU, recursos e download sem liberar resultado', () => {
+  it('explica falhas de WebGPU, recursos e download sem liberar resultado', async () => {
     for (const [code, expected] of [
       ['WEBGPU_UNAVAILABLE', 'precisa de WebGPU'],
       ['INSUFFICIENT_RESOURCES', 'recursos necessários'],
@@ -69,12 +69,15 @@ describe('prova do modelo', () => {
         postMessage: (value: unknown) => (sent = value),
         disconnect: () => undefined,
       };
-      vi.stubGlobal('chrome', { runtime: { connect: () => port } });
+      vi.stubGlobal('chrome', {
+        runtime: { connect: () => port, sendMessage: () => Promise.resolve({ ready: true }) },
+      });
       let outcome: ProofOutcome | undefined;
       runModelProof(
         () => undefined,
         (value) => (outcome = value),
       );
+      await Promise.resolve();
       if (!isClientCommand(sent) || sent.type !== 'start') throw new Error('Pedido ausente.');
       receive({
         type: 'error',

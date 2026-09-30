@@ -14,6 +14,7 @@ const manifest = JSON.parse(await readFile(path.join(extension, 'manifest.json')
 if (manifest.version !== '0.11.0') throw new Error('Execute npm run build antes da prova.');
 const options = {
   headless: false,
+  serviceWorkers: 'block',
   viewport: { width: 1280, height: 800 },
   executablePath,
   args: [`--disable-extensions-except=${extension}`, `--load-extension=${extension}`],
@@ -50,12 +51,21 @@ try {
   });
   const a = await browser.newPage();
   const b = await browser.newPage();
+  // Um perfil autenticado pode ter um Service Worker do site já instalado.
+  // As duas navegações devem usar somente a fixture, inclusive nesse caso.
+  for (const page of [a, b]) {
+    const session = await browser.newCDPSession(page);
+    await session.send('Network.setBypassServiceWorker', { bypass: true });
+  }
   a.on('pageerror', () => errors++);
   b.on('pageerror', () => errors++);
   await Promise.all([
     a.goto('https://web.whatsapp.com/?step12=active'),
     b.goto('https://web.whatsapp.com/?step12=switch'),
   ]);
+  for (const page of [a, b])
+    if ((await page.getByText('Fixture sem conversa', { exact: true }).count()) !== 1)
+      throw new Error('A página sintética não carregou; teste interrompido.');
   const editorA = a.locator('#main footer [role="textbox"]');
   await a.bringToFront();
   await a

@@ -77,12 +77,12 @@ A IA implementadora deve criar arquivos completos, sem marcadores como “resto 
 | Content Script        | Detectar o editor e apresentar botão, menu e preview; capturar somente o rascunho solicitado. |
 | Adaptador do WhatsApp | Isolar seletores, snapshot do editor, leitura, inserção e validação da edição.                |
 | Service Worker        | Validar remetentes e mensagens, coordenar configurações e criar o contexto da IA.             |
-| Documento offscreen   | Hospedar um Worker, usando a finalidade WORKERS, sem exigir aba ou painel aberto.             |
+| Documento offscreen   | Validar e rotear pedidos da aba e hospedar um Worker com finalidade WORKERS.                  |
 | Worker de IA          | Executar WebLLM e manter uma única instância do modelo.                                       |
 | Núcleo de reescrita   | Produzir prompts, proteger/restaurar entidades e validar os resultados.                       |
 | Armazenamento         | Guardar preferências e artefatos dos modelos; mensagens ficam somente em memória temporária.  |
 
-O offscreen comunica-se com a extensão por chrome.runtime; acesso a preferências passa pelo coordenador. O Worker deve usar a interface própria AIEngine, deixando APIs WebLLM restritas ao adaptador.
+O offscreen comunica-se com a extensão por chrome.runtime; acesso a preferências passa pelo coordenador. O pedido e a resposta usam uma porta direta entre content script e offscreen, com origem validada pelo remetente do Chrome. O encerramento do Service Worker por inatividade não perde esse contexto; perder a aba, a porta ou a IA continua encerrando o pedido sem replay. Essa correção do escopo acumulado da STEP-12 está registrada no [relatório](VALIDACAO-STEP-12.md#correção-da-conexão-durante-inferência--30092026). O Worker deve usar a interface própria AIEngine, deixando APIs WebLLM restritas ao adaptador.
 
 Processar uma solicitação por vez. Pedidos concorrentes recebem “IA ocupada”. Limpar estado de conversa entre solicitações, sem descarregar os pesos a cada chamada.
 
