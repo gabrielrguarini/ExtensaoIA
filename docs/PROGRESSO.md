@@ -4,11 +4,11 @@
 
 ## Estado atual
 
-- Última atualização: 29/09/2026.
-- Última etapa concluída: **STEP-11 — Implementar verificação semântica opcional**.
-- Situação: preferência desligada por padrão e revisão local após as guardas determinísticas, com falha fechada e cancelamento, validadas no Chrome/WebGPU; entrega registrada em commit próprio.
-- Próxima etapa executável: **STEP-12**, somente quando solicitada.
-- Implementação: Manifest V3, comunicação, adaptador do editor, botão IA, prévia, substituição manual, prova sintética e nove ações com streaming no Llama 3.2 3B via WebGPU. A revisão semântica opcional usa a mesma instância do modelo em sequência. A simulação continua identificada. Textos multilinha e estruturas especiais oferecem somente cópia.
+- Última atualização: 30/09/2026.
+- Última etapa concluída: **STEP-12 — Adicionar modelos e perfis de hardware**.
+- Situação: três perfis carregados e usados no Chrome/WebGPU, com download explícito, limites reais do adaptador, variantes fixadas e troca durante streaming liberando o Worker anterior; entrega registrada em commit próprio.
+- Próxima etapa executável: **STEP-13**, somente quando solicitada.
+- Implementação: Manifest V3, comunicação, adaptador do editor, botão IA, prévia, substituição manual, prova sintética e nove ações com streaming nos perfis Econômico/Llama 3.2 3B, Equilibrado/Qwen3 4B e Qualidade/Qwen3 8B via WebGPU. A revisão semântica opcional usa a mesma instância do modelo em sequência. A simulação continua identificada. Textos multilinha e estruturas especiais oferecem somente cópia.
 
 ## Significado dos status
 
@@ -35,7 +35,7 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 | [STEP-09](steps/STEP-09.md) | Adicionar os demais modos                       | Concluída | 128 testes e build; nove prévias e duas recusas seguras no grupo de teste do WhatsApp Web. [Relatório](VALIDACAO-STEP-09.md).                                            |
 | [STEP-10](steps/STEP-10.md) | Exibir geração progressiva e cancelamento       | Concluída | 134 testes e build; streaming, cancelamento, novo pedido e edição durante geração no Chrome/WebGPU. [Relatório](VALIDACAO-STEP-10.md).                                   |
 | [STEP-11](steps/STEP-11.md) | Implementar verificação semântica opcional      | Concluída | 143 testes e build; seis casos sintéticos no Llama/WebGPU, preferência persistida e cancelamento durante revisão no Chrome. [Relatório](VALIDACAO-STEP-11.md).           |
-| [STEP-12](steps/STEP-12.md) | Adicionar modelos e perfis de hardware          | Pendente  | Não iniciada.                                                                                                                                                            |
+| [STEP-12](steps/STEP-12.md) | Adicionar modelos e perfis de hardware          | Concluída | 151 testes e build; três modelos f16 usados no Chrome/WebGPU e troca durante streaming com liberação do Worker. [Matriz e artefatos](VALIDACAO-STEP-12.md).              |
 | [STEP-13](steps/STEP-13.md) | Consolidar cache, recuperação e desempenho      | Pendente  | Não iniciada.                                                                                                                                                            |
 | [STEP-14](steps/STEP-14.md) | Finalizar configurações e interfaces auxiliares | Pendente  | Não iniciada.                                                                                                                                                            |
 | [STEP-15](steps/STEP-15.md) | Criar e executar o benchmark pt-BR              | Pendente  | Não iniciada.                                                                                                                                                            |
@@ -210,9 +210,23 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 - Commit da etapa: `feat(step-11): adicionar revisão semântica opcional`. Hash no histórico Git e na resposta de entrega; identidade humana configurada.
 - Status final: **Concluída** no escopo da STEP-11, sem validação obrigatória pendente. Próxima etapa: STEP-12, somente por nova solicitação.
 
+## STEP-12 — 30/09/2026
+
+- Escopo: catálogo local de Llama 3.2 3B, Qwen3 4B e Qwen3 8B, perfis Econômico (padrão), Equilibrado e Qualidade, duas variantes por modelo, seis bibliotecas WASM empacotadas e pesos fixados por revisão. Contexto de 4.096 tokens, bytes de download e estimativas de GPU apresentados separadamente, com licenças incluídas.
+- Hardware: adapter WebGPU, `shader-f16` e limites de buffer reais. Sem `shader-f16`, seleciona q4f32_1 e informa a exigência maior antes do download. VRAM livre aparece indisponível, sem usar RAM do sistema. Falha de recursos mantém a escolha e sugere perfil menor, sem baixar outro modelo.
+- Qwen: `extra_body.enable_thinking: false` conforme WebLLM 0.2.82, template/tokenizer compatíveis e orçamento que inclui o prefixo vazio do modo. Esse prefixo é removido antes da apresentação; raciocínio não vazio ou incompleto falha fechado.
+- Download: somente por confirmação quando faltam artefatos. Uma falha real de `Cache.add` em respostas válidas da CDN foi resolvida com download sequencial por `fetch`/`Cache.put`, nomes fixos, tamanho dos shards validado, cache parcial reaproveitado e tentativas limitadas. Gestão completa do cache permanece na STEP-13.
+- Troca: pedido atual cancelado explicitamente, Worker anterior encerrado antes da próxima instância, eventos tardios descartados. Preferências sincronizadas entre menus abertos; confirmação de download vinculada ao perfil esperado, recusada se a escolha mudou. Migração do esquema v1 para v2 preserva a revisão semântica; gravações concorrentes preservam os dois campos.
+- Arquivos principais: catálogo/bibliotecas/cache/hardware, runtime/token budget, preferências/protocolo/roteador, clientes/menu/sessão, quatro novos WASM, licença Qwen, testes e [relatório com matriz](VALIDACAO-STEP-12.md). Projeto/Manifest: 0.11.0, dependências mantidas e travadas.
+- Verificação automatizada: `npm.cmd run check` aprovado com tipos, lint, formatação, 151 testes em 18 arquivos e build completo. Hashes das seis bibliotecas conferidos; content script abaixo de 1 MB, sem embutir WASM.
+- Chrome/WebGPU real: três variantes q4f16_1 carregadas no Chrome for Testing 154, com prova sintética e prévia de Corrigir aprovadas, zero erros de página. Qwen3 8B completou 4,62 GB de dados após confirmação. Retorno ao Econômico reutilizou cache. Em duas abas sintéticas, troca durante streaming real cancelou o pedido, preservou o rascunho, destruiu o Worker anterior e produziu nova prova com um único Worker diferente. Nenhuma conversa aberta ou mensagem enviada.
+- Limites: GPU disponível oferece `shader-f16`; variantes f32 foram conferidas por seleção/testes/artefatos, sem inferência física em segunda GPU. Falha física de memória também não foi reproduzida. A compatibilidade efetivamente observada e esses limites constam na matriz; não se exige Qualidade em todo equipamento nem se promete precisão geral dos modelos.
+- Commit da etapa: `feat(step-12): adicionar modelos e perfis de hardware`. Hash no histórico Git e na resposta de entrega; identidade humana configurada.
+- Status final: **Concluída** no escopo da STEP-12. Próxima etapa: STEP-13, somente por nova solicitação.
+
 ## Como continuar
 
-As STEP-01 a STEP-11 estão concluídas. Consulte os relatórios da [comunicação](VALIDACAO-STEP-03.md), do [editor](VALIDACAO-STEP-04.md), da [prévia](VALIDACAO-STEP-05.md), da [inferência local](VALIDACAO-STEP-06.md), da [correção](VALIDACAO-STEP-07.md), da [proteção determinística](VALIDACAO-STEP-08.md), dos [nove modos](VALIDACAO-STEP-09.md), do [streaming](VALIDACAO-STEP-10.md) e da [revisão semântica](VALIDACAO-STEP-11.md). Para continuar, solicitar **Execute somente a STEP-12 do plano.** A STEP-12 não foi iniciada.
+As STEP-01 a STEP-12 estão concluídas. Consulte os relatórios da [comunicação](VALIDACAO-STEP-03.md), do [editor](VALIDACAO-STEP-04.md), da [prévia](VALIDACAO-STEP-05.md), da [inferência local](VALIDACAO-STEP-06.md), da [correção](VALIDACAO-STEP-07.md), da [proteção determinística](VALIDACAO-STEP-08.md), dos [nove modos](VALIDACAO-STEP-09.md), do [streaming](VALIDACAO-STEP-10.md), da [revisão semântica](VALIDACAO-STEP-11.md) e dos [perfis](VALIDACAO-STEP-12.md). Para continuar, solicitar **Execute somente a STEP-13 do plano.** A STEP-13 não foi iniciada.
 
 Em futuras execuções, ler o plano e a etapa indicada, validar os pré-requisitos e atualizar este documento ao terminar. Não mudar o estado de etapas futuras apenas porque suas descrições foram criadas.
 

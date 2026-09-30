@@ -24,6 +24,26 @@ pre {
     14px/1.5 system-ui,
     sans-serif;
 }
+.profile-setting {
+  display: grid;
+  gap: 4px;
+  margin: 12px 0;
+  font:
+    14px/1.5 system-ui,
+    sans-serif;
+}
+.profile-setting select {
+  min-width: 0;
+  padding: 7px;
+  border: 1px solid #187566;
+  border-radius: 8px;
+  background: inherit;
+  color: inherit;
+  pointer-events: auto;
+}
+.hardware-info {
+  font-size: 12px;
+}
 .semantic-setting input {
   margin-top: 4px;
   pointer-events: auto;

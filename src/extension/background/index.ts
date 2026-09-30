@@ -6,7 +6,7 @@ import { OffscreenHost } from './offscreen-host';
 import { RequestRouter } from './router';
 import type { Client } from './router';
 import { isPreferenceCommand } from '../../shared/preferences';
-import { readPreferences, saveSemanticReview } from './preferences';
+import { readPreferences, saveProfile, saveSemanticReview } from './preferences';
 
 const host = new OffscreenHost(
   (event) => router.receiveEngine(event),
@@ -16,6 +16,7 @@ const router = new RequestRouter(
   () => host.ensure(),
   15_000,
   async () => (await readPreferences()).semanticReview,
+  async () => (await readPreferences()).profile,
 );
 
 chrome.runtime.onConnect.addListener((port) => {
@@ -68,7 +69,15 @@ chrome.runtime.onMessage.addListener((value: unknown, sender, sendResponse) => {
   if (isPreferenceCommand(value)) {
     if (!contentOrigin(sender, chrome.runtime.id, crypto.randomUUID())) return false;
     const operation =
-      value.type === 'get' ? readPreferences() : saveSemanticReview(value.semanticReview);
+      value.type === 'get'
+        ? readPreferences()
+        : value.type === 'set'
+          ? saveSemanticReview(value.semanticReview)
+          : saveProfile(value.profile).then((saved) => {
+              router.resetForProfileChange();
+              host.reset();
+              return saved;
+            });
     void operation.then(sendResponse, () => sendResponse({ error: 'PREFERENCES_UNAVAILABLE' }));
     return true;
   }

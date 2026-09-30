@@ -19,14 +19,14 @@ Oferecer os perfis Econômico, Equilibrado e Qualidade sem inferências falsas s
 
 ## Tarefas
 
-- [ ] Adicionar Llama 3.2 3B Instruct, Qwen3 4B e Qwen3 8B ao catálogo local, com variantes compatíveis e artefatos executáveis empacotados.
-- [ ] Mapear Econômico para Llama, Equilibrado para Qwen3 4B e Qualidade para Qwen3 8B. Manter Econômico como padrão.
-- [ ] Validar licença, revisão, runtime e model_lib de cada entrada. Exibir tamanho real conhecido do download, contexto e requisitos estimados separados.
-- [ ] Verificar features, limits e carregamento real do adaptador WebGPU; apresentar dados indisponíveis como indisponíveis.
-- [ ] Selecionar variante f32 quando os recursos exigidos por f16 faltarem, informando o requisito de memória maior antes de baixar.
-- [ ] Desabilitar raciocínio prolongado nos modelos Qwen3 usando a configuração suportada pela versão fixada do runtime.
-- [ ] Ao trocar modelo, encerrar pedidos em andamento de forma explícita, liberar o anterior e pedir a ação de download apenas quando faltarem artefatos.
-- [ ] Se o carregamento falhar por recursos, sugerir perfil menor sem alterar silenciosamente a escolha ou baixar outro modelo.
+- [x] Adicionar Llama 3.2 3B Instruct, Qwen3 4B e Qwen3 8B ao catálogo local, com variantes compatíveis e artefatos executáveis empacotados.
+- [x] Mapear Econômico para Llama, Equilibrado para Qwen3 4B e Qualidade para Qwen3 8B. Manter Econômico como padrão.
+- [x] Validar licença, revisão, runtime e model_lib de cada entrada. Exibir tamanho real conhecido do download, contexto e requisitos estimados separados.
+- [x] Verificar features, limits e carregamento real do adaptador WebGPU; apresentar dados indisponíveis como indisponíveis.
+- [x] Selecionar variante f32 quando os recursos exigidos por f16 faltarem, informando o requisito de memória maior antes de baixar.
+- [x] Desabilitar raciocínio prolongado nos modelos Qwen3 usando a configuração suportada pela versão fixada do runtime.
+- [x] Ao trocar modelo, encerrar pedidos em andamento de forma explícita, liberar o anterior e pedir a ação de download apenas quando faltarem artefatos.
+- [x] Se o carregamento falhar por recursos, sugerir perfil menor sem alterar silenciosamente a escolha ou baixar outro modelo.
 
 ## Limites
 
@@ -36,10 +36,10 @@ Oferecer os perfis Econômico, Equilibrado e Qualidade sem inferências falsas s
 
 ## Critérios de conclusão e verificação
 
-- [ ] Cada modelo compatível no equipamento pode ser carregado e utilizado; indisponibilidades são registradas.
-- [ ] Trocar perfil não mantém dois modelos na GPU nem mistura respostas.
-- [ ] Licenças, tamanhos e variantes apresentados correspondem aos artefatos fixados.
-- [ ] Erros de memória ou incompatibilidade orientam o usuário sem fallback remoto.
+- [x] Cada modelo compatível no equipamento pode ser carregado e utilizado; indisponibilidades são registradas.
+- [x] Trocar perfil não mantém dois modelos na GPU nem mistura respostas.
+- [x] Licenças, tamanhos e variantes apresentados correspondem aos artefatos fixados.
+- [x] Erros de memória ou incompatibilidade orientam o usuário sem fallback remoto.
 
 Quando uma verificação não puder ser realizada, registrar exatamente o procedimento pendente e usar Aguardando validação ou Bloqueada no progresso, conforme o motivo. Não substituir evidência real por suposição.
 

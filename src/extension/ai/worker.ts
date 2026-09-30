@@ -44,6 +44,8 @@ async function runModel(request: BoundRequest): Promise<void> {
     const protectedDraft = action ? protectDraft(request.text) : undefined;
     await model.initialize({
       signal: controller.signal,
+      profile: request.profile ?? 'economico',
+      allowDownload: request.allowDownload === true,
       onProgress: (phase, percent) => {
         if (active?.controller !== controller || controller.signal.aborted) return;
         emit({

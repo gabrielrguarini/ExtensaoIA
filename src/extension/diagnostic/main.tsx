@@ -15,6 +15,7 @@ const labels = {
   WEBGPU_UNAVAILABLE: 'WebGPU indisponível',
   INSUFFICIENT_RESOURCES: 'Recursos da GPU insuficientes',
   MODEL_DOWNLOAD: 'Falha no download do modelo',
+  DOWNLOAD_REQUIRED: 'Download do modelo precisa de confirmação',
   CONTEXT_LIMIT: 'Mensagem muito longa para o contexto',
   EMPTY_OUTPUT: 'Resposta vazia',
   TRUNCATED_OUTPUT: 'Resposta truncada',

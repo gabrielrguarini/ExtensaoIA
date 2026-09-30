@@ -8,6 +8,42 @@ export interface LlamaTemplate {
   contentSep: string;
   emptySep: string;
   turnSep: string;
+  assistantSuffix?: string;
+}
+
+/** Campos usados pelo WebLLM Conversation.getPromptArray() para um turno isolado. */
+export type PromptTemplate = LlamaTemplate;
+
+export function parseQwenTemplate(config: unknown): PromptTemplate {
+  if (typeof config !== 'object' || !config || !('conv_template' in config))
+    throw new Error('Template Qwen ausente.');
+  if (typeof config.conv_template !== 'object' || !config.conv_template)
+    throw new Error('Template Qwen inválido.');
+  const template = config.conv_template as Record<string, unknown>;
+  const roles = template.roles as Record<string, unknown> | undefined;
+  if (
+    template.name !== 'qwen3' ||
+    template.system_template !== '<|im_start|>system\n{system_message}<|im_end|>\n' ||
+    template.add_role_after_system_message !== true ||
+    roles?.user !== '<|im_start|>user' ||
+    roles?.assistant !== '<|im_start|>assistant' ||
+    template.role_content_sep !== '\n' ||
+    template.role_empty_sep !== '\n' ||
+    !Array.isArray(template.seps) ||
+    template.seps.length !== 1 ||
+    template.seps[0] !== '<|im_end|>\n'
+  )
+    throw new Error('Template Qwen incompatível com a contagem.');
+  return {
+    systemTemplate: template.system_template,
+    prefixTokenIds: [],
+    userRole: roles.user,
+    assistantRole: roles.assistant,
+    contentSep: '\n',
+    emptySep: '\n',
+    turnSep: '<|im_end|>\n',
+    assistantSuffix: '<think>\n\n</think>\n\n',
+  };
 }
 
 /** Somente o template Llama da revisão fixada é aceito para que a conta corresponda ao runtime. */
@@ -67,7 +103,7 @@ export function correctionTokenBudget(
 ): TokenBudget | null {
   const system = template.systemTemplate.replace('{system_message}', systemPrompt);
   const user = `${template.userRole}${template.contentSep}${draft}${template.turnSep}`;
-  const assistant = `${template.assistantRole}${template.emptySep}`;
+  const assistant = `${template.assistantRole}${template.emptySep}${template.assistantSuffix ?? ''}`;
   const promptTokens =
     template.prefixTokenIds.length +
     encode(system).length +
@@ -88,7 +124,7 @@ export function semanticTokenBudget(
 ): number | null {
   const system = template.systemTemplate.replace('{system_message}', systemPrompt);
   const user = `${template.userRole}${template.contentSep}${input}${template.turnSep}`;
-  const assistant = `${template.assistantRole}${template.emptySep}`;
+  const assistant = `${template.assistantRole}${template.emptySep}${template.assistantSuffix ?? ''}`;
   const promptTokens =
     template.prefixTokenIds.length +
     encode(system).length +

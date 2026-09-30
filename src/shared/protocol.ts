@@ -1,6 +1,7 @@
 import { MODEL_PROOF_TEXT } from './model-proof';
 import { isWritingAction } from './actions';
 import type { WritingAction } from './actions';
+import type { ModelProfile } from '../extension/ai/model-catalog';
 
 export const CLIENT_PORT = 'writing-client-v1';
 export const ENGINE_PORT = 'writing-engine-v1';
@@ -28,10 +29,19 @@ export interface BoundRequest extends Binding {
   text: string;
   action: 'simular' | WritingAction | 'prova-modelo';
   semanticReview: boolean;
+  profile?: ModelProfile;
+  allowDownload?: boolean;
 }
 
 export type ClientCommand =
-  | { type: 'start'; key: RequestKey; text: string; action: BoundRequest['action'] }
+  | {
+      type: 'start';
+      key: RequestKey;
+      text: string;
+      action: BoundRequest['action'];
+      allowDownload?: boolean;
+      expectedProfile?: ModelProfile;
+    }
   | { type: 'cancel'; key: RequestKey }
   | { type: 'status' };
 
@@ -45,6 +55,7 @@ export type ErrorCode =
   | 'WEBGPU_UNAVAILABLE'
   | 'INSUFFICIENT_RESOURCES'
   | 'MODEL_DOWNLOAD'
+  | 'DOWNLOAD_REQUIRED'
   | 'CONTEXT_LIMIT'
   | 'EMPTY_OUTPUT'
   | 'TRUNCATED_OUTPUT'
@@ -154,7 +165,16 @@ export function isClientCommand(value: unknown): value is ClientCommand {
   switch (value.type) {
     case 'start':
       return (
-        fields(value, ['type', 'key', 'text', 'action']) &&
+        (fields(value, ['type', 'key', 'text', 'action']) ||
+          fields(value, ['type', 'key', 'text', 'action', 'allowDownload']) ||
+          fields(value, ['type', 'key', 'text', 'action', 'expectedProfile']) ||
+          fields(value, ['type', 'key', 'text', 'action', 'allowDownload', 'expectedProfile'])) &&
+        (value.allowDownload === undefined || typeof value.allowDownload === 'boolean') &&
+        (value.expectedProfile === undefined ||
+          value.expectedProfile === 'economico' ||
+          value.expectedProfile === 'equilibrado' ||
+          value.expectedProfile === 'qualidade') &&
+        (value.allowDownload !== true || value.expectedProfile !== undefined) &&
         isKey(value.key) &&
         textValue(value.text) &&
         value.text.trim().length > 0 &&
@@ -183,6 +203,7 @@ function isErrorCode(value: unknown): value is ErrorCode {
       'WEBGPU_UNAVAILABLE',
       'INSUFFICIENT_RESOURCES',
       'MODEL_DOWNLOAD',
+      'DOWNLOAD_REQUIRED',
       'CONTEXT_LIMIT',
       'EMPTY_OUTPUT',
       'TRUNCATED_OUTPUT',
@@ -293,8 +314,22 @@ export function isEngineCommand(value: unknown): value is EngineCommand {
     return false;
   const request = value.request;
   return (
-    fields(request, ['key', 'origin', 'text', 'action', 'semanticReview']) &&
+    (fields(request, ['key', 'origin', 'text', 'action', 'semanticReview']) ||
+      fields(request, [
+        'key',
+        'origin',
+        'text',
+        'action',
+        'semanticReview',
+        'profile',
+        'allowDownload',
+      ])) &&
     isBinding({ key: request.key, origin: request.origin }) &&
+    (request.profile === undefined ||
+      request.profile === 'economico' ||
+      request.profile === 'equilibrado' ||
+      request.profile === 'qualidade') &&
+    (request.allowDownload === undefined || typeof request.allowDownload === 'boolean') &&
     textValue(request.text) &&
     typeof request.semanticReview === 'boolean' &&
     (isWritingAction(request.action) || request.semanticReview === false) &&

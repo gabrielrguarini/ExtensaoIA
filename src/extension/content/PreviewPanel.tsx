@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useSyncExternalStore } from 'react';
 import type { PreviewSession } from './preview-session';
-import { MODEL_DATA_BYTES } from '../../shared/model-proof';
+import { MODEL_CHOICES, MODEL_PROFILES, PROFILE_LABELS } from '../ai/model-catalog';
 import { WRITING_ACTIONS, writingAction } from '../../shared/actions';
 
 export function PreviewPanel({
@@ -11,6 +11,12 @@ export function PreviewPanel({
   onClose: () => void;
 }) {
   const state = useSyncExternalStore(session.subscribe, session.getState);
+  const menuChoice =
+    state.kind === 'menu'
+      ? MODEL_CHOICES[state.profile][
+          state.hardware.state === 'available' && !state.hardware.shaderF16 ? 'q4f32_1' : 'q4f16_1'
+        ]
+      : null;
   const panel = useRef<HTMLElement>(null);
   useLayoutEffect(() => {
     if (state.kind !== 'closed')
@@ -40,6 +46,30 @@ export function PreviewPanel({
         <>
           <p>
             Escolha como revisar seu rascunho. A sugestão só será aplicada após sua confirmação.
+          </p>
+          <label className="profile-setting">
+            Perfil de IA local
+            <select
+              value={state.profile}
+              disabled={state.preferenceStatus !== 'ready'}
+              onChange={(event) => {
+                if (event.nativeEvent.isTrusted)
+                  session.setProfile(event.currentTarget.value as typeof state.profile);
+              }}
+            >
+              {MODEL_PROFILES.map((profile) => (
+                <option key={profile} value={profile}>
+                  {PROFILE_LABELS[profile]}
+                </option>
+              ))}
+            </select>
+          </label>
+          <p className="hardware-info">
+            {state.hardware.state === 'checking'
+              ? 'Verificando adaptador WebGPU…'
+              : state.hardware.state === 'unavailable'
+                ? 'Adaptador WebGPU: indisponível. Limites e VRAM livre: indisponíveis.'
+                : `WebGPU: shader-f16 ${state.hardware.shaderF16 ? 'disponível' : 'indisponível'}; buffer de armazenamento máximo ${Math.floor(state.hardware.maxStorageBufferBindingSize / 1_048_576)} MiB; buffer máximo ${Math.floor(state.hardware.maxBufferSize / 1_048_576)} MiB. VRAM livre: indisponível.`}
           </p>
           <label className="semantic-setting">
             <input
@@ -75,35 +105,49 @@ export function PreviewPanel({
             ))}
           </div>
           <div className="model-proof">
-            <h3>IA local · Built with Llama</h3>
+            <h3>
+              {PROFILE_LABELS[state.profile]} · {menuChoice?.id}
+            </h3>
             <p>
-              As ações usam Llama 3.2 3B no seu computador. Se necessário, o navegador baixará
-              aproximadamente {(MODEL_DATA_BYTES / 1_000_000_000).toFixed(2)} GB de dados do modelo;
-              depois poderá aproveitar o cache. Seu rascunho não é enviado a servidores.
+              Contexto: {menuChoice?.contextTokens.toLocaleString('pt-BR')} tokens. Download
+              completo conhecido:{' '}
+              {menuChoice ? (menuChoice.downloadBytes / 1_000_000_000).toFixed(2) : '—'} GB de
+              dados. Requisito de GPU estimado:{' '}
+              {menuChoice ? Math.ceil(menuChoice.gpuMemoryEstimateMB).toLocaleString('pt-BR') : '—'}{' '}
+              MB. VRAM livre não é informada pelo navegador; o carregamento real confirma a
+              disponibilidade.
             </p>
             <p>
-              Sem shader-f16, a variante q4f32_1 é usada e exige mais memória de GPU (estimativas do
-              catálogo: 2.952 MB contra 2.264 MB). Isso não representa o tamanho do download.
+              Variante:{' '}
+              {state.hardware.state === 'checking' || state.hardware.state === 'unavailable'
+                ? 'a verificar no Worker'
+                : menuChoice?.variant}
+              . Sem shader-f16, a variante f32 exige mais memória de GPU.
             </p>
             <p>
-              O modelo usa a{' '}
+              Licença:{' '}
               <a
-                href="https://dev.meta.ai/llama/llama3_2/license"
+                href={
+                  state.profile === 'economico'
+                    ? 'https://dev.meta.ai/llama/llama3_2/license'
+                    : 'https://www.apache.org/licenses/LICENSE-2.0'
+                }
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                licença comunitária Llama 3.2
+                {menuChoice?.license}
               </a>
               .
             </p>
             <p>A prova abaixo usa só uma frase sintética fixa e não lê nem altera seu rascunho.</p>
             <button
               type="button"
+              disabled={state.preferenceStatus !== 'ready'}
               onClick={(event) => {
                 if (event.isTrusted) session.startModelProof();
               }}
             >
-              Baixar modelo e testar IA local
+              Testar IA local
             </button>
           </div>
           <p>Prévia de teste: acrescenta “[Simulação]” ao seu texto, sem fazer correções.</p>
@@ -116,6 +160,34 @@ export function PreviewPanel({
             Criar prévia simulada
           </button>
         </>
+      )}
+      {state.kind === 'download-confirm' && (
+        <div className="model-proof" role="status">
+          <h3>Download necessário · {PROFILE_LABELS[state.profile]}</h3>
+          <p>
+            Para usar {MODEL_CHOICES[state.profile][state.variant].id}, baixe{' '}
+            {(MODEL_CHOICES[state.profile][state.variant].downloadBytes / 1_000_000_000).toFixed(2)}{' '}
+            GB de dados do modelo. Contexto: 4.096 tokens. Requisito de GPU estimado:{' '}
+            {Math.ceil(
+              MODEL_CHOICES[state.profile][state.variant].gpuMemoryEstimateMB,
+            ).toLocaleString('pt-BR')}{' '}
+            MB. VRAM livre: indisponível.
+          </p>
+          {state.variant === 'q4f32_1' && (
+            <p>
+              A GPU não oferece shader-f16. Esta variante f32 usa mais memória; o carregamento pode
+              falhar.
+            </p>
+          )}
+          <button
+            type="button"
+            onClick={(event) => {
+              if (event.isTrusted) session.confirmDownload();
+            }}
+          >
+            Baixar e continuar
+          </button>
+        </div>
       )}
       {state.kind === 'loading' && <p role="status">Preparando prévia simulada…</p>}
       {(state.kind === 'model-loading' || state.kind === 'action-loading') && (

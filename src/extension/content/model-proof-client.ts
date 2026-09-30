@@ -1,9 +1,11 @@
 import { CLIENT_PORT, isClientEvent, sameBinding, sameKey } from '../../shared/protocol';
 import type { Binding, RequestKey } from '../../shared/protocol';
 import { MODEL_PROOF_TEXT } from '../../shared/model-proof';
+import type { ModelProfile } from '../ai/model-catalog';
 
 export type ProofOutcome =
-  { ok: true; text: string; variant: 'q4f16_1' | 'q4f32_1' } | { ok: false; message: string };
+  | { ok: true; text: string; variant: 'q4f16_1' | 'q4f32_1' }
+  | { ok: false; message: string; code?: 'DOWNLOAD_REQUIRED' | 'INSUFFICIENT_RESOURCES' };
 export type ProofProgress = {
   phase:
     'preparing' | 'downloading' | 'loading' | 'ready' | 'generating' | 'validating' | 'reviewing';
@@ -13,9 +15,16 @@ export type ProofProgress = {
 export type ProofGenerator = (
   progress: (value: ProofProgress) => void,
   done: (outcome: ProofOutcome) => void,
+  allowDownload?: boolean,
+  expectedProfile?: ModelProfile,
 ) => () => void;
 
-export const runModelProof: ProofGenerator = (progress, done) => {
+export const runModelProof: ProofGenerator = (
+  progress,
+  done,
+  allowDownload = false,
+  expectedProfile,
+) => {
   const port = chrome.runtime.connect({ name: CLIENT_PORT });
   const key: RequestKey = {
     requestId: crypto.randomUUID(),
@@ -64,7 +73,17 @@ export const runModelProof: ProofGenerator = (progress, done) => {
               : value.code === 'MODEL_DOWNLOAD'
                 ? 'Não foi possível baixar ou carregar os artefatos do modelo. Verifique a conexão e tente novamente.'
                 : 'Não foi possível processar o teste localmente. O rascunho permanece intacto.';
-      finish({ ok: false, message });
+      finish(
+        value.code === 'DOWNLOAD_REQUIRED'
+          ? {
+              ok: false,
+              code: 'DOWNLOAD_REQUIRED',
+              message: 'O modelo ainda não está no cache local.',
+            }
+          : value.code === 'INSUFFICIENT_RESOURCES'
+            ? { ok: false, code: 'INSUFFICIENT_RESOURCES', message }
+            : { ok: false, message },
+      );
     }
     if (value.type === 'cancelled') finish({ ok: false, message: 'Teste cancelado.' });
   }
@@ -75,7 +94,14 @@ export const runModelProof: ProofGenerator = (progress, done) => {
   port.onMessage.addListener(receive);
   port.onDisconnect.addListener(disconnect);
   try {
-    port.postMessage({ type: 'start', key, action: 'prova-modelo', text: MODEL_PROOF_TEXT });
+    port.postMessage({
+      type: 'start',
+      key,
+      action: 'prova-modelo',
+      text: MODEL_PROOF_TEXT,
+      allowDownload,
+      ...(expectedProfile ? { expectedProfile } : {}),
+    });
   } catch {
     disconnect();
   }

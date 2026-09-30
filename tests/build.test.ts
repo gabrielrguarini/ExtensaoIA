@@ -1,6 +1,6 @@
 import { execFile } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { mkdtemp, readFile, readdir, rm } from 'node:fs/promises';
+import { mkdtemp, readFile, readdir, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -88,17 +88,37 @@ describe('pacote de produção', () => {
     });
     for (const file of ['service-worker.js', 'content.js', 'offscreen.html', 'diagnostic.html'])
       expect(outputFiles).toContain(file);
-    for (const file of ['NOTICE.txt', 'licenses/LLAMA-3.2-LICENSE', 'licenses/WEBLLM-LICENSE'])
+    for (const file of [
+      'NOTICE.txt',
+      'licenses/LLAMA-3.2-LICENSE',
+      'licenses/QWEN3-LICENSE',
+      'licenses/WEBLLM-LICENSE',
+    ])
       expect((await readFile(path.join(outputDirectory, file))).length).toBeGreaterThan(100);
     const content = await readFile(path.join(outputDirectory, 'content.js'), 'utf8');
+    expect((await stat(path.join(outputDirectory, 'content.js'))).size).toBeLessThan(1_000_000);
     expect(() => new Script(content)).not.toThrow(); // Script clássico, sem imports ESM.
     expect(content).not.toContain('process.env');
     expect(outputFiles.some((file) => /worker-.*\.js$/.test(file))).toBe(true);
-    for (const [variant, expectedHash] of [
-      ['q4f16_1', '34de0d60ab598c6a85ae882b48474f250193076f902057a21070bb2daae96d5b'],
-      ['q4f32_1', '224e4cd5c235621684257aad3ebfdaf6e337d50f783614d1e7ed63e78d693ad6'],
+    for (const [model, variant, expectedHash] of [
+      [
+        'Llama-3.2-3B',
+        'q4f16_1',
+        '34de0d60ab598c6a85ae882b48474f250193076f902057a21070bb2daae96d5b',
+      ],
+      [
+        'Llama-3.2-3B',
+        'q4f32_1',
+        '224e4cd5c235621684257aad3ebfdaf6e337d50f783614d1e7ed63e78d693ad6',
+      ],
+      ['Qwen3-4B', 'q4f16_1', '5ddf44e49b03e53e24fd29a45591850924346140452f60c29280190388571340'],
+      ['Qwen3-4B', 'q4f32_1', '6484148ff499c15433ab85e4d2c376aef453a6d797f48047e6bd6fd495a59e39'],
+      ['Qwen3-8B', 'q4f16_1', 'fd0b332c81212e484ba56c15aac5af2548f14f849d3352039ad68d3c4663b6dd'],
+      ['Qwen3-8B', 'q4f32_1', '4705cca63950fca8a8bb50279ccc44a1233b41a75318ec87fd9395f46e77358f'],
     ] as const) {
-      const file = outputFiles.find((item) => item.includes(variant) && item.endsWith('.wasm'));
+      const file = outputFiles.find(
+        (item) => item.includes(model) && item.includes(variant) && item.endsWith('.wasm'),
+      );
       expect(file).toBeDefined();
       const data = await readFile(path.join(outputDirectory, file ?? ''));
       expect(createHash('sha256').update(data).digest('hex')).toBe(expectedHash);

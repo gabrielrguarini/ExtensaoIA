@@ -3,6 +3,8 @@ Built with Llama.
 Llama 3.2 is licensed under the Llama 3.2 Community License, Copyright © Meta Platforms, Inc. All Rights Reserved.
 
 The Llama 3.2 model weights are downloaded directly from the pinned MLC model repository on Hugging Face and stored in the browser's model cache. They are not bundled with this extension.
+Qwen3 4B and 8B are licensed under Apache License 2.0 by Alibaba Cloud. Their pinned MLC weights are downloaded to the browser cache and are not bundled. The compatible WebGPU model libraries for all three models are bundled from mlc-ai/binary-mlc-llm-libs v0_2_80.
+The Qwen3 model license is included in licenses/QWEN3-LICENSE.
 
 The full Llama 3.2 Community License Agreement is included in licenses/LLAMA-3.2-LICENSE.
 WebLLM 0.2.82 is distributed under Apache License 2.0; its license is included in licenses/WEBLLM-LICENSE.

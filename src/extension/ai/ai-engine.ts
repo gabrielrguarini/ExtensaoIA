@@ -3,6 +3,8 @@ export type ModelPhase = 'preparing' | 'downloading' | 'loading' | 'ready';
 export interface InitializeOptions {
   signal?: AbortSignal;
   onProgress?: (phase: ModelPhase, percent: number) => void;
+  profile?: ModelProfile;
+  allowDownload?: boolean;
 }
 
 export interface GenerateOptions {
@@ -18,3 +20,4 @@ export interface AIEngine {
   unload(): Promise<void>;
 }
 import type { WritingAction } from '../../shared/actions';
+import type { ModelProfile } from './model-catalog';

@@ -2,10 +2,17 @@ import type { MLCEngineInterface, ModelRecord } from '@mlc-ai/web-llm';
 import type { Tokenizer } from '@mlc-ai/web-tokenizers';
 import type { AIEngine, GenerateOptions, InitializeOptions } from './ai-engine';
 import { MODEL_CHOICES } from './model-catalog';
-import type { ModelChoice } from './model-catalog';
+import { MODEL_LIBRARIES } from './model-libraries';
+import { cacheModelArtifacts } from './model-cache';
+import type { ModelChoice, ModelProfile } from './model-catalog';
 import { actionMessages, systemPromptFor } from './correction-prompt';
-import { correctionTokenBudget, parseLlamaTemplate, semanticTokenBudget } from './token-budget';
-import type { LlamaTemplate } from './token-budget';
+import {
+  correctionTokenBudget,
+  parseLlamaTemplate,
+  parseQwenTemplate,
+  semanticTokenBudget,
+} from './token-budget';
+import type { PromptTemplate } from './token-budget';
 import { requireCompleteGeneration } from './correction-output';
 import { SEMANTIC_SYSTEM_PROMPT, semanticMessages } from './semantic-review';
 import { isWritingAction } from '../../shared/actions';
@@ -16,6 +23,7 @@ export class ModelEnvironmentError extends Error {
       | 'WEBGPU_UNAVAILABLE'
       | 'INSUFFICIENT_RESOURCES'
       | 'MODEL_DOWNLOAD'
+      | 'DOWNLOAD_REQUIRED'
       | 'CONTEXT_LIMIT'
       | 'UNAVAILABLE',
   ) {
@@ -23,7 +31,10 @@ export class ModelEnvironmentError extends Error {
   }
 }
 
-export async function selectModel(gpu: GPU | undefined): Promise<ModelChoice> {
+export async function selectModel(
+  gpu: GPU | undefined,
+  profile: ModelProfile = 'economico',
+): Promise<ModelChoice> {
   if (!gpu) throw new ModelEnvironmentError('WEBGPU_UNAVAILABLE');
   let adapter: GPUAdapter | null;
   try {
@@ -39,17 +50,20 @@ export async function selectModel(gpu: GPU | undefined): Promise<ModelChoice> {
     limits.maxBufferSize < 256 * 1024 * 1024
   )
     throw new ModelEnvironmentError('INSUFFICIENT_RESOURCES');
-  return adapter.features.has('shader-f16') ? MODEL_CHOICES.q4f16_1 : MODEL_CHOICES.q4f32_1;
+  return adapter.features.has('shader-f16')
+    ? MODEL_CHOICES[profile].q4f16_1
+    : MODEL_CHOICES[profile].q4f32_1;
 }
 
 function modelRecord(choice: ModelChoice): ModelRecord {
   return {
     model: choice.url,
     model_id: choice.id,
-    model_lib: new URL(choice.library, import.meta.url).href,
+    model_lib: new URL(MODEL_LIBRARIES[choice.profile][choice.variant], import.meta.url).href,
     vram_required_MB: choice.gpuMemoryEstimateMB,
-    low_resource_required: true,
-    overrides: { context_window_size: 4096 },
+    low_resource_required: choice.profile !== 'qualidade',
+    required_features: choice.variant === 'q4f16_1' ? ['shader-f16'] : [],
+    overrides: { context_window_size: choice.contextTokens },
   };
 }
 
@@ -58,7 +72,7 @@ export class WebLLMEngine implements AIEngine {
   private choice: ModelChoice | undefined;
   private loading: Promise<void> | undefined;
   private tokenizer: Tokenizer | undefined;
-  private template: LlamaTemplate | undefined;
+  private template: PromptTemplate | undefined;
 
   isReady(): boolean {
     return !!this.runtime;
@@ -66,11 +80,13 @@ export class WebLLMEngine implements AIEngine {
 
   async initialize(options: InitializeOptions = {}): Promise<void> {
     if (options.signal?.aborted) throw options.signal.reason;
-    if (this.runtime) {
+    const profile = options.profile ?? 'economico';
+    if (this.runtime && this.choice?.profile === profile) {
       options.onProgress?.('ready', 100);
       return;
     }
     if (this.loading) return this.loading;
+    if (this.runtime) await this.unload();
     this.loading = this.load(options).finally(() => {
       this.loading = undefined;
     });
@@ -79,19 +95,41 @@ export class WebLLMEngine implements AIEngine {
 
   private async load(options: InitializeOptions): Promise<void> {
     options.onProgress?.('preparing', 0);
-    const choice = await selectModel((navigator as Navigator & { gpu?: GPU }).gpu);
+    const choice = await selectModel((navigator as Navigator & { gpu?: GPU }).gpu, options.profile);
     this.choice = choice;
+    options.onProgress?.('preparing', 1);
     if (options.signal?.aborted) throw options.signal.reason;
     // O import dinâmico produz um chunk local do Worker; nenhuma API WebLLM vaza para outros contextos.
-    const { MLCEngine } = await import('@mlc-ai/web-llm');
+    const { MLCEngine, hasModelInCache } = await import('@mlc-ai/web-llm');
+    const record = modelRecord(choice);
+    if (!options.allowDownload) {
+      const [weights, modelCache, configCache] = await Promise.all([
+        hasModelInCache(choice.id, { model_list: [record] }),
+        caches.open('webllm/model'),
+        caches.open('webllm/config'),
+      ]);
+      const [tokenizer, config] = await Promise.all([
+        modelCache.match(new URL('tokenizer.json', choice.url).href),
+        configCache.match(new URL('mlc-chat-config.json', choice.url).href),
+      ]);
+      if (!weights || !tokenizer || !config) throw new ModelEnvironmentError('DOWNLOAD_REQUIRED');
+    } else {
+      try {
+        options.onProgress?.('downloading', 0);
+        await cacheModelArtifacts(choice, options.signal, (percent) =>
+          options.onProgress?.('downloading', percent),
+        );
+      } catch {
+        if (options.signal?.aborted) throw options.signal.reason;
+        throw new ModelEnvironmentError('MODEL_DOWNLOAD');
+      }
+    }
     const runtime = new MLCEngine({
-      appConfig: { model_list: [modelRecord(choice)] },
+      appConfig: { model_list: [record] },
       initProgressCallback: (report) => {
         const percent = Math.max(0, Math.min(100, Math.floor(report.progress * 100)));
-        const phase = /loading model|loading gpu|finish loading/i.test(report.text)
-          ? 'loading'
-          : 'downloading';
-        options.onProgress?.(phase, percent);
+        // Os dados já foram conferidos ou preparados no cache antes do reload.
+        options.onProgress?.('loading', percent);
       },
       logLevel: 'ERROR',
     });
@@ -100,16 +138,21 @@ export class WebLLMEngine implements AIEngine {
     };
     options.signal?.addEventListener('abort', abort, { once: true });
     try {
-      options.onProgress?.('downloading', 0);
-      await runtime.reload(choice.id, { context_window_size: 4096 });
+      options.onProgress?.('loading', 0);
+      await runtime.reload(choice.id, { context_window_size: choice.contextTokens });
       if (options.signal?.aborted) throw options.signal.reason;
       this.runtime = runtime;
       options.onProgress?.('ready', 100);
     } catch (error) {
       await runtime.unload().catch(() => undefined);
+      this.choice = undefined;
       if (options.signal?.aborted) throw options.signal.reason;
       const message = String(error);
-      if (/out of memory|oom|device lost|allocation|storage buffer/i.test(message))
+      if (
+        /out of memory|oom|device lost|allocation|storage buffer|maxStorageBufferBindingSize|maxBufferSize|buffer.*(?:exceed|limit)/i.test(
+          message,
+        )
+      )
         throw new ModelEnvironmentError('INSUFFICIENT_RESOURCES');
       if (/fetch|network|http|cache|download/i.test(message))
         throw new ModelEnvironmentError('MODEL_DOWNLOAD');
@@ -128,6 +171,30 @@ export class WebLLMEngine implements AIEngine {
     };
     options.signal?.addEventListener('abort', abort, { once: true });
     try {
+      const qwenPrefix = '<think>\n\n</think>\n\n';
+      let prefixPending = '';
+      let prefixDone = this.choice?.profile === 'economico';
+      let invalidThinking = false;
+      const visibleFragment = (fragment: string): string => {
+        if (invalidThinking) return '';
+        if (prefixDone) return fragment;
+        prefixPending += fragment;
+        if (qwenPrefix.startsWith(prefixPending)) return '';
+        if (prefixPending.startsWith(qwenPrefix)) {
+          prefixDone = true;
+          const visible = prefixPending.slice(qwenPrefix.length);
+          prefixPending = '';
+          return visible;
+        }
+        if (prefixPending.startsWith('<think>')) {
+          invalidThinking = true;
+          return '';
+        }
+        prefixDone = true;
+        const visible = prefixPending;
+        prefixPending = '';
+        return visible;
+      };
       const action = isWritingAction(options.task) ? options.task : undefined;
       const semantic = options.task === 'semantic-review';
       let maxTokens = 24;
@@ -160,6 +227,9 @@ export class WebLLMEngine implements AIEngine {
           stream: true,
           max_tokens: maxTokens,
           temperature: 0,
+          ...(this.choice?.profile !== 'economico'
+            ? { extra_body: { enable_thinking: false } }
+            : {}),
         });
         let finishReason: string | null = null;
         for await (const chunk of stream) {
@@ -167,9 +237,14 @@ export class WebLLMEngine implements AIEngine {
           const fragment = chunk.choices[0]?.delta.content;
           // O runtime libera seu lock somente ao consumir o último chunk.
           // Após interruptGenerate, drenar sem exibir até o encerramento.
-          if (fragment && !options.signal?.aborted) yield fragment;
+          if (fragment && !options.signal?.aborted) {
+            const visible = visibleFragment(fragment);
+            if (visible) yield visible;
+          }
         }
         if (options.signal?.aborted) throw options.signal.reason;
+        if (invalidThinking || (!prefixDone && prefixPending))
+          throw new ModelEnvironmentError('UNAVAILABLE');
         requireCompleteGeneration(finishReason);
       } else {
         const stream = await runtime.chat.completions.create({
@@ -177,12 +252,20 @@ export class WebLLMEngine implements AIEngine {
           stream: true,
           max_tokens: maxTokens,
           temperature: 0,
+          ...(this.choice?.profile !== 'economico'
+            ? { extra_body: { enable_thinking: false } }
+            : {}),
         });
         for await (const chunk of stream) {
           const fragment = chunk.choices[0]?.delta.content;
-          if (fragment && !options.signal?.aborted) yield fragment;
+          if (fragment && !options.signal?.aborted) {
+            const visible = visibleFragment(fragment);
+            if (visible) yield visible;
+          }
         }
         if (options.signal?.aborted) throw options.signal.reason;
+        if (invalidThinking || (!prefixDone && prefixPending))
+          throw new ModelEnvironmentError('UNAVAILABLE');
       }
     } finally {
       options.signal?.removeEventListener('abort', abort);
@@ -204,7 +287,7 @@ export class WebLLMEngine implements AIEngine {
     if (runtime) await runtime.unload();
   }
 
-  private async correctionTokens(): Promise<{ tokenizer: Tokenizer; template: LlamaTemplate }> {
+  private async correctionTokens(): Promise<{ tokenizer: Tokenizer; template: PromptTemplate }> {
     if (this.tokenizer && this.template)
       return { tokenizer: this.tokenizer, template: this.template };
     const choice = this.choice;
@@ -216,7 +299,9 @@ export class WebLLMEngine implements AIEngine {
       configCache.match(new URL('mlc-chat-config.json', choice.url).href),
     ]);
     if (!tokenizerResponse || !configResponse) throw new ModelEnvironmentError('UNAVAILABLE');
-    const template = parseLlamaTemplate(await configResponse.json());
+    const config: unknown = await configResponse.json();
+    const template =
+      choice.profile === 'economico' ? parseLlamaTemplate(config) : parseQwenTemplate(config);
     const { Tokenizer } = await import('@mlc-ai/web-tokenizers');
     const tokenizer = await Tokenizer.fromJSON(await tokenizerResponse.arrayBuffer());
     this.tokenizer = tokenizer;

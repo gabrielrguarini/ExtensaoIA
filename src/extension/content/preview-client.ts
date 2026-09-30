@@ -2,7 +2,9 @@ import { CLIENT_PORT, isClientEvent, sameBinding, sameKey } from '../../shared/p
 import type { Binding, RequestKey } from '../../shared/protocol';
 import type { DraftSnapshot } from '../../integration/whatsapp/adapter';
 
-export type PreviewOutcome = { ok: true; text: string } | { ok: false; message: string };
+export type PreviewOutcome =
+  | { ok: true; text: string }
+  | { ok: false; message: string; code?: 'DOWNLOAD_REQUIRED' | 'INSUFFICIENT_RESOURCES' };
 export type PreviewGenerator = (
   snapshot: DraftSnapshot,
   done: (outcome: PreviewOutcome) => void,

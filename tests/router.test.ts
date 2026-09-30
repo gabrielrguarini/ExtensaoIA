@@ -35,6 +35,42 @@ afterEach(() => {
 });
 
 describe('roteamento sem mistura de abas, documentos e revisões', () => {
+  it('recusa confirmação de download de um perfil antigo antes de criar o motor', async () => {
+    const ensure = vi.fn();
+    const router = new RequestRouter(
+      ensure,
+      2_000,
+      () => Promise.resolve(false),
+      () => Promise.resolve('qualidade'),
+    );
+    const a = client();
+    router.receive(a.peer, {
+      ...start,
+      action: 'corrigir',
+      allowDownload: true,
+      expectedProfile: 'equilibrado',
+    });
+    for (let i = 0; i < 4; i++) await Promise.resolve();
+    expect(a.events.at(-1)).toEqual({ type: 'cancelled', binding });
+    expect(ensure).not.toHaveBeenCalled();
+    router.receive(a.peer, { ...start, allowDownload: true });
+    expect(a.events.at(-1)).toMatchObject({ type: 'rejected', code: 'INVALID_MESSAGE' });
+  });
+  it('cancela o pedido atual e reinicia o Worker ao trocar perfil', async () => {
+    const { router, engine, sent } = harness();
+    const a = client();
+    router.receive(a.peer, start);
+    await Promise.resolve();
+    router.resetForProfileChange();
+    expect(a.events.at(-1)).toEqual({ type: 'cancelled', binding });
+    expect(engine.reset).toHaveBeenCalledOnce();
+    router.receiveEngine({ type: 'result', binding, text: 'ATRASADO', simulated: true });
+    expect(a.events.at(-1)?.type).toBe('cancelled');
+    router.receive(a.peer, { ...start, key: { ...start.key, requestId: 'novo-pedido' } });
+    await Promise.resolve();
+    expect(sent).toHaveLength(2);
+  });
+
   it('usa a preferência do coordenador em cada ação e falha fechado se ela não puder ser lida', async () => {
     const sent: EngineCommand[] = [];
     const engine: Engine = { send: (value) => sent.push(value), reset: vi.fn() };
@@ -134,7 +170,14 @@ describe('roteamento sem mistura de abas, documentos e revisões', () => {
     expect(sent).toEqual([
       {
         type: 'start',
-        request: { ...binding, text: start.text, action: 'simular', semanticReview: false },
+        request: {
+          ...binding,
+          text: start.text,
+          action: 'simular',
+          semanticReview: false,
+          profile: 'economico',
+          allowDownload: false,
+        },
       },
     ]);
     expect(b.events).toEqual([
@@ -200,8 +243,7 @@ describe('roteamento sem mistura de abas, documentos e revisões', () => {
     const a = client();
     const b = client({ ...binding.origin, tabId: 2, documentId: 'doc-b' });
     router.receive(a.peer, { ...start, action: 'formal' });
-    await Promise.resolve();
-    await Promise.resolve();
+    for (let i = 0; i < 4; i++) await Promise.resolve();
     router.receiveEngine({ type: 'action-fragment', binding, action: 'formal', text: 'Trecho A' });
     router.receiveEngine({
       type: 'action-fragment',

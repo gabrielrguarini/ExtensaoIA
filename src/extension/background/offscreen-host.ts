@@ -48,6 +48,10 @@ export class OffscreenHost {
     return this.creating;
   }
 
+  reset(): void {
+    if (this.port) this.engine(this.port).reset();
+  }
+
   private engine(port: chrome.runtime.Port): Engine {
     return {
       send: (command) => {

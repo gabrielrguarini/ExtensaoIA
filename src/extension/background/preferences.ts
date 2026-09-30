@@ -6,8 +6,27 @@ export async function readPreferences(): Promise<WritingPreferences> {
   return parsePreferences(stored[PREFERENCES_KEY]);
 }
 
+let pendingWrite: Promise<unknown> = Promise.resolve();
+
+function updatePreferences(
+  change: Partial<Omit<WritingPreferences, 'version'>>,
+): Promise<WritingPreferences> {
+  const operation = pendingWrite.then(async () => {
+    const current = await readPreferences();
+    const preferences: WritingPreferences = { ...current, ...change };
+    await chrome.storage.local.set({ [PREFERENCES_KEY]: preferences });
+    return preferences;
+  });
+  pendingWrite = operation.catch(() => undefined);
+  return operation;
+}
+
 export async function saveSemanticReview(semanticReview: boolean): Promise<WritingPreferences> {
-  const preferences: WritingPreferences = { version: 1, semanticReview };
-  await chrome.storage.local.set({ [PREFERENCES_KEY]: preferences });
-  return preferences;
+  return updatePreferences({ semanticReview });
+}
+
+export async function saveProfile(
+  profile: WritingPreferences['profile'],
+): Promise<WritingPreferences> {
+  return updatePreferences({ profile });
 }

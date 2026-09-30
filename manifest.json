@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "IA local — WhatsApp Web (desenvolvimento)",
-  "version": "0.10.0",
-  "description": "STEP-11: escrita local com revisão semântica opcional após validação determinística. Sem envio de mensagens.",
+  "version": "0.11.0",
+  "description": "STEP-12: perfis de IA local com Llama 3.2 e Qwen3, seleção de hardware e download explícito. Sem envio de mensagens.",
   "minimum_chrome_version": "116",
   "permissions": ["storage", "offscreen"],
   "host_permissions": [

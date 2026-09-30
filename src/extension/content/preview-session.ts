@@ -10,13 +10,26 @@ import { writingAction } from '../../shared/actions';
 import type { WritingAction } from '../../shared/actions';
 import { preferenceStore } from './preferences-client';
 import type { PreferenceStore } from './preferences-client';
+import type { WritingPreferences } from '../../shared/preferences';
+import type { ModelProfile } from '../ai/model-catalog';
+import { PROFILE_LABELS, smallerProfile } from '../ai/model-catalog';
+import { probeHardware } from './model-hardware';
+import type { HardwareStatus } from './model-hardware';
 
 export type PreviewState =
   | { kind: 'closed' | 'loading' }
   | {
       kind: 'menu';
       semanticReview: boolean;
+      profile: ModelProfile;
+      hardware: HardwareStatus;
       preferenceStatus: 'loading' | 'ready' | 'saving' | 'error';
+    }
+  | {
+      kind: 'download-confirm';
+      task: WritingAction | 'proof';
+      profile: ModelProfile;
+      variant: 'q4f16_1' | 'q4f32_1';
     }
   | { kind: 'notice'; message: string }
   | { kind: 'action-loading'; action: WritingAction; progress: ProofProgress; partial: string }
@@ -38,6 +51,10 @@ export class PreviewSession {
   private cancelGeneration: (() => void) | undefined;
   private replacement: AbortController | undefined;
   private sequence = 0;
+  private preferenceRevision = 0;
+  private unsubscribePreferences: (() => void) | undefined;
+  private profile: ModelProfile = 'economico';
+  private hardware: HardwareStatus = { state: 'checking' };
   private readonly listeners = new Set<() => void>();
   constructor(
     private readonly adapter: WhatsAppAdapter,
@@ -62,6 +79,8 @@ export class PreviewSession {
   }
   close(): void {
     this.sequence++;
+    this.unsubscribePreferences?.();
+    this.unsubscribePreferences = undefined;
     this.replacement?.abort();
     this.replacement = undefined;
     this.cancelGeneration?.();
@@ -72,15 +91,37 @@ export class PreviewSession {
   open(): void {
     this.close();
     const sequence = this.sequence;
-    this.set({ kind: 'menu', semanticReview: false, preferenceStatus: 'loading' });
+    this.set({
+      kind: 'menu',
+      semanticReview: false,
+      profile: this.profile,
+      hardware: this.hardware,
+      preferenceStatus: 'loading',
+    });
+    this.unsubscribePreferences = this.preferences.subscribe?.((value) =>
+      this.preferencesChanged(value),
+    );
+    const preferenceRevision = this.preferenceRevision;
+    void probeHardware().then((hardware) => {
+      if (this.sequence !== sequence) return;
+      this.hardware = hardware;
+      if (this.state.kind === 'menu') this.set({ ...this.state, hardware });
+    });
     void this.preferences.read().then(
       (value) => {
-        if (this.sequence === sequence && this.state.kind === 'menu')
+        if (
+          this.sequence === sequence &&
+          this.state.kind === 'menu' &&
+          this.preferenceRevision === preferenceRevision
+        ) {
+          this.profile = value.profile;
           this.set({
-            kind: 'menu',
+            ...this.state,
             semanticReview: value.semanticReview,
+            profile: value.profile,
             preferenceStatus: 'ready',
           });
+        }
       },
       () => {
         if (this.sequence === sequence && this.state.kind === 'menu')
@@ -88,23 +129,67 @@ export class PreviewSession {
       },
     );
   }
+  private preferencesChanged(value: WritingPreferences): void {
+    this.preferenceRevision++;
+    const changedProfile = this.profile !== value.profile;
+    this.profile = value.profile;
+    if (this.state.kind === 'menu') {
+      this.set({
+        ...this.state,
+        profile: value.profile,
+        semanticReview: value.semanticReview,
+        preferenceStatus: this.state.preferenceStatus === 'saving' ? 'saving' : 'ready',
+      });
+    } else if (
+      changedProfile &&
+      ['download-confirm', 'action-loading', 'model-loading'].includes(this.state.kind)
+    ) {
+      this.close();
+      this.set({
+        kind: 'notice',
+        message: 'O perfil de IA mudou. O pedido foi cancelado. Abra o menu para continuar.',
+      });
+    }
+  }
   setSemanticReview(value: boolean): void {
     if (this.state.kind !== 'menu' || this.state.preferenceStatus !== 'ready') return;
     const sequence = this.sequence;
     const previous = this.state.semanticReview;
-    this.set({ kind: 'menu', semanticReview: previous, preferenceStatus: 'saving' });
+    this.set({ ...this.state, semanticReview: previous, preferenceStatus: 'saving' });
     void this.preferences.setSemanticReview(value).then(
       (saved) => {
         if (this.sequence === sequence && this.state.kind === 'menu')
           this.set({
-            kind: 'menu',
+            ...this.state,
             semanticReview: saved.semanticReview,
             preferenceStatus: 'ready',
           });
       },
       () => {
         if (this.sequence === sequence && this.state.kind === 'menu')
-          this.set({ kind: 'menu', semanticReview: previous, preferenceStatus: 'error' });
+          this.set({ ...this.state, semanticReview: previous, preferenceStatus: 'error' });
+      },
+    );
+  }
+  setProfile(profile: ModelProfile): void {
+    if (
+      this.state.kind !== 'menu' ||
+      this.state.preferenceStatus !== 'ready' ||
+      profile === this.profile
+    )
+      return;
+    const sequence = this.sequence;
+    const previous = this.profile;
+    this.set({ ...this.state, preferenceStatus: 'saving' });
+    void this.preferences.setProfile(profile).then(
+      (saved) => {
+        if (this.sequence !== sequence || this.state.kind !== 'menu') return;
+        this.profile = saved.profile;
+        this.set({ ...this.state, profile: saved.profile, preferenceStatus: 'ready' });
+      },
+      () => {
+        if (this.sequence === sequence && this.state.kind === 'menu')
+          this.set({ ...this.state, profile: previous, preferenceStatus: 'error' });
       },
     );
   }
@@ -184,6 +269,10 @@ export class PreviewSession {
       this.set({ kind: 'notice', message: 'Mensagem muito longa. Reduza o rascunho.' });
       return;
     }
+    this.runAction(action, snapshot, false);
+  }
+
+  private runAction(action: WritingAction, snapshot: DraftSnapshot, allowDownload: boolean): void {
     this.snapshot = snapshot;
     const sequence = ++this.sequence;
     this.set({
@@ -213,11 +302,22 @@ export class PreviewSession {
           this.cancelGeneration = undefined;
           this.validate();
           if (sequence !== this.sequence) return;
+          if (!outcome.ok && outcome.code === 'DOWNLOAD_REQUIRED') {
+            this.set({
+              kind: 'download-confirm',
+              task: action,
+              profile: this.profile,
+              variant: this.state.progress.variant ?? 'q4f16_1',
+            });
+            return;
+          }
           if (!outcome.ok || !outcome.text.trim()) {
             this.snapshot = null;
             this.set({
               kind: 'notice',
-              message: outcome.ok ? 'A IA local retornou uma resposta vazia.' : outcome.message,
+              message: outcome.ok
+                ? 'A IA local retornou uma resposta vazia.'
+                : this.resourceMessage(outcome.message, outcome.code),
             });
             return;
           }
@@ -231,6 +331,8 @@ export class PreviewSession {
             message: '',
           });
         },
+        allowDownload,
+        this.profile,
       );
     } catch {
       this.snapshot = null;
@@ -238,8 +340,33 @@ export class PreviewSession {
     }
   }
 
+  private resourceMessage(message: string, code?: string): string {
+    if (code !== 'INSUFFICIENT_RESOURCES') return message;
+    const smaller = smallerProfile(this.profile);
+    return `${message}${smaller ? ` Você pode selecionar o perfil ${PROFILE_LABELS[smaller]} no menu.` : ''} A escolha atual foi mantida.`;
+  }
+
+  confirmDownload(): void {
+    if (this.state.kind !== 'download-confirm') return;
+    const task = this.state.task;
+    if (task === 'proof') this.runModelProof(true);
+    else {
+      const snapshot = this.snapshot;
+      if (!snapshot || !this.adapter.isCurrent(snapshot)) {
+        this.snapshot = null;
+        this.set({ kind: 'notice', message: 'O rascunho mudou. Crie uma nova prévia.' });
+        return;
+      }
+      this.runAction(task, snapshot, true);
+    }
+  }
+
   startModelProof(): void {
     if (this.state.kind !== 'menu') return;
+    this.runModelProof(false);
+  }
+
+  private runModelProof(allowDownload: boolean): void {
     const sequence = ++this.sequence;
     this.set({
       kind: 'model-loading',
@@ -255,8 +382,24 @@ export class PreviewSession {
           this.cancelGeneration = undefined;
           if (outcome.ok)
             this.set({ kind: 'model-result', text: outcome.text, variant: outcome.variant });
-          else this.set({ kind: 'notice', message: outcome.message });
+          else if (outcome.code === 'DOWNLOAD_REQUIRED')
+            this.set({
+              kind: 'download-confirm',
+              task: 'proof',
+              profile: this.profile,
+              variant:
+                this.state.kind === 'model-loading'
+                  ? (this.state.progress.variant ?? 'q4f16_1')
+                  : 'q4f16_1',
+            });
+          else
+            this.set({
+              kind: 'notice',
+              message: this.resourceMessage(outcome.message, outcome.code),
+            });
         },
+        allowDownload,
+        this.profile,
       );
     } catch {
       this.set({ kind: 'notice', message: 'Não foi possível conectar ao motor local.' });

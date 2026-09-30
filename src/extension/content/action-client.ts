@@ -4,6 +4,7 @@ import type { DraftSnapshot } from '../../integration/whatsapp/adapter';
 import type { ProofProgress } from './model-proof-client';
 import type { PreviewOutcome } from './preview-client';
 import type { WritingAction } from '../../shared/actions';
+import type { ModelProfile } from '../ai/model-catalog';
 
 export type ActionGenerator = (
   action: WritingAction,
@@ -11,9 +12,19 @@ export type ActionGenerator = (
   progress: (value: ProofProgress) => void,
   fragment: (text: string) => void,
   done: (outcome: PreviewOutcome) => void,
+  allowDownload?: boolean,
+  expectedProfile?: ModelProfile,
 ) => () => void;
 
-export const generateAction: ActionGenerator = (action, snapshot, progress, fragment, done) => {
+export const generateAction: ActionGenerator = (
+  action,
+  snapshot,
+  progress,
+  fragment,
+  done,
+  allowDownload = false,
+  expectedProfile,
+) => {
   const port = chrome.runtime.connect({ name: CLIENT_PORT });
   const key: RequestKey = {
     requestId: crypto.randomUUID(),
@@ -95,7 +106,17 @@ export const generateAction: ActionGenerator = (action, snapshot, progress, frag
                             : value.code === 'MODEL_DOWNLOAD'
                               ? 'Não foi possível baixar o modelo. Verifique a conexão; o rascunho permanece intacto.'
                               : 'Não foi possível processar o texto localmente. O rascunho permanece intacto.';
-      finish({ ok: false, message });
+      finish(
+        value.code === 'DOWNLOAD_REQUIRED'
+          ? {
+              ok: false,
+              code: 'DOWNLOAD_REQUIRED',
+              message: 'O modelo ainda não está no cache local.',
+            }
+          : value.code === 'INSUFFICIENT_RESOURCES'
+            ? { ok: false, code: 'INSUFFICIENT_RESOURCES', message }
+            : { ok: false, message },
+      );
     }
     if (value.type === 'cancelled') finish({ ok: false, message: 'Ação cancelada.' });
   }
@@ -110,7 +131,14 @@ export const generateAction: ActionGenerator = (action, snapshot, progress, frag
   port.onMessage.addListener(receive);
   port.onDisconnect.addListener(disconnect);
   try {
-    port.postMessage({ type: 'start', key, action, text: snapshot.text });
+    port.postMessage({
+      type: 'start',
+      key,
+      action,
+      text: snapshot.text,
+      allowDownload,
+      ...(expectedProfile ? { expectedProfile } : {}),
+    });
   } catch {
     disconnect();
   }
