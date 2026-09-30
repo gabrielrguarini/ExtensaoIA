@@ -59,6 +59,7 @@ export type RequestEvent =
       variant: 'q4f16_1' | 'q4f32_1' | null;
     }
   | { type: 'fragment'; binding: Binding; text: string }
+  | { type: 'action-fragment'; binding: Binding; action: WritingAction; text: string }
   | { type: 'result'; binding: Binding; text: string; simulated: true }
   | { type: 'action-result'; binding: Binding; action: WritingAction; text: string }
   | { type: 'action-rejected'; binding: Binding; action: WritingAction; code: ErrorCode }
@@ -205,6 +206,12 @@ export function isRequestEvent(value: unknown): value is RequestEvent {
       );
     case 'fragment':
       return fields(value, ['type', 'binding', 'text']) && textValue(value.text);
+    case 'action-fragment':
+      return (
+        fields(value, ['type', 'binding', 'action', 'text']) &&
+        isWritingAction(value.action) &&
+        textValue(value.text)
+      );
     case 'result':
       return (
         fields(value, ['type', 'binding', 'text', 'simulated']) &&

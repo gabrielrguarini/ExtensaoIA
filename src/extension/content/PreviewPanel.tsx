@@ -120,6 +120,14 @@ export function PreviewPanel({
           )}
         </p>
       )}
+      {state.kind === 'action-loading' && !!state.partial && (
+        <div className="streaming-preview">
+          <p>Trecho provisório. Aguarde a validação para copiar ou substituir.</p>
+          <pre aria-label="Texto em geração" aria-live="off" tabIndex={0}>
+            {state.partial}
+          </pre>
+        </div>
+      )}
       {state.kind === 'model-result' && (
         <div role="status">
           <p>IA pronta. Resposta ao teste sintético via WebGPU ({state.variant}):</p>

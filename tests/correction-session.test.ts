@@ -23,10 +23,12 @@ function harness() {
     replace: vi.fn(() => Promise.resolve('applied' as const)),
   };
   const done: ((outcome: PreviewOutcome) => void)[] = [];
+  const fragments: ((text: string) => void)[] = [];
   const requested: WritingAction[] = [];
   const cancel = vi.fn();
-  const write: ActionGenerator = (action, _snapshot, _progress, callback) => {
+  const write: ActionGenerator = (action, _snapshot, _progress, fragment, callback) => {
     requested.push(action);
+    fragments.push(fragment);
     done.push(callback);
     return cancel;
   };
@@ -37,7 +39,7 @@ function harness() {
     () => cancel,
     write,
   );
-  return { session, adapter, done, cancel, requested };
+  return { session, adapter, done, fragments, cancel, requested };
 }
 
 describe('prévia da correção local', () => {
@@ -106,5 +108,23 @@ describe('prévia da correção local', () => {
       action: 'profissional',
       text: 'Resultado profissional',
     });
+  });
+
+  it('mostra trecho provisório sem liberar edição e o remove ao cancelar', async () => {
+    const h = harness();
+    h.session.open();
+    h.session.startAction('melhorar');
+    h.fragments[0]?.('Texto parcial seguro');
+    expect(h.session.getState()).toMatchObject({
+      kind: 'action-loading',
+      partial: 'Texto parcial seguro',
+    });
+    expect(await h.session.replace()).toBe(false);
+    expect(h.adapter.replace).not.toHaveBeenCalled();
+    h.session.close();
+    h.fragments[0]?.('Fragmento tardio');
+    h.done[0]?.({ ok: true, text: 'Resultado tardio' });
+    expect(h.session.getState()).toEqual({ kind: 'closed' });
+    expect(h.cancel).toHaveBeenCalledOnce();
   });
 });

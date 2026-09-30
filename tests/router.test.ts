@@ -69,6 +69,12 @@ describe('roteamento sem mistura de abas, documentos e revisões', () => {
       text: 'Outro modo',
     });
     router.receiveEngine({
+      type: 'action-fragment',
+      binding,
+      action: 'profissional',
+      text: 'Trecho de outro modo',
+    });
+    router.receiveEngine({
       type: 'action-rejected',
       binding,
       action: 'conciso',
@@ -157,6 +163,43 @@ describe('roteamento sem mistura de abas, documentos e revisões', () => {
     expect(a.events).toHaveLength(1);
     router.receiveEngine({ type: 'cancelled', binding });
     expect(a.events.at(-1)?.type).toBe('cancelled');
+  });
+
+  it('encaminha apenas trechos do pedido ativo e descarta tudo após cancelar', async () => {
+    const { router, sent } = harness();
+    const a = client();
+    const b = client({ ...binding.origin, tabId: 2, documentId: 'doc-b' });
+    router.receive(a.peer, { ...start, action: 'formal' });
+    await Promise.resolve();
+    router.receiveEngine({ type: 'action-fragment', binding, action: 'formal', text: 'Trecho A' });
+    router.receiveEngine({
+      type: 'action-fragment',
+      binding: { ...binding, key: { ...binding.key, revision: 2 } },
+      action: 'formal',
+      text: 'Trecho obsoleto',
+    });
+    expect(a.events.at(-1)).toMatchObject({ type: 'action-fragment', text: 'Trecho A' });
+    expect(b.events).toHaveLength(0);
+    router.receive(a.peer, { type: 'cancel', key: start.key });
+    expect(sent.at(-1)).toEqual({ type: 'cancel', binding });
+    router.receiveEngine({ type: 'action-fragment', binding, action: 'formal', text: 'Atrasado' });
+    router.receiveEngine({ type: 'action-result', binding, action: 'formal', text: 'Atrasado' });
+    router.receiveEngine({ type: 'cancelled', binding });
+    expect(a.events.map((event) => event.type)).toEqual([
+      'progress',
+      'action-fragment',
+      'cancelled',
+    ]);
+    router.receive(b.peer, { ...start, action: 'conciso' });
+    await Promise.resolve();
+    router.receiveEngine({
+      type: 'action-fragment',
+      binding,
+      action: 'formal',
+      text: 'Muito tarde',
+    });
+    expect(b.events).toHaveLength(1);
+    router.disconnect(b.peer);
   });
 
   it('cancelamento e desconexão durante preparação impedem o envio futuro', async () => {

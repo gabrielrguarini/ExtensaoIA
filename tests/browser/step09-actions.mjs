@@ -10,7 +10,8 @@ const executablePath = process.env.STEP09_CHROME;
 if (!executablePath) throw new Error('Defina STEP09_CHROME com Chrome for Testing.');
 const extension = path.join(root, 'dist');
 const manifest = JSON.parse(await readFile(path.join(extension, 'manifest.json'), 'utf8'));
-if (manifest.version !== '0.8.0') throw new Error('Execute npm run build antes da prova.');
+if (!['0.8.0', '0.9.0'].includes(manifest.version))
+  throw new Error('Execute npm run build antes da prova.');
 const profile = path.resolve(
   process.env.STEP09_PROFILE ?? path.join(root, '.cache', 'step09-browser'),
 );

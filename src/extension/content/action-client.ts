@@ -9,10 +9,11 @@ export type ActionGenerator = (
   action: WritingAction,
   snapshot: DraftSnapshot,
   progress: (value: ProofProgress) => void,
+  fragment: (text: string) => void,
   done: (outcome: PreviewOutcome) => void,
 ) => () => void;
 
-export const generateAction: ActionGenerator = (action, snapshot, progress, done) => {
+export const generateAction: ActionGenerator = (action, snapshot, progress, fragment, done) => {
   const port = chrome.runtime.connect({ name: CLIENT_PORT });
   const key: RequestKey = {
     requestId: crypto.randomUUID(),
@@ -22,6 +23,8 @@ export const generateAction: ActionGenerator = (action, snapshot, progress, done
   };
   let binding: Binding | undefined;
   let closed = false;
+  let cancelling = false;
+  let cancelFallback: ReturnType<typeof setTimeout> | undefined;
   const timer = setTimeout(
     () => finish({ ok: false, message: 'A IA local excedeu o tempo esperado. Tente novamente.' }),
     65 * 60_000,
@@ -30,6 +33,7 @@ export const generateAction: ActionGenerator = (action, snapshot, progress, done
     if (closed) return;
     closed = true;
     clearTimeout(timer);
+    if (cancelFallback) clearTimeout(cancelFallback);
     port.onMessage.removeListener(receive);
     port.onDisconnect.removeListener(disconnect);
     port.disconnect();
@@ -47,7 +51,19 @@ export const generateAction: ActionGenerator = (action, snapshot, progress, done
       binding = value.binding;
     }
     if (value.type === 'rejected' && value.key && !sameKey(value.key, key)) return;
+    if (cancelling) {
+      if (
+        value.type === 'cancelled' ||
+        value.type === 'error' ||
+        value.type === 'action-rejected' ||
+        value.type === 'action-result' ||
+        value.type === 'rejected'
+      )
+        close();
+      return;
+    }
     if (value.type === 'model-progress') progress(value);
+    if (value.type === 'action-fragment' && value.action === action) fragment(value.text);
     if (value.type === 'action-result' && value.action === action)
       finish({ ok: true, text: value.text });
     if (
@@ -81,6 +97,10 @@ export const generateAction: ActionGenerator = (action, snapshot, progress, done
   }
   function disconnect(): void {
     void chrome.runtime.lastError;
+    if (cancelling) {
+      close();
+      return;
+    }
     finish({ ok: false, message: 'A conexão foi encerrada. Gere uma nova sugestão.' });
   }
   port.onMessage.addListener(receive);
@@ -91,12 +111,16 @@ export const generateAction: ActionGenerator = (action, snapshot, progress, done
     disconnect();
   }
   return () => {
-    if (closed) return;
+    if (closed || cancelling) return;
+    cancelling = true;
+    clearTimeout(timer);
     try {
       port.postMessage({ type: 'cancel', key });
     } catch {
-      // A desconexão também encerra o pedido ativo.
+      close();
+      return;
     }
-    close();
+    // Sem confirmação, desconectar força o roteador a encerrar o Worker.
+    cancelFallback = setTimeout(close, 2_000);
   };
 };

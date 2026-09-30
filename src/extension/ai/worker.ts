@@ -6,6 +6,8 @@ import { MODEL_PROOF_TEXT } from '../../shared/model-proof';
 import { acceptCorrection, CorrectionOutputError } from './correction-output';
 import { protectDraft, restoreAndValidate } from './entities';
 import { isWritingAction } from '../../shared/actions';
+import { restoredStreamingPrefix } from './streaming-preview';
+import { MAX_TEXT_LENGTH } from '../../shared/protocol';
 
 const engine = new SimulatedEngine((event) => {
   globalThis.postMessage(event);
@@ -35,6 +37,7 @@ async function runModel(request: BoundRequest): Promise<void> {
   const controller = new AbortController();
   active = { binding, controller };
   const action = isWritingAction(request.action) ? request.action : undefined;
+  let terminal: EngineEvent | undefined;
   try {
     const protectedDraft = action ? protectDraft(request.text) : undefined;
     await model.initialize({
@@ -59,12 +62,37 @@ async function runModel(request: BoundRequest): Promise<void> {
       variant: model.selectedVariant() ?? null,
     });
     let response = '';
+    let oversized = false;
+    let lastVisible = '';
+    let lastShownAt = 0;
     for await (const fragment of model.generate(protectedDraft?.text ?? MODEL_PROOF_TEXT, {
       signal: controller.signal,
       task: action ?? 'proof',
-    }))
+    })) {
+      if (controller.signal.aborted || oversized) continue;
       response += fragment;
+      if (response.length > MAX_TEXT_LENGTH) {
+        response = '';
+        oversized = true;
+        continue;
+      }
+      if (action && protectedDraft) {
+        const visible = restoredStreamingPrefix(protectedDraft, response);
+        const now = performance.now();
+        if (
+          visible &&
+          visible !== lastVisible &&
+          visible.length <= MAX_TEXT_LENGTH &&
+          now - lastShownAt >= 100
+        ) {
+          emit({ type: 'action-fragment', binding, action, text: visible });
+          lastVisible = visible;
+          lastShownAt = now;
+        }
+      }
+    }
     if (controller.signal.aborted) throw controller.signal.reason;
+    if (oversized) throw new CorrectionOutputError('INVALID_OUTPUT');
     if (action) {
       emit({
         type: 'model-progress',
@@ -75,30 +103,29 @@ async function runModel(request: BoundRequest): Promise<void> {
       });
       const restored = restoreAndValidate(protectedDraft!, response);
       const text = acceptCorrection(restored, request.text);
-      emit({ type: 'action-result', binding, action, text });
+      terminal = { type: 'action-result', binding, action, text };
     } else {
       const variant = model.selectedVariant();
       if (!variant || !response.trim()) throw new CorrectionOutputError('EMPTY_OUTPUT');
-      emit({ type: 'proof-result', binding, text: response.trim(), variant });
+      terminal = { type: 'proof-result', binding, text: response.trim(), variant };
     }
   } catch (error) {
-    if (controller.signal.aborted) emit({ type: 'cancelled', binding });
+    if (controller.signal.aborted) terminal = { type: 'cancelled', binding };
     else {
       const code =
         error instanceof ModelEnvironmentError || error instanceof CorrectionOutputError
           ? error.code
           : 'UNAVAILABLE';
-      emit(
-        action
-          ? { type: 'action-rejected', binding, action, code }
-          : { type: 'error', binding, code },
-      );
+      terminal = action
+        ? { type: 'action-rejected', binding, action, code }
+        : { type: 'error', binding, code };
       if (code === 'UNAVAILABLE' || code === 'MODEL_DOWNLOAD' || code === 'INSUFFICIENT_RESOURCES')
         await model.unload().catch(() => undefined);
     }
   } finally {
     if (active?.controller === controller) active = undefined;
     armIdle();
+    if (terminal) emit(terminal);
   }
 }
 

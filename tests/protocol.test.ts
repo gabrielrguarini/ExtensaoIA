@@ -18,6 +18,7 @@ describe('contratos nas fronteiras dos contextos', () => {
     for (const value of [
       { type: 'progress', binding, percent: 50 },
       { type: 'fragment', binding, text: 'Teste' },
+      { type: 'action-fragment', binding, action: 'corrigir', text: 'Teste provisório' },
       { type: 'result', binding, text: 'Teste', simulated: true },
       { type: 'action-rejected', binding, action: 'corrigir', code: 'PRESERVATION_RISK' },
       { type: 'cancelled', binding },
@@ -85,6 +86,12 @@ describe('contratos nas fronteiras dos contextos', () => {
       }),
     ).toBe(false);
     expect(isClientEvent({ type: 'action-result', binding, action: 'enviar', text: 'x' })).toBe(
+      false,
+    );
+    expect(isClientEvent({ type: 'action-fragment', binding, action: 'enviar', text: 'x' })).toBe(
+      false,
+    );
+    expect(isClientEvent({ type: 'action-fragment', binding, action: 'formal', text: '' })).toBe(
       false,
     );
     expect(

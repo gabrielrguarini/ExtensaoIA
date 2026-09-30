@@ -111,20 +111,16 @@ export class RequestRouter {
     const active = this.active;
     if (!isRequestEvent(value) || !active || !sameBinding(value.binding, active.binding)) return;
     if (
-      (value.type === 'result' && active.action !== 'simular') ||
-      ((value.type === 'action-result' || value.type === 'action-rejected') &&
+      ((value.type === 'result' || value.type === 'fragment') && active.action !== 'simular') ||
+      ((value.type === 'action-fragment' ||
+        value.type === 'action-result' ||
+        value.type === 'action-rejected') &&
         active.action !== value.action) ||
       (value.type === 'proof-result' && active.action !== 'prova-modelo')
     )
       return;
     // Após cancelar, nem mesmo um resultado que estava em trânsito pode ser aplicado.
-    if (
-      active.cancelling &&
-      value.type !== 'cancelled' &&
-      value.type !== 'error' &&
-      value.type !== 'action-rejected'
-    )
-      return;
+    if (active.cancelling && value.type !== 'cancelled' && value.type !== 'error') return;
     if (
       value.type === 'result' ||
       value.type === 'action-result' ||

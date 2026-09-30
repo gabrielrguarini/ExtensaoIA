@@ -12,7 +12,7 @@ import type { WritingAction } from '../../shared/actions';
 export type PreviewState =
   | { kind: 'closed' | 'menu' | 'loading' }
   | { kind: 'notice'; message: string }
-  | { kind: 'action-loading'; action: WritingAction; progress: ProofProgress }
+  | { kind: 'action-loading'; action: WritingAction; progress: ProofProgress; partial: string }
   | { kind: 'model-loading'; progress: ProofProgress }
   | { kind: 'model-result'; text: string; variant: 'q4f16_1' | 'q4f32_1' }
   | {
@@ -147,18 +147,26 @@ export class PreviewSession {
       kind: 'action-loading',
       action,
       progress: { phase: 'preparing', percent: 0, variant: null },
+      partial: '',
     });
     try {
       this.cancelGeneration = this.write(
         action,
         snapshot,
         (progress) => {
-          if (sequence !== this.sequence) return;
+          if (sequence !== this.sequence || this.state.kind !== 'action-loading') return;
           this.validate();
-          if (sequence === this.sequence) this.set({ kind: 'action-loading', action, progress });
+          if (sequence === this.sequence && this.state.kind === 'action-loading')
+            this.set({ ...this.state, progress });
+        },
+        (partial) => {
+          if (sequence !== this.sequence || this.state.kind !== 'action-loading') return;
+          this.validate();
+          if (sequence === this.sequence && this.state.kind === 'action-loading')
+            this.set({ ...this.state, partial });
         },
         (outcome) => {
-          if (sequence !== this.sequence) return;
+          if (sequence !== this.sequence || this.state.kind !== 'action-loading') return;
           this.cancelGeneration = undefined;
           this.validate();
           if (sequence !== this.sequence) return;

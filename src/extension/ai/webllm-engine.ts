@@ -141,16 +141,22 @@ export class WebLLMEngine implements AIEngine {
       }
       if (options.signal?.aborted) throw options.signal.reason;
       if (action) {
-        const result = await runtime.chat.completions.create({
+        const stream = await runtime.chat.completions.create({
           messages: actionMessages(action, text),
-          stream: false,
+          stream: true,
           max_tokens: maxTokens,
           temperature: 0,
         });
+        let finishReason: string | null = null;
+        for await (const chunk of stream) {
+          finishReason = chunk.choices[0]?.finish_reason ?? finishReason;
+          const fragment = chunk.choices[0]?.delta.content;
+          // O runtime libera seu lock somente ao consumir o último chunk.
+          // Após interruptGenerate, drenar sem exibir até o encerramento.
+          if (fragment && !options.signal?.aborted) yield fragment;
+        }
         if (options.signal?.aborted) throw options.signal.reason;
-        requireCompleteGeneration(result.choices[0]?.finish_reason ?? null);
-        const content = result.choices[0]?.message.content;
-        if (typeof content === 'string' && content) yield content;
+        requireCompleteGeneration(finishReason);
       } else {
         const stream = await runtime.chat.completions.create({
           messages: [{ role: 'user', content: text }],
@@ -159,10 +165,10 @@ export class WebLLMEngine implements AIEngine {
           temperature: 0,
         });
         for await (const chunk of stream) {
-          if (options.signal?.aborted) throw options.signal.reason;
           const fragment = chunk.choices[0]?.delta.content;
-          if (fragment) yield fragment;
+          if (fragment && !options.signal?.aborted) yield fragment;
         }
+        if (options.signal?.aborted) throw options.signal.reason;
       }
     } finally {
       options.signal?.removeEventListener('abort', abort);

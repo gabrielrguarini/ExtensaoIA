@@ -132,6 +132,10 @@ pre {
   overflow-wrap: anywhere;
   user-select: text;
 }
+.streaming-preview pre {
+  border-style: dashed;
+  user-select: none;
+}
 .preview-actions {
   display: flex;
   gap: 8px;

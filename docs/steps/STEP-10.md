@@ -19,13 +19,13 @@ Mostrar o andamento da geração e permitir interrupção real sem resultados pa
 
 ## Tarefas
 
-- [ ] Conectar os fragmentos do AsyncIterable aos eventos tipados de progresso e à interface.
-- [ ] Mostrar os estados Gerando e Validando; manter Substituir e Copiar desabilitados até a aprovação final.
-- [ ] Restaurar entidades antes de exibir os trechos; reter fragmentos ambíguos de placeholders para não expor marcadores internos.
-- [ ] Implementar Cancelar no caminho completo: interface, roteador, offscreen e runtime. Cancelar também a revisão extra quando ela for adicionada.
-- [ ] Descartar tokens e eventos tardios usando requestId e revisão do editor. Limpar buffers ao cancelar, trocar de contexto ou perder a conexão.
-- [ ] Não confundir fechar o preview com conclusão da geração; fechar ou cancelar deve encerrar o pedido correspondente.
-- [ ] Limitar atualizações visuais para manter a interface responsiva.
+- [x] Conectar os fragmentos do AsyncIterable aos eventos tipados de progresso e à interface.
+- [x] Mostrar os estados Gerando e Validando; manter Substituir e Copiar desabilitados até a aprovação final.
+- [x] Restaurar entidades antes de exibir os trechos; reter fragmentos ambíguos de placeholders para não expor marcadores internos.
+- [x] Implementar Cancelar no caminho completo: interface, roteador, offscreen e runtime. Cancelar também a revisão extra quando ela for adicionada.
+- [x] Descartar tokens e eventos tardios usando requestId e revisão do editor. Limpar buffers ao cancelar, trocar de contexto ou perder a conexão.
+- [x] Não confundir fechar o preview com conclusão da geração; fechar ou cancelar deve encerrar o pedido correspondente.
+- [x] Limitar atualizações visuais para manter a interface responsiva.
 
 ## Limites
 
@@ -35,10 +35,10 @@ Mostrar o andamento da geração e permitir interrupção real sem resultados pa
 
 ## Critérios de conclusão e verificação
 
-- [ ] Cancelar interrompe a geração real e libera a solicitação ativa.
-- [ ] Nenhum fragmento atrasado aparece em outro pedido ou aba.
-- [ ] Placeholders divididos entre vários fragmentos nunca aparecem ao usuário.
-- [ ] Aplicação e cópia só são habilitadas após geração completa e validação favorável.
+- [x] Cancelar interrompe a geração real e libera a solicitação ativa.
+- [x] Nenhum fragmento atrasado aparece em outro pedido ou aba.
+- [x] Placeholders divididos entre vários fragmentos nunca aparecem ao usuário.
+- [x] Aplicação e cópia só são habilitadas após geração completa e validação favorável.
 
 Quando uma verificação não puder ser realizada, registrar exatamente o procedimento pendente e usar Aguardando validação ou Bloqueada no progresso, conforme o motivo. Não substituir evidência real por suposição.
 
