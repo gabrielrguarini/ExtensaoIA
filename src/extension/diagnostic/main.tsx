@@ -20,6 +20,8 @@ const labels = {
   TRUNCATED_OUTPUT: 'Resposta truncada',
   INVALID_OUTPUT: 'Formato inadequado',
   PRESERVATION_RISK: 'Dados ou negações alterados',
+  SEMANTIC_RISK: 'Possível mudança de significado',
+  SEMANTIC_INVALID: 'Revisão semântica indisponível',
 } as const;
 
 function describe(value: unknown): string {

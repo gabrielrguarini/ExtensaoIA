@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "IA local — WhatsApp Web (desenvolvimento)",
-  "version": "0.9.0",
-  "description": "STEP-10: nove ações locais com geração progressiva, cancelamento e prévia validada. Sem envio de mensagens.",
+  "version": "0.10.0",
+  "description": "STEP-11: escrita local com revisão semântica opcional após validação determinística. Sem envio de mensagens.",
   "minimum_chrome_version": "116",
   "permissions": ["storage", "offscreen"],
   "host_permissions": [

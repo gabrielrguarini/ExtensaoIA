@@ -5,10 +5,10 @@
 ## Estado atual
 
 - Última atualização: 29/09/2026.
-- Última etapa concluída: **STEP-10 — Exibir geração progressiva e cancelamento**.
-- Situação: streaming provisório com entidades restauradas, cancelamento real, descarte de respostas obsoletas e prévia final validada confirmados no Chrome/WebGPU; entrega registrada em commit próprio.
-- Próxima etapa executável: **STEP-11**, somente quando solicitada.
-- Implementação: Manifest V3, comunicação, adaptador do editor, botão IA, prévia, substituição manual, prova sintética e nove ações com streaming no Llama 3.2 3B via WebGPU. A simulação continua identificada. Textos multilinha e estruturas especiais oferecem somente cópia. A verificação semântica opcional pertence à STEP-11.
+- Última etapa concluída: **STEP-11 — Implementar verificação semântica opcional**.
+- Situação: preferência desligada por padrão e revisão local após as guardas determinísticas, com falha fechada e cancelamento, validadas no Chrome/WebGPU; entrega registrada em commit próprio.
+- Próxima etapa executável: **STEP-12**, somente quando solicitada.
+- Implementação: Manifest V3, comunicação, adaptador do editor, botão IA, prévia, substituição manual, prova sintética e nove ações com streaming no Llama 3.2 3B via WebGPU. A revisão semântica opcional usa a mesma instância do modelo em sequência. A simulação continua identificada. Textos multilinha e estruturas especiais oferecem somente cópia.
 
 ## Significado dos status
 
@@ -34,7 +34,7 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 | [STEP-08](steps/STEP-08.md) | Proteger entidades e validar o resultado        | Concluída | 120 testes e build; oito casos de correção no Chrome/WebGPU, seis prévias, duas recusas seguras, contexto, simulação e prova offline. [Relatório](VALIDACAO-STEP-08.md). |
 | [STEP-09](steps/STEP-09.md) | Adicionar os demais modos                       | Concluída | 128 testes e build; nove prévias e duas recusas seguras no grupo de teste do WhatsApp Web. [Relatório](VALIDACAO-STEP-09.md).                                            |
 | [STEP-10](steps/STEP-10.md) | Exibir geração progressiva e cancelamento       | Concluída | 134 testes e build; streaming, cancelamento, novo pedido e edição durante geração no Chrome/WebGPU. [Relatório](VALIDACAO-STEP-10.md).                                   |
-| [STEP-11](steps/STEP-11.md) | Implementar verificação semântica opcional      | Pendente  | Não iniciada.                                                                                                                                                            |
+| [STEP-11](steps/STEP-11.md) | Implementar verificação semântica opcional      | Concluída | 143 testes e build; seis casos sintéticos no Llama/WebGPU, preferência persistida e cancelamento durante revisão no Chrome. [Relatório](VALIDACAO-STEP-11.md).           |
 | [STEP-12](steps/STEP-12.md) | Adicionar modelos e perfis de hardware          | Pendente  | Não iniciada.                                                                                                                                                            |
 | [STEP-13](steps/STEP-13.md) | Consolidar cache, recuperação e desempenho      | Pendente  | Não iniciada.                                                                                                                                                            |
 | [STEP-14](steps/STEP-14.md) | Finalizar configurações e interfaces auxiliares | Pendente  | Não iniciada.                                                                                                                                                            |
@@ -198,9 +198,21 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 - Commit da etapa: `feat(step-10): exibir geração progressiva e cancelamento`. Hash no histórico Git e na resposta de entrega; identidade humana configurada.
 - Status final: **Concluída** no escopo da STEP-10, sem validação obrigatória pendente. Próxima etapa: STEP-11, somente por nova solicitação.
 
+## STEP-11 — 29/09/2026
+
+- Escopo: preferência versionada `semanticReview` com padrão `false` em Chrome Storage local, controle no menu e leitura autoritativa pelo coordenador a cada ação. Se ligada, reescrita e revisão usam o mesmo WebLLM sequencialmente e a prévia só é liberada depois da validação determinística e de um veredicto semântico válido e favorável.
+- Contrato: JSON fechado com `valid`, `meaningPreserved`, `issues` e, quando presentes, `entitiesPreserved` e `confidence`. Contradições, formato inválido, ausência, erro, cancelamento ou reprovação bloqueiam a sugestão. `entitiesPreserved` não sobrepõe as guardas determinísticas; `confidence` não é usado como garantia. O modelo recebe original e sugestão restaurada como dados, sem reter conversa entre gerações.
+- Arquivos principais: `src/shared/preferences.ts`, cliente e serviço de preferência, `src/extension/ai/semantic-review.ts`, validação/Worker/WebLLM, menu/roteador/protocolo, testes e [relatório](VALIDACAO-STEP-11.md). Projeto/Manifest: 0.10.0, sem novas dependências.
+- Verificação automatizada: `npm.cmd run check` aprovado com tipos, lint, formatação, 143 testes em 17 arquivos e build. Os testes cobrem preferência, ordem das guardas, ausência da segunda geração quando desligada, respostas válidas/inválidas, erro, cancelamento, fatos, pergunta, negações e troca de papéis com mesmas entidades.
+- Modelo real: Chrome for Testing 154 com WebGPU Intel `gen-12lp`, variante q4f16_1. Rodada final: seis veredictos sintéticos esperados, cinco recusas e uma aprovação. A primeira versão do prompt deixou passar pergunta/afirmação e troca de papéis; a segunda recusou também uma correção segura. A versão final ainda deu justificativas erradas para mudança numérica e inclusão de negação, embora tenha recusado ambas. Essas falhas constam no relatório; não há promessa de precisão geral.
+- Extensão instalada: opção começou desligada, evitou segunda revisão, persistiu após reabrir o menu e, quando ligada, mostrou Revisando significado antes da prévia. Copiar/Substituir permaneceram indisponíveis até aprovação. Cancelar durante a revisão preservou o rascunho; zero erros de página e nenhuma mensagem enviada. Testes em compositor sintético, sem abrir conversa.
+- Limite: a revisão por LLM pode aprovar mudanças desconhecidas ou recusar texto válido; a validação determinística permanece obrigatória. A variante sem `shader-f16` não foi executada em segunda GPU física.
+- Commit da etapa: `feat(step-11): adicionar revisão semântica opcional`. Hash no histórico Git e na resposta de entrega; identidade humana configurada.
+- Status final: **Concluída** no escopo da STEP-11, sem validação obrigatória pendente. Próxima etapa: STEP-12, somente por nova solicitação.
+
 ## Como continuar
 
-As STEP-01 a STEP-10 estão concluídas. Consulte os relatórios da [comunicação](VALIDACAO-STEP-03.md), do [editor](VALIDACAO-STEP-04.md), da [prévia](VALIDACAO-STEP-05.md), da [inferência local](VALIDACAO-STEP-06.md), da [correção](VALIDACAO-STEP-07.md), da [proteção determinística](VALIDACAO-STEP-08.md), dos [nove modos](VALIDACAO-STEP-09.md) e do [streaming](VALIDACAO-STEP-10.md). Para continuar, solicitar **Execute somente a STEP-11 do plano.** A STEP-11 não foi iniciada.
+As STEP-01 a STEP-11 estão concluídas. Consulte os relatórios da [comunicação](VALIDACAO-STEP-03.md), do [editor](VALIDACAO-STEP-04.md), da [prévia](VALIDACAO-STEP-05.md), da [inferência local](VALIDACAO-STEP-06.md), da [correção](VALIDACAO-STEP-07.md), da [proteção determinística](VALIDACAO-STEP-08.md), dos [nove modos](VALIDACAO-STEP-09.md), do [streaming](VALIDACAO-STEP-10.md) e da [revisão semântica](VALIDACAO-STEP-11.md). Para continuar, solicitar **Execute somente a STEP-12 do plano.** A STEP-12 não foi iniciada.
 
 Em futuras execuções, ler o plano e a etapa indicada, validar os pré-requisitos e atualizar este documento ao terminar. Não mudar o estado de etapas futuras apenas porque suas descrições foram criadas.
 

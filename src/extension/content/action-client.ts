@@ -84,13 +84,17 @@ export const generateAction: ActionGenerator = (action, snapshot, progress, frag
                   ? 'A IA local retornou uma resposta inadequada. O rascunho permanece intacto.'
                   : value.code === 'PRESERVATION_RISK'
                     ? 'A sugestão pode ter omitido ou alterado conteúdo do rascunho. Nenhuma alteração foi aplicada.'
-                    : value.code === 'WEBGPU_UNAVAILABLE'
-                      ? 'A IA local precisa de WebGPU neste navegador/computador. Seu texto não foi enviado a servidores.'
-                      : value.code === 'INSUFFICIENT_RESOURCES'
-                        ? 'A GPU não oferece os recursos necessários. O rascunho permanece intacto.'
-                        : value.code === 'MODEL_DOWNLOAD'
-                          ? 'Não foi possível baixar o modelo. Verifique a conexão; o rascunho permanece intacto.'
-                          : 'Não foi possível processar o texto localmente. O rascunho permanece intacto.';
+                    : value.code === 'SEMANTIC_RISK'
+                      ? 'A revisão semântica encontrou possível mudança de significado. O rascunho permanece intacto.'
+                      : value.code === 'SEMANTIC_INVALID'
+                        ? 'A revisão semântica não pôde confirmar o significado. O rascunho permanece intacto.'
+                        : value.code === 'WEBGPU_UNAVAILABLE'
+                          ? 'A IA local precisa de WebGPU neste navegador/computador. Seu texto não foi enviado a servidores.'
+                          : value.code === 'INSUFFICIENT_RESOURCES'
+                            ? 'A GPU não oferece os recursos necessários. O rascunho permanece intacto.'
+                            : value.code === 'MODEL_DOWNLOAD'
+                              ? 'Não foi possível baixar o modelo. Verifique a conexão; o rascunho permanece intacto.'
+                              : 'Não foi possível processar o texto localmente. O rascunho permanece intacto.';
       finish({ ok: false, message });
     }
     if (value.type === 'cancelled') finish({ ok: false, message: 'Ação cancelada.' });

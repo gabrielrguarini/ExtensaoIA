@@ -1,4 +1,5 @@
 import { isClientCommand, isRequestEvent, sameBinding, sameKey } from '../../shared/protocol';
+import { isWritingAction } from '../../shared/actions';
 import type {
   Binding,
   BoundRequest,
@@ -33,6 +34,7 @@ export class RequestRouter {
   constructor(
     private readonly ensureEngine: () => Promise<Engine>,
     private readonly timeoutMs = 15_000,
+    private readonly semanticReviewEnabled: () => Promise<boolean> = () => Promise.resolve(false),
   ) {}
 
   receive(client: Client, value: unknown): void {
@@ -91,12 +93,20 @@ export class RequestRouter {
     };
     this.active = active;
     client.send({ type: 'progress', binding, percent: 0 });
-    void this.start(active, { ...binding, text: value.text, action: value.action });
+    void this.start(active, {
+      ...binding,
+      text: value.text,
+      action: value.action,
+      semanticReview: false,
+    });
   }
 
   private async start(active: Active, request: BoundRequest): Promise<void> {
     if (this.active !== active) return;
     try {
+      if (isWritingAction(request.action))
+        request.semanticReview = await this.semanticReviewEnabled();
+      if (this.active !== active) return;
       const engine = await this.ensureEngine();
       if (this.active !== active) return;
       active.engine = engine;

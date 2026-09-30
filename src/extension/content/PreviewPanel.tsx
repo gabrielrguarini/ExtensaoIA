@@ -41,12 +41,30 @@ export function PreviewPanel({
           <p>
             Escolha como revisar seu rascunho. A sugestão só será aplicada após sua confirmação.
           </p>
+          <label className="semantic-setting">
+            <input
+              type="checkbox"
+              checked={state.semanticReview}
+              disabled={state.preferenceStatus !== 'ready'}
+              onChange={(event) => {
+                if (event.nativeEvent.isTrusted)
+                  session.setSemanticReview(event.currentTarget.checked);
+              }}
+            />
+            Revisão semântica adicional (mais lenta, desligada por padrão)
+          </label>
+          {state.preferenceStatus === 'loading' && <p role="status">Lendo preferência local...</p>}
+          {state.preferenceStatus === 'saving' && <p role="status">Salvando preferência...</p>}
+          {state.preferenceStatus === 'error' && (
+            <p role="alert">Preferência indisponível. Feche e abra o menu para tentar novamente.</p>
+          )}
           <div className="action-grid" role="group" aria-label="Ações de escrita com IA local">
             {WRITING_ACTIONS.map((action) => (
               <button
                 key={action.id}
                 type="button"
                 aria-label={`${action.label} com IA local`}
+                disabled={state.preferenceStatus !== 'ready'}
                 onClick={(event) => {
                   if (event.isTrusted) session.startAction(action.id);
                 }}
@@ -112,9 +130,11 @@ export function PreviewPanel({
                   ? 'IA pronta.'
                   : state.progress.phase === 'validating'
                     ? 'Validando resposta...'
-                    : state.kind === 'action-loading'
-                      ? `Gerando sugestão · ${writingAction(state.action).label}...`
-                      : 'Gerando resposta sintética...'}
+                    : state.progress.phase === 'reviewing'
+                      ? 'Revisando significado com IA local...'
+                      : state.kind === 'action-loading'
+                        ? `Gerando sugestão · ${writingAction(state.action).label}...`
+                        : 'Gerando resposta sintética...'}
           {state.progress.variant === 'q4f32_1' && (
             <span> Variante sem shader-f16: maior consumo estimado de GPU.</span>
           )}

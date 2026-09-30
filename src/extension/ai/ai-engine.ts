@@ -7,7 +7,7 @@ export interface InitializeOptions {
 
 export interface GenerateOptions {
   signal?: AbortSignal;
-  task?: 'proof' | WritingAction;
+  task?: 'proof' | 'semantic-review' | WritingAction;
 }
 
 /** O runtime concreto fica isolado atrás deste contrato. */

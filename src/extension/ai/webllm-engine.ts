@@ -4,9 +4,11 @@ import type { AIEngine, GenerateOptions, InitializeOptions } from './ai-engine';
 import { MODEL_CHOICES } from './model-catalog';
 import type { ModelChoice } from './model-catalog';
 import { actionMessages, systemPromptFor } from './correction-prompt';
-import { correctionTokenBudget, parseLlamaTemplate } from './token-budget';
+import { correctionTokenBudget, parseLlamaTemplate, semanticTokenBudget } from './token-budget';
 import type { LlamaTemplate } from './token-budget';
 import { requireCompleteGeneration } from './correction-output';
+import { SEMANTIC_SYSTEM_PROMPT, semanticMessages } from './semantic-review';
+import { isWritingAction } from '../../shared/actions';
 
 export class ModelEnvironmentError extends Error {
   constructor(
@@ -126,23 +128,35 @@ export class WebLLMEngine implements AIEngine {
     };
     options.signal?.addEventListener('abort', abort, { once: true });
     try {
-      const action = options.task && options.task !== 'proof' ? options.task : undefined;
+      const action = isWritingAction(options.task) ? options.task : undefined;
+      const semantic = options.task === 'semantic-review';
       let maxTokens = 24;
-      if (action) {
+      if (action || semantic) {
         const { tokenizer, template } = await this.correctionTokens();
-        const budget = correctionTokenBudget(
-          (value) => tokenizer.encode(value),
-          template,
-          systemPromptFor(action),
-          text,
-        );
-        if (!budget) throw new ModelEnvironmentError('CONTEXT_LIMIT');
-        maxTokens = budget.outputTokens;
+        if (action) {
+          const budget = correctionTokenBudget(
+            (value) => tokenizer.encode(value),
+            template,
+            systemPromptFor(action),
+            text,
+          );
+          if (!budget) throw new ModelEnvironmentError('CONTEXT_LIMIT');
+          maxTokens = budget.outputTokens;
+        } else {
+          const budget = semanticTokenBudget(
+            (value) => tokenizer.encode(value),
+            template,
+            SEMANTIC_SYSTEM_PROMPT,
+            text,
+          );
+          if (!budget) throw new ModelEnvironmentError('CONTEXT_LIMIT');
+          maxTokens = budget;
+        }
       }
       if (options.signal?.aborted) throw options.signal.reason;
-      if (action) {
+      if (action || semantic) {
         const stream = await runtime.chat.completions.create({
-          messages: actionMessages(action, text),
+          messages: action ? actionMessages(action, text) : semanticMessages(text),
           stream: true,
           max_tokens: maxTokens,
           temperature: 0,

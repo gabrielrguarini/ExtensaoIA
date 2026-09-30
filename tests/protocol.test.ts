@@ -33,7 +33,7 @@ describe('contratos nas fronteiras dos contextos', () => {
     expect(
       isEngineCommand({
         type: 'start',
-        request: { ...binding, text: 'teste', action: 'corrigir' },
+        request: { ...binding, text: 'teste', action: 'corrigir', semanticReview: false },
       }),
     ).toBe(true);
     expect(isEngineCommand({ type: 'cancel', binding })).toBe(true);
@@ -42,7 +42,7 @@ describe('contratos nas fronteiras dos contextos', () => {
       expect(
         isEngineCommand({
           type: 'start',
-          request: { ...binding, text: 'teste', action: action.id },
+          request: { ...binding, text: 'teste', action: action.id, semanticReview: true },
         }),
       ).toBe(true);
       expect(

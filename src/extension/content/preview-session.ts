@@ -8,9 +8,16 @@ import { generateAction } from './action-client';
 import type { ActionGenerator } from './action-client';
 import { writingAction } from '../../shared/actions';
 import type { WritingAction } from '../../shared/actions';
+import { preferenceStore } from './preferences-client';
+import type { PreferenceStore } from './preferences-client';
 
 export type PreviewState =
-  | { kind: 'closed' | 'menu' | 'loading' }
+  | { kind: 'closed' | 'loading' }
+  | {
+      kind: 'menu';
+      semanticReview: boolean;
+      preferenceStatus: 'loading' | 'ready' | 'saving' | 'error';
+    }
   | { kind: 'notice'; message: string }
   | { kind: 'action-loading'; action: WritingAction; progress: ProofProgress; partial: string }
   | { kind: 'model-loading'; progress: ProofProgress }
@@ -39,6 +46,7 @@ export class PreviewSession {
       navigator.clipboard.writeText(text),
     private readonly prove: ProofGenerator = runModelProof,
     private readonly write: ActionGenerator = generateAction,
+    private readonly preferences: PreferenceStore = preferenceStore,
   ) {}
 
   getState = (): PreviewState => this.state;
@@ -63,7 +71,42 @@ export class PreviewSession {
   }
   open(): void {
     this.close();
-    this.set({ kind: 'menu' });
+    const sequence = this.sequence;
+    this.set({ kind: 'menu', semanticReview: false, preferenceStatus: 'loading' });
+    void this.preferences.read().then(
+      (value) => {
+        if (this.sequence === sequence && this.state.kind === 'menu')
+          this.set({
+            kind: 'menu',
+            semanticReview: value.semanticReview,
+            preferenceStatus: 'ready',
+          });
+      },
+      () => {
+        if (this.sequence === sequence && this.state.kind === 'menu')
+          this.set({ ...this.state, preferenceStatus: 'error' });
+      },
+    );
+  }
+  setSemanticReview(value: boolean): void {
+    if (this.state.kind !== 'menu' || this.state.preferenceStatus !== 'ready') return;
+    const sequence = this.sequence;
+    const previous = this.state.semanticReview;
+    this.set({ kind: 'menu', semanticReview: previous, preferenceStatus: 'saving' });
+    void this.preferences.setSemanticReview(value).then(
+      (saved) => {
+        if (this.sequence === sequence && this.state.kind === 'menu')
+          this.set({
+            kind: 'menu',
+            semanticReview: saved.semanticReview,
+            preferenceStatus: 'ready',
+          });
+      },
+      () => {
+        if (this.sequence === sequence && this.state.kind === 'menu')
+          this.set({ kind: 'menu', semanticReview: previous, preferenceStatus: 'error' });
+      },
+    );
   }
   validate(): void {
     if (this.state.kind === 'preview' && this.state.busy === 'replace') return;

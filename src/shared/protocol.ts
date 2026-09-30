@@ -27,6 +27,7 @@ export interface Binding {
 export interface BoundRequest extends Binding {
   text: string;
   action: 'simular' | WritingAction | 'prova-modelo';
+  semanticReview: boolean;
 }
 
 export type ClientCommand =
@@ -48,13 +49,22 @@ export type ErrorCode =
   | 'EMPTY_OUTPUT'
   | 'TRUNCATED_OUTPUT'
   | 'INVALID_OUTPUT'
-  | 'PRESERVATION_RISK';
+  | 'PRESERVATION_RISK'
+  | 'SEMANTIC_RISK'
+  | 'SEMANTIC_INVALID';
 export type RequestEvent =
   | { type: 'progress'; binding: Binding; percent: number }
   | {
       type: 'model-progress';
       binding: Binding;
-      phase: 'preparing' | 'downloading' | 'loading' | 'ready' | 'generating' | 'validating';
+      phase:
+        | 'preparing'
+        | 'downloading'
+        | 'loading'
+        | 'ready'
+        | 'generating'
+        | 'validating'
+        | 'reviewing';
       percent: number;
       variant: 'q4f16_1' | 'q4f32_1' | null;
     }
@@ -178,6 +188,8 @@ function isErrorCode(value: unknown): value is ErrorCode {
       'TRUNCATED_OUTPUT',
       'INVALID_OUTPUT',
       'PRESERVATION_RISK',
+      'SEMANTIC_RISK',
+      'SEMANTIC_INVALID',
     ].includes(value)
   );
 }
@@ -195,9 +207,15 @@ export function isRequestEvent(value: unknown): value is RequestEvent {
     case 'model-progress':
       return (
         fields(value, ['type', 'binding', 'phase', 'percent', 'variant']) &&
-        ['preparing', 'downloading', 'loading', 'ready', 'generating', 'validating'].includes(
-          String(value.phase),
-        ) &&
+        [
+          'preparing',
+          'downloading',
+          'loading',
+          'ready',
+          'generating',
+          'validating',
+          'reviewing',
+        ].includes(String(value.phase)) &&
         typeof value.percent === 'number' &&
         Number.isFinite(value.percent) &&
         value.percent >= 0 &&
@@ -275,9 +293,11 @@ export function isEngineCommand(value: unknown): value is EngineCommand {
     return false;
   const request = value.request;
   return (
-    fields(request, ['key', 'origin', 'text', 'action']) &&
+    fields(request, ['key', 'origin', 'text', 'action', 'semanticReview']) &&
     isBinding({ key: request.key, origin: request.origin }) &&
     textValue(request.text) &&
+    typeof request.semanticReview === 'boolean' &&
+    (isWritingAction(request.action) || request.semanticReview === false) &&
     (request.action === 'simular' ||
       isWritingAction(request.action) ||
       (request.action === 'prova-modelo' && request.text === MODEL_PROOF_TEXT))

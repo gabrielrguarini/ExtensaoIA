@@ -79,3 +79,20 @@ export function correctionTokenBudget(
     ? { promptTokens, draftTokens, outputTokens }
     : null;
 }
+
+export function semanticTokenBudget(
+  encode: (value: string) => Int32Array,
+  template: LlamaTemplate,
+  systemPrompt: string,
+  input: string,
+): number | null {
+  const system = template.systemTemplate.replace('{system_message}', systemPrompt);
+  const user = `${template.userRole}${template.contentSep}${input}${template.turnSep}`;
+  const assistant = `${template.assistantRole}${template.emptySep}`;
+  const promptTokens =
+    template.prefixTokenIds.length +
+    encode(system).length +
+    encode(user).length +
+    encode(assistant).length;
+  return promptTokens + 320 <= CONTEXT_TOKENS ? 320 : null;
+}

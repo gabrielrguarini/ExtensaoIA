@@ -3,11 +3,13 @@ import { isEngineCommand, sameBinding } from '../../shared/protocol';
 import type { Binding, BoundRequest, EngineEvent } from '../../shared/protocol';
 import { WebLLMEngine, ModelEnvironmentError } from './webllm-engine';
 import { MODEL_PROOF_TEXT } from '../../shared/model-proof';
-import { acceptCorrection, CorrectionOutputError } from './correction-output';
-import { protectDraft, restoreAndValidate } from './entities';
+import { CorrectionOutputError } from './correction-output';
+import { protectDraft } from './entities';
 import { isWritingAction } from '../../shared/actions';
 import { restoredStreamingPrefix } from './streaming-preview';
 import { MAX_TEXT_LENGTH } from '../../shared/protocol';
+import { SemanticReviewError } from './semantic-review';
+import { validateActionOutput } from './action-validation';
 
 const engine = new SimulatedEngine((event) => {
   globalThis.postMessage(event);
@@ -101,8 +103,22 @@ async function runModel(request: BoundRequest): Promise<void> {
         percent: 100,
         variant: model.selectedVariant() ?? null,
       });
-      const restored = restoreAndValidate(protectedDraft!, response);
-      const text = acceptCorrection(restored, request.text);
+      const text = await validateActionOutput(
+        protectedDraft!,
+        response,
+        request.text,
+        request.semanticReview,
+        model,
+        controller.signal,
+        () =>
+          emit({
+            type: 'model-progress',
+            binding,
+            phase: 'reviewing',
+            percent: 100,
+            variant: model.selectedVariant() ?? null,
+          }),
+      );
       terminal = { type: 'action-result', binding, action, text };
     } else {
       const variant = model.selectedVariant();
@@ -113,7 +129,9 @@ async function runModel(request: BoundRequest): Promise<void> {
     if (controller.signal.aborted) terminal = { type: 'cancelled', binding };
     else {
       const code =
-        error instanceof ModelEnvironmentError || error instanceof CorrectionOutputError
+        error instanceof ModelEnvironmentError ||
+        error instanceof CorrectionOutputError ||
+        error instanceof SemanticReviewError
           ? error.code
           : 'UNAVAILABLE';
       terminal = action

@@ -35,6 +35,33 @@ afterEach(() => {
 });
 
 describe('roteamento sem mistura de abas, documentos e revisões', () => {
+  it('usa a preferência do coordenador em cada ação e falha fechado se ela não puder ser lida', async () => {
+    const sent: EngineCommand[] = [];
+    const engine: Engine = { send: (value) => sent.push(value), reset: vi.fn() };
+    const preference = vi.fn(() => Promise.resolve(true));
+    const router = new RequestRouter(() => Promise.resolve(engine), 2_000, preference);
+    const a = client();
+    router.receive(a.peer, { ...start, action: 'corrigir' });
+    for (let i = 0; i < 4; i++) await Promise.resolve();
+    expect(preference).toHaveBeenCalledOnce();
+    expect(sent.at(-1)).toMatchObject({
+      type: 'start',
+      request: { action: 'corrigir', semanticReview: true },
+    });
+    router.disconnect(a.peer);
+
+    const unavailable = new RequestRouter(
+      () => Promise.resolve(engine),
+      2_000,
+      () => Promise.reject(new Error('storage indisponível')),
+    );
+    const b = client();
+    unavailable.receive(b.peer, { ...start, action: 'formal' });
+    for (let i = 0; i < 4; i++) await Promise.resolve();
+    expect(b.events.at(-1)).toMatchObject({ type: 'error', code: 'UNAVAILABLE' });
+    expect(sent).toHaveLength(1);
+  });
+
   it('encerra uma correção reprovada sem liberar resultado ou manter o motor ocupado', async () => {
     const { router } = harness();
     const a = client();
@@ -105,7 +132,10 @@ describe('roteamento sem mistura de abas, documentos e revisões', () => {
     await Promise.resolve();
     expect(ensure).toHaveBeenCalledTimes(1);
     expect(sent).toEqual([
-      { type: 'start', request: { ...binding, text: start.text, action: 'simular' } },
+      {
+        type: 'start',
+        request: { ...binding, text: start.text, action: 'simular', semanticReview: false },
+      },
     ]);
     expect(b.events).toEqual([
       { type: 'rejected', code: 'BUSY', key: start.key },
@@ -171,6 +201,7 @@ describe('roteamento sem mistura de abas, documentos e revisões', () => {
     const b = client({ ...binding.origin, tabId: 2, documentId: 'doc-b' });
     router.receive(a.peer, { ...start, action: 'formal' });
     await Promise.resolve();
+    await Promise.resolve();
     router.receiveEngine({ type: 'action-fragment', binding, action: 'formal', text: 'Trecho A' });
     router.receiveEngine({
       type: 'action-fragment',
@@ -191,6 +222,7 @@ describe('roteamento sem mistura de abas, documentos e revisões', () => {
       'cancelled',
     ]);
     router.receive(b.peer, { ...start, action: 'conciso' });
+    await Promise.resolve();
     await Promise.resolve();
     router.receiveEngine({
       type: 'action-fragment',
@@ -304,7 +336,7 @@ describe('motor simulado e coordenador integrados', () => {
     });
     simulator.receive({
       type: 'start',
-      request: { ...binding, text: 'Teste', action: 'simular' },
+      request: { ...binding, text: 'Teste', action: 'simular', semanticReview: false },
     });
     simulator.receive({ type: 'cancel', binding });
     await vi.advanceTimersByTimeAsync(2_000);
