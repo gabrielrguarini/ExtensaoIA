@@ -30,6 +30,12 @@ interface Active {
 /** Conteúdo existe somente na chamada start; não vai para logs, storage ou histórico. */
 export class RequestRouter {
   private active: Active | undefined;
+  private maintenance = false;
+
+  setMaintenance(value: boolean): void {
+    this.maintenance = value;
+    if (value) this.resetForProfileChange();
+  }
   private readonly seen = new WeakMap<Client, Set<string>>();
 
   constructor(
@@ -67,7 +73,7 @@ export class RequestRouter {
       }
       return;
     }
-    if (this.active) {
+    if (this.active || this.maintenance) {
       this.reject(client, 'BUSY', value.key);
       return;
     }

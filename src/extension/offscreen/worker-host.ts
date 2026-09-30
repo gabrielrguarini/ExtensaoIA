@@ -8,6 +8,12 @@ export class WorkerHost {
   private preparing: Promise<Engine> | undefined;
   private rejectReady: (() => void) | undefined;
   private ready = false;
+  private idle: ReturnType<typeof setTimeout> | undefined;
+
+  private armIdle(): void {
+    if (this.idle) clearTimeout(this.idle);
+    this.idle = setTimeout(() => this.reset(), 5 * 60_000);
+  }
 
   constructor(
     private readonly createWorker: () => Worker,
@@ -24,6 +30,8 @@ export class WorkerHost {
   }
 
   reset(): void {
+    if (this.idle) clearTimeout(this.idle);
+    this.idle = undefined;
     this.worker?.terminate();
     this.worker = undefined;
     this.ready = false;
@@ -35,6 +43,7 @@ export class WorkerHost {
     return {
       send: (command) => {
         if (this.worker !== worker || !this.ready) throw new Error('Motor desconectado.');
+        if (command.type === 'start' && this.idle) clearTimeout(this.idle);
         worker.postMessage(command);
       },
       reset: () => {
@@ -55,8 +64,22 @@ export class WorkerHost {
           if (this.worker !== worker || !isEngineEvent(event.data)) return;
           if (event.data.type === 'ready') {
             this.ready = true;
+            this.armIdle();
             resolve(this.engine(worker));
-          } else if (this.ready) this.onEvent(event.data);
+          } else if (this.ready) {
+            if (
+              [
+                'result',
+                'action-result',
+                'proof-result',
+                'action-rejected',
+                'cancelled',
+                'error',
+              ].includes(event.data.type)
+            )
+              this.armIdle();
+            this.onEvent(event.data);
+          }
         };
         const lost = () => {
           if (this.worker !== worker) return;

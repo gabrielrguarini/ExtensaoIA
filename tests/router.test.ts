@@ -35,6 +35,24 @@ afterEach(() => {
 });
 
 describe('roteamento sem mistura de abas, documentos e revisões', () => {
+  it('remoção do cache cancela pedido, bloqueia novos pedidos e descarta resposta antiga', async () => {
+    const { router, ensure } = harness();
+    const a = client();
+    router.receive(a.peer, start);
+    await Promise.resolve();
+    router.setMaintenance(true);
+    expect(a.events.at(-1)).toEqual({ type: 'cancelled', binding });
+    router.receiveEngine({ type: 'result', binding, text: 'ATRASADO', simulated: true });
+    expect(a.events.at(-1)?.type).toBe('cancelled');
+    const next = { ...start, key: { ...start.key, requestId: 'novo' } };
+    router.receive(a.peer, next);
+    expect(a.events.at(-1)).toMatchObject({ type: 'rejected', code: 'BUSY' });
+    expect(ensure).toHaveBeenCalledOnce();
+    router.setMaintenance(false);
+    router.receive(a.peer, next);
+    await Promise.resolve();
+    expect(ensure).toHaveBeenCalledTimes(2);
+  });
   it('recusa confirmação de download de um perfil antigo antes de criar o motor', async () => {
     const ensure = vi.fn();
     const router = new RequestRouter(

@@ -3,7 +3,7 @@ import type { Tokenizer } from '@mlc-ai/web-tokenizers';
 import type { AIEngine, GenerateOptions, InitializeOptions } from './ai-engine';
 import { MODEL_CHOICES } from './model-catalog';
 import { MODEL_LIBRARIES } from './model-libraries';
-import { cacheModelArtifacts } from './model-cache';
+import { cacheModelArtifacts, inspectModelArtifacts } from './model-cache';
 import type { ModelChoice, ModelProfile } from './model-catalog';
 import { actionMessages, systemPromptFor } from './correction-prompt';
 import {
@@ -101,19 +101,11 @@ export class WebLLMEngine implements AIEngine {
     options.onProgress?.('preparing', 1);
     if (options.signal?.aborted) throw options.signal.reason;
     // O import dinâmico produz um chunk local do Worker; nenhuma API WebLLM vaza para outros contextos.
-    const { MLCEngine, hasModelInCache } = await import('@mlc-ai/web-llm');
+    const { MLCEngine } = await import('@mlc-ai/web-llm');
     const record = modelRecord(choice);
     if (!options.allowDownload) {
-      const [weights, modelCache, configCache] = await Promise.all([
-        hasModelInCache(choice.id, { model_list: [record] }),
-        caches.open('webllm/model'),
-        caches.open('webllm/config'),
-      ]);
-      const [tokenizer, config] = await Promise.all([
-        modelCache.match(new URL('tokenizer.json', choice.url).href),
-        configCache.match(new URL('mlc-chat-config.json', choice.url).href),
-      ]);
-      if (!weights || !tokenizer || !config) throw new ModelEnvironmentError('DOWNLOAD_REQUIRED');
+      if (!(await inspectModelArtifacts(choice, options.signal)))
+        throw new ModelEnvironmentError('DOWNLOAD_REQUIRED');
     } else {
       try {
         options.onProgress?.('downloading', 0);
@@ -125,6 +117,7 @@ export class WebLLMEngine implements AIEngine {
         throw new ModelEnvironmentError('MODEL_DOWNLOAD');
       }
     }
+    if (options.signal?.aborted) throw options.signal.reason;
     const runtime = new MLCEngine({
       appConfig: { model_list: [record] },
       initProgressCallback: (report) => {
@@ -171,6 +164,7 @@ export class WebLLMEngine implements AIEngine {
       void runtime.interruptGenerate();
     };
     options.signal?.addEventListener('abort', abort, { once: true });
+    let resetFailed = false;
     try {
       const qwenPrefix = '<think>\n\n</think>\n\n';
       let prefixPending = '';
@@ -274,8 +268,10 @@ export class WebLLMEngine implements AIEngine {
         await runtime.resetChat();
       } catch {
         await this.unload().catch(() => undefined);
+        resetFailed = true;
       }
     }
+    if (resetFailed && !options.signal?.aborted) throw new ModelEnvironmentError('UNAVAILABLE');
   }
 
   async unload(): Promise<void> {

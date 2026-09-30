@@ -16,17 +16,9 @@ const engine = new SimulatedEngine((event) => {
 });
 const model = new WebLLMEngine();
 let active: { binding: Binding; controller: AbortController } | undefined;
-let idle: ReturnType<typeof setTimeout> | undefined;
 
 function emit(event: EngineEvent): void {
   globalThis.postMessage(event);
-}
-
-function armIdle(): void {
-  if (idle) clearTimeout(idle);
-  idle = setTimeout(() => {
-    if (!active) void model.unload().catch(() => undefined);
-  }, 5 * 60_000);
 }
 
 async function runModel(request: BoundRequest): Promise<void> {
@@ -35,7 +27,6 @@ async function runModel(request: BoundRequest): Promise<void> {
     emit({ type: 'error', binding, code: 'BUSY' });
     return;
   }
-  if (idle) clearTimeout(idle);
   const controller = new AbortController();
   active = { binding, controller };
   const action = isWritingAction(request.action) ? request.action : undefined;
@@ -144,7 +135,6 @@ async function runModel(request: BoundRequest): Promise<void> {
     }
   } finally {
     if (active?.controller === controller) active = undefined;
-    armIdle();
     if (terminal) emit(terminal);
   }
 }

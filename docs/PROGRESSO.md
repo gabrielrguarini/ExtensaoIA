@@ -5,10 +5,10 @@
 ## Estado atual
 
 - Última atualização: 30/09/2026.
-- Última etapa concluída: **STEP-12 — Adicionar modelos e perfis de hardware**.
-- Situação: três perfis carregados e usados no Chrome/WebGPU, com download explícito, limites reais do adaptador, variantes fixadas e troca durante streaming liberando o Worker anterior; entrega registrada em commit próprio.
+- Última etapa concluída: **STEP-13 — Consolidar cache, recuperação e desempenho**.
+- Situação: cache verificado por revisão/variante, reparo explícito, remoção restrita e encerramento do Worker após cinco minutos; inferência offline após reinício, perda real de GPU e de offscreen validadas. [Relatório da STEP-13](VALIDACAO-STEP-13.md).
 - Validação complementar no WhatsApp real: 14 pedidos no grupo autorizado, duas alterações consideradas úteis, seis recusas, três respostas sem mudança e três prévias insatisfatórias; duas substituições e uma mensagem sintética enviada manualmente. A qualidade varia e exige revisão. [Resultados](VALIDACAO-STEP-12.md#validação-complementar-no-whatsapp-real--30092026).
-- Próxima etapa executável: **STEP-13**, somente quando solicitada.
+- Próxima etapa executável: **STEP-14**, somente quando solicitada.
 - Implementação: Manifest V3, comunicação, adaptador do editor, botão IA, prévia, substituição manual, prova sintética e nove ações com streaming nos perfis Econômico/Llama 3.2 3B, Equilibrado/Qwen3 4B e Qualidade/Qwen3 8B via WebGPU. A revisão semântica opcional usa a mesma instância do modelo em sequência. A simulação continua identificada. Textos multilinha e estruturas especiais oferecem somente cópia.
 
 ## Significado dos status
@@ -37,7 +37,7 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 | [STEP-10](steps/STEP-10.md) | Exibir geração progressiva e cancelamento       | Concluída | 134 testes e build; streaming, cancelamento, novo pedido e edição durante geração no Chrome/WebGPU. [Relatório](VALIDACAO-STEP-10.md).                                   |
 | [STEP-11](steps/STEP-11.md) | Implementar verificação semântica opcional      | Concluída | 143 testes e build; seis casos sintéticos no Llama/WebGPU, preferência persistida e cancelamento durante revisão no Chrome. [Relatório](VALIDACAO-STEP-11.md).           |
 | [STEP-12](steps/STEP-12.md) | Adicionar modelos e perfis de hardware          | Concluída | 151 testes e build; três modelos f16 usados no Chrome/WebGPU e troca durante streaming com liberação do Worker. [Matriz e artefatos](VALIDACAO-STEP-12.md).              |
-| [STEP-13](steps/STEP-13.md) | Consolidar cache, recuperação e desempenho      | Pendente  | Não iniciada.                                                                                                                                                            |
+| [STEP-13](steps/STEP-13.md) | Consolidar cache, recuperação e desempenho      | Concluída | 171 testes e build; offline após reinício, GPU/offscreen perdidos, inatividade real, interrupção/reparo e remoção restrita. [Relatório](VALIDACAO-STEP-13.md).           |
 | [STEP-14](steps/STEP-14.md) | Finalizar configurações e interfaces auxiliares | Pendente  | Não iniciada.                                                                                                                                                            |
 | [STEP-15](steps/STEP-15.md) | Criar e executar o benchmark pt-BR              | Pendente  | Não iniciada.                                                                                                                                                            |
 | [STEP-16](steps/STEP-16.md) | Validar e preparar a entrega instalável         | Pendente  | Não iniciada.                                                                                                                                                            |
@@ -228,9 +228,23 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 - Commit da etapa: `feat(step-12): adicionar modelos e perfis de hardware`. Hash no histórico Git e na resposta de entrega; identidade humana configurada.
 - Status final: **Concluída** no escopo da STEP-12. Próxima etapa: STEP-13, somente por nova solicitação.
 
+## STEP-13 — 30/09/2026
+
+- Escopo: Cache API por URLs fixas de modelo/variante/revisão, conferência completa antes da sessão fria, tamanho e MD5 publicado dos shards, estrutura dos JSONs e recibos SHA-256 locais de artefatos públicos. Nenhum texto, sugestão ou hash de rascunho é persistido.
+- Recuperação: cache ausente, interrompido ou inconsistente pede confirmação de reparo; somente arquivos inválidos/ausentes são baixados. Remoção no menu termina o Worker, cancela pedido e bloqueia novas gerações enquanto remove somente a revisão/variante selecionada. Preferências e entradas alheias são preservadas.
+- Recursos: sessão reutilizada, conversa limpa a cada geração e host encerra o Worker após cinco minutos desde a última operação terminal, suspendendo o timer enquanto há pedido. Perda de GPU/contexto/porta encerra o pedido sem replay. Falha de limpeza do runtime também bloqueia resultado.
+- Arquivos principais: cache/runtime/Worker, host e roteamento do offscreen, cliente de cache e menu, testes de cache/manutenção/idle/segurança, roteiro Chrome e [relatório](VALIDACAO-STEP-13.md). Pacote/Manifest 0.12.0; única dependência nova `@noble/hashes` 2.0.1, fixada com licença MIT empacotada.
+- Verificação automatizada: `npm.cmd run check` aprovado com tipos, lint sem avisos, formatação, 171 testes em 23 arquivos e build instalável; hashes dos seis WASM conferidos. Diff e arquivos preparados revisados, sem cache, dist, segredos, conversas ou temporários versionados.
+- Chrome/WebGPU real: Chrome for Testing 154.0.8037.0, adapter NVIDIA/lovelace com shader-f16, Llama 3.2 3B f16. Reinício com rede indisponível produziu `TESTE` em 32,7 s; pedido seguinte em 0,91 s, mesmo Worker. Inatividade terminou o Worker em 301.020 ms; nova ação gerou pelo cache em 118,1 s. Tempos observados, sem garantia universal.
+- Falhas reais: dispositivo GPU destruído durante streaming e offscreen fechado durante outro pedido bloquearam prévias e preservaram o original; nova ação explícita gerou após cada perda. Shard corrompido com mesmo tamanho bloqueou Corrigir; download interrompido exigiu nova confirmação; reparo confirmado gerou. Remoção preservou preferência salva e entradas sintéticas alheias, e próximo pedido exigiu download. Zero erros de página nas rodadas concluídas; nenhuma conversa ou mensagem enviada.
+- Limites: testes desta etapa em fixtures sem autenticação. Desconexão de abas/eventos tardios mantêm cobertura automatizada; suspensão natural do coordenador durante inferência já foi validada na STEP-12. Não houve segunda GPU sem shader-f16 nem esgotamento físico de VRAM. Recarga depois de encerramento variou de 111 a 118 s. Persistência depende do navegador; offline é da inferência preparada, não do WhatsApp. Detalhes de integridade/migração e instrumentação constam no relatório.
+- Commit da etapa: `feat(step-13): consolidar cache e recuperação local`. Hash no histórico Git e no relato final; autor/committer humanos já configurados, sem push ou atribuições adicionais.
+- Status final: **Concluída** no escopo da STEP-13, sem validação obrigatória pendente.
+- Próxima etapa: STEP-14, somente por nova solicitação; não iniciada.
+
 ## Como continuar
 
-As STEP-01 a STEP-12 estão concluídas. Consulte os relatórios da [comunicação](VALIDACAO-STEP-03.md), do [editor](VALIDACAO-STEP-04.md), da [prévia](VALIDACAO-STEP-05.md), da [inferência local](VALIDACAO-STEP-06.md), da [correção](VALIDACAO-STEP-07.md), da [proteção determinística](VALIDACAO-STEP-08.md), dos [nove modos](VALIDACAO-STEP-09.md), do [streaming](VALIDACAO-STEP-10.md), da [revisão semântica](VALIDACAO-STEP-11.md) e dos [perfis](VALIDACAO-STEP-12.md). Para continuar, solicitar **Execute somente a STEP-13 do plano.** A STEP-13 não foi iniciada.
+As STEP-01 a STEP-13 estão concluídas. Consulte os relatórios da [comunicação](VALIDACAO-STEP-03.md), do [editor](VALIDACAO-STEP-04.md), da [prévia](VALIDACAO-STEP-05.md), da [inferência local](VALIDACAO-STEP-06.md), da [correção](VALIDACAO-STEP-07.md), da [proteção determinística](VALIDACAO-STEP-08.md), dos [nove modos](VALIDACAO-STEP-09.md), do [streaming](VALIDACAO-STEP-10.md), da [revisão semântica](VALIDACAO-STEP-11.md) e dos [perfis](VALIDACAO-STEP-12.md). Consulte também a [validação do cache e recuperação](VALIDACAO-STEP-13.md). Para continuar, solicitar **Execute somente a STEP-14 do plano.** A STEP-14 não foi iniciada.
 
 Em futuras execuções, ler o plano e a etapa indicada, validar os pré-requisitos e atualizar este documento ao terminar. Não mudar o estado de etapas futuras apenas porque suas descrições foram criadas.
 

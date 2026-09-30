@@ -63,6 +63,7 @@ describe('perfis locais fixados', () => {
         stores.set(name, entries);
         return Promise.resolve({
           match: (url: string) => Promise.resolve(entries.get(url)?.clone()),
+          delete: (url: string) => Promise.resolve(entries.delete(url)),
           put: (url: string, response: Response) => {
             entries.set(url, response.clone());
             return Promise.resolve();
@@ -76,8 +77,8 @@ describe('perfis locais fixados', () => {
     const choice = MODEL_CHOICES.equilibrado.q4f16_1;
     const index = {
       records: [
-        { dataPath: 'params_shard_0.bin', nbytes: 2 },
-        { dataPath: 'params_shard_1.bin', nbytes: 3 },
+        { dataPath: 'params_shard_0.bin', nbytes: 2, md5sum: '187ef4436122d1cc2f40dc2b92f0eba0' },
+        { dataPath: 'params_shard_1.bin', nbytes: 3, md5sum: '900150983cd24fb0d6963f7d28e17f72' },
       ],
     };
     const fetcher = vi.fn((url: string) => {
@@ -87,7 +88,9 @@ describe('perfis locais fixados', () => {
           ? 'ab'
           : url.endsWith('params_shard_1.bin')
             ? 'abc'
-            : '{}';
+            : url.endsWith('tokenizer.json')
+              ? '{"model":{}}'
+              : '{"conv_template":{}}';
       const response = new Response(body);
       Object.defineProperty(response, 'url', { value: url });
       return Promise.resolve(response);
@@ -101,7 +104,7 @@ describe('perfis locais fixados', () => {
     expect(fetcher).toHaveBeenCalledTimes(5);
     index.records[1]!.dataPath = 'https://example.com/remote.bin';
     stores.clear();
-    await expect(cacheModelArtifacts(choice, undefined)).rejects.toThrow('Shard inválido');
-    expect(fetcher).toHaveBeenCalledTimes(6);
+    await expect(cacheModelArtifacts(choice, undefined)).rejects.toThrow('Artefato inválido');
+    expect(fetcher).toHaveBeenCalledTimes(8);
   });
 });

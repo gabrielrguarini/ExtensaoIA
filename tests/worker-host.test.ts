@@ -22,6 +22,29 @@ function harness() {
   return { worker, terminate, host, create, events, lost, emit };
 }
 describe('Worker independente do coordenador', () => {
+  it('libera o Worker após cinco minutos desde o último término, nunca durante operação', async () => {
+    const h = harness();
+    const ready = h.host.ensure();
+    h.emit({ type: 'ready', simulated: true });
+    const engine = await ready;
+    const binding = {
+      key: { requestId: 'req', editorId: 'ed', snapshotId: 'snap', revision: 0 },
+      origin: { tabId: 1, frameId: 0, documentId: 'doc', connectionId: 'conn' },
+    };
+    await vi.advanceTimersByTimeAsync(299_000);
+    engine.send({
+      type: 'start',
+      request: { ...binding, text: 'teste', action: 'corrigir', semanticReview: false },
+    });
+    await vi.advanceTimersByTimeAsync(600_000);
+    expect(h.terminate).not.toHaveBeenCalled();
+    h.emit({ type: 'action-result', binding, action: 'corrigir', text: 'Teste.' });
+    await vi.advanceTimersByTimeAsync(299_999);
+    expect(h.terminate).not.toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(1);
+    expect(h.terminate).toHaveBeenCalledOnce();
+    expect(h.lost).not.toHaveBeenCalled();
+  });
   it('permanece disponível depois de 30 segundos sem eventos e reutiliza uma única instância', async () => {
     const h = harness();
     const first = h.host.ensure();

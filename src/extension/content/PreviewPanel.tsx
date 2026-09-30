@@ -140,6 +140,19 @@ export function PreviewPanel({
               .
             </p>
             <p>A prova abaixo usa só uma frase sintética fixa e não lê nem altera seu rascunho.</p>
+            <p>
+              O cache depende do navegador. Arquivos ausentes ou inconsistentes exigem reparo com
+              nova confirmação de download. Somente a inferência preparada funciona offline.
+            </p>
+            <button
+              type="button"
+              disabled={state.preferenceStatus !== 'ready' || state.hardware.state !== 'available'}
+              onClick={(event) => {
+                if (event.isTrusted) session.removeCache();
+              }}
+            >
+              Remover cache da variante selecionada
+            </button>
             <button
               type="button"
               disabled={state.preferenceStatus !== 'ready'}
@@ -164,6 +177,10 @@ export function PreviewPanel({
       {state.kind === 'download-confirm' && (
         <div className="model-proof" role="status">
           <h3>Download necessário · {PROFILE_LABELS[state.profile]}</h3>
+          <p>
+            O cache está ausente, incompleto ou inconsistente. O download reaproveita arquivos
+            válidos e repara os demais; seu rascunho permanece intacto.
+          </p>
           <p>
             Para usar {MODEL_CHOICES[state.profile][state.variant].id}, baixe{' '}
             {(MODEL_CHOICES[state.profile][state.variant].downloadBytes / 1_000_000_000).toFixed(2)}{' '}

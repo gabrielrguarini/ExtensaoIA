@@ -41,7 +41,12 @@ function extensionPackage(): Plugin {
       await writeFile(path.join(outDir, 'manifest.json'), manifest);
       await copyFile(new URL('./NOTICE.txt', import.meta.url), path.join(outDir, 'NOTICE.txt'));
       await mkdir(path.join(outDir, 'licenses'), { recursive: true });
-      for (const license of ['LLAMA-3.2-LICENSE', 'QWEN3-LICENSE', 'WEBLLM-LICENSE'])
+      for (const license of [
+        'LLAMA-3.2-LICENSE',
+        'QWEN3-LICENSE',
+        'WEBLLM-LICENSE',
+        'NOBLE-HASHES-LICENSE',
+      ])
         await copyFile(
           new URL(`./licenses/${license}`, import.meta.url),
           path.join(outDir, 'licenses', license),

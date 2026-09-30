@@ -105,6 +105,42 @@ async function ready(h: Awaited<ReturnType<typeof harness>>) {
   return { worker, command, binding };
 }
 describe('roteamento no documento offscreen', () => {
+  it('restringe remoção à origem autorizada, catálogo e perfil atual; bloqueia geração durante remoção', async () => {
+    const h = await harness();
+    const source = sender as unknown as chrome.runtime.MessageSender;
+    const open = vi.fn((name: string) => {
+      expect(name).toBeTypeOf('string');
+      return Promise.resolve({ keys: () => Promise.resolve([]) });
+    });
+    vi.stubGlobal('caches', { open });
+    const command = {
+      target: 'model-cache',
+      type: 'remove',
+      profile: 'equilibrado',
+      variant: 'q4f16_1',
+    };
+    const reply = vi.fn();
+    expect(h.control(command, { ...source, origin: 'https://example.com' }, reply)).toBe(false);
+    expect(h.control({ ...command, url: 'https://example.com' }, source, reply)).toBe(false);
+    expect(h.control({ ...command, profile: 'externo' }, source, reply)).toBe(false);
+    expect(open).not.toHaveBeenCalled();
+    expect(h.control({ ...command, profile: 'economico' }, source, reply)).toBe(true);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(reply).toHaveBeenLastCalledWith({ ok: false });
+    expect(open).not.toHaveBeenCalled();
+    expect(h.control(command, source, reply)).toBe(true);
+    const a = peer();
+    h.accept(a.port);
+    a.receive(start);
+    expect(a.post).toHaveBeenLastCalledWith({ type: 'rejected', code: 'BUSY', key });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(reply).toHaveBeenLastCalledWith({ ok: true });
+    expect(open.mock.calls.map((args) => args[0])).toEqual([
+      'webllm/model',
+      'webllm/config',
+      'local-writing/artifact-integrity-v1',
+    ]);
+  });
   it('recusa remetente/frame incorretos e deriva a origem do remetente confiável', async () => {
     const h = await harness();
     const wrong = peer({ ...sender, origin: 'https://example.com' });

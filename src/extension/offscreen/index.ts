@@ -4,6 +4,10 @@ import { parsePreferences } from '../../shared/preferences';
 import { RequestRouter } from '../background/router';
 import type { Client } from '../background/router';
 import { WorkerHost } from './worker-host';
+import { MODEL_CHOICES, MODEL_PROFILES } from '../ai/model-catalog';
+import { removeModelArtifacts } from '../ai/model-cache';
+
+let removing = false;
 
 async function preferences() {
   const value: unknown = await chrome.runtime.sendMessage({ target: 'preferences', type: 'get' });
@@ -53,6 +57,39 @@ chrome.runtime.onConnect.addListener((port) => {
 });
 
 chrome.runtime.onMessage.addListener((value: unknown, sender, sendResponse) => {
+  if (
+    record(value) &&
+    fields(value, ['target', 'type', 'profile', 'variant']) &&
+    value.target === 'model-cache' &&
+    value.type === 'remove' &&
+    typeof value.profile === 'string' &&
+    MODEL_PROFILES.some((profile) => profile === value.profile) &&
+    (value.variant === 'q4f16_1' || value.variant === 'q4f32_1') &&
+    contentOrigin(sender, chrome.runtime.id, crypto.randomUUID())
+  ) {
+    if (removing) {
+      sendResponse({ ok: false });
+      return false;
+    }
+    removing = true;
+    router.setMaintenance(true);
+    host.reset();
+    const profile = value.profile as keyof typeof MODEL_CHOICES;
+    const variant = value.variant;
+    void (async () => {
+      try {
+        if ((await preferences()).profile !== profile) throw new Error('Perfil alterado.');
+        await removeModelArtifacts(MODEL_CHOICES[profile][variant]);
+        sendResponse({ ok: true });
+      } catch {
+        sendResponse({ ok: false });
+      } finally {
+        removing = false;
+        router.setMaintenance(false);
+      }
+    })();
+    return true;
+  }
   if (
     !isCoordinator(sender, chrome.runtime.id) ||
     !record(value) ||

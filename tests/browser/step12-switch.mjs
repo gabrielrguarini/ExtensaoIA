@@ -11,7 +11,7 @@ const profile = path.resolve(
 );
 const extension = path.join(root, 'dist');
 const manifest = JSON.parse(await readFile(path.join(extension, 'manifest.json'), 'utf8'));
-if (manifest.version !== '0.11.0') throw new Error('Execute npm run build antes da prova.');
+if (manifest.version !== '0.12.0') throw new Error('Execute npm run build antes da prova.');
 const options = {
   headless: false,
   serviceWorkers: 'block',

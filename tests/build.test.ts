@@ -93,6 +93,7 @@ describe('pacote de produção', () => {
       'licenses/LLAMA-3.2-LICENSE',
       'licenses/QWEN3-LICENSE',
       'licenses/WEBLLM-LICENSE',
+      'licenses/NOBLE-HASHES-LICENSE',
     ])
       expect((await readFile(path.join(outputDirectory, file))).length).toBeGreaterThan(100);
     const content = await readFile(path.join(outputDirectory, 'content.js'), 'utf8');

@@ -15,6 +15,7 @@ import type { ModelProfile } from '../ai/model-catalog';
 import { PROFILE_LABELS, smallerProfile } from '../ai/model-catalog';
 import { probeHardware } from './model-hardware';
 import type { HardwareStatus } from './model-hardware';
+import { removeSelectedCache } from './cache-client';
 
 export type PreviewState =
   | { kind: 'closed' | 'loading' }
@@ -190,6 +191,35 @@ export class PreviewSession {
       () => {
         if (this.sequence === sequence && this.state.kind === 'menu')
           this.set({ ...this.state, profile: previous, preferenceStatus: 'error' });
+      },
+    );
+  }
+  removeCache(): void {
+    if (
+      this.state.kind !== 'menu' ||
+      this.state.preferenceStatus !== 'ready' ||
+      this.hardware.state !== 'available'
+    )
+      return;
+    const sequence = this.sequence;
+    const profile = this.profile;
+    const variant = this.hardware.shaderF16 ? 'q4f16_1' : 'q4f32_1';
+    this.set({ ...this.state, preferenceStatus: 'saving' });
+    void removeSelectedCache(profile, variant).then(
+      () => {
+        if (this.sequence === sequence)
+          this.set({
+            kind: 'notice',
+            message:
+              'Artefatos da variante selecionada removidos. Preferências preservadas. O próximo uso exigirá confirmação de download.',
+          });
+      },
+      () => {
+        if (this.sequence === sequence)
+          this.set({
+            kind: 'notice',
+            message: 'Não foi possível confirmar a remoção. Abra o menu e tente novamente.',
+          });
       },
     );
   }
