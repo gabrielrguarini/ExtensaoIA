@@ -222,6 +222,7 @@ export class WebLLMEngine implements AIEngine {
             ? actionMessages(action, text, options.writingOptions)
             : semanticMessages(text),
           stream: true,
+          ...(options.onMetrics ? { stream_options: { include_usage: true } } : {}),
           max_tokens: maxTokens,
           temperature: 0,
           ...(this.choice?.profile !== 'economico'
@@ -230,6 +231,15 @@ export class WebLLMEngine implements AIEngine {
         });
         let finishReason: string | null = null;
         for await (const chunk of stream) {
+          if (chunk.usage && options.onMetrics)
+            options.onMetrics({
+              promptTokens: chunk.usage.prompt_tokens,
+              completionTokens: chunk.usage.completion_tokens,
+              maxTokens,
+              runtimeFirstTokenMs: chunk.usage.extra.time_to_first_token_s * 1000,
+              runtimeTotalMs: chunk.usage.extra.e2e_latency_s * 1000,
+              decodeTokensPerSecond: chunk.usage.extra.decode_tokens_per_s,
+            });
           finishReason = chunk.choices[0]?.finish_reason ?? finishReason;
           const fragment = chunk.choices[0]?.delta.content;
           // O runtime libera seu lock somente ao consumir o último chunk.

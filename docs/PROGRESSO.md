@@ -4,11 +4,11 @@
 
 ## Estado atual
 
-- Última atualização: 30/09/2026.
+- Última atualização: 01/10/2026.
 - Última etapa concluída: **STEP-14 — Finalizar configurações e interfaces auxiliares**.
-- Situação: popup e painel lateral reais, preferências v3 migradas e sincronizadas com o editor, temas/teclado e controles separados de GPU/cache validados no Chrome/WebGPU. [Relatório da STEP-14](VALIDACAO-STEP-14.md).
+- Situação: **STEP-15 Aguardando validação**. Benchmark de 108 pares por perfil, 133 gerações reais e 191 resultados dos Qwen pendentes por estagnação/pressão de recursos. Cinco falhas de preservação iniciais corrigidas; 187 testes e fluxo instalado offline com prévia/substituição/desfazer. [Relatório](VALIDACAO-STEP-15.md).
 - Validação complementar no WhatsApp real: 14 pedidos no grupo autorizado, duas alterações consideradas úteis, seis recusas, três respostas sem mudança e três prévias insatisfatórias; duas substituições e uma mensagem sintética enviada manualmente. A qualidade varia e exige revisão. [Resultados](VALIDACAO-STEP-12.md#validação-complementar-no-whatsapp-real--30092026).
-- Próxima etapa executável: **STEP-15**, somente quando solicitada.
+- Próxima ação: resolver limitações de recursos e completar a validação da **STEP-15**; STEP-16 permanece pendente.
 - Implementação: Manifest V3, comunicação, adaptador do editor, botão IA, prévia, substituição manual, prova sintética e nove ações com streaming nos perfis Econômico/Llama 3.2 3B, Equilibrado/Qwen3 4B e Qualidade/Qwen3 8B via WebGPU. A revisão semântica opcional usa a mesma instância do modelo em sequência. A simulação continua identificada. Textos multilinha e estruturas especiais oferecem somente cópia.
 
 ## Significado dos status
@@ -23,24 +23,24 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 
 ## Etapas
 
-| Etapa                       | Descrição                                       | Status    | Evidência                                                                                                                                                                |
-| --------------------------- | ----------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [STEP-01](steps/STEP-01.md) | Organizar o plano e o acompanhamento            | Concluída | 18 documentos, 16 etapas, 129 links locais válidos e sequência conferida.                                                                                                |
-| [STEP-02](steps/STEP-02.md) | Criar a base do projeto                         | Concluída | npm ci reproduzível; tipos, lint, formatação, 3 testes de build e build aprovados.                                                                                       |
-| [STEP-03](steps/STEP-03.md) | Implementar Manifest V3 e comunicação           | Concluída | 45 testes e build aprovados; extensão executada no Chrome for Testing 154, com duas abas, cancelamento e recuperação validados.                                          |
-| [STEP-04](steps/STEP-04.md) | Detectar o editor do WhatsApp                   | Concluída | 69 testes e build aprovados; botão único, rascunho preservado, busca e fechamento/reabertura conferidos no WhatsApp real.                                                |
-| [STEP-05](steps/STEP-05.md) | Criar preview e substituição manual             | Concluída | 98 testes e build; Chrome/WhatsApp com aplicação e undo, cópia, cancelamento e bloqueio de sugestões obsoletas.                                                          |
-| [STEP-06](steps/STEP-06.md) | Executar o primeiro modelo local                | Concluída | 102 testes e build; Llama 3.2 3B em WebGPU/Chrome, resposta sintética real, cache offline e falha de download validados. [Relatório](VALIDACAO-STEP-06.md).              |
-| [STEP-07](steps/STEP-07.md) | Implementar a ação Corrigir                     | Concluída | 111 testes e build; correção real no Chrome, prévia e aplicação manual, contexto recusado e saídas arriscadas preservando o rascunho. [Relatório](VALIDACAO-STEP-07.md). |
-| [STEP-08](steps/STEP-08.md) | Proteger entidades e validar o resultado        | Concluída | 120 testes e build; oito casos de correção no Chrome/WebGPU, seis prévias, duas recusas seguras, contexto, simulação e prova offline. [Relatório](VALIDACAO-STEP-08.md). |
-| [STEP-09](steps/STEP-09.md) | Adicionar os demais modos                       | Concluída | 128 testes e build; nove prévias e duas recusas seguras no grupo de teste do WhatsApp Web. [Relatório](VALIDACAO-STEP-09.md).                                            |
-| [STEP-10](steps/STEP-10.md) | Exibir geração progressiva e cancelamento       | Concluída | 134 testes e build; streaming, cancelamento, novo pedido e edição durante geração no Chrome/WebGPU. [Relatório](VALIDACAO-STEP-10.md).                                   |
-| [STEP-11](steps/STEP-11.md) | Implementar verificação semântica opcional      | Concluída | 143 testes e build; seis casos sintéticos no Llama/WebGPU, preferência persistida e cancelamento durante revisão no Chrome. [Relatório](VALIDACAO-STEP-11.md).           |
-| [STEP-12](steps/STEP-12.md) | Adicionar modelos e perfis de hardware          | Concluída | 151 testes e build; três modelos f16 usados no Chrome/WebGPU e troca durante streaming com liberação do Worker. [Matriz e artefatos](VALIDACAO-STEP-12.md).              |
-| [STEP-13](steps/STEP-13.md) | Consolidar cache, recuperação e desempenho      | Concluída | 171 testes e build; offline após reinício, GPU/offscreen perdidos, inatividade real, interrupção/reparo e remoção restrita. [Relatório](VALIDACAO-STEP-13.md).           |
-| [STEP-14](steps/STEP-14.md) | Finalizar configurações e interfaces auxiliares | Concluída | 178 testes e build; popup/painel por gesto, migração, sincronização, temas/teclado, reinício e controle real de GPU/cache. [Relatório](VALIDACAO-STEP-14.md).            |
-| [STEP-15](steps/STEP-15.md) | Criar e executar o benchmark pt-BR              | Pendente  | Não iniciada.                                                                                                                                                            |
-| [STEP-16](steps/STEP-16.md) | Validar e preparar a entrega instalável         | Pendente  | Não iniciada.                                                                                                                                                            |
+| Etapa                       | Descrição                                       | Status               | Evidência                                                                                                                                                                |
+| --------------------------- | ----------------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [STEP-01](steps/STEP-01.md) | Organizar o plano e o acompanhamento            | Concluída            | 18 documentos, 16 etapas, 129 links locais válidos e sequência conferida.                                                                                                |
+| [STEP-02](steps/STEP-02.md) | Criar a base do projeto                         | Concluída            | npm ci reproduzível; tipos, lint, formatação, 3 testes de build e build aprovados.                                                                                       |
+| [STEP-03](steps/STEP-03.md) | Implementar Manifest V3 e comunicação           | Concluída            | 45 testes e build aprovados; extensão executada no Chrome for Testing 154, com duas abas, cancelamento e recuperação validados.                                          |
+| [STEP-04](steps/STEP-04.md) | Detectar o editor do WhatsApp                   | Concluída            | 69 testes e build aprovados; botão único, rascunho preservado, busca e fechamento/reabertura conferidos no WhatsApp real.                                                |
+| [STEP-05](steps/STEP-05.md) | Criar preview e substituição manual             | Concluída            | 98 testes e build; Chrome/WhatsApp com aplicação e undo, cópia, cancelamento e bloqueio de sugestões obsoletas.                                                          |
+| [STEP-06](steps/STEP-06.md) | Executar o primeiro modelo local                | Concluída            | 102 testes e build; Llama 3.2 3B em WebGPU/Chrome, resposta sintética real, cache offline e falha de download validados. [Relatório](VALIDACAO-STEP-06.md).              |
+| [STEP-07](steps/STEP-07.md) | Implementar a ação Corrigir                     | Concluída            | 111 testes e build; correção real no Chrome, prévia e aplicação manual, contexto recusado e saídas arriscadas preservando o rascunho. [Relatório](VALIDACAO-STEP-07.md). |
+| [STEP-08](steps/STEP-08.md) | Proteger entidades e validar o resultado        | Concluída            | 120 testes e build; oito casos de correção no Chrome/WebGPU, seis prévias, duas recusas seguras, contexto, simulação e prova offline. [Relatório](VALIDACAO-STEP-08.md). |
+| [STEP-09](steps/STEP-09.md) | Adicionar os demais modos                       | Concluída            | 128 testes e build; nove prévias e duas recusas seguras no grupo de teste do WhatsApp Web. [Relatório](VALIDACAO-STEP-09.md).                                            |
+| [STEP-10](steps/STEP-10.md) | Exibir geração progressiva e cancelamento       | Concluída            | 134 testes e build; streaming, cancelamento, novo pedido e edição durante geração no Chrome/WebGPU. [Relatório](VALIDACAO-STEP-10.md).                                   |
+| [STEP-11](steps/STEP-11.md) | Implementar verificação semântica opcional      | Concluída            | 143 testes e build; seis casos sintéticos no Llama/WebGPU, preferência persistida e cancelamento durante revisão no Chrome. [Relatório](VALIDACAO-STEP-11.md).           |
+| [STEP-12](steps/STEP-12.md) | Adicionar modelos e perfis de hardware          | Concluída            | 151 testes e build; três modelos f16 usados no Chrome/WebGPU e troca durante streaming com liberação do Worker. [Matriz e artefatos](VALIDACAO-STEP-12.md).              |
+| [STEP-13](steps/STEP-13.md) | Consolidar cache, recuperação e desempenho      | Concluída            | 171 testes e build; offline após reinício, GPU/offscreen perdidos, inatividade real, interrupção/reparo e remoção restrita. [Relatório](VALIDACAO-STEP-13.md).           |
+| [STEP-14](steps/STEP-14.md) | Finalizar configurações e interfaces auxiliares | Concluída            | 178 testes e build; popup/painel por gesto, migração, sincronização, temas/teclado, reinício e controle real de GPU/cache. [Relatório](VALIDACAO-STEP-14.md).            |
+| [STEP-15](steps/STEP-15.md) | Criar e executar o benchmark pt-BR              | Aguardando validação | 108 pares por perfil; 133/324 gerações reais e 191 pendentes. Guardas corrigidas, smoke offline aprovado. [Relatório](VALIDACAO-STEP-15.md).                             |
+| [STEP-16](steps/STEP-16.md) | Validar e preparar a entrega instalável         | Pendente             | Não iniciada.                                                                                                                                                            |
 
 ## Registro de execução
 
@@ -255,9 +255,24 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 - Status final: **Concluída** no escopo da STEP-14, sem validação obrigatória pendente.
 - Próxima etapa: STEP-15, somente por nova solicitação; não iniciada.
 
+## STEP-15 — 01/10/2026
+
+- Escopo: dataset pré-anotado de 108 pares (12 rascunhos fictícios × nove ações), executor WebGPU, métricas reais, revisão independente do executor, controles e relatório reproduzível.
+- Arquivos: tests/benchmark, tests/browser/step15-*, testes de agregação/guardas, ai-engine/webllm-engine/action-validation/entities e meaning-anchors; evidências canônicas em docs/benchmark/step15, README e relatório. Pacote/Manifest 0.14.0; dependências fixadas sem adição/upgrade.
+- Resultado final: 133 gerações concluídas (108 Llama 3B, 14 Qwen 4B, 11 Qwen 8B), 36 sugestões liberadas e 97 recusas. Os 191 resultados restantes continuam identificados no denominador de 324, sem tempo, tokens nem qualidade inventados.
+- Revisão: cinco mudanças de fato/intenção liberadas no Llama inicial corrigidas e bloqueadas na rodada final. Nenhuma nova troca de dado/fato/pedido encontrada nas 36 saídas liberadas revisadas; defeitos de estilo/utilidade permanecem. Oito controles determinísticos: dois falsos positivos e quatro inválidos barrados. Não é estudo humano cego ou prova geral de sentido.
+- Recursos: RTX 4060 Laptop/8.188 MiB, RAM física ~16 GB, Chrome 154.0.8037.0, driver 555.97. Qwen 4B estagnou após 14 saídas em duas campanhas; 8B após 11. Houve OOM, arquivo de paginação insuficiente e somente ~2,65 GB livres em C:. A causa exata do runtime não foi isolada; configurações do sistema não foram alteradas.
+- Carga após reinício: Qualidade carregou offline em 64,85 s; Econômico/Equilibrado retornaram DOWNLOAD_REQUIRED, sem download silencioso. Campanha final terminou com dois eventos de erro de página e exit code não zero; evidência mantida.
+- Pacote instalado: fixture sintética UTF-8, Qualidade em cache, prévia offline, rascunho intacto, Substituir explícito e Ctrl+Z restaurando original. Zero erros de página nesse fluxo; nenhum envio, autenticação ou conversa real.
+- Verificações: npm.cmd run check antes do commit, com TypeScript strict, ESLint, Prettier, 187 testes em 26 arquivos e build de produção. Agregador reproduz as taxas e retorna exit code 2 por pendência, comportamento esperado.
+- Limites: só 133 resultados completos, f32/outro hardware não avaliados; consumo exato/pico de memória por modelo indisponível; catálogo e VRAM global separados. Experimento de prompt regressivo abandonado e documentado, com prompts anteriores restaurados.
+- Evidência: [relatório](VALIDACAO-STEP-15.md), [reprodução](benchmark/README.md), dados/revisões/hashes canônicos locais. Arquivos medidos não são reformatados, preservando SHA-256, e não integram dist.
+- Commit parcial: `test(step-15): adicionar benchmark e registrar validação parcial`; hash no histórico Git e resposta final. Não é commit de conclusão.
+- Status: **Aguardando validação**. Disponibilizar recursos suficientes, investigar estagnação, executar/revisar os 108 pares de cada Qwen e confirmar aceite completo. STEP-16 continua Pendente e não foi iniciada.
+
 ## Como continuar
 
-As STEP-01 a STEP-14 estão concluídas. Consulte os relatórios da [comunicação](VALIDACAO-STEP-03.md), do [editor](VALIDACAO-STEP-04.md), da [prévia](VALIDACAO-STEP-05.md), da [inferência local](VALIDACAO-STEP-06.md), da [correção](VALIDACAO-STEP-07.md), da [proteção determinística](VALIDACAO-STEP-08.md), dos [nove modos](VALIDACAO-STEP-09.md), do [streaming](VALIDACAO-STEP-10.md), da [revisão semântica](VALIDACAO-STEP-11.md) e dos [perfis](VALIDACAO-STEP-12.md). Consulte também a [validação do cache e recuperação](VALIDACAO-STEP-13.md). Consulte a [validação das configurações](VALIDACAO-STEP-14.md). Para continuar, solicitar **Execute somente a STEP-15 do plano.** A STEP-15 não foi iniciada.
+As STEP-01 a STEP-14 estão concluídas. Consulte os relatórios da [comunicação](VALIDACAO-STEP-03.md), do [editor](VALIDACAO-STEP-04.md), da [prévia](VALIDACAO-STEP-05.md), da [inferência local](VALIDACAO-STEP-06.md), da [correção](VALIDACAO-STEP-07.md), da [proteção determinística](VALIDACAO-STEP-08.md), dos [nove modos](VALIDACAO-STEP-09.md), do [streaming](VALIDACAO-STEP-10.md), da [revisão semântica](VALIDACAO-STEP-11.md), dos [perfis](VALIDACAO-STEP-12.md), do [cache](VALIDACAO-STEP-13.md) e das [configurações](VALIDACAO-STEP-14.md). A STEP-15 foi implementada e parcialmente medida; consultar seu [relatório](VALIDACAO-STEP-15.md) e completar as 191 execuções pendentes antes de aceitar a etapa. Nenhuma STEP-16 foi iniciada.
 
 Em futuras execuções, ler o plano e a etapa indicada, validar os pré-requisitos e atualizar este documento ao terminar. Não mudar o estado de etapas futuras apenas porque suas descrições foram criadas.
 

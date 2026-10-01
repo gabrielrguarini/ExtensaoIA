@@ -1,0 +1,290 @@
+{
+  "economico": {
+    "denominator": 108,
+    "accepted": 15,
+    "rejected": 93,
+    "loadErrors": 0,
+    "generationErrors": 0,
+    "missingResults": 0,
+    "safeReleased": 10,
+    "safeReleasedPercentOfAll": 9.25925925925926,
+    "usefulReleased": 4,
+    "usefulReleasedPercentOfAll": 3.7037037037037037,
+    "knownAlterations": [
+      "B01-reescrever",
+      "B03-formal",
+      "B03-profissional",
+      "B03-conciso",
+      "B07-formal"
+    ],
+    "preservationGatePasses": false,
+    "acceptancePasses": false,
+    "falseNegatives": [
+      "B01-reescrever",
+      "B03-formal",
+      "B03-profissional",
+      "B03-conciso",
+      "B07-formal"
+    ],
+    "falsePositives": [],
+    "firstVisibleMs": {
+      "denominator": 108,
+      "measured": 108,
+      "unavailable": 0,
+      "median": 1612.2999999523163,
+      "p95": 2499
+    },
+    "totalMs": {
+      "denominator": 108,
+      "measured": 108,
+      "unavailable": 0,
+      "median": 2122.7000000476837,
+      "p95": 3815.100000023842
+    },
+    "decodeTokensPerSecond": {
+      "denominator": 108,
+      "measured": 108,
+      "unavailable": 0,
+      "median": 38.93026405188954,
+      "p95": 41.6840350394454
+    },
+    "runtimeFirstTokenMs": {
+      "denominator": 108,
+      "measured": 108,
+      "unavailable": 0,
+      "median": 1611.3000000715256,
+      "p95": 2495.7000000476837
+    },
+    "actionBreakdown": {
+      "corrigir": {
+        "denominator": 12,
+        "accepted": 3,
+        "useful": 2
+      },
+      "melhorar": {
+        "denominator": 12,
+        "accepted": 0,
+        "useful": 0
+      },
+      "formal": {
+        "denominator": 12,
+        "accepted": 3,
+        "useful": 0
+      },
+      "profissional": {
+        "denominator": 12,
+        "accepted": 2,
+        "useful": 0
+      },
+      "amigavel": {
+        "denominator": 12,
+        "accepted": 2,
+        "useful": 1
+      },
+      "natural": {
+        "denominator": 12,
+        "accepted": 1,
+        "useful": 1
+      },
+      "conciso": {
+        "denominator": 12,
+        "accepted": 2,
+        "useful": 0
+      },
+      "engracado": {
+        "denominator": 12,
+        "accepted": 1,
+        "useful": 0
+      },
+      "reescrever": {
+        "denominator": 12,
+        "accepted": 1,
+        "useful": 0
+      }
+    }
+  },
+  "equilibrado": {
+    "denominator": 108,
+    "accepted": 14,
+    "rejected": 0,
+    "loadErrors": 0,
+    "generationErrors": 94,
+    "missingResults": 94,
+    "safeReleased": 14,
+    "safeReleasedPercentOfAll": 12.962962962962964,
+    "usefulReleased": 6,
+    "usefulReleasedPercentOfAll": 5.555555555555555,
+    "knownAlterations": [],
+    "preservationGatePasses": true,
+    "acceptancePasses": false,
+    "falseNegatives": [],
+    "falsePositives": [],
+    "firstVisibleMs": {
+      "denominator": 108,
+      "measured": 14,
+      "unavailable": 94,
+      "median": 2015.6000000238419,
+      "p95": 3718.600000023842
+    },
+    "totalMs": {
+      "denominator": 108,
+      "measured": 14,
+      "unavailable": 94,
+      "median": 2759.100000023842,
+      "p95": 5021.600000023842
+    },
+    "decodeTokensPerSecond": {
+      "denominator": 108,
+      "measured": 14,
+      "unavailable": 94,
+      "median": 21.347565036571503,
+      "p95": 24.379750471918555
+    },
+    "runtimeFirstTokenMs": {
+      "denominator": 108,
+      "measured": 14,
+      "unavailable": 94,
+      "median": 2014.5,
+      "p95": 3504.2000000476837
+    },
+    "actionBreakdown": {
+      "corrigir": {
+        "denominator": 12,
+        "accepted": 2,
+        "useful": 1
+      },
+      "melhorar": {
+        "denominator": 12,
+        "accepted": 2,
+        "useful": 2
+      },
+      "formal": {
+        "denominator": 12,
+        "accepted": 2,
+        "useful": 1
+      },
+      "profissional": {
+        "denominator": 12,
+        "accepted": 2,
+        "useful": 0
+      },
+      "amigavel": {
+        "denominator": 12,
+        "accepted": 2,
+        "useful": 1
+      },
+      "natural": {
+        "denominator": 12,
+        "accepted": 1,
+        "useful": 0
+      },
+      "conciso": {
+        "denominator": 12,
+        "accepted": 1,
+        "useful": 1
+      },
+      "engracado": {
+        "denominator": 12,
+        "accepted": 1,
+        "useful": 0
+      },
+      "reescrever": {
+        "denominator": 12,
+        "accepted": 1,
+        "useful": 0
+      }
+    }
+  },
+  "qualidade": {
+    "denominator": 108,
+    "accepted": 0,
+    "rejected": 0,
+    "loadErrors": 0,
+    "generationErrors": 108,
+    "missingResults": 108,
+    "safeReleased": 0,
+    "safeReleasedPercentOfAll": 0,
+    "usefulReleased": 0,
+    "usefulReleasedPercentOfAll": 0,
+    "knownAlterations": [],
+    "preservationGatePasses": true,
+    "acceptancePasses": false,
+    "falseNegatives": [],
+    "falsePositives": [],
+    "firstVisibleMs": {
+      "denominator": 108,
+      "measured": 0,
+      "unavailable": 108,
+      "median": null,
+      "p95": null
+    },
+    "totalMs": {
+      "denominator": 108,
+      "measured": 0,
+      "unavailable": 108,
+      "median": null,
+      "p95": null
+    },
+    "decodeTokensPerSecond": {
+      "denominator": 108,
+      "measured": 0,
+      "unavailable": 108,
+      "median": null,
+      "p95": null
+    },
+    "runtimeFirstTokenMs": {
+      "denominator": 108,
+      "measured": 0,
+      "unavailable": 108,
+      "median": null,
+      "p95": null
+    },
+    "actionBreakdown": {
+      "corrigir": {
+        "denominator": 12,
+        "accepted": 0,
+        "useful": 0
+      },
+      "melhorar": {
+        "denominator": 12,
+        "accepted": 0,
+        "useful": 0
+      },
+      "formal": {
+        "denominator": 12,
+        "accepted": 0,
+        "useful": 0
+      },
+      "profissional": {
+        "denominator": 12,
+        "accepted": 0,
+        "useful": 0
+      },
+      "amigavel": {
+        "denominator": 12,
+        "accepted": 0,
+        "useful": 0
+      },
+      "natural": {
+        "denominator": 12,
+        "accepted": 0,
+        "useful": 0
+      },
+      "conciso": {
+        "denominator": 12,
+        "accepted": 0,
+        "useful": 0
+      },
+      "engracado": {
+        "denominator": 12,
+        "accepted": 0,
+        "useful": 0
+      },
+      "reescrever": {
+        "denominator": 12,
+        "accepted": 0,
+        "useful": 0
+      }
+    }
+  }
+}

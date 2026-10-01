@@ -1,0 +1,8 @@
+{
+  "completed": false,
+  "termination": "Interrupção explícita após pressão de memória, OOM no PowerShell e estagnação do Qwen 4B. Somente navegador dedicado encerrado.",
+  "completedGenerations": 122,
+  "missingResults": 202,
+  "forbiddenRequests": "indisponível: captura final não foi concluída",
+  "pageErrors": "indisponível"
+}

@@ -11,6 +11,17 @@ export interface GenerateOptions {
   signal?: AbortSignal;
   task?: 'proof' | 'semantic-review' | WritingAction;
   writingOptions?: WritingOptions;
+  /** Contadores numéricos opcionais; sem conteúdo, armazenamento ou telemetria. */
+  onMetrics?: (metrics: GenerationMetrics) => void;
+}
+
+export interface GenerationMetrics {
+  promptTokens: number;
+  completionTokens: number;
+  maxTokens: number;
+  runtimeFirstTokenMs: number;
+  runtimeTotalMs: number;
+  decodeTokensPerSecond: number;
 }
 
 /** O runtime concreto fica isolado atrás deste contrato. */

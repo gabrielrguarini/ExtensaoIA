@@ -58,6 +58,35 @@ const nameStopWords = new Set([
   'texto',
   'você',
   'voce',
+  // Inícios de oração comuns não são nomes próprios.
+  'o',
+  'obrigado',
+  'obrigada',
+  'se',
+  'mas',
+  'talvez',
+  'possivelmente',
+  'confere',
+  'confira',
+  'confirme',
+  'devolva',
+  'devolve',
+  'envie',
+  'enviou',
+  'envia',
+  'levar',
+  'leve',
+  'leva',
+  'sinto',
+  'blz',
+  'beleza',
+  'poderia',
+  'seria',
+  'solicito',
+  'peço',
+  'aguarde',
+  'aguarda',
+  'mantenha',
 ]);
 const placeholderPattern = /\bENTITY(?:[\p{L}\p{N}_-]|\s+\d)*/giu;
 const negationPattern = /(?<![\p{L}\p{N}])(?:não|nao|nunca|jamais|nem|sem)(?![\p{L}\p{N}])/giu;
@@ -257,6 +286,13 @@ function precedingArticle(value: string, index: number): string | undefined {
     ?.toLocaleLowerCase('pt-BR');
 }
 
+function precedingPreposition(value: string, index: number): string | undefined {
+  return value
+    .slice(0, index)
+    .match(/(?<![\p{L}\p{N}])(de|do|da|dos|das|para|por|com|em|no|na|nos|nas|às|até)\s*$/iu)?.[1]
+    ?.toLocaleLowerCase('pt-BR');
+}
+
 function invalidCharacters(value: string): boolean {
   for (let index = 0; index < value.length; index++) {
     const code = value.charCodeAt(index);
@@ -289,6 +325,12 @@ export function restoreAndValidate(
     seen.add(placeholder);
   }
   if (seen.size !== slotMap.size) throw new CorrectionOutputError('PRESERVATION_RISK');
+  const expectedOrder = protectedDraft.slots.map((slot) => slot.placeholder);
+  if (
+    [...generated.matchAll(placeholderPattern)].map((match) => match[0]).join('|') !==
+    expectedOrder.join('|')
+  )
+    throw new CorrectionOutputError('PRESERVATION_RISK');
   for (const slot of protectedDraft.slots) {
     const generatedArticle = precedingArticle(generated, generated.indexOf(slot.placeholder));
     if (
@@ -296,6 +338,19 @@ export function restoreAndValidate(
       generatedArticle !== precedingArticle(protectedDraft.original, slot.entity.start)
     )
       throw new CorrectionOutputError('PRESERVATION_RISK');
+    const position = generated.indexOf(slot.placeholder);
+    const beforePreposition = precedingPreposition(protectedDraft.original, slot.entity.start);
+    const afterPreposition = precedingPreposition(generated, position);
+    if (beforePreposition !== afterPreposition)
+      throw new CorrectionOutputError('PRESERVATION_RISK');
+    if (slot.entity.kind === 'number') {
+      const head = (value: string) =>
+        value.match(/^\s+([\p{L}]+)/u)?.[1]?.toLocaleLowerCase('pt-BR');
+      const beforeHead = head(protectedDraft.original.slice(slot.entity.end));
+      const afterHead = head(generated.slice(position + slot.placeholder.length));
+      if (beforeHead && beforeHead !== afterHead)
+        throw new CorrectionOutputError('PRESERVATION_RISK');
+    }
   }
   const restored = generated.replace(placeholderPattern, (placeholder) =>
     slotMap.get(placeholder)!,

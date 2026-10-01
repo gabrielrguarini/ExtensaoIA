@@ -19,14 +19,16 @@ Medir qualidade e desempenho com pelo menos 100 casos sintéticos reproduzíveis
 
 ## Tarefas
 
-- [ ] Criar no mínimo 100 casos texto/ação, distribuídos pelas nove ações: informal, profissional, curtos, longos, gírias, abreviações, números, datas, URLs, emojis, negativas, nomes e valores.
-- [ ] Anotar antes da execução as entidades e fatos invariantes, intenção esperada e critérios de gramática e naturalidade; evitar comparação literal única para geração livre.
+- [x] Criar no mínimo 100 casos texto/ação, distribuídos pelas nove ações: informal, profissional, curtos, longos, gírias, abreviações, números, datas, URLs, emojis, negativas, nomes e valores.
+- [x] Anotar antes da execução as entidades e fatos invariantes, intenção esperada e critérios de gramática e naturalidade; evitar comparação literal única para geração livre.
 - [ ] Executar nos modelos compatíveis com o hardware disponível, mantendo registrados modelo, variante, revisão, parâmetros, runtime, Chrome e equipamento.
 - [ ] Medir preservação, utilidade, rejeições, carregamento frio/quente, primeira resposta, latência total e tokens por segundo.
-- [ ] Informar uso de memória apenas quando mensurável; separar medidas, estimativas do catálogo e informação indisponível.
-- [ ] Revisar saídas além do julgamento do próprio modelo. Registrar falsos positivos e falsos negativos dos validadores.
-- [ ] Incluir todos os casos no denominador, inclusive rejeitados, erros e incompatibilidades; não melhorar métricas excluindo resultados difíceis.
-- [ ] Publicar relatório local reproduzível e registrar defeitos encontrados. Alteração conhecida de entidade protegida, fato ou intenção em saída liberada impede concluir o aceite.
+- [x] Informar uso de memória apenas quando mensurável; separar medidas, estimativas do catálogo e informação indisponível.
+- [x] Revisar saídas além do julgamento do próprio modelo. Registrar falsos positivos e falsos negativos dos validadores.
+- [x] Incluir todos os casos no denominador, inclusive rejeitados, erros e incompatibilidades; não melhorar métricas excluindo resultados difíceis.
+- [x] Publicar relatório local reproduzível e registrar defeitos encontrados. Alteração conhecida de entidade protegida, fato ou intenção em saída liberada impede concluir o aceite.
+
+Evidências e pendências: [relatório da execução](../VALIDACAO-STEP-15.md). Há 108 pares anotados por perfil; 133/324 gerações concluídas. Os dois itens de execução/medição permanecem abertos até completar os Qwen. O commit parcial não conclui a etapa.
 
 ## Limites
 
@@ -36,10 +38,10 @@ Medir qualidade e desempenho com pelo menos 100 casos sintéticos reproduzíveis
 
 ## Critérios de conclusão e verificação
 
-- [ ] Há pelo menos 100 casos identificáveis com cobertura das categorias e ações.
-- [ ] O relatório identifica exatamente o que foi executado e o que ficou pendente.
+- [x] Há pelo menos 100 casos identificáveis com cobertura das categorias e ações.
+- [x] O relatório identifica exatamente o que foi executado e o que ficou pendente.
 - [ ] Não há alteração conhecida de entidades protegidas, fatos ou intenção entre saídas liberadas do conjunto; rejeições são contadas separadamente.
-- [ ] Métricas e revisão podem ser reproduzidas localmente sem serviços externos.
+- [x] Métricas e revisão podem ser reproduzidas localmente sem serviços externos.
 
 Quando uma verificação não puder ser realizada, registrar exatamente o procedimento pendente e usar Aguardando validação ou Bloqueada no progresso, conforme o motivo. Não substituir evidência real por suposição.
 

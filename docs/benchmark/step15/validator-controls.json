@@ -1,0 +1,95 @@
+{
+  "synthetic": true,
+  "generatedByModel": false,
+  "reviewedBeforeExecution": true,
+  "results": [
+    {
+      "id": "C01",
+      "original": "Pode ver isso hoje?",
+      "candidate": "Pode verificar isso hoje?",
+      "expectedPreservation": true,
+      "rationale": "Sinônimo de verificação; mesma pergunta e data relativa.",
+      "approved": true,
+      "error": null,
+      "falsePositive": false,
+      "falseNegative": false
+    },
+    {
+      "id": "C02",
+      "original": "João enviou 2 arquivos para Maria ontem.",
+      "candidate": "Ontem, Maria recebeu 2 arquivos de João.",
+      "expectedPreservation": true,
+      "rationale": "Mesmos remetente, destinatária, quantidade e momento, em construção inversa legítima.",
+      "approved": false,
+      "error": "Error: PRESERVATION_RISK",
+      "falsePositive": true,
+      "falseNegative": false
+    },
+    {
+      "id": "C03",
+      "original": "se aprovado, devolva R$ 10 para Luana.",
+      "candidate": "caso aprovado, devolva R$ 10 para Luana.",
+      "expectedPreservation": true,
+      "rationale": "Se/caso são equivalentes condicionais neste contexto.",
+      "approved": true,
+      "error": null,
+      "falsePositive": false,
+      "falseNegative": false
+    },
+    {
+      "id": "C04",
+      "original": "Envie 2 arquivos para Maria.",
+      "candidate": "Encaminhe 2 arquivos para Maria.",
+      "expectedPreservation": true,
+      "rationale": "Sinônimo de envio; Encaminhe é verbo, não novo nome.",
+      "approved": false,
+      "error": "Error: PRESERVATION_RISK",
+      "falsePositive": true,
+      "falseNegative": false
+    },
+    {
+      "id": "C05",
+      "original": "Pode ver isso? 🙂",
+      "candidate": "Pode me enviar o arquivo 🙂?",
+      "expectedPreservation": false,
+      "rationale": "Mudou verificação para envio e inventou arquivo.",
+      "approved": false,
+      "error": "Error: PRESERVATION_RISK",
+      "falsePositive": false,
+      "falseNegative": false
+    },
+    {
+      "id": "C06",
+      "original": "João enviou 2 arquivos para Maria ontem.",
+      "candidate": "Maria enviou 2 arquivos para João ontem.",
+      "expectedPreservation": false,
+      "rationale": "Inverteu remetente e destinatário.",
+      "approved": false,
+      "error": "Error: PRESERVATION_RISK",
+      "falsePositive": false,
+      "falseNegative": false
+    },
+    {
+      "id": "C07",
+      "original": "Se aprovado, devolva R$ 10 para Luana.",
+      "candidate": "Devolva R$ 10 para Luana.",
+      "expectedPreservation": false,
+      "rationale": "Removeu condição de aprovação.",
+      "approved": false,
+      "error": "Error: PRESERVATION_RISK",
+      "falsePositive": false,
+      "falseNegative": false
+    },
+    {
+      "id": "C08",
+      "original": "Não cancele a reunião antes da confirmação.",
+      "candidate": "Cancele a reunião antes da confirmação.",
+      "expectedPreservation": false,
+      "rationale": "Removeu negação, invertendo pedido.",
+      "approved": false,
+      "error": "Error: PRESERVATION_RISK",
+      "falsePositive": false,
+      "falseNegative": false
+    }
+  ]
+}

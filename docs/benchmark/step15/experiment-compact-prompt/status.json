@@ -1,0 +1,9 @@
+{
+  "acceptedForProduct": false,
+  "completedCampaign": false,
+  "completedResults": 69,
+  "rejected": 60,
+  "accepted": 9,
+  "reason": "Prompts compactos pioraram comportamento do Llama; experimento interrompido e prompts funcionais restaurados. Não é resultado de aceite nem comparação de qualidade; revisão integral não realizada.",
+  "sourceSnapshot": "indisponível; hashes do núcleo experimental preservados em metadata.json, sem afirmar reprodução completa do experimento."
+}

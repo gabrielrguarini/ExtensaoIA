@@ -1,0 +1,11 @@
+{
+  "profile": "qualidade",
+  "browser": "154.0.8037.0",
+  "offline": true,
+  "previewPreservesMeaningAndEmoji": true,
+  "originalPreservedBeforeExplicitReplacement": true,
+  "manualReplacementAndUndo": true,
+  "pageErrors": 0,
+  "syntheticFixture": true,
+  "noMessageSent": true
+}

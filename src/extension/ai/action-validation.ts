@@ -3,6 +3,7 @@ import { restoreAndValidate } from './entities';
 import { acceptCorrection } from './correction-output';
 import { reviewSuggestion } from './semantic-review';
 import type { AIEngine } from './ai-engine';
+import { preserveMeaningAnchors } from './meaning-anchors';
 
 export async function validateActionOutput(
   protectedDraft: ProtectedDraft,
@@ -16,6 +17,7 @@ export async function validateActionOutput(
 ): Promise<string> {
   const restored = restoreAndValidate(protectedDraft, generated, addEmojis);
   const text = acceptCorrection(restored, original);
+  preserveMeaningAnchors(original, text);
   if (semanticReview) {
     onReview();
     await reviewSuggestion(model, original, text, signal);

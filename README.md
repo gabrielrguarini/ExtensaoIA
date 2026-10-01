@@ -1,6 +1,6 @@
 # Extensão de IA local para WhatsApp Web
 
-Base incremental com React, TypeScript strict e pacote Manifest V3. Na **STEP-14**, o menu **IA** oferece nove ações de escrita com os perfis Econômico (Llama 3.2 3B), Equilibrado (Qwen3 4B) e Qualidade (Qwen3 8B) no Worker via WebGPU, além de revisão semântica opcional. A geração mostra trechos provisórios e pode ser cancelada. Todas as ações protegem entidades do rascunho e validam o resultado antes de liberar Copiar ou Substituir. A prova sintética da STEP-06 e a prévia simulada da STEP-05 continuam disponíveis e identificadas. Nenhuma mensagem é enviada pela extensão. O diagnóstico da STEP-03 continua disponível.
+Base incremental com React, TypeScript strict e pacote Manifest V3. O menu **IA** oferece nove ações de escrita com os perfis Econômico (Llama 3.2 3B), Equilibrado (Qwen3 4B) e Qualidade (Qwen3 8B) no Worker via WebGPU, além de revisão semântica opcional. A geração mostra trechos provisórios e pode ser cancelada. Todas as ações protegem entidades do rascunho e validam o resultado antes de liberar Copiar ou Substituir. A prova sintética da STEP-06 e a prévia simulada da STEP-05 continuam disponíveis e identificadas. Nenhuma mensagem é enviada pela extensão. O diagnóstico da STEP-03 continua disponível.
 
 O estado e as evidências ficam em [docs/PROGRESSO.md](docs/PROGRESSO.md). Consulte o [plano](docs/PLANO.md) e execute somente a etapa solicitada. A conclusão depende das verificações automatizadas e da validação correspondente no Chrome.
 
@@ -116,7 +116,7 @@ A criação do offscreen é compartilhada entre chamadas concorrentes. runtime.g
 
 ## Permissões e privacidade
 
-- offscreen hospeda o Worker; Chrome Storage local guarda somente `{version: 2, semanticReview: boolean, profile: ModelProfile}`, com revisão desligada e perfil Econômico por padrão.
+- offscreen hospeda o Worker; Chrome Storage local guarda somente `writingPreferences` v3 com os campos descritos acima, revisão desligada e perfil Econômico por padrão.
 - Content script restrito a https://web.whatsapp.com/*. A permissão desse host permite listar/verificar apenas suas abas no diagnóstico, sem conceder `tabs` global. O Worker usa permissões adicionais somente para dados fixos do modelo em `huggingface.co` e `us.aws.cdn.hf.co`.
 - Não há activeTab, scripting, <all_urls>, externally_connectable, APIs internas do WhatsApp, interceptação de tráfego ou ponte com scripts da página.
 - CSP permite scripts/workers locais e WASM empacotado, sem código remoto. `connect-src` aceita o próprio pacote e os dois hosts de dados acima.
@@ -125,6 +125,8 @@ A criação do offscreen é compartilhada entre chamadas concorrentes. runtime.g
 - Copiar usa a área de transferência do sistema por escolha explícita. Não há leitura dela pelo produto nem nova permissão de extensão. O sistema operacional e outros aplicativos podem acessar o texto copiado conforme suas próprias configurações.
 
 ## Build e verificações
+
+A STEP-15 acrescenta [108 casos sintéticos anotados e execução local reproduzível](docs/benchmark/README.md), métricas reais por modelo e revisão independente das saídas. Consulte o [relatório](docs/VALIDACAO-STEP-15.md) para taxas de recusa, utilidade, limitações e status de aceite. As guardas agora também conferem ordem/função dos slots, relações próximas, vínculo da quantidade ao objeto e âncoras conhecidas de ação, condição e certeza. São conservadoras e podem recusar paráfrases válidas; não certificam equivalência semântica geral. O produto continua sem persistir textos; somente o harness de teste grava a ficção fixa do benchmark.
 
 Vite gera as páginas HTML, o Service Worker ES module e o Worker local. Uma compilação IIFE separada incorpora o content script em arquivo clássico, sem imports ESM. O Manifest é copiado explicitamente; não há diretório public genérico. A saída contém caminhos relativos, JavaScript/CSS locais e avisos de licença em dist/.vite/license.md.
 

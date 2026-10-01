@@ -1,0 +1,52 @@
+{
+  "startedAt": "2026-10-01T12:52:45.626Z",
+  "browser": "154.0.8037.0",
+  "node": "v22.14.0",
+  "platform": "win32 10.0.26200 x64",
+  "cpu": "13th Gen Intel(R) Core(TM) i9-13980HX",
+  "systemMemoryBytes": 16779935744,
+  "driver": "NVIDIA GeForce RTX 4060 Laptop GPU, 8188 MiB, 555.97",
+  "manifestVersion": "0.14.0",
+  "runtime": "0.2.82",
+  "datasetSha256": "d564c86b7d8bb1b6e524c96b6e30951e8318c9e24e822f9bf69297e09457287a",
+  "hashes": {
+    "src/extension/ai/webllm-engine.ts": "c5ed0f1d7233ce664beb48877f973396662cb6789bbe7d4cc4821a6a08867ee5",
+    "src/extension/ai/entities.ts": "9d71d7a2cadbe4c3aa4e78502a29ab9e6a79fd64d04bd7825305e6e281bf64f2",
+    "src/extension/ai/correction-output.ts": "8fdcae9ddead444fca813ffbbf86ce9a1088887c03b0776c4710f469883d5528",
+    "src/extension/ai/action-validation.ts": "61375a875c3a6d07eaafb6c6dcafd8ce5fc1021e4d26ba20948c8f30da8c1140",
+    "src/extension/ai/meaning-anchors.ts": "e55cdd577ed62477d8c9a4b94cbbbba60ffe8bbb4867fb6d101e32412e4fc75e",
+    "src/extension/ai/correction-prompt.ts": "6420f25fc1d73bcece34344d584d3a796e6bd78e014fba86614a44cedba00065",
+    "src/extension/ai/token-budget.ts": "5fe76ecfd025fc14e0f0dadf47d9477f685f169083162cb622259ebcac55c335",
+    "src/shared/actions.ts": "4c50b496a8daf614f272e025f99197b40b83cfa766978ad309ef675b16b7b444",
+    "package-lock.json": "0c6b23a4a14b4fadf40f6d8f892fcf97debdb471a19fd582ec77da03f0b4bb29",
+    "dist/assets/Llama-3.2-3B-Instruct-q4f16_1-ctx4k_cs1k-webgpu-BSFeQ0Om.wasm": "34de0d60ab598c6a85ae882b48474f250193076f902057a21070bb2daae96d5b",
+    "dist/assets/Llama-3.2-3B-Instruct-q4f32_1-ctx4k_cs1k-webgpu-Yt_tV3R_.wasm": "224e4cd5c235621684257aad3ebfdaf6e337d50f783614d1e7ed63e78d693ad6",
+    "dist/assets/Qwen3-4B-q4f16_1-ctx4k_cs1k-webgpu-Dk71aVcq.wasm": "5ddf44e49b03e53e24fd29a45591850924346140452f60c29280190388571340",
+    "dist/assets/Qwen3-4B-q4f32_1-ctx4k_cs1k-webgpu-B0BtHydf.wasm": "6484148ff499c15433ab85e4d2c376aef453a6d797f48047e6bd6fd495a59e39",
+    "dist/assets/Qwen3-8B-q4f16_1-ctx4k_cs1k-webgpu-ByHwTMA1.wasm": "fd0b332c81212e484ba56c15aac5af2548f14f849d3352039ad68d3c4663b6dd",
+    "dist/assets/Qwen3-8B-q4f32_1-ctx4k_cs1k-webgpu-cWSQSvQJ.wasm": "4705cca63950fca8a8bb50279ccc44a1233b41a75318ec87fd9395f46e77358f"
+  },
+  "profiles": [
+    "economico",
+    "equilibrado",
+    "qualidade"
+  ],
+  "casesPerProfile": 108,
+  "parameters": {
+    "temperature": 0,
+    "contextTokens": 4096,
+    "maxTokens": "orçamento real por caso em metrics.maxTokens",
+    "semanticReview": false,
+    "preserveSlang": true,
+    "addEmojis": false,
+    "qwenThinking": false
+  },
+  "gpu": {
+    "vendor": "nvidia",
+    "architecture": "lovelace",
+    "description": "",
+    "shaderF16": true,
+    "maxBufferSize": 2147483648,
+    "maxStorageBufferBindingSize": 2147483644
+  }
+}

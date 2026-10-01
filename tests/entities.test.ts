@@ -7,6 +7,36 @@ function kindsAndValues(text: string): string[] {
 }
 
 describe('proteção determinística de entidades', () => {
+  it('bloqueia troca de papéis, quantidade virando sujeito e prazo/emoji virando objeto', () => {
+    const statement = protectDraft('João enviou 2 arquivos para Maria ontem.');
+    for (const generated of [
+      'ENTITY_002 confirmou os arquivos enviados por ENTITY_001 para ENTITY_003 ENTITY_004.',
+      'ENTITY_001 confirmou os arquivos enviados por ENTITY_002 para ENTITY_003 ENTITY_004.',
+      'ENTITY_001 enviou ENTITY_002 relatórios para ENTITY_003 ENTITY_004.',
+    ])
+      expect(() => restoreAndValidate(statement, generated)).toThrow('PRESERVATION_RISK');
+    const question = protectDraft('mano consegue ver isso pra mim hoje? 🙂');
+    expect(() =>
+      restoreAndValidate(question, 'Pode verificar a existência de ENTITY_001 e ENTITY_002?'),
+    ).toThrow('PRESERVATION_RISK');
+    expect(
+      restoreAndValidate(question, 'Mano, consegue ver isso pra mim ENTITY_001? ENTITY_002'),
+    ).toBe('Mano, consegue ver isso pra mim hoje? 🙂');
+  });
+  it('permite acentuação e capitalização de aberturas sem inventar nomes', () => {
+    for (const text of [
+      'sinto muito, Carla.',
+      'confere isso, João.',
+      'talvez seja possível.',
+      'se puder, avise.',
+    ]) {
+      const draft = protectDraft(text);
+      const generated = draft.text[0]!.toLocaleUpperCase('pt-BR') + draft.text.slice(1);
+      expect(restoreAndValidate(draft, generated)).toBe(
+        text[0]!.toLocaleUpperCase('pt-BR') + text.slice(1),
+      );
+    }
+  });
   it('não classifica uma abertura comum de pedido como nome próprio', () => {
     const values = kindsAndValues('Gostaria de pedir que você revisasse o texto hoje.');
     expect(values).not.toContain('name:Gostaria');
