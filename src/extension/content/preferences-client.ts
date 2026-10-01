@@ -1,4 +1,4 @@
-import { PREFERENCES_KEY, parsePreferences } from '../../shared/preferences';
+import { DEFAULT_PREFERENCES, PREFERENCES_KEY, parsePreferences } from '../../shared/preferences';
 import type {
   PreferenceCommand,
   PreferencePatch,
@@ -21,7 +21,7 @@ function request(command: PreferenceCommand): Promise<WritingPreferences> {
         reject(new Error('Preferências indisponíveis.'));
         return;
       }
-      if (!record(response) || response.version !== 3) {
+      if (!record(response) || response.version !== DEFAULT_PREFERENCES.version) {
         reject(new Error('Preferências indisponíveis.'));
         return;
       }

@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-01",
+  "browser": "154.0.8037.0",
+  "os": "Windows",
+  "node": "v22.14.0",
+  "gpu": "NVIDIA RTX 4060 Laptop, 8188 MiB, driver 555.97",
+  "nativeDiagnostics": {
+    "performanceClass": "GpuBlocked",
+    "manifestLoaded": false,
+    "manifestPath": "N/A",
+    "assets": [],
+    "models": [],
+    "source": "chrome://on-device-internals, perfil isolado de teste",
+    "note": "GpuBlocked foi observado no Chrome for Testing. O código Chromium atribui essa classe por padrão em CfT; não comprova bloqueio da GPU real. O Chrome instalado informou classe 6 e foi elegível."
+  },
+  "freeDiskBytes": 42097606656,
+  "sourceReferences": {
+    "writingAssistanceCommit": "dd37ddd2b85972def88bc5bd0779c0968ec549bf",
+    "writingAssistanceSha256": "8ad256f9e69b75fe781628eea7b1858895fe02e191c614a574909b70038fdbce",
+    "types": "@types/dom-chromium-ai@0.0.17",
+    "localstudioCommit": "6512a521947077977d1d14df58f656e13675c227",
+    "localstudioFilesSha256": {
+      "chromePromptService.ts": "486c45f5c2d34205c7e6122c74ed667114fc6e7dbd269ed8fb8679c18c8564b2",
+      "browserPromptService.ts": "f4614a781c02c3abc1d4b1c3529ad9d5333b399d26ba64fcb8fcf59c0603d58c",
+      "slideTaskPrompt.ts": "db5d02610458737d4c2983ae589099a95ebc57569f8b71a7fc9a90ddb1f66b60",
+      "slideElementPrompt.ts": "d45406df20371979268f2c9fa35223318e346c65c0c42223d78faa94412e71c7"
+    },
+    "chromiumPerformanceClass": "https://chromium.googlesource.com/chromium/src/+/HEAD/components/optimization_guide/core/model_execution/performance_class.cc"
+  },
+  "notes": [
+    "12/12 fixtures sintéticas retornaram texto pt-BR por Prompt sem declarações de idioma no Chrome instalado, offline, com clone/destroy por pedido.",
+    "Suporte empírico experimental; opções pt/pt-BR declaradas continuam unavailable.",
+    "Resultados CfT preservados; consultas genéricas CfT interrompidas por prazo são inconclusivas.",
+    "Somente fixtures sintéticas; sem autenticação/envio."
+  ],
+  "chromeInstalled": {
+    "browser": "154.0.8037.92",
+    "profile": ".cache/step15b-chrome",
+    "performanceClass": 6,
+    "vramMiB": 7957,
+    "modelWeightsBytes": 4269932544,
+    "modelPreparationMs": 192949.69999992847
+  }
+}

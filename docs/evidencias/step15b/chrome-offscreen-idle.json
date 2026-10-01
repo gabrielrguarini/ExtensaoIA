@@ -1,0 +1,189 @@
+{
+  "browser": "154.0.8037.92",
+  "version": "0.15.1",
+  "experimental": false,
+  "regular": true,
+  "portuguesePrompt": true,
+  "checks": {
+    "migration": true,
+    "visibleSidePanel": true,
+    "nativePreparation": true,
+    "offscreenStatus": true,
+    "downloadBlockedWhenUnavailable": true,
+    "offline": true,
+    "engineSelectedBeforeGeneration": true,
+    "originalPreserved": true,
+    "reviewWarnings": true,
+    "manualReplacementUndo": true,
+    "staleBlocked": true,
+    "nativeIdle": true,
+    "nativeUnloadCommand": true,
+    "preferencesOnly": true
+  },
+  "nativeGeneration": "passed",
+  "startedAt": "2026-10-01T20:08:31.601Z",
+  "status": {
+    "ok": true,
+    "language": "pt-BR",
+    "chromePortuguesePrompt": true,
+    "actions": [
+      {
+        "action": "corrigir",
+        "availability": "available"
+      },
+      {
+        "action": "melhorar",
+        "availability": "available"
+      },
+      {
+        "action": "formal",
+        "availability": "available"
+      },
+      {
+        "action": "profissional",
+        "availability": "available"
+      },
+      {
+        "action": "amigavel",
+        "availability": "available"
+      },
+      {
+        "action": "natural",
+        "availability": "available"
+      },
+      {
+        "action": "conciso",
+        "availability": "available"
+      },
+      {
+        "action": "engracado",
+        "availability": "available"
+      },
+      {
+        "action": "reescrever",
+        "availability": "available"
+      },
+      {
+        "action": "semantic-review",
+        "availability": "available"
+      }
+    ],
+    "sessionReady": false
+  },
+  "declaredStatus": {
+    "ok": true,
+    "language": "pt-BR",
+    "chromePortuguesePrompt": false,
+    "actions": [
+      {
+        "action": "corrigir",
+        "availability": "unavailable"
+      },
+      {
+        "action": "melhorar",
+        "availability": "unavailable"
+      },
+      {
+        "action": "formal",
+        "availability": "unavailable"
+      },
+      {
+        "action": "profissional",
+        "availability": "unavailable"
+      },
+      {
+        "action": "amigavel",
+        "availability": "unavailable"
+      },
+      {
+        "action": "natural",
+        "availability": "unavailable"
+      },
+      {
+        "action": "conciso",
+        "availability": "unavailable"
+      },
+      {
+        "action": "engracado",
+        "availability": "unavailable"
+      },
+      {
+        "action": "reescrever",
+        "availability": "unavailable"
+      },
+      {
+        "action": "semantic-review",
+        "availability": "unavailable"
+      }
+    ],
+    "sessionReady": false
+  },
+  "apisPresent": {
+    "prompt": true,
+    "rewriter": false,
+    "proofreader": false
+  },
+  "englishControl": {
+    "LanguageModel": "available",
+    "Rewriter": "absent",
+    "Proofreader": "absent"
+  },
+  "portugueseControl": {
+    "panel": {
+      "withoutDeclarations": "available",
+      "pt": "unavailable"
+    },
+    "offscreen": {
+      "withoutDeclarations": "available",
+      "pt": "unavailable"
+    },
+    "generation": "not-executed-no-prepared-native-model"
+  },
+  "panel": [
+    {
+      "text": "Corrigir · promptPainel: Disponível. Inferência: Disponível.Preparar Corrigir",
+      "disabled": false
+    },
+    {
+      "text": "Melhorar · promptPainel: Disponível. Inferência: Disponível.Preparar Melhorar",
+      "disabled": false
+    },
+    {
+      "text": "Formal · promptPainel: Disponível. Inferência: Disponível.Preparar Formal",
+      "disabled": false
+    },
+    {
+      "text": "Profissional · promptPainel: Disponível. Inferência: Disponível.Preparar Profissional",
+      "disabled": false
+    },
+    {
+      "text": "Amigável · promptPainel: Disponível. Inferência: Disponível.Preparar Amigável",
+      "disabled": false
+    },
+    {
+      "text": "Natural · promptPainel: Disponível. Inferência: Disponível.Preparar Natural",
+      "disabled": false
+    },
+    {
+      "text": "Conciso · promptPainel: Disponível. Inferência: Disponível.Preparar Conciso",
+      "disabled": false
+    },
+    {
+      "text": "Engraçado · promptPainel: Disponível. Inferência: Disponível.Preparar Engraçado",
+      "disabled": false
+    },
+    {
+      "text": "Reescrever · promptPainel: Disponível. Inferência: Disponível.Preparar Reescrever",
+      "disabled": false
+    },
+    {
+      "text": "Analisar sentido · promptPainel: Disponível. Inferência: Disponível.Preparar Analisar sentido",
+      "disabled": false
+    }
+  ],
+  "generationMs": 1400,
+  "engine": "chrome",
+  "nativeIdleMs": 300326,
+  "pageErrors": 0,
+  "completedAt": "2026-10-01T20:13:45.863Z"
+}

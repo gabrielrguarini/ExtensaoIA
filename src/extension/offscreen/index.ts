@@ -5,8 +5,12 @@ import { RequestRouter } from '../background/router';
 import type { Client } from '../background/router';
 import { WorkerHost } from './worker-host';
 import { MODEL_CHOICES } from '../ai/model-catalog';
-import { removeModelArtifacts, inspectModelArtifacts } from '../ai/model-cache';
+import { removeModelArtifacts, modelArtifactsPresent } from '../ai/model-cache';
 import { isModelCommand } from '../../shared/model-management';
+import { ChromeHost } from './chrome-host';
+import { selectEngine } from './engine-selection';
+import { isChromeCommand } from '../../shared/chrome-management';
+import { WRITING_ACTIONS } from '../../shared/actions';
 
 let removing = false;
 
@@ -20,8 +24,9 @@ const host = new WorkerHost(
   (event) => router.receiveEngine(event),
   () => router.engineLost(),
 );
+const native = new ChromeHost((event) => router.receiveEngine(event));
 const router = new RequestRouter(
-  () => host.ensure(),
+  async (request, signal) => selectEngine(request, signal, await preferences(), native, host),
   15_000,
   async () => (await preferences()).semanticReview,
   async () => (await preferences()).profile,
@@ -62,6 +67,41 @@ chrome.runtime.onConnect.addListener((port) => {
 });
 
 chrome.runtime.onMessage.addListener((value: unknown, sender, sendResponse) => {
+  if (isChromeCommand(value) && isSettingsPage(sender, chrome.runtime.id)) {
+    if (value.type === 'unload') {
+      router.resetForProfileChange();
+      native.reset();
+      sendResponse({ ok: true });
+      return false;
+    }
+    void preferences()
+      .then(async (saved) => {
+        const actions = await Promise.all(
+          [...WRITING_ACTIONS.map(({ id }) => id), 'semantic-review' as const].map(
+            async (action) => ({
+              action,
+              availability:
+                (
+                  await native.model.availability({
+                    action,
+                    language: 'pt-BR',
+                    chromePortuguesePrompt: saved.chromePortuguesePrompt,
+                  })
+                ).nativeAvailability ?? null,
+            }),
+          ),
+        );
+        return {
+          ok: true,
+          language: 'pt-BR',
+          chromePortuguesePrompt: saved.chromePortuguesePrompt,
+          actions,
+          sessionReady: native.model.isReady(),
+        };
+      })
+      .then(sendResponse, () => sendResponse({ ok: false }));
+    return true;
+  }
   if (
     isModelCommand(value) &&
     (contentOrigin(sender, chrome.runtime.id, crypto.randomUUID()) ||
@@ -72,7 +112,7 @@ chrome.runtime.onMessage.addListener((value: unknown, sender, sendResponse) => {
       return false;
     }
     if (value.type === 'status') {
-      void inspectModelArtifacts(MODEL_CHOICES[value.profile][value.variant]).then(
+      void modelArtifactsPresent(MODEL_CHOICES[value.profile][value.variant]).then(
         (cached) =>
           sendResponse({
             ok: true,
@@ -87,12 +127,14 @@ chrome.runtime.onMessage.addListener((value: unknown, sender, sendResponse) => {
     if (value.type === 'unload') {
       router.resetForProfileChange();
       host.reset();
+      native.reset();
       sendResponse({ ok: true });
       return false;
     }
     removing = true;
     router.setMaintenance(true);
     host.reset();
+    native.reset();
     const profile = value.profile;
     const variant = value.variant;
     void (async () => {
@@ -120,6 +162,7 @@ chrome.runtime.onMessage.addListener((value: unknown, sender, sendResponse) => {
   else if (value.type === 'reset') {
     router.resetForProfileChange();
     host.reset();
+    native.reset();
     sendResponse({ reset: true });
   }
   return false;

@@ -1,0 +1,99 @@
+{
+  "browser": "154.0.8037.92",
+  "configuration": "prompt-language-only-no-expected-languages",
+  "startedAt": "2026-10-01T19:51:34.901Z",
+  "cases": [
+    {
+      "action": "corrigir",
+      "original": "voce pode me mandar o arquivo amanha?",
+      "text": "Você pode me mandar o arquivo amanhã?\n\n\n\n",
+      "firstChunkMs": 868.1000000238419,
+      "totalMs": 1544.8999999761581
+    },
+    {
+      "action": "formal",
+      "original": "mano vc pode ver isso? 🙂",
+      "text": "Prezado(a), você poderia verificar isto, por favor? 🙂\n\n\n\n",
+      "firstChunkMs": 271.2000000476837,
+      "totalMs": 1153.2000000476837
+    },
+    {
+      "action": "natural",
+      "original": "tô chegando aí, blz?",
+      "text": "Chegando aí, tudo certo? 😉",
+      "firstChunkMs": 313.3000000715256,
+      "totalMs": 785.5
+    },
+    {
+      "action": "profissional",
+      "original": "Pode confirmar o prazo de 12/10?",
+      "text": "Gostaria de confirmar o prazo de 12/10, por gentileza?",
+      "firstChunkMs": 382,
+      "totalMs": 1357.7000000476837
+    },
+    {
+      "action": "conciso",
+      "original": "Eu queria pedir, por favor, que você envie o arquivo hoje.",
+      "text": "Por favor, envie o arquivo hoje.",
+      "firstChunkMs": 411.6999999284744,
+      "totalMs": 796.1000000238419
+    },
+    {
+      "action": "amigavel",
+      "original": "Me avise quando terminar.",
+      "text": "Só me avise quando estiver pronto(a)! 😊",
+      "firstChunkMs": 308.3000000715256,
+      "totalMs": 993.6000000238419
+    },
+    {
+      "action": "melhorar",
+      "original": "A Ana envia 2 arquivos para o Bruno amanhã.",
+      "text": "Ana enviará 2 arquivos para Bruno amanhã.",
+      "firstChunkMs": 428.3000000715256,
+      "totalMs": 1124.6000000238419
+    },
+    {
+      "action": "reescrever",
+      "original": "Não cancele a reunião de 12/10.",
+      "text": "Não cancele a reunião do dia 12 de outubro.",
+      "firstChunkMs": 359.8000000715256,
+      "totalMs": 1118.3999999761581
+    },
+    {
+      "action": "engracado",
+      "original": "Meu café acabou antes da reunião. ☕",
+      "text": "Meu café acabou antes da reunião. ☕ Que azar! Parece até que o café tinha pressa para chegar no trabalho. 😂",
+      "firstChunkMs": 375.89999997615814,
+      "totalMs": 1804.7000000476837
+    },
+    {
+      "action": "corrigir",
+      "original": "O valor é R$ 125,50 e vence em 12/10.",
+      "text": "O valor é de R$ 125,50 e vence em 12/10.",
+      "firstChunkMs": 418.39999997615814,
+      "totalMs": 1538.1999999284744
+    },
+    {
+      "action": "natural",
+      "original": "Se chover, a gente adia, combinado?",
+      "text": "Se chover, a gente adia, beleza? 😉",
+      "firstChunkMs": 357.60000002384186,
+      "totalMs": 1006.1000000238419
+    },
+    {
+      "action": "conciso",
+      "original": "Você consegue conferir https://example.com até amanhã?",
+      "text": "Você pode conferir https://example.com até amanhã?",
+      "firstChunkMs": 460.39999997615814,
+      "totalMs": 1207.7000000476837
+    }
+  ],
+  "availability": "downloadable",
+  "preparation": {
+    "preparation": "ready",
+    "preparationMs": 192949.69999992847,
+    "progress": 1
+  },
+  "offline": true,
+  "completedAt": "2026-10-01T19:55:04.951Z"
+}

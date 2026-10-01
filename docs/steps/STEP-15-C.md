@@ -17,6 +17,7 @@ STEP-15-B concluída. Adicionar modelo local selecionável sem descartar infraes
 - Manter pipeline carregado em Worker, cache controlado, download explícito, integridade no carregamento, progresso, orçamento por modelo, streaming/cancelamento e descarregamento.
 - Não inferir VRAM livre pela RAM nem presumir menor memória pelo nome E2B. Detecção e inicialização real em WebGPU; nenhuma alternativa própria de CPU/remota.
 - Separar gerenciamento de modelos próprios e artefatos do Chrome. Evitar recalcular hashes dos pesos em consultas de estado da UI.
+- Aplicar o [guia Chrome de cache](https://developer.chrome.com/docs/ai/cache-models?hl=pt-br) conforme [referências do projeto](../REFERENCIAS-IA-CHROME.md): cache canônico por revisão, preferir Cache API para pesos quando compatível com o runtime, metadados pequenos separados, persistência sem garantia e medição de restauração no hardware alvo. Não duplicar pesos entre mecanismos como na demonstração.
 
 ## Aceite e validação
 

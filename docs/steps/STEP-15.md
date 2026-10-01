@@ -23,6 +23,8 @@ O [relatório original](../VALIDACAO-STEP-15.md) e as evidências canônicas per
 
 O antigo critério de impedir liberação por qualquer risco foi substituído pelo plano aprovado: respostas legíveis ficam disponíveis com avisos; falhas técnicas, cancelamento e perda de vínculo continuam impedindo aplicação. Isso não converte saídas antigas em aprovações nem altera avaliações históricas.
 
+A [STEP-15-B](STEP-15-B.md) confirmou português por instrução de prompt no Chrome instalado, apesar de `pt`/`pt-BR` declarados indisponíveis, e incorporou uma opção experimental manual. A [análise do localstudio e guia de cache](../REFERENCIAS-IA-CHROME.md) serve de referência para C/D/16. O smoke comprova execução, sem antecipar recomendações de velocidade ou precisão da D.
+
 ## Aceite da etapa principal
 
 - [ ] A–D concluídas com entrega funcional, validação real e commits próprios.

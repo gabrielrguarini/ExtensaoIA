@@ -69,7 +69,12 @@ chrome.runtime.onMessage.addListener((value: unknown, sender, sendResponse) => {
                   ? { profile: value.profile }
                   : value.patch;
             const saved = await updatePreferences(patch);
-            if (saved.profile !== previous.profile) await host.reset();
+            if (
+              saved.profile !== previous.profile ||
+              saved.engine !== previous.engine ||
+              saved.chromePortuguesePrompt !== previous.chromePortuguesePrompt
+            )
+              await host.reset();
             return saved;
           })();
     void operation.then(sendResponse, () => sendResponse({ error: 'PREFERENCES_UNAVAILABLE' }));

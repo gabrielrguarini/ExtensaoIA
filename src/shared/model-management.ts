@@ -12,6 +12,7 @@ export type ModelCommand =
   | { target: 'model-cache'; type: 'unload' };
 export interface ModelStatus {
   ok: true;
+  /** Inventário de arquivos; integridade dos pesos é conferida no carregamento. */
   cached: boolean;
   runtime: RuntimeState;
   loadedProfile: ModelProfile | null;

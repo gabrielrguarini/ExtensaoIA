@@ -63,6 +63,8 @@ export type ErrorCode =
   | 'MODEL_DOWNLOAD'
   | 'DOWNLOAD_REQUIRED'
   | 'CONTEXT_LIMIT'
+  | 'NATIVE_QUOTA'
+  | 'NATIVE_NOT_SUPPORTED'
   | 'EMPTY_OUTPUT'
   | 'TRUNCATED_OUTPUT'
   | 'INVALID_OUTPUT'
@@ -235,6 +237,8 @@ function isErrorCode(value: unknown): value is ErrorCode {
       'PRESERVATION_RISK',
       'SEMANTIC_RISK',
       'SEMANTIC_INVALID',
+      'NATIVE_QUOTA',
+      'NATIVE_NOT_SUPPORTED',
     ].includes(value)
   );
 }

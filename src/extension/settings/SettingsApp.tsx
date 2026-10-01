@@ -7,6 +7,7 @@ import { MODEL_CHOICES, PROFILE_LABELS } from '../ai/model-catalog';
 import { probeHardware } from '../content/model-hardware';
 import { manageModel } from './model-client';
 import type { ModelStatus } from '../../shared/model-management';
+import { ChromePreparation } from './ChromePreparation';
 
 export function SettingsApp() {
   const [preferences, setPreferences] = useState(DEFAULT_PREFERENCES);
@@ -166,6 +167,10 @@ export function SettingsApp() {
           mensagem é enviada automaticamente.
         </p>
       </section>
+      <ChromePreparation
+        visiblePanel={!popup}
+        portuguesePrompt={preferences.chromePortuguesePrompt}
+      />
       <section aria-labelledby="model-title">
         <h2 id="model-title">Modelo · {PROFILE_LABELS[preferences.profile]}</h2>
         <label>
@@ -212,7 +217,7 @@ export function SettingsApp() {
             ? 'verificando…'
             : status
               ? status.cached
-                ? 'completo e verificado'
+                ? 'arquivos presentes; integridade conferida ao carregar'
                 : 'ausente, incompleto ou inconsistente'
               : 'a verificar'}
           . Memória:{' '}

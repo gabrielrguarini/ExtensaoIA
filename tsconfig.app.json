@@ -3,7 +3,7 @@
   "compilerOptions": {
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
-    "types": ["vite/client", "chrome", "@webgpu/types"]
+    "types": ["vite/client", "chrome", "@webgpu/types", "dom-chromium-ai"]
   },
   "include": ["src"]
 }

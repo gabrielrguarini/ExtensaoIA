@@ -1,0 +1,56 @@
+{
+  "browser": "154.0.8037.92",
+  "id": "aidedmjgoicccaoellhgnjgbkoaflhfe",
+  "queries": {
+    "generic": "downloadable",
+    "pt": "unavailable",
+    "en": "downloadable"
+  },
+  "status": {
+    "ok": true,
+    "language": "pt-BR",
+    "actions": [
+      {
+        "action": "corrigir",
+        "availability": "unavailable"
+      },
+      {
+        "action": "melhorar",
+        "availability": "unavailable"
+      },
+      {
+        "action": "formal",
+        "availability": "unavailable"
+      },
+      {
+        "action": "profissional",
+        "availability": "unavailable"
+      },
+      {
+        "action": "amigavel",
+        "availability": "unavailable"
+      },
+      {
+        "action": "natural",
+        "availability": "unavailable"
+      },
+      {
+        "action": "conciso",
+        "availability": "unavailable"
+      },
+      {
+        "action": "engracado",
+        "availability": "unavailable"
+      },
+      {
+        "action": "reescrever",
+        "availability": "unavailable"
+      },
+      {
+        "action": "semantic-review",
+        "availability": "unavailable"
+      }
+    ],
+    "sessionReady": false
+  }
+}

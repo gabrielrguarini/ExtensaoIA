@@ -210,7 +210,7 @@ export function PreviewPanel({
             : state.progress.phase === 'downloading'
               ? `Baixando modelo... ${state.progress.percent}% da etapa atual`
               : state.progress.phase === 'loading'
-                ? `Carregando GPU... ${state.progress.percent}% da etapa atual`
+                ? `Carregando IA local... ${state.progress.percent}% da etapa atual`
                 : state.progress.phase === 'ready'
                   ? 'IA pronta.'
                   : state.progress.phase === 'validating'
@@ -254,7 +254,11 @@ export function PreviewPanel({
               <p>
                 {state.assessment?.status === 'unchanged' ? 'Sem alterações.' : 'Sugestão gerada.'}
               </p>
-              <p>{state.engine ? state.engine.model + ' · ' + state.engine.id : ''}</p>
+              <p>
+                {state.engine
+                  ? (state.engine.model ?? state.engine.runtime) + ' · ' + state.engine.id
+                  : ''}
+              </p>
               {state.assessment?.risks.length ? (
                 <ul>
                   {state.assessment.risks.map((risk, index) => (

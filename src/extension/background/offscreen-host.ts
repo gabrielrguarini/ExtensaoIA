@@ -26,7 +26,7 @@ export class OffscreenHost {
       await chrome.offscreen.createDocument({
         url: 'offscreen.html',
         reasons: [chrome.offscreen.Reason.WORKERS],
-        justification: 'Hospedar o Worker local de inferência WebGPU e a prévia simulada.',
+        justification: 'Hospedar a inferência nativa local e os Workers de inferência WebGPU.',
       });
     }
     // Confirma que o listener do documento está registrado antes de conectar a aba.

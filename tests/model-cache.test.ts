@@ -3,6 +3,7 @@ import {
   cacheModelArtifacts,
   inspectModelArtifacts,
   removeModelArtifacts,
+  modelArtifactsPresent,
 } from '../src/extension/ai/model-cache';
 import { MODEL_CHOICES } from '../src/extension/ai/model-catalog';
 
@@ -58,6 +59,15 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe('cache por revisão e variante', () => {
+  it('estado da interface lê somente índice e URLs; integridade continua obrigatória ao carregar', async () => {
+    seed();
+    store('webllm/model').set(choice.url + 'params_shard_0.bin', new Response('corrompido'));
+    const hash = vi.spyOn(crypto.subtle, 'digest');
+    expect(await modelArtifactsPresent(choice)).toBe(true);
+    expect(hash).not.toHaveBeenCalled();
+    expect(await inspectModelArtifacts(choice)).toBe(false);
+    hash.mockRestore();
+  });
   it('MD5 publicado recusa corrupção anterior à criação de qualquer recibo local', async () => {
     seed();
     store('webllm/model').set(

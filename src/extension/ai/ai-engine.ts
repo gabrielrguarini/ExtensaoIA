@@ -5,6 +5,7 @@ export interface InitializeOptions {
   onProgress?: (phase: ModelPhase, percent: number) => void;
   profile?: ModelProfile;
   allowDownload?: boolean;
+  query?: AvailabilityQuery;
 }
 
 export interface GenerateOptions {
@@ -15,6 +16,15 @@ export interface GenerateOptions {
   inputFormat?: 'original' | 'legacy-protected';
   /** Contadores numéricos opcionais; sem conteúdo, armazenamento ou telemetria. */
   onMetrics?: (metrics: GenerationMetrics) => void;
+  onNativeMetrics?: (metrics: NativeGenerationMetrics) => void;
+}
+
+export interface NativeGenerationMetrics {
+  firstChunkMs: number;
+  totalMs: number;
+  inputUsage?: number;
+  inputLimit?: number;
+  usageUnit: 'browser-quota';
 }
 
 export interface GenerationMetrics {

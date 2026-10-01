@@ -25,6 +25,44 @@ export function PreferenceFields({
       <legend>Preferências de escrita</legend>
       <p>Idioma: Português brasileiro (pt-BR).</p>
       <label>
+        Motor de IA
+        <select
+          aria-label="Motor de IA"
+          value={value.engine}
+          onChange={(e) => {
+            if (e.nativeEvent.isTrusted) {
+              focus.current = e.currentTarget;
+              onChange({ engine: e.currentTarget.value as WritingPreferences['engine'] });
+            }
+          }}
+        >
+          <option value="chrome-preferred">Chrome preferencial</option>
+          <option value="webllm">Modelo local selecionado (WebLLM)</option>
+        </select>
+      </label>
+      <p>
+        Chrome é escolhido somente quando a ação e pt-BR estiverem disponíveis e preparados. Caso
+        contrário, usamos o modelo local selecionado. Prepare a IA do Chrome no painel lateral.
+      </p>
+      <label>
+        <input
+          type="checkbox"
+          checked={value.chromePortuguesePrompt}
+          onChange={(event) => {
+            if (event.nativeEvent.isTrusted) {
+              focus.current = event.currentTarget;
+              onChange({ chromePortuguesePrompt: event.currentTarget.checked });
+            }
+          }}
+        />
+        Português por prompt no Chrome (experimental)
+      </label>
+      <p>
+        Essa opção pede português do Brasil à IA mesmo quando o navegador não aceita declarar o
+        idioma. Usa Prompt nas ações de escrita; confira o idioma e o sentido da sugestão. A
+        disponibilidade e a qualidade variam conforme o Chrome. Prepare pelo painel lateral.
+      </p>
+      <label>
         Tema
         <select
           aria-label="Tema"

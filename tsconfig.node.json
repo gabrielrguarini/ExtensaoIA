@@ -4,7 +4,7 @@
     "allowImportingTsExtensions": true,
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
-    "types": ["node", "chrome", "vite/client", "@webgpu/types"]
+    "types": ["node", "chrome", "vite/client", "@webgpu/types", "dom-chromium-ai"]
   },
   "include": ["vite.config.ts", "vitest.config.ts", "build", "tests"]
 }

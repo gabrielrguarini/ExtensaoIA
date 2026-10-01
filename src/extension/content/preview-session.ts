@@ -63,6 +63,8 @@ export class PreviewSession {
   private preferenceRevision = 0;
   private unsubscribePreferences: (() => void) | undefined;
   private profile: ModelProfile = 'economico';
+  private engine: WritingPreferences['engine'] = DEFAULT_PREFERENCES.engine;
+  private chromePortuguesePrompt = DEFAULT_PREFERENCES.chromePortuguesePrompt;
   private showSemanticReview = false;
   private hardware: HardwareStatus = { state: 'checking' };
   private readonly listeners = new Set<() => void>();
@@ -127,6 +129,8 @@ export class PreviewSession {
           this.preferenceRevision === preferenceRevision
         ) {
           this.profile = value.profile;
+          this.engine = value.engine;
+          this.chromePortuguesePrompt = value.chromePortuguesePrompt;
           this.showSemanticReview = value.semanticReview;
           this.set({
             ...this.state,
@@ -145,8 +149,13 @@ export class PreviewSession {
   }
   private preferencesChanged(value: WritingPreferences): void {
     this.preferenceRevision++;
-    const changedProfile = this.profile !== value.profile;
+    const changedProfile =
+      this.profile !== value.profile ||
+      this.engine !== value.engine ||
+      this.chromePortuguesePrompt !== value.chromePortuguesePrompt;
     this.profile = value.profile;
+    this.engine = value.engine;
+    this.chromePortuguesePrompt = value.chromePortuguesePrompt;
     if (this.state.kind === 'menu') {
       this.set({
         ...this.state,
@@ -163,7 +172,8 @@ export class PreviewSession {
       this.close();
       this.set({
         kind: 'notice',
-        message: 'O perfil de IA mudou. O pedido foi cancelado. Abra o menu para continuar.',
+        message:
+          'O motor ou perfil de IA mudou. O pedido foi cancelado. Abra o menu para continuar.',
       });
     }
   }
@@ -271,13 +281,18 @@ export class PreviewSession {
     this.set({ ...this.state, preferenceStatus: 'saving' });
     void this.preferences.update(patch).then(
       (saved) => {
-        if (sequence === this.sequence && this.state.kind === 'menu')
+        if (sequence === this.sequence && this.state.kind === 'menu') {
+          if (preferenceRevision === this.preferenceRevision) {
+            this.engine = saved.engine;
+            this.chromePortuguesePrompt = saved.chromePortuguesePrompt;
+          }
           this.set({
             ...this.state,
             preferences:
               preferenceRevision === this.preferenceRevision ? saved : this.state.preferences,
             preferenceStatus: 'ready',
           });
+        }
       },
       () => {
         if (sequence === this.sequence && this.state.kind === 'menu')

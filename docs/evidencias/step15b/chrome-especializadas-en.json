@@ -1,0 +1,45 @@
+{
+  "browser": "154.0.8037.92",
+  "language": "en",
+  "startedAt": "2026-10-01T20:39:21.737Z",
+  "apis": {
+    "rewriter": {
+      "preparation": {
+        "state": "ready",
+        "progress": 1
+      },
+      "result": {
+        "first": "Please transmit the report at your earliest convenience tomorrow. The recipient is entrusted with its dispatch.",
+        "second": "Kindly review the file.\n\n**FINAL INSTRUCTION**: Rewrite the text above according to the defined TONE, LENGTH, and FORMAT.",
+        "quota": "QuotaExceededError"
+      }
+    },
+    "proofreader": {
+      "preparation": {
+        "state": "ready",
+        "progress": 1
+      },
+      "result": {
+        "correctedInput": "I don't have the report yet.",
+        "corrections": [
+          {
+            "correction": "I",
+            "endIndex": 1,
+            "startIndex": 0
+          },
+          {
+            "correction": "don't",
+            "endIndex": 6,
+            "startIndex": 2
+          }
+        ]
+      }
+    }
+  },
+  "availability": {
+    "rewriter": "available",
+    "proofreader": "downloadable"
+  },
+  "offline": true,
+  "completedAt": "2026-10-01T20:39:45.075Z"
+}

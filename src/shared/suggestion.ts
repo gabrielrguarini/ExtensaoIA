@@ -32,11 +32,14 @@ export interface EngineCapabilities {
 export interface AvailabilityQuery {
   action: WritingAction | 'semantic-review';
   language: string;
+  /** Compatibilidade pt-BR por instrução, explicitamente escolhida nas preferências. */
+  chromePortuguesePrompt?: boolean;
 }
 /** Não consulta/download de pesos nem promete memória livre. */
 export interface EngineAvailability {
   state: 'ready' | 'requires-initialization' | 'unavailable';
-  reason?: 'language' | 'action' | 'hardware';
+  reason?: 'language' | 'action' | 'hardware' | 'api' | 'probe';
+  nativeAvailability?: Availability;
 }
 
 function object(value: unknown): value is Record<string, unknown> {

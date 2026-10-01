@@ -25,6 +25,7 @@ interface Active {
   client: Client;
   engine?: Engine;
   cancelling: boolean;
+  preparation: AbortController;
   timer: ReturnType<typeof setTimeout>;
 }
 
@@ -40,7 +41,7 @@ export class RequestRouter {
   private readonly seen = new WeakMap<Client, Set<string>>();
 
   constructor(
-    private readonly ensureEngine: () => Promise<Engine>,
+    private readonly ensureEngine: (request: BoundRequest, signal: AbortSignal) => Promise<Engine>,
     private readonly timeoutMs = 15_000,
     _semanticReviewEnabled: () => Promise<boolean> = () => Promise.resolve(false),
     private readonly selectedProfile: () => Promise<ModelProfile> = () =>
@@ -96,6 +97,7 @@ export class RequestRouter {
       action: value.action,
       client,
       cancelling: false,
+      preparation: new AbortController(),
       timer: setTimeout(
         () => {
           if (this.active !== active) return;
@@ -149,7 +151,7 @@ export class RequestRouter {
         }
       }
       if (this.active !== active) return;
-      const engine = await this.ensureEngine();
+      const engine = await this.ensureEngine(request, active.preparation.signal);
       if (this.active !== active) return;
       active.engine = engine;
       engine.send({ type: 'start', request });
@@ -192,6 +194,7 @@ export class RequestRouter {
     this.seen.delete(client);
     if (active?.client !== client) return;
     clearTimeout(active.timer);
+    active.preparation.abort();
     this.active = undefined;
     // Reiniciar o Worker cancela também eventos já enfileirados, sem liberar dois motores.
     active.engine?.reset();
@@ -214,6 +217,7 @@ export class RequestRouter {
     const active = this.active;
     if (!active) return;
     clearTimeout(active.timer);
+    active.preparation.abort();
     this.active = undefined;
     active.client.send(event);
   }

@@ -78,6 +78,27 @@ export async function inspectModelArtifacts(
 }
 
 /** Apenas as URLs sob a revisão fixa selecionada, inclusive downloads parciais. */
+export async function modelArtifactsPresent(choice: ModelChoice): Promise<boolean> {
+  try {
+    const model = await caches.open('webllm/model');
+    const config = await caches.open('webllm/config');
+    const index = await model.match(new URL('tensor-cache.json', choice.url).href);
+    if (!index) return false;
+    const records = shards(await index.json());
+    // Só inventário de URLs, sem leitura/hash dos GB de pesos na interface.
+    const modelKeys = new Set((await model.keys()).map((key) => key.url));
+    const configKeys = new Set((await config.keys()).map((key) => key.url));
+    return (
+      configKeys.has(new URL('mlc-chat-config.json', choice.url).href) &&
+      modelKeys.has(new URL('tokenizer.json', choice.url).href) &&
+      records.every(({ dataPath }) => modelKeys.has(new URL(dataPath, choice.url).href))
+    );
+  } catch {
+    return false;
+  }
+}
+
+/** Apenas as URLs sob a revisão fixa selecionada, inclusive downloads parciais. */
 export async function removeModelArtifacts(choice: ModelChoice): Promise<void> {
   for (const name of ['webllm/model', 'webllm/config', integrityCache]) {
     const cache = await caches.open(name);

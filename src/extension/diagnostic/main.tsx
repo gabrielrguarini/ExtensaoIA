@@ -17,6 +17,8 @@ const labels = {
   MODEL_DOWNLOAD: 'Falha no download do modelo',
   DOWNLOAD_REQUIRED: 'Download do modelo precisa de confirmação',
   CONTEXT_LIMIT: 'Mensagem muito longa para o contexto',
+  NATIVE_QUOTA: 'Quota do Chrome excedida',
+  NATIVE_NOT_SUPPORTED: 'Idioma ou opções não aceitos pelo Chrome',
   EMPTY_OUTPUT: 'Resposta vazia',
   TRUNCATED_OUTPUT: 'Resposta truncada',
   INVALID_OUTPUT: 'Formato inadequado',
