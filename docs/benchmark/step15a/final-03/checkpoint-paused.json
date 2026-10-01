@@ -1,0 +1,67 @@
+{
+  "completed": 12,
+  "expected": 24,
+  "pending": [
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B02-profissional"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B02-amigavel"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B02-natural"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B02-conciso"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B02-engracado"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B02-reescrever"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B03-corrigir"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B03-melhorar"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B03-formal"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B03-profissional"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B03-amigavel"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B03-natural"
+    }
+  ],
+  "resultsSha256": "f47ccae1c683f0d822fd14ead1ff75c7e0358dd87a58fb058e6fb9472ec02fd9"
+}

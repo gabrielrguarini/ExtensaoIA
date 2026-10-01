@@ -1,6 +1,6 @@
 # Extensão de IA local para WhatsApp Web
 
-Base incremental com React, TypeScript strict e pacote Manifest V3. O menu **IA** oferece nove ações de escrita com os perfis Econômico (Llama 3.2 3B), Equilibrado (Qwen3 4B) e Qualidade (Qwen3 8B) no Worker via WebGPU, além de revisão semântica opcional. A geração mostra trechos provisórios e pode ser cancelada. Todas as ações protegem entidades do rascunho e validam o resultado antes de liberar Copiar ou Substituir. A prova sintética da STEP-06 e a prévia simulada da STEP-05 continuam disponíveis e identificadas. Nenhuma mensagem é enviada pela extensão. O diagnóstico da STEP-03 continua disponível.
+Base incremental com React, TypeScript strict e pacote Manifest V3. O menu **IA** oferece nove ações de escrita com os perfis Econômico (Llama 3.2 3B), Equilibrado (Qwen3 4B) e Qualidade (Qwen3 8B) no Worker via WebGPU, além de revisão semântica opcional. A geração mostra trechos provisórios e pode ser cancelada. As ações usam o texto original e apresentam respostas legíveis com avisos de risco antes de Copiar ou Substituir mesmo assim. A prova sintética da STEP-06 e a prévia simulada da STEP-05 continuam disponíveis e identificadas. Nenhuma mensagem é enviada pela extensão. O diagnóstico da STEP-03 continua disponível.
 
 O estado e as evidências ficam em [docs/PROGRESSO.md](docs/PROGRESSO.md). Consulte o [plano](docs/PLANO.md) e execute somente a etapa solicitada. A conclusão depende das verificações automatizadas e da validação correspondente no Chrome.
 
@@ -71,7 +71,7 @@ Privacidade local é obrigatória e informativa. Somente `writingPreferences`, n
 | npm run preview                            | Servir as páginas construídas em http://127.0.0.1:4173.                                           |
 | npm run check                              | Executar tipos, lint, formatação, testes e build; parar na primeira falha.                        |
 
-Os roteiros de navegador das STEP-06 a STEP-11 reproduzem as versões registradas nos respectivos commits. Para o pacote atual, use os roteiros das STEP-14 e STEP-13; os testes automatizados continuam cobrindo as funcionalidades acumuladas.
+Os roteiros de navegador das STEP-06 a STEP-11 reproduzem as versões registradas nos respectivos commits. Para o pacote atual, use o roteiro da STEP-15 e os checks; os testes automatizados continuam cobrindo as funcionalidades acumuladas.
 
 Os servidores escutam apenas no computador local e falham se a porta estiver ocupada. Encerre com Ctrl+C. O preview valida React e estilos; **localhost não executa APIs de extensão**. O diagnóstico nesse endereço informa que precisa ser aberto pela extensão instalada.
 
@@ -102,11 +102,19 @@ Capturas têm UUIDs aleatórios e revisão, sem identidade de contato. Edição,
 
 Copiar e Substituir conferem novamente o texto, documento, editor e revisão capturados. A substituição aguarda a restauração de foco/seleção do editor controlado, limita a seleção ao campo e usa execCommand('insertText') exclusivamente no adaptador. O resultado é conferido antes e depois da reconciliação da página. Uma inserção incorreta pode ser desfeita sincronamente pela própria transação; não há segunda tentativa automática nem rollback tardio que possa apagar uma edição posterior. Uma falha não confirmada orienta a conferir o rascunho. A API é obsoleta e o suporte foi validado no Chrome indicado no relatório, sem garantia para versões futuras.
 
+## Sugestões com avisos — STEP-15-A
+
+O modelo recebe o rascunho original e gera uma vez. Toda resposta final legível aparece com aviso geral e possíveis mudanças de nomes, valores, datas, emojis, negação e intenção. Riscos não bloqueiam **Copiar** ou **Substituir mesmo assim**, sem confirmação adicional. Resultado idêntico aparece como **Sem alterações**; falhas técnicas, cancelamento, desconexão ou rascunho alterado continuam impedindo aplicação.
+
+Nas preferências, **Mostrar botão Analisar sentido na prévia** habilita uma análise local adicional somente quando você clicar nela. O botão não reescreve a sugestão; retorna avisos e pode falhar. Nenhum risco detectado não garante equivalência de sentido. A extensão continua sem enviar mensagens.
+
+Chrome nativo, @types/dom-chromium-ai 0.0.17 e Gemma estão planejados para [STEP-15-B](docs/steps/STEP-15-B.md) e [STEP-15-C](docs/steps/STEP-15-C.md). O pacote desta subetapa usa WebLLM. A [STEP-15-D](docs/steps/STEP-15-D.md) determinará recomendações de qualidade/desempenho; os resultados históricos não são reclassificados.
+
 ## Protocolo e ciclo de vida
 
 O diagnóstico solicita ao coordenador um teste em uma aba permitida. O coordenador encaminha a fixture ao content script; este prepara o documento offscreen e abre um canal direto com ele. A resposta faz o caminho Worker → offscreen → content script. Só então o content script devolve o relatório ao diagnóstico. A página não pode substituir o texto sintético por dados arbitrários.
 
-Uniões discriminadas e validação em tempo de execução cobrem start, cancel, status, progress, fragmentos de ação, result, cancelled, error e rejected. `simular`, as nove ações e `prova-modelo` seguem caminhos distintos; só as ações usam o rascunho com o modelo real. O modo é vinculado ao pedido, a cada trecho e à resposta, evitando aplicar uma saída de outro modo. O coordenador lê a preferência local no início da ação e envia ao Worker um valor booleano validado; a página não escolhe esse valor no pedido. Payloads têm campos fechados, IDs limitados e texto de até 8.000 unidades UTF-16. O tokenizer compatível com o modelo inclui template, instruções e reserva de saída no limite de 4.096 tokens; excedê-lo gera aviso sem truncar o rascunho.
+Uniões discriminadas e validação em tempo de execução cobrem start, cancel, status, progress, fragmentos de ação, result, cancelled, error e rejected. `simular`, as nove ações, `prova-modelo` e `revisar-sentido` seguem caminhos distintos; só as ações usam o rascunho com o modelo real. O modo é vinculado ao pedido, a cada trecho e à resposta, evitando aplicar uma saída de outro modo. A revisão de sentido usa um pedido explícito separado, vinculado ao original e à sugestão da prévia. A preferência antiga nunca inicia uma segunda geração automática. Payloads têm campos fechados, IDs limitados e texto de até 8.000 unidades UTF-16. O tokenizer compatível com o modelo inclui template, instruções e reserva de saída no limite de 4.096 tokens; excedê-lo gera aviso sem truncar o rascunho.
 
 Cada pedido carrega requestId, editorId, snapshotId e revisão. O roteador no offscreen acrescenta aba, frame, documento e conexão com base no remetente do Chrome. O diagnóstico usa identidades fictícias; a prévia usa o snapshot real solicitado explicitamente. Respostas só são aceitas quando todos os campos do vínculo conferem. O cliente da prévia também fixa o vínculo recebido e descarta eventos divergentes ou posteriores ao cancelamento.
 

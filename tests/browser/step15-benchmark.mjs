@@ -8,6 +8,7 @@ import { chromium } from 'playwright-core';
 import { build } from 'vite';
 import { webGpuCompatibility } from '../../build/webgpu-compatibility.ts';
 import { BENCHMARK_CASES } from '../benchmark/cases.ts';
+import { pendingBlocks, completedCases } from '../benchmark/checkpoint.ts';
 
 const root = process.cwd();
 const executablePath = process.env.STEP15_CHROME;
@@ -19,6 +20,26 @@ const runName = process.env.STEP15_RUN ?? new Date().toISOString().replaceAll(/[
 assert(/^[\w-]+$/u.test(runName));
 const out = path.join(root, '.cache', 'step15-results', runName);
 await mkdir(out, { recursive: true });
+const resume = process.env.STEP15_RESUME === '1';
+const pipeline = process.env.STEP15_PIPELINE ?? 'original';
+assert(['original', 'legacy-protected'].includes(pipeline));
+const rounds = Number(process.env.STEP15_ROUNDS ?? 1);
+assert(Number.isSafeInteger(rounds) && rounds >= 1 && rounds <= 3);
+const caseLimit = Number(process.env.STEP15_CASE_LIMIT ?? BENCHMARK_CASES.length);
+assert(Number.isSafeInteger(caseLimit) && caseLimit > 0 && caseLimit <= BENCHMARK_CASES.length);
+const ids = BENCHMARK_CASES.slice(0, caseLimit).map(({ id }) => id);
+const maxBlocks = Number(process.env.STEP15_MAX_BLOCKS ?? Infinity);
+assert(maxBlocks > 0 && (Number.isSafeInteger(maxBlocks) || maxBlocks === Infinity));
+const priorMetadata = resume
+  ? JSON.parse(await readFile(path.join(out, 'metadata.json'), 'utf8'))
+  : null;
+const records = resume
+  ? (await readFile(path.join(out, 'results.jsonl'), 'utf8'))
+      .split('\n')
+      .filter(Boolean)
+      .map((line) => JSON.parse(line))
+  : [];
+if (!resume) await writeFile(path.join(out, 'results.jsonl'), '', { flag: 'wx' });
 const extension = path.join(root, 'dist');
 const manifest = JSON.parse(await readFile(path.join(extension, 'manifest.json'), 'utf8'));
 const packageData = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
@@ -34,9 +55,30 @@ function gpuMeasurement(query) {
   }
 }
 const dataset = JSON.stringify(BENCHMARK_CASES, null, 2) + '\n';
-await writeFile(path.join(out, 'cases.json'), dataset, { flag: 'wx' });
+if (resume)
+  assert.equal(
+    await readFile(path.join(out, 'cases.json'), 'utf8'),
+    dataset,
+    'Dataset diferente; crie outra campanha.',
+  );
+else await writeFile(path.join(out, 'cases.json'), dataset, { flag: 'wx' });
 const files = [
+  'src/extension/ai/ai-engine.ts',
   'src/extension/ai/webllm-engine.ts',
+  'src/extension/ai/suggestion-assessment.ts',
+  'src/extension/ai/semantic-review.ts',
+  'src/extension/ai/model-catalog.ts',
+  'src/extension/ai/model-cache.ts',
+  'src/extension/ai/model-libraries.ts',
+  'src/shared/webgpu-adapter.ts',
+  'src/shared/writing-options.ts',
+  'build/webgpu-compatibility.ts',
+  'src/shared/protocol.ts',
+  'src/shared/suggestion.ts',
+  'tests/browser/step15-worker.ts',
+  'tests/browser/step15-entry.ts',
+  'tests/browser/step15-benchmark.mjs',
+  'tests/benchmark/checkpoint.ts',
   'src/extension/ai/entities.ts',
   'src/extension/ai/correction-output.ts',
   'src/extension/ai/action-validation.ts',
@@ -49,23 +91,32 @@ const files = [
 const hashes = Object.fromEntries(
   await Promise.all(files.map(async (file) => [file, sha(await readFile(path.join(root, file)))])),
 );
-await writeFile(
-  path.join(out, 'source-snapshot.json'),
-  JSON.stringify(
-    Object.fromEntries(
-      await Promise.all(
-        files
-          .filter((file) => file.startsWith('src/'))
-          .map(async (file) => [file, await readFile(path.join(root, file), 'utf8')]),
+if (!resume)
+  await writeFile(
+    path.join(out, 'source-snapshot.json'),
+    JSON.stringify(
+      Object.fromEntries(
+        await Promise.all(
+          files
+            .filter((file) => file.startsWith('src/'))
+            .map(async (file) => [file, await readFile(path.join(root, file), 'utf8')]),
+        ),
       ),
-    ),
-    null,
-    2,
-  ) + '\n',
-);
+      null,
+      2,
+    ) + '\n',
+  );
 for (const file of await readdir(path.join(extension, 'assets')))
   if (file.endsWith('.wasm'))
     hashes[`dist/assets/${file}`] = sha(await readFile(path.join(extension, 'assets', file)));
+if (resume) {
+  assert.deepEqual(hashes, priorMetadata.hashes, 'Código/runtime diferente; crie outra campanha.');
+  assert.deepEqual(
+    { profiles, rounds, ids, pipeline },
+    priorMetadata.campaign,
+    'Configuração de campanha diferente.',
+  );
+}
 await build({
   configFile: false,
   plugins: [webGpuCompatibility()],
@@ -98,6 +149,24 @@ const options = {
 };
 const profileDir = path.join(root, '.cache', 'step15-isolated');
 async function getWorker(context) {
+  // O perfil dedicado pode conservar a extensão desativada ou o MV3 adormecido.
+  // Conferir somente nosso item e acordar o coordenador com uma consulta sem texto.
+  const page = await context.newPage();
+  try {
+    await page.goto('chrome://extensions');
+    const item = page
+      .locator('extensions-item')
+      .filter({ has: page.getByText(manifest.name, { exact: true }) });
+    await item.waitFor({ state: 'attached' });
+    const id = await item.getAttribute('id');
+    assert(id && /^[a-p]{32}$/u.test(id));
+    const toggle = item.locator('#enableToggle');
+    if ((await toggle.getAttribute('aria-checked')) !== 'true') await toggle.click();
+    await page.goto(`chrome-extension://${id}/diagnostic.html`);
+    await page.evaluate(() => chrome.runtime.sendMessage({ target: 'preferences', type: 'get' }));
+  } finally {
+    await page.close();
+  }
   for (let count = 0; count < 100; count++) {
     const worker = context
       .serviceWorkers()
@@ -111,12 +180,8 @@ async function getWorker(context) {
   }
   throw new Error('Service Worker instalado não ficou pronto.');
 }
-const bootstrap = await chromium.launchPersistentContext(profileDir, options);
-try {
-  await (await getWorker(bootstrap)).evaluate(() => chrome.runtime.reload()).catch(() => undefined);
-} finally {
-  await bootstrap.close();
-}
+// Não fechar o Chrome durante runtime.reload(): a recarga ainda não terminou
+// quando a chamada retorna e pode deixar a extensão desativada no próximo início.
 let context = await chromium.launchPersistentContext(profileDir, options);
 let pageErrors = 0;
 const pageErrorDetails = [];
@@ -144,6 +209,7 @@ async function attach() {
 try {
   let page = await attach();
   const metadata = {
+    campaign: { profiles, rounds, ids, pipeline },
     startedAt: new Date().toISOString(),
     browser: context.browser().version(),
     node: process.version,
@@ -180,99 +246,135 @@ try {
         : null;
     }),
   };
-  await writeFile(path.join(out, 'metadata.json'), JSON.stringify(metadata, null, 2) + '\n');
-  for (const [position, profile] of profiles.entries()) {
-    if (position) {
+  if (resume) {
+    for (const key of ['browser', 'platform', 'cpu', 'systemMemoryBytes', 'driver', 'gpu'])
+      assert.deepEqual(metadata[key], priorMetadata[key], 'Ambiente diferente: ' + key);
+  } else
+    await writeFile(path.join(out, 'metadata.json'), JSON.stringify(metadata, null, 2) + '\n', {
+      flag: 'wx',
+    });
+  let blocksRun = 0;
+  let interrupted = false;
+  async function record(value) {
+    await appendFile(path.join(out, 'results.jsonl'), JSON.stringify(value) + '\n');
+    records.push(value);
+    const complete = completedCases(records);
+    const pending = profiles.flatMap((profile) =>
+      Array.from({ length: rounds }, (_, round) =>
+        pendingBlocks(ids, profile, round + 1, records)
+          .flat()
+          .map((id) => ({ profile, round: round + 1, id })),
+      ).flat(),
+    );
+    await writeFile(
+      path.join(out, 'checkpoint.json'),
+      JSON.stringify(
+        {
+          completed: complete.size,
+          expected: profiles.length * rounds * ids.length,
+          pending,
+          resultsSha256: sha(await readFile(path.join(out, 'results.jsonl'))),
+        },
+        null,
+        2,
+      ) + '\n',
+    );
+  }
+  campaign: for (const profile of profiles) {
+    for (let round = 1; round <= rounds; round++) {
+      for (const block of pendingBlocks(ids, profile, round, records)) {
+        if (blocksRun >= maxBlocks) break campaign;
+        if (blocksRun++) {
+          await context.close();
+          context = await chromium.launchPersistentContext(profileDir, options);
+          page = await attach();
+        }
+        let lastActivity = Date.now();
+        await page.exposeFunction('__step15Record', async (value) => {
+          lastActivity = Date.now();
+          if (value.type === 'load') {
+            value.globalGpuMemoryUsedFreeMiB = gpuMeasurement('memory.used,memory.free');
+            await context.setOffline(true);
+          }
+          await record({ ...value, profile, round, pipeline });
+          if (['progress', 'load', 'case'].includes(value.type))
+            process.stdout.write(
+              value.type +
+                ' ' +
+                profile +
+                ' r' +
+                round +
+                ' ' +
+                (value.id ?? value.phase ?? '') +
+                ' ' +
+                (value.status ?? value.percent ?? '') +
+                '\n',
+            );
+        });
+        await context.setOffline(false);
+        await record({
+          type: 'block-start',
+          profile,
+          round,
+          ids: block,
+          pipeline,
+          globalGpuMemoryUsedFreeMiB: gpuMeasurement('memory.used,memory.free'),
+        });
+        let watchdog;
+        try {
+          await Promise.race([
+            page.evaluate(
+              async ({ profile, block, pipeline }) => {
+                await globalThis.__step15Run(
+                  profile,
+                  false,
+                  globalThis.__step15Record,
+                  block,
+                  pipeline,
+                );
+              },
+              { profile, block, pipeline },
+            ),
+            new Promise((_, reject) => {
+              watchdog = globalThis.setInterval(() => {
+                if (Date.now() - lastActivity > 120_000)
+                  reject(new Error('BENCHMARK_IDLE_TIMEOUT'));
+              }, 3000);
+            }),
+          ]);
+        } catch (error) {
+          await record({
+            type: 'interruption',
+            profile,
+            round,
+            ids: block,
+            error: String(error),
+            executionComplete: false,
+          });
+          interrupted = true;
+        } finally {
+          globalThis.clearInterval(watchdog);
+        }
+        await record({ type: 'block-end', profile, round, ids: block });
+        if (interrupted) break campaign; // Retomar exige nova ação explícita.
+      }
+    }
+  }
+  if (completedCases(records).size === profiles.length * rounds * ids.length)
+    for (const profile of profiles) {
       await context.close();
       context = await chromium.launchPersistentContext(profileDir, options);
       page = await attach();
+      await page.exposeFunction('__step15Record', async (value) => {
+        await appendFile(path.join(out, 'cached-loads.jsonl'), JSON.stringify(value) + '\n');
+        if (value.type === 'load')
+          process.stdout.write(`cached-load ${value.profile} ${Math.round(value.coldMs)}ms\n`);
+      });
+      await context.setOffline(true);
+      await page.evaluate(async (profile) => {
+        await globalThis.__step15Run(profile, true, globalThis.__step15Record);
+      }, profile);
     }
-    let lastActivity = Date.now();
-    let loaded = false;
-    const seen = new Set();
-    await page.exposeFunction('__step15Record', async (value) => {
-      lastActivity = Date.now();
-      if (value.type === 'load') {
-        loaded = !value.error;
-        value.globalGpuMemoryUsedFreeMiB = gpuMeasurement('memory.used,memory.free');
-        await context.setOffline(true);
-      }
-      if (value.type === 'case') seen.add(value.id);
-      await appendFile(path.join(out, 'results.jsonl'), JSON.stringify(value) + '\n');
-      if (value.type === 'progress' || value.type === 'load' || value.type === 'case')
-        process.stdout.write(
-          `${value.type} ${profile} ${value.id ?? value.phase ?? ''} ${value.percent ?? value.status ?? ''}\n`,
-        );
-    });
-    await context.setOffline(false);
-    await appendFile(
-      path.join(out, 'results.jsonl'),
-      JSON.stringify({
-        type: 'memory-before',
-        profile,
-        globalGpuMemoryUsedFreeMiB: gpuMeasurement('memory.used,memory.free'),
-      }) + '\n',
-    );
-    let watchdog;
-    try {
-      await Promise.race([
-        page.evaluate(async (profile) => {
-          await globalThis.__step15Run(profile, false, globalThis.__step15Record);
-        }, profile),
-        new Promise((_, reject) => {
-          watchdog = globalThis.setInterval(() => {
-            if (Date.now() - lastActivity > 120_000) reject(new Error('BENCHMARK_IDLE_TIMEOUT'));
-          }, 3000);
-        }),
-      ]);
-    } catch (error) {
-      for (const test of BENCHMARK_CASES.filter((item) => !seen.has(item.id)))
-        await appendFile(
-          path.join(out, 'results.jsonl'),
-          JSON.stringify({
-            type: 'case',
-            profile,
-            id: test.id,
-            action: test.action,
-            status: loaded ? 'generation-error' : 'load-error',
-            executionComplete: false,
-            raw: '',
-            output: null,
-            error: `Benchmark interrompido: ${String(error)}`,
-            firstVisibleMs: null,
-            generationMs: null,
-            totalMs: null,
-            metrics: null,
-            slots: [],
-            protectedText: null,
-          }) + '\n',
-        );
-    } finally {
-      globalThis.clearInterval(watchdog);
-    }
-  }
-  for (const profile of profiles) {
-    await context.close();
-    context = await chromium.launchPersistentContext(profileDir, options);
-    page = await attach();
-    await page.exposeFunction('__step15Record', async (value) => {
-      await appendFile(path.join(out, 'cached-loads.jsonl'), JSON.stringify(value) + '\n');
-      if (value.type === 'load')
-        process.stdout.write(`cached-load ${value.profile} ${Math.round(value.coldMs)}ms\n`);
-    });
-    await context.setOffline(true);
-    await page.evaluate(async (profile) => {
-      await globalThis.__step15Run(profile, true, globalThis.__step15Record);
-    }, profile);
-  }
-  const results = (await readFile(path.join(out, 'results.jsonl'), 'utf8'))
-    .trim()
-    .split('\n')
-    .map((line) => JSON.parse(line));
-  assert.equal(
-    results.filter((item) => item.type === 'case').length,
-    profiles.length * BENCHMARK_CASES.length,
-  );
   await writeFile(
     path.join(out, 'environment-end.json'),
     JSON.stringify(
@@ -283,7 +385,10 @@ try {
   );
   assert.equal(pageErrors, 0);
   assert.equal(forbidden.length, 0);
-  process.stdout.write(`Relatório sintético: ${out}\n`);
+  process.stdout.write(
+    `Campanha sintética: ${out}; concluídos ${completedCases(records).size}/${profiles.length * rounds * ids.length}. Pendentes permanecem no checkpoint.\n`,
+  );
+  if (interrupted) process.exitCode = 2;
 } finally {
   await context.close();
 }

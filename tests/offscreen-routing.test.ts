@@ -1,3 +1,4 @@
+import { suggestionMetadata } from './fixtures';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CLIENT_PORT, isEngineCommand } from '../src/shared/protocol';
 import type { Binding } from '../src/shared/protocol';
@@ -180,7 +181,13 @@ describe('roteamento no documento offscreen', () => {
     a.lost();
     expect(worker.terminate).toHaveBeenCalledOnce();
     worker.onmessage?.({
-      data: { type: 'action-result', binding, action: 'corrigir', text: 'texto atrasado' },
+      data: {
+        type: 'action-result',
+        ...suggestionMetadata,
+        binding,
+        action: 'corrigir',
+        text: 'texto atrasado',
+      },
     } as MessageEvent<unknown>);
     expect(b.post).toHaveBeenCalledOnce();
   });

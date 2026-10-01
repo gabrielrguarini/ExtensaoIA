@@ -42,7 +42,7 @@ try {
         type: 'update',
         patch: {
           profile,
-          semanticReview: false,
+          semanticReview: true,
           defaultAction: 'corrigir',
           preserveSlang: true,
           addEmojis: false,
@@ -71,21 +71,60 @@ try {
   const preview = page.getByLabel('Texto da sugestão');
   await preview.waitFor({ timeout: 180_000 });
   const output = await preview.innerText();
-  assert.match(output, /ver isso\?\s*🙂/iu);
+  assert(output.trim().length > 0);
+  await page
+    .getByText('Revise o texto e os avisos antes de usar a sugestão.', { exact: false })
+    .waitFor();
+  const warningCount = await page.locator('.suggestion-warnings li').count();
+  assert(warningCount > 0, 'Este caso sintético conhecido deve demonstrar a prévia com avisos.');
+  if (!output.includes('🙂'))
+    await page
+      .getByText('Possível alteração de emojis. Confira o original e a sugestão.', { exact: true })
+      .waitFor();
+  assert.equal(
+    await page.getByRole('button', { name: 'Substituir mesmo assim', exact: true }).isEnabled(),
+    true,
+  );
+  await page.screenshot({
+    path: path.join(root, '.cache', 'step15a-preview.png'),
+    caret: 'initial',
+  });
+  await page.getByRole('button', { name: 'Analisar sentido', exact: true }).click();
+  await page
+    .getByRole('button', { name: 'Analisar sentido', exact: true })
+    .waitFor({ timeout: 180_000 });
+  assert.equal(await preview.innerText(), output);
+  const semanticCompleted = await page
+    .getByText('Análise adicional concluída. Revise os avisos.', { exact: true })
+    .count();
+  assert.equal(semanticCompleted, 1);
   assert.equal(await draft.innerText(), original);
-  await page.getByRole('button', { name: 'Substituir', exact: true }).click();
+  await page.getByRole('button', { name: /^Substituir(?: mesmo assim)?$/u }).click();
   assert.equal(await draft.innerText(), output);
+  await preview.waitFor({ state: 'hidden' });
   await draft.focus();
   await draft.press('Control+z');
   assert.equal(await draft.innerText(), original);
+  await page.locator('[data-local-writing-host] button.launcher').click();
+  await page.getByRole('button', { name: 'Corrigir com IA local', exact: true }).click();
+  await draft.fill('Rascunho sintético alterado durante o pedido.');
+  await page
+    .getByText('O rascunho ou a conversa mudou. Feche e crie uma nova prévia.', { exact: true })
+    .waitFor();
+  assert.equal(await draft.innerText(), 'Rascunho sintético alterado durante o pedido.');
+  assert.equal(await page.getByRole('button', { name: /^Substituir/u }).count(), 0);
   assert.equal(pageErrors, 0);
   const result = {
     profile: modelProfile,
     browser: context.browser().version(),
     offline: true,
-    previewPreservesMeaningAndEmoji: true,
+    legiblePreviewWithWarnings: true,
+    warningCount,
+    emojiPreserved: output.includes('🙂'),
+    explicitSemanticReviewPreservesCandidate: true,
     originalPreservedBeforeExplicitReplacement: true,
     manualReplacementAndUndo: true,
+    staleDraftBlocksApplication: true,
     pageErrors,
     syntheticFixture: true,
     noMessageSent: true,

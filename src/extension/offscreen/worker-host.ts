@@ -105,6 +105,7 @@ export class WorkerHost {
               [
                 'result',
                 'action-result',
+                'review-result',
                 'proof-result',
                 'action-rejected',
                 'cancelled',

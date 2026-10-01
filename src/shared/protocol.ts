@@ -4,6 +4,8 @@ import type { WritingAction } from './actions';
 import type { ModelProfile } from '../extension/ai/model-catalog';
 import { isWritingOptions } from './writing-options';
 import type { WritingOptions } from './writing-options';
+import { isEngineIdentity, isRiskAssessment } from './suggestion';
+import type { SuggestionResult } from './suggestion';
 
 export const CLIENT_PORT = 'writing-client-v1';
 export const MAX_TEXT_LENGTH = 8_000;
@@ -28,7 +30,8 @@ export interface Binding {
 }
 export interface BoundRequest extends Binding {
   text: string;
-  action: 'simular' | WritingAction | 'prova-modelo';
+  action: 'simular' | WritingAction | 'prova-modelo' | 'revisar-sentido';
+  suggestion?: string;
   semanticReview: boolean;
   writingOptions?: WritingOptions;
   profile?: ModelProfile;
@@ -43,6 +46,7 @@ export type ClientCommand =
       action: BoundRequest['action'];
       allowDownload?: boolean;
       expectedProfile?: ModelProfile;
+      suggestion?: string;
     }
   | { type: 'cancel'; key: RequestKey }
   | { type: 'status' };
@@ -84,7 +88,8 @@ export type RequestEvent =
   | { type: 'fragment'; binding: Binding; text: string }
   | { type: 'action-fragment'; binding: Binding; action: WritingAction; text: string }
   | { type: 'result'; binding: Binding; text: string; simulated: true }
-  | { type: 'action-result'; binding: Binding; action: WritingAction; text: string }
+  | ({ type: 'action-result'; binding: Binding; action: WritingAction } & SuggestionResult)
+  | ({ type: 'review-result'; binding: Binding } & SuggestionResult)
   | { type: 'action-rejected'; binding: Binding; action: WritingAction; code: ErrorCode }
   | {
       type: 'proof-result';
@@ -108,6 +113,16 @@ export function record(value: unknown): value is Record<string, unknown> {
 export function fields(value: Record<string, unknown>, keys: string[]): boolean {
   return (
     Object.keys(value).length === keys.length && keys.every((key) => Object.hasOwn(value, key))
+  );
+}
+function optionalFields(
+  value: Record<string, unknown>,
+  required: string[],
+  optional: string[],
+): boolean {
+  return (
+    required.every((key) => Object.hasOwn(value, key)) &&
+    Object.keys(value).every((key) => required.includes(key) || optional.includes(key))
   );
 }
 export function identifier(value: unknown): value is string {
@@ -167,10 +182,16 @@ export function isClientCommand(value: unknown): value is ClientCommand {
   switch (value.type) {
     case 'start':
       return (
-        (fields(value, ['type', 'key', 'text', 'action']) ||
-          fields(value, ['type', 'key', 'text', 'action', 'allowDownload']) ||
-          fields(value, ['type', 'key', 'text', 'action', 'expectedProfile']) ||
-          fields(value, ['type', 'key', 'text', 'action', 'allowDownload', 'expectedProfile'])) &&
+        optionalFields(
+          value,
+          ['type', 'key', 'text', 'action'],
+          ['allowDownload', 'expectedProfile', 'suggestion'],
+        ) &&
+        (value.action === 'revisar-sentido'
+          ? textValue(value.suggestion) &&
+            value.suggestion.trim().length > 0 &&
+            value.allowDownload !== true
+          : value.suggestion === undefined) &&
         (value.allowDownload === undefined || typeof value.allowDownload === 'boolean') &&
         (value.expectedProfile === undefined ||
           value.expectedProfile === 'economico' ||
@@ -181,6 +202,7 @@ export function isClientCommand(value: unknown): value is ClientCommand {
         textValue(value.text) &&
         value.text.trim().length > 0 &&
         (value.action === 'simular' ||
+          value.action === 'revisar-sentido' ||
           isWritingAction(value.action) ||
           (value.action === 'prova-modelo' && value.text === MODEL_PROOF_TEXT))
       );
@@ -261,9 +283,18 @@ export function isRequestEvent(value: unknown): value is RequestEvent {
       );
     case 'action-result':
       return (
-        fields(value, ['type', 'binding', 'action', 'text']) &&
+        fields(value, ['type', 'binding', 'action', 'text', 'engine', 'assessment']) &&
+        isEngineIdentity(value.engine) &&
+        isRiskAssessment(value.assessment) &&
         isWritingAction(value.action) &&
         textValue(value.text)
+      );
+    case 'review-result':
+      return (
+        fields(value, ['type', 'binding', 'text', 'engine', 'assessment']) &&
+        textValue(value.text) &&
+        isEngineIdentity(value.engine) &&
+        isRiskAssessment(value.assessment)
       );
     case 'action-rejected':
       return (
@@ -316,26 +347,16 @@ export function isEngineCommand(value: unknown): value is EngineCommand {
     return false;
   const request = value.request;
   return (
-    (fields(request, ['key', 'origin', 'text', 'action', 'semanticReview']) ||
-      fields(request, [
-        'key',
-        'origin',
-        'text',
-        'action',
-        'semanticReview',
-        'profile',
-        'allowDownload',
-      ]) ||
-      fields(request, [
-        'key',
-        'origin',
-        'text',
-        'action',
-        'semanticReview',
-        'profile',
-        'allowDownload',
-        'writingOptions',
-      ])) &&
+    optionalFields(
+      request,
+      ['key', 'origin', 'text', 'action', 'semanticReview'],
+      ['profile', 'allowDownload', 'writingOptions', 'suggestion'],
+    ) &&
+    (request.action === 'revisar-sentido'
+      ? textValue(request.suggestion) &&
+        request.suggestion.trim().length > 0 &&
+        request.allowDownload !== true
+      : request.suggestion === undefined) &&
     (request.writingOptions === undefined || isWritingOptions(request.writingOptions)) &&
     isBinding({ key: request.key, origin: request.origin }) &&
     (request.profile === undefined ||
@@ -347,6 +368,7 @@ export function isEngineCommand(value: unknown): value is EngineCommand {
     typeof request.semanticReview === 'boolean' &&
     (isWritingAction(request.action) || request.semanticReview === false) &&
     (request.action === 'simular' ||
+      request.action === 'revisar-sentido' ||
       isWritingAction(request.action) ||
       (request.action === 'prova-modelo' && request.text === MODEL_PROOF_TEXT))
   );

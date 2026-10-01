@@ -85,12 +85,12 @@ export function semanticApproved(review: SemanticReview): boolean {
   );
 }
 
-export async function reviewSuggestion(
+export async function analyzeSuggestion(
   model: Pick<AIEngine, 'generate'>,
   original: string,
   suggestion: string,
   signal: AbortSignal,
-): Promise<void> {
+): Promise<SemanticReview> {
   let output = '';
   let oversized = false;
   try {
@@ -117,5 +117,16 @@ export async function reviewSuggestion(
   } catch {
     throw new SemanticReviewError('SEMANTIC_INVALID');
   }
-  if (!semanticApproved(verdict)) throw new SemanticReviewError('SEMANTIC_RISK');
+  return verdict;
+}
+
+/** Contrato histórico do benchmark com bloqueio; o produto usa analyzeSuggestion sob demanda. */
+export async function reviewSuggestion(
+  model: Pick<AIEngine, 'generate'>,
+  original: string,
+  suggestion: string,
+  signal: AbortSignal,
+): Promise<void> {
+  if (!semanticApproved(await analyzeSuggestion(model, original, suggestion, signal)))
+    throw new SemanticReviewError('SEMANTIC_RISK');
 }

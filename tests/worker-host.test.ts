@@ -1,3 +1,4 @@
+import { suggestionMetadata } from './fixtures';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { WorkerHost } from '../src/extension/offscreen/worker-host';
 
@@ -81,7 +82,13 @@ describe('Worker independente do coordenador', () => {
     });
     await vi.advanceTimersByTimeAsync(600_000);
     expect(h.terminate).not.toHaveBeenCalled();
-    h.emit({ type: 'action-result', binding, action: 'corrigir', text: 'Teste.' });
+    h.emit({
+      type: 'action-result',
+      ...suggestionMetadata,
+      binding,
+      action: 'corrigir',
+      text: 'Teste.',
+    });
     await vi.advanceTimersByTimeAsync(299_999);
     expect(h.terminate).not.toHaveBeenCalled();
     await vi.advanceTimersByTimeAsync(1);

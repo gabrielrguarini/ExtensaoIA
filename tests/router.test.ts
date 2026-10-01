@@ -1,3 +1,4 @@
+import { suggestionMetadata } from './fixtures';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { RequestRouter } from '../src/extension/background/router';
 import type { Client, Engine } from '../src/extension/background/router';
@@ -89,7 +90,7 @@ describe('roteamento sem mistura de abas, documentos e revisões', () => {
     expect(sent).toHaveLength(2);
   });
 
-  it('usa a preferência do coordenador em cada ação e falha fechado se ela não puder ser lida', async () => {
+  it('não inicia revisão automática mesmo com preferência ligada ou indisponível', async () => {
     const sent: EngineCommand[] = [];
     const engine: Engine = { send: (value) => sent.push(value), reset: vi.fn() };
     const preference = vi.fn(() => Promise.resolve(true));
@@ -103,12 +104,12 @@ describe('roteamento sem mistura de abas, documentos e revisões', () => {
     const a = client();
     router.receive(a.peer, { ...start, action: 'corrigir' });
     for (let i = 0; i < 4; i++) await Promise.resolve();
-    expect(preference).toHaveBeenCalledOnce();
+    expect(preference).not.toHaveBeenCalled();
     expect(sent.at(-1)).toMatchObject({
       type: 'start',
       request: {
         action: 'corrigir',
-        semanticReview: true,
+        semanticReview: false,
         writingOptions: { preserveSlang: false, addEmojis: true },
       },
     });
@@ -122,8 +123,9 @@ describe('roteamento sem mistura de abas, documentos e revisões', () => {
     const b = client();
     unavailable.receive(b.peer, { ...start, action: 'formal' });
     for (let i = 0; i < 4; i++) await Promise.resolve();
-    expect(b.events.at(-1)).toMatchObject({ type: 'error', code: 'UNAVAILABLE' });
-    expect(sent).toHaveLength(1);
+    expect(sent).toHaveLength(2);
+    expect(sent.at(-1)).toMatchObject({ request: { semanticReview: false } });
+    unavailable.disconnect(b.peer);
   });
 
   it('encerra uma correção reprovada sem liberar resultado ou manter o motor ocupado', async () => {
@@ -143,7 +145,13 @@ describe('roteamento sem mistura de abas, documentos e revisões', () => {
       action: 'corrigir',
       code: 'PRESERVATION_RISK',
     });
-    router.receiveEngine({ type: 'action-result', binding, action: 'corrigir', text: 'Atrasado' });
+    router.receiveEngine({
+      type: 'action-result',
+      ...suggestionMetadata,
+      binding,
+      action: 'corrigir',
+      text: 'Atrasado',
+    });
     router.receive(a.peer, { type: 'status' });
     expect(a.events.at(-1)).toEqual({ type: 'status', state: 'idle', simulated: true });
   });
@@ -155,6 +163,7 @@ describe('roteamento sem mistura de abas, documentos e revisões', () => {
     await Promise.resolve();
     router.receiveEngine({
       type: 'action-result',
+      ...suggestionMetadata,
       binding,
       action: 'profissional',
       text: 'Outro modo',
@@ -174,11 +183,16 @@ describe('roteamento sem mistura de abas, documentos e revisões', () => {
     expect(a.events).toHaveLength(1);
     router.receiveEngine({
       type: 'action-result',
+      ...suggestionMetadata,
       binding,
       action: 'formal',
       text: 'Resultado correto',
     });
-    expect(a.events.at(-1)).toMatchObject({ type: 'action-result', action: 'formal' });
+    expect(a.events.at(-1)).toMatchObject({
+      type: 'action-result',
+      ...suggestionMetadata,
+      action: 'formal',
+    });
   });
 
   it('reserva o pedido antes da preparação assíncrona e informa ocupado sem vazar conteúdo', async () => {
@@ -284,7 +298,13 @@ describe('roteamento sem mistura de abas, documentos e revisões', () => {
     router.receive(a.peer, { type: 'cancel', key: start.key });
     expect(sent.at(-1)).toEqual({ type: 'cancel', binding });
     router.receiveEngine({ type: 'action-fragment', binding, action: 'formal', text: 'Atrasado' });
-    router.receiveEngine({ type: 'action-result', binding, action: 'formal', text: 'Atrasado' });
+    router.receiveEngine({
+      type: 'action-result',
+      ...suggestionMetadata,
+      binding,
+      action: 'formal',
+      text: 'Atrasado',
+    });
     router.receiveEngine({ type: 'cancelled', binding });
     expect(a.events.map((event) => event.type)).toEqual([
       'progress',

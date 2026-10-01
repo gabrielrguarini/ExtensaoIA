@@ -15,9 +15,14 @@ export type ActionGenerator = (
   done: (outcome: PreviewOutcome) => void,
   allowDownload?: boolean,
   expectedProfile?: ModelProfile,
+  suggestion?: string,
 ) => () => void;
 
-export const generateAction: ActionGenerator = (
+type RequestGenerator = (
+  action: WritingAction | 'revisar-sentido',
+  ...args: Parameters<ActionGenerator> extends [unknown, ...infer Rest] ? Rest : never
+) => () => void;
+const generateRequest: RequestGenerator = (
   action,
   snapshot,
   progress,
@@ -25,6 +30,7 @@ export const generateAction: ActionGenerator = (
   done,
   allowDownload = false,
   expectedProfile,
+  suggestion,
 ) => {
   const port = connectClient();
   const key: RequestKey = {
@@ -69,6 +75,7 @@ export const generateAction: ActionGenerator = (
         value.type === 'error' ||
         value.type === 'action-rejected' ||
         value.type === 'action-result' ||
+        value.type === 'review-result' ||
         value.type === 'rejected'
       )
         close();
@@ -77,7 +84,9 @@ export const generateAction: ActionGenerator = (
     if (value.type === 'model-progress') progress(value);
     if (value.type === 'action-fragment' && value.action === action) fragment(value.text);
     if (value.type === 'action-result' && value.action === action)
-      finish({ ok: true, text: value.text });
+      finish({ ok: true, text: value.text, engine: value.engine, assessment: value.assessment });
+    if (value.type === 'review-result' && action === 'revisar-sentido' && value.text === suggestion)
+      finish({ ok: true, text: value.text, engine: value.engine, assessment: value.assessment });
     if (
       value.type === 'rejected' ||
       value.type === 'error' ||
@@ -138,6 +147,7 @@ export const generateAction: ActionGenerator = (
       action,
       text: snapshot.text,
       allowDownload,
+      ...(suggestion === undefined ? {} : { suggestion }),
       ...(expectedProfile ? { expectedProfile } : {}),
     });
   } catch {
@@ -157,3 +167,23 @@ export const generateAction: ActionGenerator = (
     cancelFallback = setTimeout(close, 2_000);
   };
 };
+
+export type ReviewGenerator = (
+  snapshot: DraftSnapshot,
+  suggestion: string,
+  done: (outcome: PreviewOutcome) => void,
+  profile: ModelProfile,
+) => () => void;
+export const reviewPreview: ReviewGenerator = (snapshot, suggestion, done, profile) =>
+  generateRequest(
+    'revisar-sentido',
+    snapshot,
+    () => undefined,
+    () => undefined,
+    done,
+    false,
+    profile,
+    suggestion,
+  );
+
+export const generateAction: ActionGenerator = generateRequest;

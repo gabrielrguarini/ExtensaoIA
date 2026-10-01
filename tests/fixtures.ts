@@ -10,3 +10,13 @@ export const start = {
   text: 'Teste sintético 🙂\nSegunda linha.',
   action: 'simular',
 } satisfies ClientCommand;
+
+export const suggestionMetadata = {
+  engine: {
+    id: 'webllm' as const,
+    model: 'synthetic-test',
+    runtime: '0.2.82',
+    execution: 'webgpu' as const,
+  },
+  assessment: { status: 'changed' as const, risks: [], semanticReview: 'not-requested' as const },
+};

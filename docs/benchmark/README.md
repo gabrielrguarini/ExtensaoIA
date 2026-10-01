@@ -16,9 +16,9 @@ $env:STEP15_RUN = 'minha-rodada'
 npm.cmd run benchmark:step15
 ```
 
-O runner usa somente `.cache/step15-isolated`, sem conta ou conversa, e grava em `.cache/step15-results/minha-rodada`. Não apontá-lo para um perfil pessoal. Por padrão tenta os três perfis, reiniciando o navegador entre eles. Para selecionar um perfil, defina `STEP15_MODELS` como `economico`, `equilibrado` ou `qualidade`; documente a seleção, sem afirmar uma campanha completa dos demais.
+O runner usa somente `.cache/step15-isolated`, sem conta ou conversa, e grava em `.cache/step15-results/minha-rodada`. Não apontá-lo para um perfil pessoal. Por padrão tenta os três perfis, em blocos de até 12, reiniciando o navegador entre os blocos. Para selecionar um perfil, defina `STEP15_MODELS` como `economico`, `equilibrado` ou `qualidade`; documente a seleção, sem afirmar uma campanha completa dos demais.
 
-O harness é compilado temporariamente em `dist/__step15_eval`, executa o mesmo WebLLM/proteção/validação em um Worker local da origem da extensão e não acrescenta endpoint ao produto. `npm.cmd run build` remove essa instrumentação do pacote instalável. O teste de interface separado usa somente fixture, prévia, substituição explícita e desfazer:
+O harness é compilado temporariamente em `dist/__step15_eval`, executa o WebLLM e o caminho de texto original/avisos (ou proteção/validação histórica por opção) em um Worker local da origem da extensão e não acrescenta endpoint ao produto. `npm.cmd run build` remove essa instrumentação do pacote instalável. O teste de interface separado usa somente fixture, prévia, substituição explícita e desfazer:
 
 ```powershell
 npm.cmd run test:step15:browser
@@ -53,3 +53,26 @@ O agregador exige todos os IDs e uma revisão por caso. Exit code 2 significa al
 - **Memória:** RAM/VRAM física do equipamento é medida do sistema. O catálogo fornece estimativa de modelo. Quando registrado, `globalGpuMemoryUsedFreeMiB` é uso global observado por `nvidia-smi`, sem atribuição exata ao modelo e sem alegar pico. Uso por processo em WDDM pode ser indisponível; não inferir consumo do modelo pela diferença.
 
 Resultados iniciais e experimentos interrompidos são identificados separadamente da rodada final. Não há promessa universal de equivalência semântica, qualidade ou desempenho fora deste conjunto. A revisão do usuário continua necessária.
+
+## Campanhas retomáveis da STEP-15-A
+
+Os diretórios históricos baseline-01/final-01 são imutáveis. O runner atual usa texto original e avisos por padrão. Para comparação controlada, escolha STEP15_PIPELINE=legacy-protected; isso ativa o prompt e validador históricos, sem mudar o produto.
+
+Defina STEP15_RUN, STEP15_MODELS e opcionalmente STEP15_CASE_LIMIT (até 108), STEP15_ROUNDS (1 a 3) e STEP15_MAX_BLOCKS (pausa após blocos). Uma invocação inicial recusa sobrescrever diretório de campanha. Para retomar, mantenha nome, perfis, casos, rodadas e pipeline e defina STEP15_RESUME=1. Código, dataset, runtime/WASM, navegador e hardware precisam coincidir; divergência exige campanha nova. Downloads do harness requerem execução explícita do operador; inferência ocorre offline após carregar cada bloco.
+
+Cada resultado é anexado em results.jsonl e atualizado em checkpoint.json. Casos terminados (inclusive erros técnicos) não são repetidos na retomada. Interrupções ou falhas de carregamento ficam pendentes, com tentativas anteriores preservadas. Retomar exige nova invocação; não há replay de uma geração falha no produto. Checkpoints identificam pendências, sem transformar falta de resultado em incompatibilidade.
+
+Exemplo de dois blocos com o mesmo perfil sintético, sem conta:
+
+```powershell
+$env:STEP15_RUN = 'campanha-original'
+$env:STEP15_MODELS = 'economico'
+$env:STEP15_CASE_LIMIT = '24'
+$env:STEP15_MAX_BLOCKS = '1'
+npm.cmd run benchmark:step15
+$env:STEP15_RESUME = '1'
+npm.cmd run benchmark:step15
+npm.cmd run benchmark:step15a:report -- .cache/step15-results/campanha-original
+```
+
+O novo relatório resume disponibilidade, avisos, erros técnicos, sem alterações, medidas e pendências; não inventa qualidade sem anotação humana. O comando benchmark:step15:report continua exclusivo para relatórios históricos no formato original com review.json. A campanha da STEP-15-A é exploratória; três rodadas e 108 novos rascunhos distintos reservados são aceite da STEP-15-D. Não atribuir qualidade/velocidade de Chrome ou Gemma a medidas WebLLM.

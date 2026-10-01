@@ -265,7 +265,7 @@ function sameOccurrences(left: Map<string, number>, right: Map<string, number>):
   );
 }
 
-function temporalKey(value: string): string {
+export function temporalKey(value: string): string {
   return value.toLocaleLowerCase('pt-BR');
 }
 
@@ -293,7 +293,7 @@ function precedingPreposition(value: string, index: number): string | undefined 
     ?.toLocaleLowerCase('pt-BR');
 }
 
-function invalidCharacters(value: string): boolean {
+export function invalidCharacters(value: string): boolean {
   for (let index = 0; index < value.length; index++) {
     const code = value.charCodeAt(index);
     if ((code < 32 && code !== 9 && code !== 10 && code !== 13) || code === 127 || code === 0xfffd)

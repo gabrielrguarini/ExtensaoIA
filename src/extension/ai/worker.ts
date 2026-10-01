@@ -4,12 +4,10 @@ import type { Binding, BoundRequest, EngineEvent } from '../../shared/protocol';
 import { WebLLMEngine, ModelEnvironmentError } from './webllm-engine';
 import { MODEL_PROOF_TEXT } from '../../shared/model-proof';
 import { CorrectionOutputError } from './correction-output';
-import { protectDraft } from './entities';
 import { isWritingAction } from '../../shared/actions';
-import { restoredStreamingPrefix } from './streaming-preview';
 import { MAX_TEXT_LENGTH } from '../../shared/protocol';
-import { SemanticReviewError } from './semantic-review';
-import { validateActionOutput } from './action-validation';
+import { analyzeSuggestion, semanticApproved, SemanticReviewError } from './semantic-review';
+import { suggestionResult } from './suggestion-assessment';
 import { DEFAULT_WRITING_OPTIONS } from '../../shared/writing-options';
 
 const engine = new SimulatedEngine((event) => {
@@ -33,7 +31,6 @@ async function runModel(request: BoundRequest): Promise<void> {
   const action = isWritingAction(request.action) ? request.action : undefined;
   let terminal: EngineEvent | undefined;
   try {
-    const protectedDraft = action ? protectDraft(request.text) : undefined;
     await model.initialize({
       signal: controller.signal,
       profile: request.profile ?? 'economico',
@@ -50,6 +47,51 @@ async function runModel(request: BoundRequest): Promise<void> {
       },
     });
     if (controller.signal.aborted) throw controller.signal.reason;
+    if (request.action === 'revisar-sentido' && request.suggestion) {
+      emit({
+        type: 'model-progress',
+        binding,
+        phase: 'reviewing',
+        percent: 100,
+        variant: model.selectedVariant() ?? null,
+      });
+      const result = suggestionResult(
+        request.text,
+        request.suggestion,
+        model.identity(),
+        request.writingOptions?.addEmojis,
+      );
+      try {
+        const verdict = await analyzeSuggestion(
+          model,
+          request.text,
+          request.suggestion,
+          controller.signal,
+        );
+        result.assessment.semanticReview = 'completed';
+        if (!semanticApproved(verdict)) {
+          result.assessment.risks.push(
+            ...(verdict.issues.length
+              ? verdict.issues
+              : ['A análise adicional identificou possível mudança de sentido.']
+            )
+              .map((message) => ({ code: 'semantic' as const, message }))
+              .slice(0, 24 - result.assessment.risks.length),
+          );
+        }
+      } catch (error) {
+        if (controller.signal.aborted) throw controller.signal.reason;
+        if (!(error instanceof SemanticReviewError)) throw error;
+        result.assessment.semanticReview = 'unavailable';
+        result.assessment.risks.push({
+          code: 'semantic',
+          message:
+            'A análise adicional não retornou uma avaliação utilizável. Revise o sentido manualmente.',
+        });
+      }
+      terminal = { type: 'review-result', binding, ...result };
+      return;
+    }
     emit({
       type: 'model-progress',
       binding,
@@ -61,7 +103,7 @@ async function runModel(request: BoundRequest): Promise<void> {
     let oversized = false;
     let lastVisible = '';
     let lastShownAt = 0;
-    for await (const fragment of model.generate(protectedDraft?.text ?? MODEL_PROOF_TEXT, {
+    for await (const fragment of model.generate(action ? request.text : MODEL_PROOF_TEXT, {
       signal: controller.signal,
       task: action ?? 'proof',
       writingOptions: request.writingOptions ?? DEFAULT_WRITING_OPTIONS,
@@ -73,8 +115,8 @@ async function runModel(request: BoundRequest): Promise<void> {
         oversized = true;
         continue;
       }
-      if (action && protectedDraft) {
-        const visible = restoredStreamingPrefix(protectedDraft, response);
+      if (action) {
+        const visible = response;
         const now = performance.now();
         if (
           visible &&
@@ -98,24 +140,17 @@ async function runModel(request: BoundRequest): Promise<void> {
         percent: 100,
         variant: model.selectedVariant() ?? null,
       });
-      const text = await validateActionOutput(
-        protectedDraft!,
-        response,
-        request.text,
-        request.semanticReview,
-        model,
-        controller.signal,
-        () =>
-          emit({
-            type: 'model-progress',
-            binding,
-            phase: 'reviewing',
-            percent: 100,
-            variant: model.selectedVariant() ?? null,
-          }),
-        request.writingOptions?.addEmojis ?? false,
-      );
-      terminal = { type: 'action-result', binding, action, text };
+      terminal = {
+        type: 'action-result',
+        binding,
+        action,
+        ...suggestionResult(
+          request.text,
+          response,
+          model.identity(),
+          request.writingOptions?.addEmojis,
+        ),
+      };
     } else {
       const variant = model.selectedVariant();
       if (!variant || !response.trim()) throw new CorrectionOutputError('EMPTY_OUTPUT');
@@ -138,6 +173,7 @@ async function runModel(request: BoundRequest): Promise<void> {
     }
   } finally {
     if (active?.controller === controller) active = undefined;
+    if (controller.signal.aborted) terminal = { type: 'cancelled', binding };
     if (terminal) emit(terminal);
   }
 }

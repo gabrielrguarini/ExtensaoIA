@@ -5,7 +5,7 @@ import { MODEL_CHOICES } from './model-catalog';
 import { MODEL_LIBRARIES } from './model-libraries';
 import { cacheModelArtifacts, inspectModelArtifacts } from './model-cache';
 import type { ModelChoice, ModelProfile } from './model-catalog';
-import { actionMessages, systemPromptFor } from './correction-prompt';
+import { actionMessages, systemPromptFor, legacySystemPromptFor } from './correction-prompt';
 import {
   correctionTokenBudget,
   parseLlamaTemplate,
@@ -17,6 +17,13 @@ import { requireCompleteGeneration } from './correction-output';
 import { SEMANTIC_SYSTEM_PROMPT, semanticMessages } from './semantic-review';
 import { isWritingAction } from '../../shared/actions';
 import { gpuAdapterOptions } from '../../shared/webgpu-adapter';
+import { WRITING_ACTIONS } from '../../shared/actions';
+import type {
+  AvailabilityQuery,
+  EngineAvailability,
+  EngineCapabilities,
+  EngineIdentity,
+} from '../../shared/suggestion';
 
 export class ModelEnvironmentError extends Error {
   constructor(
@@ -69,6 +76,30 @@ function modelRecord(choice: ModelChoice): ModelRecord {
 }
 
 export class WebLLMEngine implements AIEngine {
+  identity(): EngineIdentity {
+    return { id: 'webllm', model: this.choice?.id ?? null, runtime: '0.2.82', execution: 'webgpu' };
+  }
+  capabilities(): EngineCapabilities {
+    return {
+      actions: WRITING_ACTIONS.map(({ id }) => id),
+      languages: ['pt-BR'],
+      streaming: true,
+      semanticReview: true,
+      local: true,
+    };
+  }
+  async availability(query: AvailabilityQuery): Promise<EngineAvailability> {
+    if (query.language !== 'pt-BR') return { state: 'unavailable', reason: 'language' };
+    if (query.action !== 'semantic-review' && !isWritingAction(query.action))
+      return { state: 'unavailable', reason: 'action' };
+    if (this.isReady()) return { state: 'ready' };
+    try {
+      await selectModel(navigator.gpu, this.choice?.profile);
+    } catch {
+      return { state: 'unavailable', reason: 'hardware' };
+    }
+    return { state: 'requires-initialization' };
+  }
   private runtime: MLCEngineInterface | undefined;
   private choice: ModelChoice | undefined;
   private loading: Promise<void> | undefined;
@@ -199,7 +230,9 @@ export class WebLLMEngine implements AIEngine {
           const budget = correctionTokenBudget(
             (value) => tokenizer.encode(value),
             template,
-            systemPromptFor(action, options.writingOptions),
+            options.inputFormat === 'legacy-protected'
+              ? legacySystemPromptFor(action, options.writingOptions)
+              : systemPromptFor(action, options.writingOptions),
             text,
           );
           if (!budget) throw new ModelEnvironmentError('CONTEXT_LIMIT');
@@ -219,7 +252,7 @@ export class WebLLMEngine implements AIEngine {
       if (action || semantic) {
         const stream = await runtime.chat.completions.create({
           messages: action
-            ? actionMessages(action, text, options.writingOptions)
+            ? actionMessages(action, text, options.writingOptions, options.inputFormat)
             : semanticMessages(text),
           stream: true,
           ...(options.onMetrics ? { stream_options: { include_usage: true } } : {}),

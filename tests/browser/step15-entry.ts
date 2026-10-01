@@ -4,6 +4,8 @@ export function runBenchmark(
   profile: ModelProfile,
   loadOnly: boolean,
   record: (value: unknown) => Promise<void>,
+  ids?: string[],
+  pipeline: 'original' | 'legacy-protected' = 'original',
 ) {
   return new Promise<void>((resolve, reject) => {
     const worker = new Worker(new URL('./step15-worker.ts', import.meta.url), { type: 'module' });
@@ -24,7 +26,7 @@ export function runBenchmark(
         }, reject);
       }
     };
-    worker.postMessage({ profile, loadOnly });
+    worker.postMessage({ profile, loadOnly, ids, pipeline });
   });
 }
 

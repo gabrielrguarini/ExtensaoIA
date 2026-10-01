@@ -1,3 +1,4 @@
+import { suggestionMetadata } from './fixtures';
 import { describe, expect, it } from 'vitest';
 import {
   isClientCommand,
@@ -74,7 +75,13 @@ describe('contratos nas fronteiras dos contextos', () => {
         }),
       ).toBe(true);
       expect(
-        isClientEvent({ type: 'action-result', binding, action: action.id, text: 'teste' }),
+        isClientEvent({
+          type: 'action-result',
+          ...suggestionMetadata,
+          binding,
+          action: action.id,
+          text: 'teste',
+        }),
       ).toBe(true);
     }
   });
@@ -113,9 +120,15 @@ describe('contratos nas fronteiras dos contextos', () => {
         request: { ...binding, text: 'x', action: 'corrigir', endpoint: 'https://example.com' },
       }),
     ).toBe(false);
-    expect(isClientEvent({ type: 'action-result', binding, action: 'enviar', text: 'x' })).toBe(
-      false,
-    );
+    expect(
+      isClientEvent({
+        type: 'action-result',
+        ...suggestionMetadata,
+        binding,
+        action: 'enviar',
+        text: 'x',
+      }),
+    ).toBe(false);
     expect(isClientEvent({ type: 'action-fragment', binding, action: 'enviar', text: 'x' })).toBe(
       false,
     );
@@ -185,5 +198,50 @@ describe('remetentes do Chrome', () => {
       ),
     ).toBe(false);
     expect(isCoordinator({ id: 'extension' }, 'extension')).toBe(true);
+  });
+});
+
+// A revisão tem payload próprio e não aceita resultados incompletos de escrita.
+describe('contratos de sugestão e revisão sob demanda', () => {
+  it('valida avaliação e identidade em profundidade', () => {
+    const event = {
+      type: 'action-result',
+      binding,
+      action: 'corrigir',
+      text: 'Legível.',
+      ...suggestionMetadata,
+    };
+    expect(isClientEvent(event)).toBe(true);
+    expect(
+      isClientEvent({
+        ...event,
+        assessment: { ...event.assessment, risks: [{ code: 'entity', message: 'risco' }] },
+      }),
+    ).toBe(false);
+    expect(isClientEvent({ ...event, engine: { ...event.engine, id: 'remote' } })).toBe(false);
+    expect(isClientEvent({ ...event, assessment: { ...event.assessment, approved: true } })).toBe(
+      false,
+    );
+    expect(
+      isClientEvent({ type: 'action-result', binding, action: 'corrigir', text: 'Sem avaliação.' }),
+    ).toBe(false);
+  });
+  it('aceita revisão explícita, recusa sugestão em ação normal e download na revisão', () => {
+    const command = {
+      type: 'start',
+      key: binding.key,
+      action: 'revisar-sentido',
+      text: 'Original.',
+      suggestion: 'Sugestão.',
+    };
+    expect(isClientCommand(command)).toBe(true);
+    expect(isClientCommand({ ...command, action: 'corrigir' })).toBe(false);
+    expect(isClientCommand({ ...command, suggestion: '' })).toBe(false);
+    expect(isClientCommand({ ...command, allowDownload: true, expectedProfile: 'economico' })).toBe(
+      false,
+    );
+    expect(
+      isClientEvent({ type: 'review-result', binding, text: 'Sugestão.', ...suggestionMetadata }),
+    ).toBe(true);
   });
 });

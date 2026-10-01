@@ -107,7 +107,7 @@ export function PreferenceFields({
         />
         Permitir novos emojis
       </label>
-      <p>Emojis existentes sempre são preservados.</p>
+      <p>A IA é orientada a preservar emojis existentes. Confira a sugestão e os avisos.</p>
       <label>
         <input
           type="checkbox"
@@ -119,7 +119,7 @@ export function PreferenceFields({
             }
           }}
         />
-        Revisão semântica adicional (mais lenta, desligada por padrão)
+        Mostrar botão Analisar sentido na prévia (opcional, mais lento)
       </label>
     </fieldset>
   );

@@ -6,3 +6,4 @@ coverage/
 package-lock.json
 # Evidências canônicas vinculadas por SHA-256; não reformatar resultados medidos.
 docs/benchmark/step15/
+docs/benchmark/step15a/

@@ -1,12 +1,54 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { MODEL_CHOICES, MODEL_PROFILES, smallerProfile } from '../src/extension/ai/model-catalog';
 import { cacheModelArtifacts } from '../src/extension/ai/model-cache';
-import { selectModel } from '../src/extension/ai/webllm-engine';
+import { selectModel, WebLLMEngine } from '../src/extension/ai/webllm-engine';
 import { correctionTokenBudget, parseQwenTemplate } from '../src/extension/ai/token-budget';
 
 afterEach(() => vi.unstubAllGlobals());
 
 describe('perfis locais fixados', () => {
+  it('informa identidade, capacidades e disponibilidade sem baixar nem carregar pesos', async () => {
+    const engine = new WebLLMEngine();
+    vi.stubGlobal('navigator', { gpu: undefined });
+    expect(engine.identity()).toEqual({
+      id: 'webllm',
+      model: null,
+      runtime: '0.2.82',
+      execution: 'webgpu',
+    });
+    expect(engine.capabilities()).toMatchObject({
+      languages: ['pt-BR'],
+      streaming: true,
+      semanticReview: true,
+      local: true,
+    });
+    expect(engine.capabilities().actions).toHaveLength(9);
+    expect(await engine.availability({ action: 'corrigir', language: 'es' })).toEqual({
+      state: 'unavailable',
+      reason: 'language',
+    });
+    expect(await engine.availability({ action: 'corrigir', language: 'pt-BR' })).toEqual({
+      state: 'unavailable',
+      reason: 'hardware',
+    });
+    vi.stubGlobal('navigator', {
+      platform: 'Win32',
+      gpu: {
+        requestAdapter: () =>
+          Promise.resolve({
+            features: new Set(['shader-f16']),
+            limits: {
+              maxStorageBufferBindingSize: 256 * 1024 * 1024,
+              maxBufferSize: 512 * 1024 * 1024,
+            },
+          }),
+      },
+    });
+    expect(await engine.availability({ action: 'semantic-review', language: 'pt-BR' })).toEqual({
+      state: 'requires-initialization',
+    });
+    expect(engine.isReady()).toBe(false);
+  });
   it('seleciona a variante f32 em todas as GPUs sem shader-f16 e informa requisito maior', async () => {
     const gpu = {
       requestAdapter: () =>

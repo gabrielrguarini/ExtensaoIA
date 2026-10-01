@@ -30,7 +30,7 @@ Texto corrigido: Mano, você pode ver isso? ENTITY_001
 
 Retorne exclusivamente o texto corrigido, sem rótulo, aspas, lista, markdown ou comentários.`;
 
-export function systemPromptFor(
+export function legacySystemPromptFor(
   action: WritingAction,
   options: WritingOptions = DEFAULT_WRITING_OPTIONS,
 ): string {
@@ -69,9 +69,31 @@ ${preferences}
 Se o rascunho terminar com interrogação, o texto final também deve ser uma pergunta com interrogação. Retorne somente o texto final, sem rótulo, aspas, lista, markdown ou comentários.`;
 }
 
-export function actionMessages(action: WritingAction, draft: string, options?: WritingOptions) {
+/** Preserva instruções/exemplos úteis, retirando somente o contrato histórico de placeholders. */
+export function systemPromptFor(action: WritingAction, options?: WritingOptions): string {
+  return legacySystemPromptFor(action, options)
+    .replace(/Alguns trechos podem aparecer[\s\S]*?(?=Exemplos de transformação:)/u, '')
+    .replace(/ENTITY_001, ENTITY_002 e identificadores[\s\S]*?(?=Exemplo da ação:)/u, '')
+    .replace(
+      /Rascunho(?: com dado protegido)?:[^\n]*ENTITY_[^\n]*\nTexto (?:corrigido|final):[^\n]*\n?/gu,
+      '',
+    );
+}
+
+export function actionMessages(
+  action: WritingAction,
+  draft: string,
+  options?: WritingOptions,
+  inputFormat: 'original' | 'legacy-protected' = 'original',
+) {
   return [
-    { role: 'system' as const, content: systemPromptFor(action, options) },
+    {
+      role: 'system' as const,
+      content:
+        inputFormat === 'legacy-protected'
+          ? legacySystemPromptFor(action, options)
+          : systemPromptFor(action, options),
+    },
     { role: 'user' as const, content: draft },
   ];
 }

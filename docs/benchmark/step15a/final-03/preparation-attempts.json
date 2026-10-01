@@ -1,0 +1,22 @@
+[
+  {
+    "run": "step15a-final-01",
+    "recordedAt": "2026-10-01T17:53:54.431Z",
+    "phase": "preparation",
+    "executedCases": 0,
+    "plannedCases": 24,
+    "error": "Service Worker instalado não ficou pronto.",
+    "modelIncompatibilityEstablished": false,
+    "observation": "Extensão desativada no perfil sintético. Preparação do harness corrigida para ativar somente o item do projeto e acordar o coordenador, sem fechar o navegador durante runtime.reload()."
+  },
+  {
+    "run": "step15a-final-02",
+    "recordedAt": "2026-10-01T17:57:05.882Z",
+    "phase": "preparation",
+    "executedCases": 0,
+    "plannedCases": 24,
+    "error": "Service Worker instalado não ficou pronto.",
+    "modelIncompatibilityEstablished": false,
+    "observation": "Extensão desativada no perfil sintético. Preparação do harness corrigida para ativar somente o item do projeto e acordar o coordenador, sem fechar o navegador durante runtime.reload()."
+  }
+]

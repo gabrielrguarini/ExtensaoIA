@@ -1,3 +1,6 @@
+import type { EngineIdentity, RiskAssessment } from '../../shared/suggestion';
+import { reviewPreview } from './action-client';
+import type { ReviewGenerator } from './action-client';
 import type { DraftSnapshot, WhatsAppAdapter } from '../../integration/whatsapp/adapter';
 import { MAX_TEXT_LENGTH } from '../../shared/protocol';
 import { generatePreview, SIMULATION_PREFIX } from './preview-client';
@@ -44,7 +47,10 @@ export type PreviewState =
       action: WritingAction | null;
       text: string;
       canReplace: boolean;
-      busy: 'copy' | 'replace' | null;
+      busy: 'copy' | 'replace' | 'review' | null;
+      engine?: EngineIdentity | undefined;
+      assessment?: RiskAssessment | undefined;
+      canReview?: boolean;
       message: string;
     };
 
@@ -57,6 +63,7 @@ export class PreviewSession {
   private preferenceRevision = 0;
   private unsubscribePreferences: (() => void) | undefined;
   private profile: ModelProfile = 'economico';
+  private showSemanticReview = false;
   private hardware: HardwareStatus = { state: 'checking' };
   private readonly listeners = new Set<() => void>();
   constructor(
@@ -67,6 +74,7 @@ export class PreviewSession {
     private readonly prove: ProofGenerator = runModelProof,
     private readonly write: ActionGenerator = generateAction,
     private readonly preferences: PreferenceStore = preferenceStore,
+    private readonly review: ReviewGenerator = reviewPreview,
   ) {}
 
   getState = (): PreviewState => this.state;
@@ -119,6 +127,7 @@ export class PreviewSession {
           this.preferenceRevision === preferenceRevision
         ) {
           this.profile = value.profile;
+          this.showSemanticReview = value.semanticReview;
           this.set({
             ...this.state,
             semanticReview: value.semanticReview,
@@ -148,7 +157,8 @@ export class PreviewSession {
       });
     } else if (
       changedProfile &&
-      ['download-confirm', 'action-loading', 'model-loading'].includes(this.state.kind)
+      (['download-confirm', 'action-loading', 'model-loading'].includes(this.state.kind) ||
+        (this.state.kind === 'preview' && this.state.busy === 'review'))
     ) {
       this.close();
       this.set({
@@ -336,6 +346,7 @@ export class PreviewSession {
 
   startAction(action: WritingAction): void {
     if (this.state.kind !== 'menu') return;
+    this.showSemanticReview = this.state.semanticReview;
     const snapshot = this.adapter.capture();
     if (!snapshot || !snapshot.text.replace(/[\s\u200b\u200e\u200f]/g, '')) {
       this.set({
@@ -408,6 +419,9 @@ export class PreviewSession {
             source: 'action',
             action,
             text: outcome.text,
+            engine: outcome.engine,
+            assessment: outcome.assessment,
+            canReview: this.showSemanticReview,
             canReplace: this.adapter.canReplace(snapshot, outcome.text),
             busy: null,
             message: '',
@@ -485,6 +499,50 @@ export class PreviewSession {
       );
     } catch {
       this.set({ kind: 'notice', message: 'Não foi possível conectar ao motor local.' });
+    }
+  }
+
+  reviewMeaning(): void {
+    const state = this.state;
+    const snapshot = this.snapshot;
+    if (
+      state.kind !== 'preview' ||
+      state.source !== 'action' ||
+      state.busy ||
+      !state.canReview ||
+      !snapshot
+    )
+      return;
+    this.validate();
+    if (this.state !== state) return;
+    const sequence = ++this.sequence;
+    this.set({ ...state, busy: 'review', message: 'Analisando sentido com IA local…' });
+    try {
+      this.cancelGeneration = this.review(
+        snapshot,
+        state.text,
+        (outcome) => {
+          if (sequence !== this.sequence) return;
+          this.cancelGeneration = undefined;
+          this.validate();
+          if (sequence !== this.sequence) return;
+          this.set({
+            ...state,
+            busy: null,
+            assessment: outcome.ok ? outcome.assessment : state.assessment,
+            message: outcome.ok
+              ? 'Análise adicional concluída. Revise os avisos.'
+              : outcome.message,
+          });
+        },
+        this.profile,
+      );
+    } catch {
+      this.set({
+        ...state,
+        busy: null,
+        message: 'Não foi possível analisar o sentido. Revise manualmente.',
+      });
     }
   }
 

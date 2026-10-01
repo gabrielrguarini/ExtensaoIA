@@ -1,0 +1,63 @@
+{
+  "campaign": {
+    "profiles": [
+      "economico"
+    ],
+    "rounds": 1,
+    "ids": [
+      "B01-corrigir",
+      "B01-melhorar",
+      "B01-formal",
+      "B01-profissional",
+      "B01-amigavel",
+      "B01-natural",
+      "B01-conciso",
+      "B01-engracado",
+      "B01-reescrever",
+      "B02-corrigir",
+      "B02-melhorar",
+      "B02-formal",
+      "B02-profissional",
+      "B02-amigavel",
+      "B02-natural",
+      "B02-conciso",
+      "B02-engracado",
+      "B02-reescrever",
+      "B03-corrigir",
+      "B03-melhorar",
+      "B03-formal",
+      "B03-profissional",
+      "B03-amigavel",
+      "B03-natural"
+    ],
+    "pipeline": "original"
+  },
+  "summary": {
+    "economico": {
+      "expected": 24,
+      "completed": 24,
+      "pending": 0,
+      "suggestionAvailable": 24,
+      "technicalFailures": 0,
+      "withWarnings": 23,
+      "unchanged": 0,
+      "totalMs": {
+        "denominator": 24,
+        "measured": 24,
+        "unavailable": 0,
+        "median": 1377,
+        "p95": 1970.5
+      },
+      "firstVisibleMs": {
+        "denominator": 24,
+        "measured": 24,
+        "unavailable": 0,
+        "median": 893.1000000238419,
+        "p95": 1324.6999999284744
+      },
+      "quality": "Requer anotação humana por caso; disponibilidade/avisos não são utilidade ou preservação."
+    }
+  },
+  "interruptions": [],
+  "attempts": 24
+}

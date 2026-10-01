@@ -64,8 +64,8 @@ describe('nove ações de escrita', () => {
     expect(systemPromptFor('reescrever')).toMatch(/Não transforme pedido em afirmação/iu);
     for (const action of WRITING_ACTIONS.filter(({ id }) => id !== 'corrigir')) {
       const prompt = systemPromptFor(action.id);
-      expect(prompt).toContain('Rascunho com dado protegido:');
-      expect(prompt.match(/ENTITY_001/g)?.length).toBeGreaterThanOrEqual(3);
+      expect(prompt).not.toContain('Rascunho com dado protegido:');
+      expect(prompt).not.toContain('ENTITY_');
       expect(prompt).toMatch(/interrogação.*pergunta com interrogação/iu);
     }
   });

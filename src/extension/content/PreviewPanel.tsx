@@ -245,12 +245,33 @@ export function PreviewPanel({
       {state.kind === 'notice' && <p role="alert">{state.message}</p>}
       {state.kind === 'preview' && (
         <>
-          <p>
-            Revise o texto. Substituir confirma a troca do rascunho; nenhuma mensagem será enviada.
-          </p>
+          <p>Revise o texto e os avisos antes de usar a sugestão. Nenhuma mensagem será enviada.</p>
           <pre aria-label="Texto da sugestão" tabIndex={0}>
             {state.text}
           </pre>
+          {state.source === 'action' && (
+            <div role="status" className="suggestion-warnings">
+              <p>
+                {state.assessment?.status === 'unchanged' ? 'Sem alterações.' : 'Sugestão gerada.'}
+              </p>
+              <p>{state.engine ? state.engine.model + ' · ' + state.engine.id : ''}</p>
+              {state.assessment?.risks.length ? (
+                <ul>
+                  {state.assessment.risks.map((risk, index) => (
+                    <li key={index}>{risk.message}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p>
+                  Nenhum risco detectado pelas verificações. Isso não garante equivalência de
+                  sentido.
+                </p>
+              )}
+              {state.assessment?.semanticReview === 'completed' && (
+                <p>A análise de sentido também pode errar.</p>
+              )}
+            </div>
+          )}
           {!state.canReplace && (
             <p className="copy-only">
               Somente cópia: textos com várias linhas, estruturas especiais ou editores sem suporte
@@ -266,7 +287,11 @@ export function PreviewPanel({
                 if (event.isTrusted) void session.replace();
               }}
             >
-              {state.busy === 'replace' ? 'Substituindo…' : 'Substituir'}
+              {state.busy === 'replace'
+                ? 'Substituindo…'
+                : state.source === 'action' && !!state.assessment?.risks.length
+                  ? 'Substituir mesmo assim'
+                  : 'Substituir'}
             </button>
             <button
               type="button"
@@ -278,6 +303,17 @@ export function PreviewPanel({
               {state.busy === 'copy' ? 'Copiando…' : 'Copiar'}
             </button>
           </div>
+          {state.source === 'action' && state.canReview && (
+            <button
+              type="button"
+              disabled={!!state.busy}
+              onClick={(event) => {
+                if (event.isTrusted) session.reviewMeaning();
+              }}
+            >
+              {state.busy === 'review' ? 'Analisando…' : 'Analisar sentido'}
+            </button>
+          )}
           <p className="feedback" role="status">
             {state.message}
           </p>

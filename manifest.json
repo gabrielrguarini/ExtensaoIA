@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "IA local — WhatsApp Web (desenvolvimento)",
-  "version": "0.14.0",
-  "description": "STEP-14: IA local com preferências, popup, painel lateral e prévia no editor. Sem envio de mensagens.",
+  "version": "0.15.0",
+  "description": "STEP-15-A: IA local com preferências, popup, painel lateral e prévia no editor. Sem envio de mensagens.",
   "minimum_chrome_version": "116",
   "permissions": ["storage", "offscreen", "sidePanel"],
   "host_permissions": [

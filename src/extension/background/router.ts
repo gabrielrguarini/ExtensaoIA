@@ -1,5 +1,4 @@
 import { isClientCommand, isRequestEvent, sameBinding, sameKey } from '../../shared/protocol';
-import { isWritingAction } from '../../shared/actions';
 import type { ModelProfile } from '../ai/model-catalog';
 import { DEFAULT_WRITING_OPTIONS } from '../../shared/writing-options';
 import type { WritingOptions } from '../../shared/writing-options';
@@ -43,12 +42,15 @@ export class RequestRouter {
   constructor(
     private readonly ensureEngine: () => Promise<Engine>,
     private readonly timeoutMs = 15_000,
-    private readonly semanticReviewEnabled: () => Promise<boolean> = () => Promise.resolve(false),
+    _semanticReviewEnabled: () => Promise<boolean> = () => Promise.resolve(false),
     private readonly selectedProfile: () => Promise<ModelProfile> = () =>
       Promise.resolve('economico'),
     private readonly writingOptions: () => Promise<WritingOptions> = () =>
       Promise.resolve(DEFAULT_WRITING_OPTIONS),
-  ) {}
+  ) {
+    // Compatibilidade com injeções anteriores; a preferência não dispara geração.
+    void _semanticReviewEnabled;
+  }
 
   receive(client: Client, value: unknown): void {
     if (!isClientCommand(value)) {
@@ -115,6 +117,7 @@ export class RequestRouter {
         semanticReview: false,
         profile: 'economico',
         allowDownload: value.allowDownload === true,
+        ...(value.suggestion === undefined ? {} : { suggestion: value.suggestion }),
       },
       value.expectedProfile,
     );
@@ -128,12 +131,12 @@ export class RequestRouter {
     if (this.active !== active) return;
     try {
       if (request.action !== 'simular') {
-        const [semanticReview, profile, options] = await Promise.all([
-          isWritingAction(request.action) ? this.semanticReviewEnabled() : Promise.resolve(false),
+        const [profile, options] = await Promise.all([
           this.selectedProfile(),
           this.writingOptions(),
         ]);
-        request.semanticReview = semanticReview;
+        // A preferência mostra o botão; nenhuma segunda geração automática.
+        request.semanticReview = false;
         request.profile = profile;
         request.writingOptions = options;
         if (
@@ -165,7 +168,8 @@ export class RequestRouter {
         value.type === 'action-result' ||
         value.type === 'action-rejected') &&
         active.action !== value.action) ||
-      (value.type === 'proof-result' && active.action !== 'prova-modelo')
+      (value.type === 'proof-result' && active.action !== 'prova-modelo') ||
+      (value.type === 'review-result' && active.action !== 'revisar-sentido')
     )
       return;
     // Após cancelar, nem mesmo um resultado que estava em trânsito pode ser aplicado.
@@ -173,6 +177,7 @@ export class RequestRouter {
     if (
       value.type === 'result' ||
       value.type === 'action-result' ||
+      value.type === 'review-result' ||
       value.type === 'action-rejected' ||
       value.type === 'proof-result' ||
       value.type === 'cancelled' ||
