@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useSyncExternalStore } from 'react';
 import type { PreviewSession } from './preview-session';
-import { MODEL_CHOICES, PROFILE_LABELS } from '../ai/model-catalog';
+import { PROFILE_LABELS } from '../ai/model-catalog';
+import { localChoice } from '../ai/local-choice';
 import { WRITING_ACTIONS, writingAction } from '../../shared/actions';
 import { PreferenceFields } from '../settings/PreferenceFields';
 
@@ -14,11 +15,20 @@ export function PreviewPanel({
   const state = useSyncExternalStore(session.subscribe, session.getState);
   const menuChoice =
     state.kind === 'menu'
-      ? MODEL_CHOICES[state.profile][
-          state.hardware.state === 'available' && !state.hardware.shaderF16 ? 'q4f32_1' : 'q4f16_1'
-        ]
+      ? localChoice(
+          state.profile,
+          state.preferences.localModel === 'gemma'
+            ? state.hardware.state === 'available' && !state.hardware.shaderF16
+              ? 'q4'
+              : 'q4f16'
+            : state.hardware.state === 'available' && !state.hardware.shaderF16
+              ? 'q4f32_1'
+              : 'q4f16_1',
+        )
       : null;
   const panel = useRef<HTMLElement>(null);
+  const downloadChoice =
+    state.kind === 'download-confirm' ? localChoice(state.profile, state.variant) : null;
   const menuFocused = useRef(false);
   const menuReady = state.kind === 'menu' && state.preferenceStatus === 'ready';
   useLayoutEffect(() => {
@@ -102,15 +112,18 @@ export function PreviewPanel({
           </div>
           <div className="model-proof">
             <h3>
-              {PROFILE_LABELS[state.profile]} · {menuChoice?.id}
+              {state.preferences.localModel === 'webllm' && `${PROFILE_LABELS[state.profile]} · `}
+              {menuChoice?.id}
             </h3>
             <p>
               Contexto: {menuChoice?.contextTokens.toLocaleString('pt-BR')} tokens. Download
               completo conhecido:{' '}
               {menuChoice ? (menuChoice.downloadBytes / 1_000_000_000).toFixed(2) : '—'} GB de
               dados. Requisito de GPU estimado:{' '}
-              {menuChoice ? Math.ceil(menuChoice.gpuMemoryEstimateMB).toLocaleString('pt-BR') : '—'}{' '}
-              MB. VRAM livre não é informada pelo navegador; o carregamento real confirma a
+              {menuChoice?.gpuMemoryEstimateMB
+                ? `${Math.ceil(menuChoice.gpuMemoryEstimateMB).toLocaleString('pt-BR')} MB`
+                : 'não medido'}
+              . VRAM livre não é informada pelo navegador; o carregamento real confirma a
               disponibilidade.
             </p>
             <p>
@@ -118,15 +131,20 @@ export function PreviewPanel({
               {state.hardware.state === 'checking' || state.hardware.state === 'unavailable'
                 ? 'a verificar no Worker'
                 : menuChoice?.variant}
-              . Sem shader-f16, a variante f32 exige mais memória de GPU.
+              .{' '}
+              {state.preferences.localModel === 'gemma'
+                ? 'O Worker escolhe q4f16 quando shader-f16 está disponível; caso contrário, q4.'
+                : 'Sem shader-f16, a variante f32 exige mais memória de GPU.'}
             </p>
             <p>
               Licença:{' '}
               <a
                 href={
-                  state.profile === 'economico'
-                    ? 'https://dev.meta.ai/llama/llama3_2/license'
-                    : 'https://www.apache.org/licenses/LICENSE-2.0'
+                  state.preferences.localModel === 'gemma'
+                    ? 'https://www.apache.org/licenses/LICENSE-2.0'
+                    : state.profile === 'economico'
+                      ? 'https://dev.meta.ai/llama/llama3_2/license'
+                      : 'https://www.apache.org/licenses/LICENSE-2.0'
                 }
                 target="_blank"
                 rel="noopener noreferrer"
@@ -172,19 +190,19 @@ export function PreviewPanel({
       )}
       {state.kind === 'download-confirm' && (
         <div className="model-proof" role="status">
-          <h3>Download necessário · {PROFILE_LABELS[state.profile]}</h3>
+          <h3>Download necessário · {downloadChoice?.id}</h3>
           <p>
             O cache está ausente, incompleto ou inconsistente. O download reaproveita arquivos
             válidos e repara os demais; seu rascunho permanece intacto.
           </p>
           <p>
-            Para usar {MODEL_CHOICES[state.profile][state.variant].id}, baixe{' '}
-            {(MODEL_CHOICES[state.profile][state.variant].downloadBytes / 1_000_000_000).toFixed(2)}{' '}
-            GB de dados do modelo. Contexto: 4.096 tokens. Requisito de GPU estimado:{' '}
-            {Math.ceil(
-              MODEL_CHOICES[state.profile][state.variant].gpuMemoryEstimateMB,
-            ).toLocaleString('pt-BR')}{' '}
-            MB. VRAM livre: indisponível.
+            Para usar {downloadChoice?.id}, baixe{' '}
+            {downloadChoice ? (downloadChoice.downloadBytes / 1_000_000_000).toFixed(2) : '—'} GB de
+            dados do modelo. Contexto: 4.096 tokens. Requisito de GPU estimado:{' '}
+            {downloadChoice?.gpuMemoryEstimateMB
+              ? `${Math.ceil(downloadChoice.gpuMemoryEstimateMB).toLocaleString('pt-BR')} MB`
+              : 'não medido'}
+            . VRAM livre: indisponível.
           </p>
           {state.variant === 'q4f32_1' && (
             <p>

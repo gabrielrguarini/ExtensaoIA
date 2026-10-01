@@ -25,19 +25,8 @@ import type {
   EngineIdentity,
 } from '../../shared/suggestion';
 
-export class ModelEnvironmentError extends Error {
-  constructor(
-    readonly code:
-      | 'WEBGPU_UNAVAILABLE'
-      | 'INSUFFICIENT_RESOURCES'
-      | 'MODEL_DOWNLOAD'
-      | 'DOWNLOAD_REQUIRED'
-      | 'CONTEXT_LIMIT'
-      | 'UNAVAILABLE',
-  ) {
-    super(code);
-  }
-}
+import { ModelEnvironmentError } from './model-error';
+export { ModelEnvironmentError } from './model-error';
 
 export async function selectModel(
   gpu: GPU | undefined,

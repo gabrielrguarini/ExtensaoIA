@@ -6,6 +6,8 @@ import { isWritingOptions } from './writing-options';
 import type { WritingOptions } from './writing-options';
 import { isEngineIdentity, isRiskAssessment } from './suggestion';
 import type { SuggestionResult } from './suggestion';
+import { isLocalVariant } from './local-model';
+import type { LocalVariant } from './local-model';
 
 export const CLIENT_PORT = 'writing-client-v1';
 export const MAX_TEXT_LENGTH = 8_000;
@@ -85,7 +87,7 @@ export type RequestEvent =
         | 'validating'
         | 'reviewing';
       percent: number;
-      variant: 'q4f16_1' | 'q4f32_1' | null;
+      variant: LocalVariant | null;
     }
   | { type: 'fragment'; binding: Binding; text: string }
   | { type: 'action-fragment'; binding: Binding; action: WritingAction; text: string }
@@ -97,7 +99,7 @@ export type RequestEvent =
       type: 'proof-result';
       binding: Binding;
       text: string;
-      variant: 'q4f16_1' | 'q4f32_1';
+      variant: LocalVariant;
     }
   | { type: 'cancelled'; binding: Binding }
   | { type: 'error'; binding: Binding; code: ErrorCode };
@@ -269,7 +271,7 @@ export function isRequestEvent(value: unknown): value is RequestEvent {
         Number.isFinite(value.percent) &&
         value.percent >= 0 &&
         value.percent <= 100 &&
-        (value.variant === null || value.variant === 'q4f16_1' || value.variant === 'q4f32_1')
+        (value.variant === null || isLocalVariant(value.variant))
       );
     case 'fragment':
       return fields(value, ['type', 'binding', 'text']) && textValue(value.text);
@@ -310,7 +312,7 @@ export function isRequestEvent(value: unknown): value is RequestEvent {
       return (
         fields(value, ['type', 'binding', 'text', 'variant']) &&
         textValue(value.text) &&
-        (value.variant === 'q4f16_1' || value.variant === 'q4f32_1')
+        isLocalVariant(value.variant)
       );
     case 'cancelled':
       return fields(value, ['type', 'binding']);

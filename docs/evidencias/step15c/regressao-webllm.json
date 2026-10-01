@@ -1,0 +1,138 @@
+{
+  "browser": "154.0.8037.0",
+  "version": "0.15.2",
+  "experimental": false,
+  "regular": false,
+  "portuguesePrompt": false,
+  "checks": {
+    "migration": true,
+    "visibleSidePanel": true,
+    "offscreenStatus": true,
+    "downloadBlockedWhenUnavailable": true,
+    "offline": true,
+    "engineSelectedBeforeGeneration": true,
+    "originalPreserved": true,
+    "reviewWarnings": true,
+    "manualReplacementUndo": true,
+    "staleBlocked": true,
+    "nativeUnloadCommand": true,
+    "preferencesOnly": true
+  },
+  "nativeGeneration": "pending-browser-availability",
+  "startedAt": "2026-10-01T23:25:15.601Z",
+  "status": {
+    "ok": true,
+    "language": "pt-BR",
+    "chromePortuguesePrompt": false,
+    "actions": [
+      {
+        "action": "corrigir",
+        "availability": "unavailable"
+      },
+      {
+        "action": "melhorar",
+        "availability": "unavailable"
+      },
+      {
+        "action": "formal",
+        "availability": "unavailable"
+      },
+      {
+        "action": "profissional",
+        "availability": "unavailable"
+      },
+      {
+        "action": "amigavel",
+        "availability": "unavailable"
+      },
+      {
+        "action": "natural",
+        "availability": "unavailable"
+      },
+      {
+        "action": "conciso",
+        "availability": "unavailable"
+      },
+      {
+        "action": "engracado",
+        "availability": "unavailable"
+      },
+      {
+        "action": "reescrever",
+        "availability": "unavailable"
+      },
+      {
+        "action": "semantic-review",
+        "availability": "unavailable"
+      }
+    ],
+    "sessionReady": false
+  },
+  "apisPresent": {
+    "prompt": true,
+    "rewriter": false,
+    "proofreader": false
+  },
+  "englishControl": {
+    "LanguageModel": "timeout-2s",
+    "Rewriter": "absent",
+    "Proofreader": "absent"
+  },
+  "portugueseControl": {
+    "panel": {
+      "withoutDeclarations": "timeout-2s",
+      "pt": "unavailable"
+    },
+    "offscreen": {
+      "withoutDeclarations": "timeout-2s",
+      "pt": "unavailable"
+    },
+    "generation": "availability-control-only"
+  },
+  "panel": [
+    {
+      "text": "Corrigir · proofreaderPainel: Indisponível para esta ação e pt-BR. Inferência: Indisponível para esta ação e pt-BR.Preparar Corrigir",
+      "disabled": true
+    },
+    {
+      "text": "Melhorar · rewriterPainel: Indisponível para esta ação e pt-BR. Inferência: Indisponível para esta ação e pt-BR.Preparar Melhorar",
+      "disabled": true
+    },
+    {
+      "text": "Formal · rewriterPainel: Indisponível para esta ação e pt-BR. Inferência: Indisponível para esta ação e pt-BR.Preparar Formal",
+      "disabled": true
+    },
+    {
+      "text": "Profissional · promptPainel: Indisponível para esta ação e pt-BR. Inferência: Indisponível para esta ação e pt-BR.Preparar Profissional",
+      "disabled": true
+    },
+    {
+      "text": "Amigável · rewriterPainel: Indisponível para esta ação e pt-BR. Inferência: Indisponível para esta ação e pt-BR.Preparar Amigável",
+      "disabled": true
+    },
+    {
+      "text": "Natural · promptPainel: Indisponível para esta ação e pt-BR. Inferência: Indisponível para esta ação e pt-BR.Preparar Natural",
+      "disabled": true
+    },
+    {
+      "text": "Conciso · rewriterPainel: Indisponível para esta ação e pt-BR. Inferência: Indisponível para esta ação e pt-BR.Preparar Conciso",
+      "disabled": true
+    },
+    {
+      "text": "Engraçado · promptPainel: Indisponível para esta ação e pt-BR. Inferência: Indisponível para esta ação e pt-BR.Preparar Engraçado",
+      "disabled": true
+    },
+    {
+      "text": "Reescrever · rewriterPainel: Indisponível para esta ação e pt-BR. Inferência: Indisponível para esta ação e pt-BR.Preparar Reescrever",
+      "disabled": true
+    },
+    {
+      "text": "Analisar sentido · promptPainel: Indisponível para esta ação e pt-BR. Inferência: Indisponível para esta ação e pt-BR.Preparar Analisar sentido",
+      "disabled": true
+    }
+  ],
+  "generationMs": 26930,
+  "engine": "webllm",
+  "pageErrors": 0,
+  "completedAt": "2026-10-01T23:25:51.558Z"
+}

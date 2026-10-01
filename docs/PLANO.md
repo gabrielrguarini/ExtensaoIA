@@ -78,13 +78,15 @@ A IA implementadora deve criar arquivos completos, sem marcadores como “resto 
 | Adaptador do WhatsApp | Isolar seletores, snapshot do editor, leitura, inserção e validação da edição.                |
 | Service Worker        | Validar remetentes e mensagens, coordenar configurações e criar o contexto da IA.             |
 | Documento offscreen   | Validar e rotear pedidos da aba e hospedar um Worker com finalidade WORKERS.                  |
-| Worker de IA          | Executar WebLLM e manter uma única instância do modelo.                                       |
+| Worker de IA          | Executar WebLLM ou Transformers.js e manter uma única instância do modelo local selecionado.  |
 | Núcleo de reescrita   | Produzir prompts com texto original e comparar entidades/risco após a geração.                |
 | Armazenamento         | Guardar preferências e artefatos dos modelos; mensagens ficam somente em memória temporária.  |
 
-O offscreen comunica-se com a extensão por chrome.runtime; acesso a preferências passa pelo coordenador. O pedido e a resposta usam uma porta direta entre content script e offscreen, com origem validada pelo remetente do Chrome. O encerramento do Service Worker por inatividade não perde esse contexto; perder a aba, a porta ou a IA continua encerrando o pedido sem replay. Essa correção do escopo acumulado da STEP-12 está registrada no [relatório](VALIDACAO-STEP-12.md#correção-da-conexão-durante-inferência--30092026). O Worker deve usar a interface própria AIEngine, deixando APIs WebLLM restritas ao adaptador.
+O offscreen comunica-se com a extensão por chrome.runtime; acesso a preferências passa pelo coordenador. O pedido e a resposta usam uma porta direta entre content script e offscreen, com origem validada pelo remetente do Chrome. O encerramento do Service Worker por inatividade não perde esse contexto; perder a aba, a porta ou a IA continua encerrando o pedido sem replay. Essa correção do escopo acumulado da STEP-12 está registrada no [relatório](VALIDACAO-STEP-12.md#correção-da-conexão-durante-inferência--30092026). O Worker deve usar a interface própria AIEngine, deixando APIs WebLLM/Transformers.js restritas aos adaptadores.
 
 Na STEP-15-B, o offscreen também hospeda o adaptador Chrome. Seleção e inicialização precedem a geração: confirmar configuração, ação e estado disponível nesse documento; preparar downloads apenas no painel visível. Runtimes próprios permanecem no Worker. Preferências v4 guardam `engine`, `profile` (modelo local/alternativa) e `chromePortuguesePrompt` (compatibilidade experimental manual, desligada por padrão). Consultas da interface verificam inventário do cache; integridade integral permanece no carregamento.
+
+Na STEP-15-C, preferências v5 separam `engine: chrome-preferred | local`, `localModel: webllm | gemma` e o `profile` WebLLM preservado. A escolha manual v4 migra para `local`/`webllm`; os demais padrões permanecem. Gemma 4 E2B usa Transformers.js 4.2.0 em Worker próprio, `Gemma4ForCausalLM`, apenas tokenizer/embed_tokens/decoder ONNX e revisão fixa. Variante q4f16 com shader-f16, q4 sem esse recurso; ambas quantizam pesos em quatro bits. Contexto do produto de 4.096 tokens, sem raciocínio prolongado. Cache API canônica com tamanho/SHA-256 em fluxo no download e carregamento; executáveis ONNX locais, sem cache paralelo do runtime. [Detalhes e evidências C](VALIDACAO-STEP-15-C.md).
 
 Processar uma solicitação por vez. Pedidos concorrentes recebem “IA ocupada”. Limpar estado de conversa entre solicitações, sem descarregar os pesos a cada chamada.
 

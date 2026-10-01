@@ -1,0 +1,46 @@
+[
+  {
+    "startedAt": "2026-10-01T22:46:51.302Z",
+    "checks": {},
+    "error": "Expected values to be strictly equal:\n\n'webllm' !== 'gemma'\n"
+  },
+  {
+    "startedAt": "2026-10-01T22:47:16.336Z",
+    "checks": {
+      "explicitDownload": true
+    },
+    "error": "Prévia da sugestão\n\nNão foi possível processar o texto localmente. O rascunho permanece intacto.\n\nCancelar"
+  },
+  {
+    "startedAt": "2026-10-01T22:52:22.139Z",
+    "checks": {},
+    "error": "Prévia da sugestão\n\nNão foi possível processar o texto localmente. O rascunho permanece intacto.\n\nCancelar"
+  },
+  {
+    "startedAt": "2026-10-01T22:57:43.749Z",
+    "checks": {
+      "realGemmaWebGPU": true,
+      "offline": true
+    },
+    "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /^Substituir(?: mesmo assim)?$/u })\u001b[22m\n"
+  },
+  {
+    "startedAt": "2026-10-01T23:00:07.455Z",
+    "checks": {
+      "realGemmaWebGPU": true,
+      "offline": true,
+      "manualReplacementUndo": true
+    },
+    "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Melhorar com IA local', exact: true })\u001b[22m\n"
+  },
+  {
+    "startedAt": "2026-10-01T23:07:08.428Z",
+    "checks": {
+      "realGemmaWebGPU": true,
+      "offline": true,
+      "manualReplacementUndo": true,
+      "modelProof": true
+    },
+    "error": "locator.check: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByLabel('Revisão semântica adicional', { exact: true })\u001b[22m\n"
+  }
+]

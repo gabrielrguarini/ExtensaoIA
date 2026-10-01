@@ -2,11 +2,13 @@ import { fields, record } from './protocol';
 import type { ModelProfile } from '../extension/ai/model-catalog';
 import { isWritingAction } from './actions';
 import type { WritingAction } from './actions';
+import type { LocalModel } from './local-model';
 
 export const PREFERENCES_KEY = 'writingPreferences';
 export interface WritingPreferences {
-  version: 4;
-  engine: 'chrome-preferred' | 'webllm';
+  version: 5;
+  engine: 'chrome-preferred' | 'local';
+  localModel: LocalModel;
   chromePortuguesePrompt: boolean;
   semanticReview: boolean;
   /** Modelo WebLLM escolhido, inclusive como alternativa ao Chrome. */
@@ -18,8 +20,9 @@ export interface WritingPreferences {
   addEmojis: boolean;
 }
 export const DEFAULT_PREFERENCES: WritingPreferences = {
-  version: 4,
+  version: 5,
   engine: 'chrome-preferred',
+  localModel: 'webllm',
   chromePortuguesePrompt: false,
   semanticReview: false,
   profile: 'economico',
@@ -36,7 +39,9 @@ export function isPreferencePatch(value: unknown): value is PreferencePatch {
   return Object.entries(value).every(([key, item]) => {
     switch (key) {
       case 'engine':
-        return item === 'chrome-preferred' || item === 'webllm';
+        return item === 'chrome-preferred' || item === 'local';
+      case 'localModel':
+        return item === 'webllm' || item === 'gemma';
       case 'language':
         return item === 'pt-BR';
       case 'theme':
@@ -85,12 +90,15 @@ export function isPreferenceCommand(value: unknown): value is PreferenceCommand 
 
 export function parsePreferences(value: unknown): WritingPreferences {
   const result = { ...DEFAULT_PREFERENCES };
-  if (!record(value) || ![1, 2, 3, 4].includes(value.version as number)) return result;
+  if (!record(value) || ![1, 2, 3, 4, 5].includes(value.version as number)) return result;
+  if (value.version === 4 && value.engine === 'webllm') result.engine = 'local';
   // Lista fechada: migra valores válidos e descarta qualquer conteúdo/ chave desconhecida.
   for (const key of Object.keys(DEFAULT_PREFERENCES)) {
     if (
       key === 'version' ||
-      (['engine', 'chromePortuguesePrompt'].includes(key) && value.version !== 4) ||
+      (key === 'localModel' && value.version !== 5) ||
+      (key === 'engine' && value.version !== 5) ||
+      (key === 'chromePortuguesePrompt' && value.version !== 4 && value.version !== 5) ||
       (value.version === 1 && key !== 'semanticReview') ||
       (value.version === 2 && !['semanticReview', 'profile'].includes(key))
     )

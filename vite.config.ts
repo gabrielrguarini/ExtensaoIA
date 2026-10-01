@@ -41,11 +41,30 @@ function extensionPackage(): Plugin {
       await writeFile(path.join(outDir, 'manifest.json'), manifest);
       await copyFile(new URL('./NOTICE.txt', import.meta.url), path.join(outDir, 'NOTICE.txt'));
       await mkdir(path.join(outDir, 'licenses'), { recursive: true });
+      await mkdir(path.join(outDir, 'runtime'), { recursive: true });
+      for (const executable of [
+        'ort-wasm-simd-threaded.asyncify.mjs',
+        'ort-wasm-simd-threaded.asyncify.wasm',
+      ])
+        await copyFile(
+          new URL('./node_modules/onnxruntime-web/dist/' + executable, import.meta.url),
+          path.join(outDir, 'runtime', executable),
+        );
       for (const license of [
         'LLAMA-3.2-LICENSE',
         'QWEN3-LICENSE',
         'WEBLLM-LICENSE',
         'NOBLE-HASHES-LICENSE',
+        'GEMMA-4-LICENSE',
+        'TRANSFORMERS-JS-LICENSE',
+        'ONNXRUNTIME-LICENSE',
+        'ONNXRUNTIME-THIRD-PARTY-NOTICES',
+        'HUGGINGFACE-JINJA-LICENSE',
+        'HUGGINGFACE-TOKENIZERS-LICENSE',
+        'FLATBUFFERS-LICENSE',
+        'LONG-LICENSE',
+        'PROTOBUFJS-LICENSE',
+        'PLATFORM-LICENSE',
       ])
         await copyFile(
           new URL(`./licenses/${license}`, import.meta.url),

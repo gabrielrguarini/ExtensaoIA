@@ -1,0 +1,535 @@
+{
+  "stage": "STEP-15-C",
+  "packageVersion": "0.15.2",
+  "mandatoryCheck": {
+    "command": "npm.cmd run check",
+    "exitCode": 0,
+    "testStartedAtLocal": "2026-10-01 20:36:20 America/Sao_Paulo",
+    "typecheck": "passed",
+    "lintMaxWarnings0": "passed",
+    "prettier": "passed",
+    "testsPassed": 254,
+    "testFilesPassed": 37,
+    "build": "passed",
+    "sourceLogSha256": "7ef784cad1ea700d7a49a9bfad38535fdb5d9501cc2b6f19ddd7505a1d4196e4"
+  },
+  "cleanInstall": {
+    "command": "npm.cmd ci --cache .cache/npm --no-audit",
+    "exitCode": 0,
+    "lockfileSha256Before": "c0bcb3a065a3953f0dbdccbaaa9bee7616a1e2d4af14f69a1c76d7706ad10009",
+    "lockfileSha256After": "c0bcb3a065a3953f0dbdccbaaa9bee7616a1e2d4af14f69a1c76d7706ad10009"
+  },
+  "audit": {
+    "command": "npm.cmd audit --json",
+    "totalVulnerabilities": 0,
+    "evidence": "npm-audit.json"
+  },
+  "browserChecks": {
+    "offlineNineActions": {
+      "workerNetworkObserved": true,
+      "realGemmaWebGPU": true,
+      "chromeUnavailableGemmaFallback": true,
+      "offline": true,
+      "manualReplacementUndo": true,
+      "allActions": true
+    },
+    "controls": {
+      "workerNetworkObserved": true,
+      "realGemmaWebGPU": true,
+      "offline": true,
+      "manualReplacementUndo": true,
+      "modelProof": true,
+      "manualSemanticReview": true,
+      "streaming": true,
+      "concurrency": true,
+      "cancelledApplicationBlocked": true,
+      "staleBlocked": true,
+      "modelSwitchUnload": true,
+      "requestIsolation": true,
+      "idleRelease": true,
+      "unloadPreservesCache": true
+    },
+    "cache": {
+      "workerNetworkObserved": true,
+      "realGemmaWebGPU": true,
+      "offline": true,
+      "manualReplacementUndo": true,
+      "removeCache": true,
+      "unrelatedCachePreserved": true,
+      "noSilentRedownload": true,
+      "interruptedDownload": true,
+      "explicitRestore": true,
+      "canonicalWeightsOnly": true,
+      "networkAudit": true
+    },
+    "finalDownloadDisclosure": {
+      "workerNetworkObserved": true,
+      "realGemmaWebGPU": true,
+      "offline": true,
+      "manualReplacementUndo": true,
+      "correctDownloadDisclosure": true
+    },
+    "nativeRegression": {
+      "migration": true,
+      "visibleSidePanel": true,
+      "nativePreparation": true,
+      "offscreenStatus": true,
+      "downloadBlockedWhenUnavailable": true,
+      "offline": true,
+      "engineSelectedBeforeGeneration": true,
+      "originalPreserved": true,
+      "reviewWarnings": true,
+      "nativeStructuredReview": true,
+      "manualReplacementUndo": true,
+      "nativeAllActions": true,
+      "nativeStreaming": true,
+      "staleBlocked": true,
+      "nativeUnloadCommand": true,
+      "nativeIsolatedClones": true,
+      "preferencesOnly": true
+    },
+    "webllmRegression": {
+      "migration": true,
+      "visibleSidePanel": true,
+      "offscreenStatus": true,
+      "downloadBlockedWhenUnavailable": true,
+      "offline": true,
+      "engineSelectedBeforeGeneration": true,
+      "originalPreserved": true,
+      "reviewWarnings": true,
+      "manualReplacementUndo": true,
+      "staleBlocked": true,
+      "nativeUnloadCommand": true,
+      "preferencesOnly": true
+    }
+  },
+  "evidenceScope": "Resultados intermediários mantidos; ajuste final de progresso/aviso coberto por gemma-download-aviso.json e checks finais. Não houve alteração de runtime depois desses checks.",
+  "sources": {
+    ".gitattributes": {
+      "bytes": 146,
+      "sha256": "0b274a6ffd3c8eb061a50cace87b8744027065aff18dd94dfdd89536594bae6f"
+    },
+    ".prettierignore": {
+      "bytes": 247,
+      "sha256": "5a8a286f00efd7cc7d669503bb39420cd350c0a6c2b98ff6c1314aac4f3615a5"
+    },
+    "NOTICE.txt": {
+      "bytes": 2659,
+      "sha256": "90d125173975f9d754d42e721e6c9491539a80326f8db5c129a1bfed610d7bd1"
+    },
+    "README.md": {
+      "bytes": 34250,
+      "sha256": "ec79ed829b1c89e60d9fe08f7786cf4bb89d865148eaa4ec43cbc7d79e9a65a5"
+    },
+    "docs/PLANO.md": {
+      "bytes": 25060,
+      "sha256": "6025240e5a2ba065723bd6c7c12313fb16df3463360765c74c0762c326be8c1d"
+    },
+    "docs/PROGRESSO.md": {
+      "bytes": 69344,
+      "sha256": "57431b12061bf6b3911195b4cbefce9a127414dbbc40b828e24e7e4c5cd964b4"
+    },
+    "docs/VALIDACAO-STEP-15-C.md": {
+      "bytes": 14033,
+      "sha256": "99ae33541a88856db17924266831a1796aaea02ee5958a5337bee3d47d2e96bb"
+    },
+    "docs/steps/STEP-15-C.md": {
+      "bytes": 4893,
+      "sha256": "f2261bd23f6506f8703f5ec1002d85a13f2d46b7aeaab96c570f67bc82c7d667"
+    },
+    "docs/steps/STEP-15-D.md": {
+      "bytes": 3940,
+      "sha256": "439fa3be54399e71b302526f952ea32cf9003f2ead8d26e88606eaea9596e748"
+    },
+    "licenses/FLATBUFFERS-LICENSE": {
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    "licenses/GEMMA-4-LICENSE": {
+      "bytes": 11343,
+      "sha256": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e"
+    },
+    "licenses/HUGGINGFACE-JINJA-LICENSE": {
+      "bytes": 1069,
+      "sha256": "d6e7b19451c1b3d1d66353bb4b1274138953b3bfd9ae60c56e77b1f548796982"
+    },
+    "licenses/HUGGINGFACE-TOKENIZERS-LICENSE": {
+      "bytes": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    "licenses/LONG-LICENSE": {
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    "licenses/ONNXRUNTIME-LICENSE": {
+      "bytes": 1073,
+      "sha256": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c"
+    },
+    "licenses/ONNXRUNTIME-THIRD-PARTY-NOTICES": {
+      "bytes": 325054,
+      "sha256": "0e07b95f3a8d6230037707c5c4a2b554d12c4cb67369669ac255635528ffcee2"
+    },
+    "licenses/PLATFORM-LICENSE": {
+      "bytes": 1095,
+      "sha256": "4a161ebed4f1ef933e16ccfa00d86c718703f5d015a9987ea7ce1bb72a43cd22"
+    },
+    "licenses/PROTOBUFJS-LICENSE": {
+      "bytes": 1937,
+      "sha256": "49d6a1c9a623784c61c6cb70f773f3457faceb1914a13c8560a9823b7631950c"
+    },
+    "licenses/TRANSFORMERS-JS-LICENSE": {
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    "manifest.json": {
+      "bytes": 1161,
+      "sha256": "0f655fa0804c39ea3bdda72ec5aaf9585bc08f6355b39891479114fe5d21c3b1"
+    },
+    "package-lock.json": {
+      "bytes": 143273,
+      "sha256": "c0bcb3a065a3953f0dbdccbaaa9bee7616a1e2d4af14f69a1c76d7706ad10009"
+    },
+    "package.json": {
+      "bytes": 3241,
+      "sha256": "c447345eeacf4b5fed7459e0602f041a96a178000694c28d0357fbf6938cedd2"
+    },
+    "src/extension/ai/ai-engine.ts": {
+      "bytes": 1887,
+      "sha256": "58b1187afadf0487e6cf22fb4ca3ea5653baa70cec691d32a7ff8f3482765f7a"
+    },
+    "src/extension/ai/gemma-cache.ts": {
+      "bytes": 4715,
+      "sha256": "4ea19c1bc87b84958f42788b9ce5dd9ff4ee64428b65c8905c19b7fef06e3de1"
+    },
+    "src/extension/ai/gemma-catalog.ts": {
+      "bytes": 2195,
+      "sha256": "bbd8c50a0c96a9fb4b808f3f146dcaae155bddd9aba4217dbe6cca269907ea93"
+    },
+    "src/extension/ai/gemma-engine.ts": {
+      "bytes": 12643,
+      "sha256": "bc8739d8380aad2fafabea890a6be68b40ca51d49a4b0fd31559676ddced4dcb"
+    },
+    "src/extension/ai/gemma-worker.ts": {
+      "bytes": 883,
+      "sha256": "a6d8b790df17edcec1ff2de14fc78c63a47ccfb7d1fd1ef22009ce64fe361936"
+    },
+    "src/extension/ai/local-choice.ts": {
+      "bytes": 695,
+      "sha256": "82fc02f4bc67ded8f7f82e6b1c977ac67d317ce2dd25d565fdd77a377622a66c"
+    },
+    "src/extension/ai/model-error.ts": {
+      "bytes": 345,
+      "sha256": "455d430404ad2332080739ac150afdb03bc4c9d97e017690c1682a41dd00a634"
+    },
+    "src/extension/ai/request-runner.ts": {
+      "bytes": 7459,
+      "sha256": "5f4c5b59ff4dcb553f4f2a74c4e5dc62364e28baf8feca2903cd9cf05200b2fc"
+    },
+    "src/extension/ai/webllm-engine.ts": {
+      "bytes": 13988,
+      "sha256": "787daabc346a5590f19d925b479d2124319d7099f5c846253f46f7054af88a43"
+    },
+    "src/extension/background/index.ts": {
+      "bytes": 3575,
+      "sha256": "6976d91b53e830ffe1327bf3d37dc1c56cbec9a9594d6fa9a85bb1554eaf2e15"
+    },
+    "src/extension/content/PreviewPanel.tsx": {
+      "bytes": 14571,
+      "sha256": "abcd5e38e848c9330e03b99fe35e0409492298d23f938580acb26c1e25338c9a"
+    },
+    "src/extension/content/model-proof-client.ts": {
+      "bytes": 4237,
+      "sha256": "3535bb0224deeb0c063a59a034e275df0a929f03729a1646e5448004e2ab5d62"
+    },
+    "src/extension/content/preview-session.ts": {
+      "bytes": 22749,
+      "sha256": "17453f8371be6f916b2a6844601d8ef332c3ac73069f8b31b6563f77a425972c"
+    },
+    "src/extension/offscreen/index.ts": {
+      "bytes": 7081,
+      "sha256": "024ca1ddfd34d8502593970d2859216e66914a0f1a0bd8d94a30f198d901e61a"
+    },
+    "src/extension/settings/GemmaControls.tsx": {
+      "bytes": 4817,
+      "sha256": "8559a9da43a81412bf84d82940cf2a1b43806b9cbab713e0a5a1ac1e363e35e6"
+    },
+    "src/extension/settings/PreferenceFields.tsx": {
+      "bytes": 6061,
+      "sha256": "b2d6d392834b872e10b5dbb867d8014b4773a9f4790e9174e45aaf0687f9fae6"
+    },
+    "src/extension/settings/SettingsApp.tsx": {
+      "bytes": 10797,
+      "sha256": "28feaccbbf150affd9745e9c78d1bc46e60e9d541dd04e5cc0f0819cda1834e9"
+    },
+    "src/extension/settings/gemma-client.ts": {
+      "bytes": 953,
+      "sha256": "0889d8982a9bb6bf2f3072d0f641354244b6f6ae31c9ed73abf16b8d4c3102e7"
+    },
+    "src/shared/gemma-management.ts": {
+      "bytes": 822,
+      "sha256": "a4f3b46a8f549c1060d46406e0c30868fd417eea96f9c37579d89b6dee3dccd7"
+    },
+    "src/shared/local-model.ts": {
+      "bytes": 440,
+      "sha256": "cc00535b89aecf962d757355dcda9768af0f59451873ee439c876031c303264b"
+    },
+    "src/shared/preferences.ts": {
+      "bytes": 4031,
+      "sha256": "cbe1c5053421b5ec2088d044ac636c581c05a0274d3138653c2533d3b10a7394"
+    },
+    "src/shared/protocol.ts": {
+      "bytes": 12538,
+      "sha256": "929753e53c3e2461e2417b6d01d18ca997e92812ec689d5952323d24ef81b6ee"
+    },
+    "tests/browser/step15b-native.mjs": {
+      "bytes": 22817,
+      "sha256": "859b505cd84f39c0ac3549c124f7e96a5f7b082249cf31aa9236eb91dcb1f9bf"
+    },
+    "tests/browser/step15c-cache.mjs": {
+      "bytes": 105,
+      "sha256": "3156a07607f91fd9fee1f65246040c99297633f2db6a9eaf84e5fec2cc6d4083"
+    },
+    "tests/browser/step15c-controls.mjs": {
+      "bytes": 108,
+      "sha256": "b32dc64deae74ad34b698926399dcd51a959d482d0c250b62a5ce71717045dbe"
+    },
+    "tests/browser/step15c-gemma.mjs": {
+      "bytes": 25774,
+      "sha256": "c3014375456595afda1ec22150f1d3251002bc7b536e12ca50222dac33f1e93c"
+    },
+    "tests/build.test.ts": {
+      "bytes": 8027,
+      "sha256": "4918a5e96e2374038b31e2624558ee416c421a1aebc6cefa4d83568554d5b3fe"
+    },
+    "tests/engine-selection.test.ts": {
+      "bytes": 7212,
+      "sha256": "dbb62bdfcfc7fed20485543241c3b4cf4ef2e0fe7f6c43625442a804555c658f"
+    },
+    "tests/gemma-cache.test.ts": {
+      "bytes": 5106,
+      "sha256": "faab4a3bdedf9f0fe061ba11ec9d261c820cefddc952effefb652eac48e88c37"
+    },
+    "tests/gemma-contracts.test.ts": {
+      "bytes": 3414,
+      "sha256": "8756a819fdb56ffc0f19c02ecf7a5c2bfc003afc231ba298efe34337d101467c"
+    },
+    "tests/gemma-engine.test.ts": {
+      "bytes": 8744,
+      "sha256": "6c8f18264617323db50bbd004848b5759fbb614b3e9b7aff2e7a636d6ce7aecb"
+    },
+    "tests/preferences-client.test.ts": {
+      "bytes": 1185,
+      "sha256": "840194e9c711de5b492893c5e2a2ab649025c1efc5f5887f7486255d84eec787"
+    },
+    "vite.config.ts": {
+      "bytes": 4140,
+      "sha256": "f390ede4fff076e88f2dc8b9a7734e2e5ea7793cccd234f4af93c7faa9a90d5b"
+    }
+  },
+  "packagedFiles": {
+    "dist/.vite/license.md": {
+      "bytes": 3429,
+      "sha256": "75f018af30becf077e3b4af9c9433e2b9c80167d996971f9e9c54fba99ddde0b"
+    },
+    "dist/NOTICE.txt": {
+      "bytes": 2659,
+      "sha256": "90d125173975f9d754d42e721e6c9491539a80326f8db5c129a1bfed610d7bd1"
+    },
+    "dist/assets/Llama-3.2-3B-Instruct-q4f16_1-ctx4k_cs1k-webgpu-BSFeQ0Om.wasm": {
+      "bytes": 6131270,
+      "sha256": "34de0d60ab598c6a85ae882b48474f250193076f902057a21070bb2daae96d5b"
+    },
+    "dist/assets/Llama-3.2-3B-Instruct-q4f32_1-ctx4k_cs1k-webgpu-Yt_tV3R_.wasm": {
+      "bytes": 5935137,
+      "sha256": "224e4cd5c235621684257aad3ebfdaf6e337d50f783614d1e7ed63e78d693ad6"
+    },
+    "dist/assets/Qwen3-4B-q4f16_1-ctx4k_cs1k-webgpu-Dk71aVcq.wasm": {
+      "bytes": 6070240,
+      "sha256": "5ddf44e49b03e53e24fd29a45591850924346140452f60c29280190388571340"
+    },
+    "dist/assets/Qwen3-4B-q4f32_1-ctx4k_cs1k-webgpu-B0BtHydf.wasm": {
+      "bytes": 5929497,
+      "sha256": "6484148ff499c15433ab85e4d2c376aef453a6d797f48047e6bd6fd495a59e39"
+    },
+    "dist/assets/Qwen3-8B-q4f16_1-ctx4k_cs1k-webgpu-ByHwTMA1.wasm": {
+      "bytes": 6079574,
+      "sha256": "fd0b332c81212e484ba56c15aac5af2548f14f849d3352039ad68d3c4663b6dd"
+    },
+    "dist/assets/Qwen3-8B-q4f32_1-ctx4k_cs1k-webgpu-cWSQSvQJ.wasm": {
+      "bytes": 5933178,
+      "sha256": "4705cca63950fca8a8bb50279ccc44a1233b41a75318ec87fd9395f46e77358f"
+    },
+    "dist/assets/__vite-browser-external-B9qqvRjd.js": {
+      "bytes": 100,
+      "sha256": "d03126dedf3b8e9d4712225d2c595f97233fe7add568497d9f60f2f59ee9a7c4"
+    },
+    "dist/assets/development-D-KClP61.js": {
+      "bytes": 1189,
+      "sha256": "eaf7bd4b39526f63ae35e09f13b4776441b1a3c95250d19b2d729ac231d228f6"
+    },
+    "dist/assets/diagnostic-D7JeB5vj.css": {
+      "bytes": 529,
+      "sha256": "136b8952345540ca9b757536ee58338666b598d64642d5ede01ac2160b6dcabe"
+    },
+    "dist/assets/diagnostic-SlBD3mHL.js": {
+      "bytes": 5256,
+      "sha256": "e946e965dc2022a9f4012fecd996475b389a3ca8de1762c39bb795bfb2c4303a"
+    },
+    "dist/assets/gemma-cache-D_-OF_FI.js": {
+      "bytes": 8602,
+      "sha256": "6a6e527c9c8a7728fd71c9c44bedb920bace6d2518e0e558071e4b64ef2843b0"
+    },
+    "dist/assets/gemma-worker-Csml57Sp.js": {
+      "bytes": 39105,
+      "sha256": "0d294a6a526d76aef0dcfa17266714caa16f504e52166dbb22337f8ae1d0cd9f"
+    },
+    "dist/assets/jsx-runtime-HzCsVASz.js": {
+      "bytes": 218805,
+      "sha256": "3c02029b93b3c4a37c32bfd04015d9ec60a0bed376611e8aba62fa258c99c044"
+    },
+    "dist/assets/lib-CTzC2d1P.js": {
+      "bytes": 5984417,
+      "sha256": "361187ceef724e7cc36565cfc3f1bd9342086959af56ddba9754dfe060cc6e2e"
+    },
+    "dist/assets/lib-CVgGoOez.js": {
+      "bytes": 4712060,
+      "sha256": "1f3b932e0e9f7e7d479da1ab2cb155291d270a60db3ade948b31f8978ebc4d64"
+    },
+    "dist/assets/offscreen-BG9xHtg3.js": {
+      "bytes": 28079,
+      "sha256": "1130881b7c19318ff8d3ac36655a2c6f83c8db17e8f493eb91119ae44ffebb0c"
+    },
+    "dist/assets/ort-wasm-simd-threaded.asyncify-DMmc6YqF.wasm": {
+      "bytes": 23567050,
+      "sha256": "e0c0c6d3e73d43b8a249972f8358f845b08cc16fec3c80efafdf8bed40366786"
+    },
+    "dist/assets/preferences-BTiGUOR6.js": {
+      "bytes": 1671,
+      "sha256": "7195457eeea10341fd40ec3b73e774b303a4c74563d65586281d6bfc9c342b96"
+    },
+    "dist/assets/protocol-WNFpeqdw.js": {
+      "bytes": 8139,
+      "sha256": "385fb01a5975a90588e1992377658134aa706371e5f6b11dd84525618834a3c1"
+    },
+    "dist/assets/senders-DDbE6ZLr.js": {
+      "bytes": 754,
+      "sha256": "e011ee42ef91a5189633e840ba49c3e87a73fdccc951d8a5e5656e06cb455478"
+    },
+    "dist/assets/settings-D8EMc_tH.js": {
+      "bytes": 20588,
+      "sha256": "a1225d2a4e9ca6c5b80b1f44d6399e0bc801073d68753a16af17ad8b3c862b4c"
+    },
+    "dist/assets/settings-Dvw9cget.css": {
+      "bytes": 1450,
+      "sha256": "df64efae9a8cb47f50e0635597a0f004f95194428d78c7f30b3901d934105e5f"
+    },
+    "dist/assets/styles-ccDf9Kl6.css": {
+      "bytes": 837,
+      "sha256": "b301a89d26601c3640b96e83c88ff4b38716cb2c20873259802472f8cf0a30d3"
+    },
+    "dist/assets/transformers.web-DFmlKpLR.js": {
+      "bytes": 517929,
+      "sha256": "637c4b987f315aafac331d879404ded98e8814547dffc9e9493ee1c985154a3a"
+    },
+    "dist/assets/worker-D_fP69im.js": {
+      "bytes": 43557,
+      "sha256": "900ffd28e70399e5a8644ef803a2b8f19022cb605e5f4655b4c8bddd4faa66ab"
+    },
+    "dist/content.js": {
+      "bytes": 281814,
+      "sha256": "a4b31c86e06811f49055d317af340e17c0d71df879224737714c8d8058579e4e"
+    },
+    "dist/diagnostic.html": {
+      "bytes": 673,
+      "sha256": "0c344fbab99bda0228b71f1881f524dc34dcb64c9bf7f5282a6048afe50fa372"
+    },
+    "dist/index.html": {
+      "bytes": 652,
+      "sha256": "763a49e78222deb8670c2c71065253f1759f314ece84a04a4c4ad51242d1821a"
+    },
+    "dist/licenses/FLATBUFFERS-LICENSE": {
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    "dist/licenses/GEMMA-4-LICENSE": {
+      "bytes": 11343,
+      "sha256": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e"
+    },
+    "dist/licenses/HUGGINGFACE-JINJA-LICENSE": {
+      "bytes": 1069,
+      "sha256": "d6e7b19451c1b3d1d66353bb4b1274138953b3bfd9ae60c56e77b1f548796982"
+    },
+    "dist/licenses/HUGGINGFACE-TOKENIZERS-LICENSE": {
+      "bytes": 11357,
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    "dist/licenses/LLAMA-3.2-LICENSE": {
+      "bytes": 7669,
+      "sha256": "8cc15535a8a34b41888f644b339a1a9eb428af793a4f5e24df58a3e5b1487d74"
+    },
+    "dist/licenses/LONG-LICENSE": {
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    "dist/licenses/NOBLE-HASHES-LICENSE": {
+      "bytes": 1109,
+      "sha256": "4f221aee6e072336700c408c68ab3b96a3fc09f6aebe6f48f1bd99e5ef13faec"
+    },
+    "dist/licenses/ONNXRUNTIME-LICENSE": {
+      "bytes": 1073,
+      "sha256": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c"
+    },
+    "dist/licenses/ONNXRUNTIME-THIRD-PARTY-NOTICES": {
+      "bytes": 325054,
+      "sha256": "0e07b95f3a8d6230037707c5c4a2b554d12c4cb67369669ac255635528ffcee2"
+    },
+    "dist/licenses/PLATFORM-LICENSE": {
+      "bytes": 1095,
+      "sha256": "4a161ebed4f1ef933e16ccfa00d86c718703f5d015a9987ea7ce1bb72a43cd22"
+    },
+    "dist/licenses/PROTOBUFJS-LICENSE": {
+      "bytes": 1937,
+      "sha256": "49d6a1c9a623784c61c6cb70f773f3457faceb1914a13c8560a9823b7631950c"
+    },
+    "dist/licenses/QWEN3-LICENSE": {
+      "bytes": 11343,
+      "sha256": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e"
+    },
+    "dist/licenses/TRANSFORMERS-JS-LICENSE": {
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    "dist/licenses/WEBLLM-LICENSE": {
+      "bytes": 11737,
+      "sha256": "d412ab9d5ac17e6931705aac01e5a0d323da5acd2e89a2c19aa8fc05becc59ad"
+    },
+    "dist/manifest.json": {
+      "bytes": 1161,
+      "sha256": "0f655fa0804c39ea3bdda72ec5aaf9585bc08f6355b39891479114fe5d21c3b1"
+    },
+    "dist/offscreen.html": {
+      "bytes": 574,
+      "sha256": "ff9f17316db4159e05ce5585ce1354afc5e2ba24134e9ac0bab1ec9a59fb3e1c"
+    },
+    "dist/popup.html": {
+      "bytes": 782,
+      "sha256": "f7a58a0d784a7b19aada866d507c09c01f85d93b0fd15335402fe49a669ae59b"
+    },
+    "dist/runtime/ort-wasm-simd-threaded.asyncify.mjs": {
+      "bytes": 47389,
+      "sha256": "5959c6733039619c9af710d8e1bae8d6e84402787990637be987c2b1bd6c5fa9"
+    },
+    "dist/runtime/ort-wasm-simd-threaded.asyncify.wasm": {
+      "bytes": 23567050,
+      "sha256": "e0c0c6d3e73d43b8a249972f8358f845b08cc16fec3c80efafdf8bed40366786"
+    },
+    "dist/service-worker.js": {
+      "bytes": 3023,
+      "sha256": "79a2924c32792601ea1064cb722761803da070e5e215599158a3748db009ff0d"
+    },
+    "dist/sidepanel.html": {
+      "bytes": 767,
+      "sha256": "ac313ec63358983031ae563ec6fb9e96348fc5ed72ba51e7623f3eebf38c1e96"
+    }
+  }
+}

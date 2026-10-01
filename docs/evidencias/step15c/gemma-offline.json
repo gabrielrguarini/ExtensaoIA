@@ -1,0 +1,222 @@
+{
+  "browser": "154.0.8037.0",
+  "version": "0.15.2",
+  "startedAt": "2026-10-01T23:23:15.690Z",
+  "checks": {
+    "workerNetworkObserved": true,
+    "realGemmaWebGPU": true,
+    "chromeUnavailableGemmaFallback": true,
+    "offline": true,
+    "manualReplacementUndo": true,
+    "allActions": true
+  },
+  "actions": [
+    {
+      "action": "Corrigir",
+      "text": "Oi Mariana, você pode conferir os documentos amanhã?",
+      "totalMs": 39204
+    },
+    {
+      "action": "Melhorar",
+      "text": "Oi Mariana, você pode conferir os documentos amanhã?",
+      "totalMs": 2326,
+      "warnings": [
+        "Possível alteração de nomes. Confira o original e a sugestão."
+      ]
+    },
+    {
+      "action": "Formal",
+      "text": "Prezada Mariana, a senhora poderia conferir os documentos amanhã?",
+      "totalMs": 2826,
+      "warnings": [
+        "Possível alteração de nomes. Confira o original e a sugestão."
+      ]
+    },
+    {
+      "action": "Profissional",
+      "text": "Oi Mariana, você pode conferir os documentos amanhã?",
+      "totalMs": 2323,
+      "warnings": [
+        "Possível alteração de nomes. Confira o original e a sugestão."
+      ]
+    },
+    {
+      "action": "Amigável",
+      "text": "Oi Mariana, você pode conferir os documentos amanhã?",
+      "totalMs": 2324,
+      "warnings": [
+        "Possível alteração de nomes. Confira o original e a sugestão."
+      ]
+    },
+    {
+      "action": "Natural",
+      "text": "Oi Mariana, você pode conferir os documentos amanhã?",
+      "totalMs": 2330,
+      "warnings": [
+        "Possível alteração de nomes. Confira o original e a sugestão."
+      ]
+    },
+    {
+      "action": "Conciso",
+      "text": "Oi Mariana, você pode conferir os documentos amanhã?",
+      "totalMs": 2323,
+      "warnings": [
+        "Possível alteração de nomes. Confira o original e a sugestão."
+      ]
+    },
+    {
+      "action": "Engraçado",
+      "text": "Oi Mariana, você pode conferir os documentos amanhã?",
+      "totalMs": 2318,
+      "warnings": [
+        "Possível alteração de nomes. Confira o original e a sugestão."
+      ]
+    },
+    {
+      "action": "Reescrever",
+      "text": "Oi Mariana, você pode conferir os documentos amanhã?",
+      "totalMs": 2338,
+      "warnings": [
+        "Possível alteração de nomes. Confira o original e a sugestão."
+      ]
+    }
+  ],
+  "requests": [
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/gemma-worker-Cof-ADi7.js",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/transformers.web-DFmlKpLR.js",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/runtime/ort-wasm-simd-threaded.asyncify.mjs",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/runtime/ort-wasm-simd-threaded.asyncify.wasm",
+      "method": "GET",
+      "hasPostData": false
+    }
+  ],
+  "consoleEvents": [],
+  "preferences": {
+    "version": 5,
+    "engine": "chrome-preferred",
+    "localModel": "gemma",
+    "chromePortuguesePrompt": false,
+    "semanticReview": true,
+    "profile": "economico",
+    "language": "pt-BR",
+    "theme": "system",
+    "defaultAction": "corrigir",
+    "preserveSlang": true,
+    "addEmojis": false
+  },
+  "hardware": {
+    "info": {
+      "vendor": "nvidia",
+      "architecture": "lovelace",
+      "device": "",
+      "description": ""
+    },
+    "features": [
+      "depth32float-stencil8",
+      "rg11b10ufloat-renderable",
+      "texture-formats-tier1",
+      "bgra8unorm-storage",
+      "texture-compression-bc",
+      "dual-source-blending",
+      "core-features-and-limits",
+      "float32-filterable",
+      "indirect-first-instance",
+      "float32-blendable",
+      "subgroup-size-control",
+      "depth-clip-control",
+      "texture-compression-bc-sliced-3d",
+      "timestamp-query",
+      "texture-formats-tier2",
+      "shader-f16",
+      "clip-distances",
+      "primitive-index",
+      "texture-component-swizzle",
+      "subgroups"
+    ],
+    "maxBufferSize": 2147483648,
+    "maxStorageBufferBindingSize": 2147483644
+  },
+  "coldPreparationAndGenerationMs": 39204,
+  "nativeStatus": {
+    "ok": true,
+    "language": "pt-BR",
+    "chromePortuguesePrompt": false,
+    "actions": [
+      {
+        "action": "corrigir",
+        "availability": "unavailable"
+      },
+      {
+        "action": "melhorar",
+        "availability": "unavailable"
+      },
+      {
+        "action": "formal",
+        "availability": "unavailable"
+      },
+      {
+        "action": "profissional",
+        "availability": "unavailable"
+      },
+      {
+        "action": "amigavel",
+        "availability": "unavailable"
+      },
+      {
+        "action": "natural",
+        "availability": "unavailable"
+      },
+      {
+        "action": "conciso",
+        "availability": "unavailable"
+      },
+      {
+        "action": "engracado",
+        "availability": "unavailable"
+      },
+      {
+        "action": "reescrever",
+        "availability": "unavailable"
+      },
+      {
+        "action": "semantic-review",
+        "availability": "unavailable"
+      }
+    ],
+    "sessionReady": false
+  },
+  "storage": {
+    "writingPreferences": {
+      "addEmojis": false,
+      "chromePortuguesePrompt": false,
+      "defaultAction": "corrigir",
+      "engine": "chrome-preferred",
+      "language": "pt-BR",
+      "localModel": "gemma",
+      "preserveSlang": true,
+      "profile": "economico",
+      "semanticReview": true,
+      "theme": "system",
+      "version": 5
+    }
+  },
+  "pageErrors": 0,
+  "completedAt": "2026-10-01T23:24:15.146Z"
+}

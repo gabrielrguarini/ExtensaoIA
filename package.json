@@ -1,7 +1,7 @@
 {
   "name": "extensao-ia-local",
   "private": true,
-  "version": "0.15.1",
+  "version": "0.15.2",
   "type": "module",
   "description": "Assistente de escrita local para WhatsApp Web — desenvolvimento incremental.",
   "engines": {
@@ -38,9 +38,13 @@
     "check": "npm run typecheck && npm run lint && npm run format:check && npm test && npm run build",
     "test:step15b:browser": "node tests/browser/step15b-native.mjs",
     "test:step15b:portuguese": "node tests/browser/step15b-portuguese.mjs",
-    "test:step15b:specialized": "node tests/browser/step15b-specialized.mjs"
+    "test:step15b:specialized": "node tests/browser/step15b-specialized.mjs",
+    "test:step15c:browser": "node tests/browser/step15c-gemma.mjs",
+    "test:step15c:controls": "node tests/browser/step15c-controls.mjs",
+    "test:step15c:cache": "node tests/browser/step15c-cache.mjs"
   },
   "dependencies": {
+    "@huggingface/transformers": "4.2.0",
     "@mlc-ai/web-llm": "0.2.82",
     "@mlc-ai/web-tokenizers": "0.1.6",
     "@noble/hashes": "2.0.1",
@@ -64,5 +68,9 @@
     "typescript-eslint": "8.70.1",
     "vite": "8.3.1",
     "vitest": "5.0.1"
+  },
+  "overrides": {
+    "adm-zip": "0.6.1",
+    "sharp": "0.35.4"
   }
 }

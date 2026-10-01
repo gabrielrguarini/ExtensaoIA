@@ -38,7 +38,7 @@ describe('seleção anterior à única geração', () => {
     expect(parsePreferences({ version: 4, profile: 'equilibrado', engine: 'webllm' })).toEqual({
       ...DEFAULT_PREFERENCES,
       profile: 'equilibrado',
-      engine: 'webllm',
+      engine: 'local',
     });
     expect(parsePreferences({ version: 4, engine: 'remote', prompt: 'não salvar' })).toEqual(
       DEFAULT_PREFERENCES,
@@ -103,7 +103,7 @@ describe('seleção anterior à única geração', () => {
     await selectEngine(
       request,
       signal,
-      { ...DEFAULT_PREFERENCES, engine: 'webllm' },
+      { ...DEFAULT_PREFERENCES, engine: 'local' },
       h.native,
       h.local,
     );

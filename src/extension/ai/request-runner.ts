@@ -14,6 +14,7 @@ import { MAX_TEXT_LENGTH } from '../../shared/protocol';
 import { analyzeSuggestion, semanticApproved, SemanticReviewError } from './semantic-review';
 import { suggestionResult } from './suggestion-assessment';
 import { DEFAULT_WRITING_OPTIONS } from '../../shared/writing-options';
+import type { LocalVariant } from '../../shared/local-model';
 
 /** Mesmas guardas e avaliação para o Worker local e documento nativo. */
 export class ModelRequestRunner {
@@ -21,7 +22,7 @@ export class ModelRequestRunner {
   constructor(
     private readonly model: Pick<AIEngine, 'initialize' | 'generate' | 'identity' | 'unload'>,
     private readonly emit: (event: EngineEvent) => void,
-    private readonly variant: () => 'q4f16_1' | 'q4f32_1' | undefined = () => undefined,
+    private readonly variant: () => LocalVariant | undefined = () => undefined,
     private readonly environmentError: (error: unknown) => ErrorCode = () => 'UNAVAILABLE',
     private readonly prepared = false,
   ) {}

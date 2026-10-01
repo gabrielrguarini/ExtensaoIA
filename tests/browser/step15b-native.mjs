@@ -108,7 +108,7 @@ try {
   const migrated = await settings.evaluate(() =>
     chrome.runtime.sendMessage({ target: 'preferences', type: 'get' }),
   );
-  assert.equal(migrated.version, 4);
+  assert.equal(migrated.version, 5);
   assert.equal(migrated.engine, 'chrome-preferred');
   assert.equal(migrated.profile, 'economico');
   report.checks.migration = true;
@@ -245,13 +245,18 @@ try {
     assert(position);
     report.checkboxBefore = position;
     if (!position.alreadyChecked) {
-      await command(panel, 'Input.dispatchMouseEvent', { type: 'mouseMoved', ...position });
-      for (const type of ['mousePressed', 'mouseReleased'])
-        await command(panel, 'Input.dispatchMouseEvent', {
+      // Keyboard activation keeps this control stable when the taller settings panel scrolls.
+      await evaluate(
+        panel,
+        "[...document.querySelectorAll('label')].find(x=>x.textContent.includes('Português por prompt no Chrome')).querySelector('input').focus()",
+      );
+      for (const type of ['keyDown', 'keyUp'])
+        await command(panel, 'Input.dispatchKeyEvent', {
           type,
-          ...position,
-          button: 'left',
-          clickCount: 1,
+          key: ' ',
+          code: 'Space',
+          windowsVirtualKeyCode: 32,
+          nativeVirtualKeyCode: 32,
         });
     }
     for (let i = 0; i < 50; i++) {

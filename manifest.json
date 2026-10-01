@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "IA local — WhatsApp Web (desenvolvimento)",
-  "version": "0.15.1",
-  "description": "STEP-15-B: Chrome preferencial quando disponível, modelos locais e sugestões com avisos. Sem envio de mensagens.",
+  "version": "0.15.2",
+  "description": "STEP-15-C: IA nativa, Gemma e WebLLM locais, com sugestões e avisos. Sem envio de mensagens.",
   "minimum_chrome_version": "116",
   "permissions": ["storage", "offscreen", "sidePanel"],
   "host_permissions": [

@@ -20,6 +20,8 @@ import { PROFILE_LABELS, smallerProfile } from '../ai/model-catalog';
 import { probeHardware } from './model-hardware';
 import type { HardwareStatus } from './model-hardware';
 import { removeSelectedCache } from './cache-client';
+import { manageGemma } from '../settings/gemma-client';
+import type { LocalVariant, LocalModel } from '../../shared/local-model';
 
 export type PreviewState =
   | { kind: 'closed' | 'loading' }
@@ -35,12 +37,12 @@ export type PreviewState =
       kind: 'download-confirm';
       task: WritingAction | 'proof';
       profile: ModelProfile;
-      variant: 'q4f16_1' | 'q4f32_1';
+      variant: LocalVariant;
     }
   | { kind: 'notice'; message: string }
   | { kind: 'action-loading'; action: WritingAction; progress: ProofProgress; partial: string }
   | { kind: 'model-loading'; progress: ProofProgress }
-  | { kind: 'model-result'; text: string; variant: 'q4f16_1' | 'q4f32_1' }
+  | { kind: 'model-result'; text: string; variant: LocalVariant }
   | {
       kind: 'preview';
       source: 'simulation' | 'action';
@@ -64,6 +66,7 @@ export class PreviewSession {
   private unsubscribePreferences: (() => void) | undefined;
   private profile: ModelProfile = 'economico';
   private engine: WritingPreferences['engine'] = DEFAULT_PREFERENCES.engine;
+  private localModel: LocalModel = DEFAULT_PREFERENCES.localModel;
   private chromePortuguesePrompt = DEFAULT_PREFERENCES.chromePortuguesePrompt;
   private showSemanticReview = false;
   private hardware: HardwareStatus = { state: 'checking' };
@@ -130,6 +133,7 @@ export class PreviewSession {
         ) {
           this.profile = value.profile;
           this.engine = value.engine;
+          this.localModel = value.localModel;
           this.chromePortuguesePrompt = value.chromePortuguesePrompt;
           this.showSemanticReview = value.semanticReview;
           this.set({
@@ -152,9 +156,11 @@ export class PreviewSession {
     const changedProfile =
       this.profile !== value.profile ||
       this.engine !== value.engine ||
+      this.localModel !== value.localModel ||
       this.chromePortuguesePrompt !== value.chromePortuguesePrompt;
     this.profile = value.profile;
     this.engine = value.engine;
+    this.localModel = value.localModel;
     this.chromePortuguesePrompt = value.chromePortuguesePrompt;
     if (this.state.kind === 'menu') {
       this.set({
@@ -243,7 +249,15 @@ export class PreviewSession {
     const profile = this.profile;
     const variant = this.hardware.shaderF16 ? 'q4f16_1' : 'q4f32_1';
     this.set({ ...this.state, preferenceStatus: 'saving' });
-    void removeSelectedCache(profile, variant).then(
+    const remove =
+      this.localModel === 'gemma'
+        ? manageGemma({
+            target: 'gemma-cache',
+            type: 'remove',
+            variant: this.hardware.shaderF16 ? 'q4f16' : 'q4',
+          })
+        : removeSelectedCache(profile, variant);
+    void remove.then(
       () => {
         if (this.sequence === sequence)
           this.set({
@@ -284,6 +298,7 @@ export class PreviewSession {
         if (sequence === this.sequence && this.state.kind === 'menu') {
           if (preferenceRevision === this.preferenceRevision) {
             this.engine = saved.engine;
+            this.localModel = saved.localModel;
             this.chromePortuguesePrompt = saved.chromePortuguesePrompt;
           }
           this.set({
@@ -453,6 +468,8 @@ export class PreviewSession {
 
   private resourceMessage(message: string, code?: string): string {
     if (code !== 'INSUFFICIENT_RESOURCES') return message;
+    if (this.localModel === 'gemma')
+      return `${message} Você pode escolher WebLLM e um perfil menor no menu. A escolha atual foi mantida.`;
     const smaller = smallerProfile(this.profile);
     return `${message}${smaller ? ` Você pode selecionar o perfil ${PROFILE_LABELS[smaller]} no menu.` : ''} A escolha atual foi mantida.`;
   }

@@ -37,13 +37,29 @@ export function PreferenceFields({
           }}
         >
           <option value="chrome-preferred">Chrome preferencial</option>
-          <option value="webllm">Modelo local selecionado (WebLLM)</option>
+          <option value="local">Modelo local selecionado</option>
         </select>
       </label>
       <p>
         Chrome é escolhido somente quando a ação e pt-BR estiverem disponíveis e preparados. Caso
         contrário, usamos o modelo local selecionado. Prepare a IA do Chrome no painel lateral.
       </p>
+      <label>
+        Modelo local e alternativa
+        <select
+          aria-label="Modelo local e alternativa"
+          value={value.localModel}
+          onChange={(e) => {
+            if (e.nativeEvent.isTrusted) {
+              focus.current = e.currentTarget;
+              onChange({ localModel: e.currentTarget.value as WritingPreferences['localModel'] });
+            }
+          }}
+        >
+          <option value="webllm">WebLLM · perfil selecionado</option>
+          <option value="gemma">Gemma 4 E2B · Transformers.js</option>
+        </select>
+      </label>
       <label>
         <input
           type="checkbox"

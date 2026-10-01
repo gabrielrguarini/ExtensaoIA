@@ -11,6 +11,8 @@ import { ChromeHost } from './chrome-host';
 import { selectEngine } from './engine-selection';
 import { isChromeCommand } from '../../shared/chrome-management';
 import { WRITING_ACTIONS } from '../../shared/actions';
+import { isGemmaCommand } from '../../shared/gemma-management';
+import { gemmaPresent, removeGemma } from '../ai/gemma-cache';
 
 let removing = false;
 
@@ -25,8 +27,29 @@ const host = new WorkerHost(
   () => router.engineLost(),
 );
 const native = new ChromeHost((event) => router.receiveEngine(event));
+const gemma = new WorkerHost(
+  () => new Worker(new URL('../ai/gemma-worker.ts', import.meta.url), { type: 'module' }),
+  (event) => router.receiveEngine(event),
+  () => router.engineLost(),
+);
 const router = new RequestRouter(
-  async (request, signal) => selectEngine(request, signal, await preferences(), native, host),
+  async (request, signal) => {
+    const saved = await preferences();
+    return selectEngine(request, signal, saved, native, {
+      ensure() {
+        if (saved.localModel === 'gemma') {
+          host.reset();
+          return gemma.ensure();
+        }
+        gemma.reset();
+        return host.ensure();
+      },
+      reset() {
+        host.reset();
+        gemma.reset();
+      },
+    });
+  },
   15_000,
   async () => (await preferences()).semanticReview,
   async () => (await preferences()).profile,
@@ -67,6 +90,41 @@ chrome.runtime.onConnect.addListener((port) => {
 });
 
 chrome.runtime.onMessage.addListener((value: unknown, sender, sendResponse) => {
+  if (
+    isGemmaCommand(value) &&
+    (contentOrigin(sender, chrome.runtime.id, crypto.randomUUID()) ||
+      isSettingsPage(sender, chrome.runtime.id))
+  ) {
+    if (removing) {
+      sendResponse({ ok: false });
+      return false;
+    }
+    if (value.type === 'status') {
+      void gemmaPresent(value.variant).then(
+        (cached) => sendResponse({ ok: true, cached, runtime: gemma.runtime }),
+        () => sendResponse({ ok: false }),
+      );
+      return true;
+    }
+    router.resetForProfileChange();
+    gemma.reset();
+    if (value.type === 'unload') {
+      sendResponse({ ok: true });
+      return false;
+    }
+    removing = true;
+    router.setMaintenance(true);
+    void removeGemma(value.variant)
+      .then(
+        () => sendResponse({ ok: true }),
+        () => sendResponse({ ok: false }),
+      )
+      .finally(() => {
+        removing = false;
+        router.setMaintenance(false);
+      });
+    return true;
+  }
   if (isChromeCommand(value) && isSettingsPage(sender, chrome.runtime.id)) {
     if (value.type === 'unload') {
       router.resetForProfileChange();
@@ -163,6 +221,7 @@ chrome.runtime.onMessage.addListener((value: unknown, sender, sendResponse) => {
     router.resetForProfileChange();
     host.reset();
     native.reset();
+    gemma.reset();
     sendResponse({ reset: true });
   }
   return false;

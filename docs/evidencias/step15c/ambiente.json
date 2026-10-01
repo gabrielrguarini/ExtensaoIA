@@ -1,0 +1,79 @@
+{
+  "stage": "STEP-15-C",
+  "date": "2026-10-01",
+  "os": "Windows",
+  "node": "22.14.0",
+  "npmChecks": "10.9.2",
+  "npmNetworkInstallAudit": "11.2.0",
+  "cpu": "Intel Core i9-13980HX",
+  "ram": "16 GB",
+  "cpuRamEvidence": "docs/VALIDACAO-STEP-15.md e evidência de hardware anterior na mesma máquina",
+  "gpu": {
+    "name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "vramMiB": 8188,
+    "driver": "555.97",
+    "source": "nvidia-smi nesta execução"
+  },
+  "webgpu": {
+    "info": {
+      "vendor": "nvidia",
+      "architecture": "lovelace",
+      "device": "",
+      "description": ""
+    },
+    "features": [
+      "depth32float-stencil8",
+      "rg11b10ufloat-renderable",
+      "texture-formats-tier1",
+      "bgra8unorm-storage",
+      "texture-compression-bc",
+      "dual-source-blending",
+      "core-features-and-limits",
+      "float32-filterable",
+      "indirect-first-instance",
+      "float32-blendable",
+      "subgroup-size-control",
+      "depth-clip-control",
+      "texture-compression-bc-sliced-3d",
+      "timestamp-query",
+      "texture-formats-tier2",
+      "shader-f16",
+      "clip-distances",
+      "primitive-index",
+      "texture-component-swizzle",
+      "subgroups"
+    ],
+    "maxBufferSize": 2147483648,
+    "maxStorageBufferBindingSize": 2147483644
+  },
+  "chromeForTesting": "154.0.8037.0",
+  "chromeNativeRegression": "154.0.8037.93",
+  "packageVersion": "0.15.2",
+  "transformersJs": "4.2.0",
+  "onnxRuntimeWeb": "1.26.0-dev.20260416-b7804b056c",
+  "chromeTypes": "0.0.17",
+  "model": {
+    "id": "onnx-community/gemma-4-E2B-it-ONNX",
+    "revision": "9f4bef82ea6e296bc69f8a2f5939f73af81b07a6",
+    "realVariant": "q4f16",
+    "q4f16Bytes": 3130549798,
+    "q4Bytes": 3646892071,
+    "contextTokens": 4096,
+    "modality": "text",
+    "license": "Apache-2.0"
+  },
+  "profiles": [
+    ".cache/step15c-chrome",
+    ".cache/step15-isolated",
+    ".cache/step15b-chrome"
+  ],
+  "fixturesOnly": true,
+  "authenticated": false,
+  "messagesSent": false,
+  "limitations": [
+    "q4 sem shader-f16: seleção unitária, sem inferência física certificada.",
+    "Integração com fixtures não é benchmark reservado da STEP-15-D.",
+    "WhatsApp real/instalação final permanecem na STEP-16.",
+    "CPU/RAM são da evidência histórica da mesma máquina; não inferem VRAM livre."
+  ]
+}

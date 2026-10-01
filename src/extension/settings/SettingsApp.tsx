@@ -8,6 +8,7 @@ import { probeHardware } from '../content/model-hardware';
 import { manageModel } from './model-client';
 import type { ModelStatus } from '../../shared/model-management';
 import { ChromePreparation } from './ChromePreparation';
+import { GemmaControls } from './GemmaControls';
 
 export function SettingsApp() {
   const [preferences, setPreferences] = useState(DEFAULT_PREFERENCES);
@@ -171,8 +172,9 @@ export function SettingsApp() {
         visiblePanel={!popup}
         portuguesePrompt={preferences.chromePortuguesePrompt}
       />
+      <GemmaControls />
       <section aria-labelledby="model-title">
-        <h2 id="model-title">Modelo · {PROFILE_LABELS[preferences.profile]}</h2>
+        <h2 id="model-title">WebLLM · {PROFILE_LABELS[preferences.profile]}</h2>
         <label>
           Variante do cache
           <select

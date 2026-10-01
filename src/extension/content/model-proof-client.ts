@@ -3,15 +3,16 @@ import { connectClient } from './client-port';
 import type { Binding, RequestKey } from '../../shared/protocol';
 import { MODEL_PROOF_TEXT } from '../../shared/model-proof';
 import type { ModelProfile } from '../ai/model-catalog';
+import type { LocalVariant } from '../../shared/local-model';
 
 export type ProofOutcome =
-  | { ok: true; text: string; variant: 'q4f16_1' | 'q4f32_1' }
+  | { ok: true; text: string; variant: LocalVariant }
   | { ok: false; message: string; code?: 'DOWNLOAD_REQUIRED' | 'INSUFFICIENT_RESOURCES' };
 export type ProofProgress = {
   phase:
     'preparing' | 'downloading' | 'loading' | 'ready' | 'generating' | 'validating' | 'reviewing';
   percent: number;
-  variant: 'q4f16_1' | 'q4f32_1' | null;
+  variant: LocalVariant | null;
 };
 export type ProofGenerator = (
   progress: (value: ProofProgress) => void,

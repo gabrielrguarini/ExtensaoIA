@@ -5,7 +5,12 @@ import { preferenceStore } from '../src/extension/content/preferences-client';
 afterEach(() => vi.unstubAllGlobals());
 describe('cliente de preferências do produto', () => {
   it('aceita o esquema vigente recebido do coordenador e preserva motor/modelo', async () => {
-    const response = { ...DEFAULT_PREFERENCES, engine: 'webllm', profile: 'qualidade' };
+    const response = {
+      ...DEFAULT_PREFERENCES,
+      engine: 'local',
+      localModel: 'gemma',
+      profile: 'qualidade',
+    };
     vi.stubGlobal('chrome', {
       runtime: {
         sendMessage: (_command: unknown, callback: (value: unknown) => void) => callback(response),

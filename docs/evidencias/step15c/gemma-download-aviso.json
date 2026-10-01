@@ -1,0 +1,116 @@
+{
+  "browser": "154.0.8037.0",
+  "version": "0.15.2",
+  "startedAt": "2026-10-01T23:33:52.750Z",
+  "checks": {
+    "workerNetworkObserved": true,
+    "realGemmaWebGPU": true,
+    "offline": true,
+    "manualReplacementUndo": true,
+    "correctDownloadDisclosure": true
+  },
+  "actions": [
+    {
+      "action": "Corrigir",
+      "text": "Oi Mariana, você pode conferir os documentos amanhã?",
+      "totalMs": 38201
+    }
+  ],
+  "requests": [
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/gemma-worker-Csml57Sp.js",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/transformers.web-DFmlKpLR.js",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/runtime/ort-wasm-simd-threaded.asyncify.mjs",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/runtime/ort-wasm-simd-threaded.asyncify.wasm",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/gemma-worker-Csml57Sp.js",
+      "method": "GET",
+      "hasPostData": false
+    }
+  ],
+  "consoleEvents": [],
+  "preferences": {
+    "version": 5,
+    "engine": "local",
+    "localModel": "gemma",
+    "chromePortuguesePrompt": false,
+    "semanticReview": true,
+    "profile": "economico",
+    "language": "pt-BR",
+    "theme": "system",
+    "defaultAction": "corrigir",
+    "preserveSlang": true,
+    "addEmojis": false
+  },
+  "hardware": {
+    "info": {
+      "vendor": "nvidia",
+      "architecture": "lovelace",
+      "device": "",
+      "description": ""
+    },
+    "features": [
+      "depth32float-stencil8",
+      "rg11b10ufloat-renderable",
+      "texture-formats-tier1",
+      "bgra8unorm-storage",
+      "texture-compression-bc",
+      "dual-source-blending",
+      "core-features-and-limits",
+      "float32-filterable",
+      "indirect-first-instance",
+      "float32-blendable",
+      "subgroup-size-control",
+      "depth-clip-control",
+      "texture-compression-bc-sliced-3d",
+      "timestamp-query",
+      "texture-formats-tier2",
+      "shader-f16",
+      "clip-distances",
+      "primitive-index",
+      "texture-component-swizzle",
+      "subgroups"
+    ],
+    "maxBufferSize": 2147483648,
+    "maxStorageBufferBindingSize": 2147483644
+  },
+  "coldPreparationAndGenerationMs": 38201,
+  "downloadDetails": "Prévia da sugestão\nDownload necessário · Gemma 4 E2B (q4f16)\n\nO cache está ausente, incompleto ou inconsistente. O download reaproveita arquivos válidos e repara os demais; seu rascunho permanece intacto.\n\nPara usar Gemma 4 E2B (q4f16), baixe 3.13 GB de dados do modelo. Contexto: 4.096 tokens. Requisito de GPU estimado: não medido. VRAM livre: indisponível.\n\nBaixar e continuar\nCancelar",
+  "storage": {
+    "writingPreferences": {
+      "addEmojis": false,
+      "chromePortuguesePrompt": false,
+      "defaultAction": "corrigir",
+      "engine": "local",
+      "language": "pt-BR",
+      "localModel": "gemma",
+      "preserveSlang": true,
+      "profile": "economico",
+      "semanticReview": true,
+      "theme": "system",
+      "version": 5
+    }
+  },
+  "pageErrors": 0,
+  "completedAt": "2026-10-01T23:34:32.201Z"
+}

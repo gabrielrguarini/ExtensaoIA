@@ -1,0 +1,46 @@
+{
+  "docs/evidencias/step15c/ambiente.json": {
+    "bytes": 2327,
+    "sha256": "0f6119f3a9317a5e2dd5201e2342a30d7f252e5a3f52f38dd54883a98fae95bf"
+  },
+  "docs/evidencias/step15c/catalogo-sha256.json": {
+    "bytes": 2011,
+    "sha256": "2f6ece42a337e16fc9459919e9646e8b1a6c8d6a3b3438a81616cba79a30b940"
+  },
+  "docs/evidencias/step15c/checks.json": {
+    "bytes": 19659,
+    "sha256": "e9ba8fa2f546f0a270f120fa10f49d7c1bcfc6dba3d87bf35290f64cdfb9e37d"
+  },
+  "docs/evidencias/step15c/gemma-cache.json": {
+    "bytes": 11025,
+    "sha256": "7207d616ef571d9c7eb3c0a2d6bb4bc663aa8ce68e4e1d38e36edf42b694ce8c"
+  },
+  "docs/evidencias/step15c/gemma-controles.json": {
+    "bytes": 3734,
+    "sha256": "6388a5f7fca7db8317a826ef4b9d3e0d5a00f88960870fdbe2a559029e210701"
+  },
+  "docs/evidencias/step15c/gemma-download-aviso.json": {
+    "bytes": 3479,
+    "sha256": "bb9ca48abf25244544920d9eac02954a49214194f6eda3dcd2249d993c9fd45d"
+  },
+  "docs/evidencias/step15c/gemma-offline.json": {
+    "bytes": 5866,
+    "sha256": "c5f24c4467808d9efa41f6eb185a5087b539ceadd961c4fa224c7f29a225bf5e"
+  },
+  "docs/evidencias/step15c/npm-audit.json": {
+    "bytes": 386,
+    "sha256": "c2bacd686c1978408f64f171f5c6302ddb4007341e884ffe878cdd2ea2982908"
+  },
+  "docs/evidencias/step15c/regressao-chrome.json": {
+    "bytes": 6460,
+    "sha256": "40d90c7fc7a5683afcb92ed7e796b8f04182916761df4e03cbdc833c78faf703"
+  },
+  "docs/evidencias/step15c/regressao-webllm.json": {
+    "bytes": 4152,
+    "sha256": "56c5fc4defc228be923976fbbe8dbfef294dc37ff0c86914f151eb89f2ad0694"
+  },
+  "docs/evidencias/step15c/tentativas.json": {
+    "bytes": 1638,
+    "sha256": "3c002b8f6875d7641cda1d5508981b8bbddc630d0a8c70d210bb09690bb08fb4"
+  }
+}
