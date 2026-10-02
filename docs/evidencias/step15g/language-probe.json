@@ -1,0 +1,84 @@
+{
+  "browser": "154.0.8037.93",
+  "checkedAt": "2026-10-02T18:29:06.838Z",
+  "warnings": [
+    {
+      "level": "warning",
+      "text": "No output language was specified in a LanguageModel API request. An output language should be specified to ensure optimal output quality and properly attest to output safety. Please specify a supported output language code: [de, en, es, fr, ja]"
+    }
+  ],
+  "probes": [
+    {
+      "language": "en",
+      "options": {
+        "expectedInputs": [
+          {
+            "type": "text",
+            "languages": [
+              "en"
+            ]
+          }
+        ],
+        "expectedOutputs": [
+          {
+            "type": "text",
+            "languages": [
+              "en"
+            ]
+          }
+        ]
+      },
+      "availability": "available"
+    },
+    {
+      "language": "pt",
+      "options": {
+        "expectedInputs": [
+          {
+            "type": "text",
+            "languages": [
+              "en",
+              "pt"
+            ]
+          }
+        ],
+        "expectedOutputs": [
+          {
+            "type": "text",
+            "languages": [
+              "pt"
+            ]
+          }
+        ]
+      },
+      "availability": "unavailable"
+    },
+    {
+      "language": "pt-BR",
+      "options": {
+        "expectedInputs": [
+          {
+            "type": "text",
+            "languages": [
+              "en",
+              "pt-BR"
+            ]
+          }
+        ],
+        "expectedOutputs": [
+          {
+            "type": "text",
+            "languages": [
+              "pt-BR"
+            ]
+          }
+        ]
+      },
+      "availability": "unavailable"
+    }
+  ],
+  "legacy": {
+    "availability": "available",
+    "creation": "created-and-destroyed"
+  }
+}

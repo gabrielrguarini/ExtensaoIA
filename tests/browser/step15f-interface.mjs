@@ -10,13 +10,14 @@ const engine = process.env.STEP15F_ENGINE ?? 'chrome';
 if (!executablePath) throw new Error('Defina STEP15F_CHROME.');
 assert(['chrome', 'webllm', 'gemma'].includes(engine));
 const regular = process.env.STEP15F_REGULAR === '1';
+const languageValidation = process.env.STEP15F_VALIDATION === 'step15g';
 const extension = path.join(root, 'dist');
 const manifest = JSON.parse(await readFile(path.join(extension, 'manifest.json'), 'utf8'));
 const profile =
   process.env.STEP15F_PROFILE ??
   (engine === 'gemma' ? 'step15c-chrome' : regular ? 'step15b-chrome' : 'step15-isolated');
 assert(/^[a-z0-9-]+$/u.test(profile), 'Use somente um perfil dedicado dentro de .cache.');
-const out = path.join(root, '.cache', 'step15f');
+const out = path.join(root, '.cache', languageValidation ? 'step15g' : 'step15f');
 await mkdir(out, { recursive: true });
 const context = await chromium.launchPersistentContext(path.join(root, '.cache', profile), {
   executablePath,
@@ -43,6 +44,7 @@ const report = {
   checks: {},
   requests: [],
   consoleEvents: [],
+  missingOutputLanguageWarnings: [],
   observerErrors: [],
 };
 let pageErrors = 0;
@@ -87,6 +89,8 @@ socket.addEventListener('message', (e) => {
   if (m.method === 'Runtime.consoleAPICalled')
     report.consoleEvents.push({ type: m.params.type, arguments: m.params.args.length });
   if (m.method === 'Runtime.exceptionThrown') report.observerErrors.push('runtime-exception');
+  if (m.method === 'Log.entryAdded' && m.params.entry.text.includes('No output language'))
+    report.missingOutputLanguageWarnings.push(m.params.entry.level);
   if (m.method === 'Target.targetCreated' || m.method === 'Target.targetInfoChanged')
     discover(m.params.targetInfo);
   if (m.method === 'Target.attachedToTarget') {
@@ -95,6 +99,7 @@ socket.addEventListener('message', (e) => {
       try {
         await command(a.sessionId, 'Network.enable');
         await command(a.sessionId, 'Runtime.enable');
+        if (a.targetInfo.type === 'page') await command(a.sessionId, 'Log.enable');
         if (a.targetInfo.type === 'worker') report.checks.workerObserved = true;
       } catch {
         report.observerErrors.push('enable');
@@ -125,6 +130,12 @@ try {
   if ((await toggle.getAttribute('aria-checked')) !== 'true') await toggle.click();
   await item.locator('#dev-reload-button').click();
   const settings = await context.newPage();
+  const settingsLog = await context.newCDPSession(settings);
+  await settingsLog.send('Log.enable');
+  settingsLog.on('Log.entryAdded', ({ entry }) => {
+    if (entry.text.includes('No output language'))
+      report.missingOutputLanguageWarnings.push(entry.level);
+  });
   await settings.goto('chrome-extension://' + id + '/popup.html');
   await settings.waitForFunction(() => !document.querySelector('fieldset')?.disabled);
   // A análise estava ligada na instalação anterior. A migração real precisa descartá-la.
@@ -179,7 +190,15 @@ try {
   await settings
     .getByText('Download pronto. O modelo carrega quando você usa a IA.', { exact: true })
     .waitFor();
-  if (engine === 'chrome')
+  if (languageValidation) {
+    await settings.getByText('Pronta para a ação escolhida.', { exact: true }).waitFor();
+    report.nativeStatusBefore = await settings.evaluate(() =>
+      chrome.runtime.sendMessage({ target: 'chrome-ai', type: 'status' }),
+    );
+    assert(report.nativeStatusBefore.actions.every((item) => item.availability === 'available'));
+    assert.equal(report.nativeStatusBefore.sessionReady, false);
+    report.checks.portugueseCompatibilityReady = true;
+  } else if (engine === 'chrome')
     await settings.getByText('Pronta para a ação escolhida.', { exact: true }).waitFor();
   assert(
     !/WebLLM|Transformers|shader|VRAM|Worker|Simula|Testar IA|experimental/iu.test(
@@ -347,6 +366,16 @@ try {
   assert.equal(pageErrors, 0);
   assert.deepEqual(report.observerErrors, []);
   if (engine !== 'chrome') assert.equal(report.checks.workerObserved, true);
+  if (languageValidation) {
+    report.nativeStatusAfter = await settings.evaluate(() =>
+      chrome.runtime.sendMessage({ target: 'chrome-ai', type: 'status' }),
+    );
+    assert.equal(report.nativeStatusAfter.sessionReady, true);
+    assert.equal(report.checks.workerObserved, undefined);
+    assert.equal(report.requests.length, 0);
+    assert.deepEqual(report.missingOutputLanguageWarnings, []);
+    report.checks.noMissingOutputLanguageWarning = true;
+  }
   report.pageErrors = pageErrors;
   report.finishedAt = new Date().toISOString();
   await writeFile(path.join(out, engine + '.json'), JSON.stringify(report, null, 2) + '\n');

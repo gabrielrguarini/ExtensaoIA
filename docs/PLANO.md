@@ -40,6 +40,10 @@ A extensão nunca envia a mensagem. Substituir e Copiar são ações explícitas
 
 A [STEP-15-F](steps/STEP-15-F.md) simplifica o produto antes da STEP-16: o botão IA executa diretamente a ação salva; preferências ficam apenas no popup/painel lateral. Português brasileiro e escolha de variante são automáticos. Nomes de frameworks, provas sintéticas, simulação e diagnóstico não aparecem na interface. A compatibilidade nativa por instrução passa a ser automática quando a configuração específica não está pronta, sempre antes da geração e sem download silencioso. Essa decisão substitui os controles manuais descritos nas etapas históricas.
 
+## Correção vigente de idioma — STEP-15-G
+
+A [STEP-15-G](steps/STEP-15-G.md) corrige o aviso relatado sobre saída sem idioma. O usuário autorizou a configuração en com resposta pt-BR por instrução, após verificação real. Preferir idioma real/API especializada quando prontos; a compatibilidade usa saída en e entrada textual sem declarar idioma. As opções são iguais na consulta/criação; se também recusadas, usar o modelo local selecionado antes da geração. Substitui a omissão de saída da compatibilidade B/F e a restrição anterior à declaração en, sem certificar suporte formal ao português. STEP-16 permanece pendente.
+
 ## Decisões de produto
 
 - Priorizar computadores comuns; na STEP-15-B adotar Chrome preferencial, preservando o perfil local atual como alternativa.
@@ -180,6 +184,7 @@ Cada etapa depende das anteriores. A conclusão de implementação sem validaç�
 | [STEP-15](steps/STEP-15.md)     | Executar STEP-15-A → B → C → D → E antes da entrega final |
 | [STEP-15-E](steps/STEP-15-E.md) | Retirar avaliação de conteúdo e manter revisão manual     |
 | [STEP-15-F](steps/STEP-15-F.md) | Simplificar interface e executar ação configurada         |
+| [STEP-15-G](steps/STEP-15-G.md) | Corrigir idioma de saída na Prompt API                    |
 | [STEP-16](steps/STEP-16.md)     | Validar e preparar a entrega instalável                   |
 
 Marco de MVP: concluir até STEP-08. Depois, adicionar modos e streaming, revisão opcional, perfis/cache, configurações, benchmark e entrega final.

@@ -5,10 +5,10 @@
 ## Estado atual
 
 - Última atualização: 02/10/2026.
-- Última subetapa concluída: **STEP-15-F — Interface de escrita e configurações simplificadas**.
+- Última subetapa concluída: **STEP-15-G — Idioma de saída na Prompt API**, configuração en/pt-BR por instrução autorizada e verificada antes de incorporar; 274 testes e Chrome real offline sem o aviso. [Relatório G](VALIDACAO-STEP-15-G.md).
 - Situação: **STEP-15 Concluída** pelas novas campanhas D: 108 pares históricos por perfil WebLLM, comparação ENTITY_* e 108 rascunhos reservados distintos × cinco candidatos × três rodadas. Os 191 casos Qwen antes interrompidos foram cobertos em campanhas novas, preservando intactos os relatórios antigos. [Relatório D](VALIDACAO-STEP-15-D.md).
 - Validação complementar no WhatsApp real: 14 pedidos no grupo autorizado, duas alterações consideradas úteis, seis recusas, três respostas sem mudança e três prévias insatisfatórias; duas substituições e uma mensagem sintética enviada manualmente. A qualidade varia e exige revisão. [Resultados](VALIDACAO-STEP-12.md#validação-complementar-no-whatsapp-real--30092026).
-- Ajuste anterior à entrega final: **STEP-15-F Concluída**, com ação salva executada por um clique, português automático e configurações exclusivas da extensão. [Relatório F](VALIDACAO-STEP-15-F.md). A [STEP-15-E](VALIDACAO-STEP-15-E.md) retirou a avaliação de alterações. Próxima etapa **STEP-16 Pendente**, não iniciada. Evidências históricas preservadas.
+- Ajustes anteriores à entrega final: **STEP-15-G Concluída** corrige a omissão de idioma na compatibilidade nativa; a [STEP-15-F](VALIDACAO-STEP-15-F.md) concentra configurações na extensão e executa a ação salva por um clique, com português automático. A [STEP-15-E](VALIDACAO-STEP-15-E.md) retirou a avaliação de alterações. Próxima etapa **STEP-16 Pendente**, não iniciada. Evidências históricas preservadas.
 - Implementação: Manifest V3, comunicação, adaptador do editor, botão IA, prévia, substituição manual, nove ações e configurações na extensão. Chrome preferencial quando elegível; modelos locais WebLLM (Llama/Qwen) ou Gemma 4 E2B via Transformers.js/WebGPU, com escolha manual e download explícito. A STEP-15-E removeu a avaliação de conteúdo e a análise semântica da interface; o usuário revisa e escolhe Copiar/Substituir. Simulação/provas permanecem somente como ferramentas internas; não aparecem na interface. O botão IA executa diretamente a ação salva. Textos multilinha e estruturas especiais oferecem somente cópia.
 
 ## Significado dos status
@@ -46,6 +46,7 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 | [STEP-15-D](steps/STEP-15-D.md) | Comparação e otimização                         | Concluída | 2.448 pedidos, 2.314 sugestões revisadas, retomada íntegra, cinco motores/108 textos/3 rodadas, regressões offline e check. [Relatório](VALIDACAO-STEP-15-D.md).                              |
 | [STEP-15-E](steps/STEP-15-E.md) | Revisão e substituição pelo usuário             | Concluída | 265 testes/check e Chrome/WebLLM/Gemma reais offline, prévia sem avaliação, cópia, aplicação/desfazer e obsolescência. [Relatório](VALIDACAO-STEP-15-E.md).                                   |
 | [STEP-15-F](steps/STEP-15-F.md) | Interface e ação configurada                    | Concluída | 272 testes/check, três motores offline, configurações simples e inferência por um clique. [Relatório](VALIDACAO-STEP-15-F.md).                                                                |
+| [STEP-15-G](steps/STEP-15-G.md) | Idioma de saída na Prompt API                   | Concluída | 274 testes/check, pt-BR por instrução em sessão en autorizada, 12 fixtures e produto no Chrome real/offscreen offline sem aviso. [Relatório](VALIDACAO-STEP-15-G.md).                         |
 | [STEP-16](steps/STEP-16.md)     | Validar e preparar a entrega instalável         | Pendente  | Não iniciada.                                                                                                                                                                                 |
 
 ## Registro de execução
@@ -373,3 +374,13 @@ Copiar o bloco abaixo para cada execução e preencher somente com fatos verific
 - Evidências: [relatório F](VALIDACAO-STEP-15-F.md), docs/evidencias/step15f com resultados, nove capturas sintéticas, popup real antes/depois, tentativa interrompida, checks e hashes. Integridade de 65 arquivos D, 11 C e sete E confirmada. README, plano, referências Chrome e STEP-16 atualizados.
 - Commit próprio: feat(step-15-f): simplificar interface e executar ação configurada; autor/committer humanos configurados, hash no histórico Git e entrega final. Sem push.
 - Status final: **Concluída**, após checks, validações e commit próprio. Próxima etapa **STEP-16 Pendente**, não iniciada.
+
+## STEP-15-G — 02/10/2026
+
+- Escopo: corrigir o aviso de saída sem idioma informado. O usuário autorizou declarar en com resposta pt-BR por instrução, desde que verificado primeiro.
+- Diagnóstico/experimento: aviso antigo reproduzido no Log nativo do Chrome 154.0.8037.93; pt/pt-BR declarados unavailable, en available. Comparativo prévio com 12 fixtures/nove ações por configuração: 24/24 respostas em português, sem exceções; a configuração en confirmou a correção exata da frase relatada. Suporte formal/qualidade não são garantidos; tom/emojis continuam variáveis.
+- Implementação: compatibilidade com expectedOutputs en, entrada textual sem idioma declarado e instrução pt-BR preservada; mesmas opções na consulta/preparação/criação. Idioma real/API especializada prontos mantêm prioridade. Alternativa local antes da geração se indisponível; sem repetir geração, tradução intermediária ou serviços externos. Pacote/Manifest/lockfile 0.15.6, preferências v7 e dependências preservadas.
+- Verificações: npm.cmd run check aprovado, 274 testes em 40 arquivos, tipos/lint/formatação/build. Chrome real offline: controle inglês, 12 fixtures portuguesas, produto no offscreen com Corrigir/Conciso, Copiar, Substituir/Ctrl+Z e obsolescência. Zero avisos de saída sem idioma nos logs observados, zero erros/console/exceções, nenhum Worker local/rede no fluxo nativo observado; storage somente preferências. Sem envio/conversa real.
+- Evidências: [relatório G](VALIDACAO-STEP-15-G.md), docs/evidencias/step15g com reprodução, experimento, validação atual, três capturas sintéticas, checks e hashes. Históricos C/D/E/F preservados. Plano, referências e STEP-16 atualizados.
+- Commit próprio: fix(step-15-g): declarar idioma de saída na Prompt API, identidade humana configurada; hash no histórico Git e entrega final. Sem push.
+- Status final: **Concluída**, após validação e commit próprio. **STEP-16 Pendente**, não iniciada.

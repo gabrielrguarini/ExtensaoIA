@@ -1,0 +1,132 @@
+{
+  "version": "0.15.6",
+  "browser": "154.0.8037.93",
+  "engine": "chrome",
+  "profile": "step15b-chrome",
+  "startedAt": "2026-10-02T18:39:17.892Z",
+  "syntheticFixture": true,
+  "noMessageSent": true,
+  "checks": {
+    "legacyPortugueseSwitchRemoved": true,
+    "legacyPreferenceRemoved": true,
+    "portugueseCompatibilityReady": true,
+    "modelChoiceThroughSettings": true,
+    "settingsWithoutTechnicalControls": true,
+    "narrowDarkSettings": true,
+    "oneClickWithoutSettings": true,
+    "readablePreviewWithoutAssessment": true,
+    "copy": true,
+    "manualReplacementAndUndo": true,
+    "savedActionApplied": true,
+    "staleDraftBlocksApplication": true,
+    "storageOnlyPreferences": true,
+    "noMissingOutputLanguageWarning": true
+  },
+  "requests": [],
+  "consoleEvents": [],
+  "missingOutputLanguageWarnings": [],
+  "observerErrors": [],
+  "preferences": {
+    "version": 7,
+    "engine": "chrome-preferred",
+    "localModel": "webllm",
+    "profile": "economico",
+    "language": "pt-BR",
+    "theme": "dark",
+    "defaultAction": "corrigir",
+    "preserveSlang": true,
+    "addEmojis": false
+  },
+  "nativeStatusBefore": {
+    "ok": true,
+    "language": "pt-BR",
+    "actions": [
+      {
+        "action": "corrigir",
+        "availability": "available"
+      },
+      {
+        "action": "melhorar",
+        "availability": "available"
+      },
+      {
+        "action": "formal",
+        "availability": "available"
+      },
+      {
+        "action": "profissional",
+        "availability": "available"
+      },
+      {
+        "action": "amigavel",
+        "availability": "available"
+      },
+      {
+        "action": "natural",
+        "availability": "available"
+      },
+      {
+        "action": "conciso",
+        "availability": "available"
+      },
+      {
+        "action": "engracado",
+        "availability": "available"
+      },
+      {
+        "action": "reescrever",
+        "availability": "available"
+      }
+    ],
+    "sessionReady": false
+  },
+  "syntheticInput": "fazendo o teste da extensao apra ver se funciona de verdade",
+  "syntheticOutput": "Fazendo o teste da extensão para ver se funciona de verdade.",
+  "offline": true,
+  "configuredActionOutput": "Olá! Topa dar uma olhada neste texto aí? Obrigado!",
+  "nativeStatusAfter": {
+    "ok": true,
+    "language": "pt-BR",
+    "actions": [
+      {
+        "action": "corrigir",
+        "availability": "available"
+      },
+      {
+        "action": "melhorar",
+        "availability": "available"
+      },
+      {
+        "action": "formal",
+        "availability": "available"
+      },
+      {
+        "action": "profissional",
+        "availability": "available"
+      },
+      {
+        "action": "amigavel",
+        "availability": "available"
+      },
+      {
+        "action": "natural",
+        "availability": "available"
+      },
+      {
+        "action": "conciso",
+        "availability": "available"
+      },
+      {
+        "action": "engracado",
+        "availability": "available"
+      },
+      {
+        "action": "reescrever",
+        "availability": "available"
+      }
+    ],
+    "sessionReady": true
+  },
+  "pageErrors": 0,
+  "finishedAt": "2026-10-02T18:39:31.132Z"
+}

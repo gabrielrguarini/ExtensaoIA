@@ -48,7 +48,7 @@ const CONTEXT =
 export function nativeConfig(query: AvailabilityQuery): NativeConfig {
   const language = query.language;
   if (query.chromePortuguesePrompt && language === 'pt-BR')
-    return promptConfig(language, false, query.action === 'semantic-review');
+    return promptConfig(language, query.action === 'semantic-review', true);
   if (query.action === 'corrigir')
     return { api: 'proofreader', options: { expectedInputLanguages: [language] } };
   if (['formal', 'amigavel', 'conciso', 'reescrever', 'melhorar'].includes(query.action)) {
@@ -70,18 +70,22 @@ export function nativeConfig(query: AvailabilityQuery): NativeConfig {
       },
     };
   }
-  return promptConfig(language, true, query.action === 'semantic-review');
+  return promptConfig(language, query.action === 'semantic-review');
 }
-function promptConfig(language: string, declared: boolean, reviewing: boolean): NativeConfig {
+function promptConfig(
+  language: string,
+  reviewing: boolean,
+  portugueseCompatibility = false,
+): NativeConfig {
   return {
     api: 'prompt',
     options: {
-      ...(declared
-        ? {
-            expectedInputs: [{ type: 'text' as const, languages: [...new Set(['en', language])] }],
-            expectedOutputs: [{ type: 'text' as const, languages: [language] }],
-          }
-        : {}),
+      // Compatibilidade autorizada: en configura a sessão; pt-BR é pedido no sistema.
+      // A entrada não é declarada inglesa. Esse caminho não certifica suporte formal a pt-BR.
+      expectedInputs: portugueseCompatibility
+        ? [{ type: 'text' }]
+        : [{ type: 'text', languages: [...new Set(['en', language])] }],
+      expectedOutputs: [{ type: 'text', languages: [portugueseCompatibility ? 'en' : language] }],
       initialPrompts: [
         {
           role: 'system',

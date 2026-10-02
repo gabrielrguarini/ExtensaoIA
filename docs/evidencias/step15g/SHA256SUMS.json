@@ -1,0 +1,14 @@
+{
+  "algorithm": "SHA-256",
+  "scope": "Fixtures e evidências sintéticas da etapa, exceto este manifesto.",
+  "files": {
+    "checks.json": "a120914baafc0eceaa846133fd37a74f8979a6ef6f13cdf0f14c5b9715e99a0d",
+    "chrome-models.png": "de4a2922363ca7b7a7d6af1b9786625f4bfdddf3e6d17ff32644ef82bb7732f1",
+    "chrome-preview.png": "b23999c036e9f274e1ed1bab7f78194d39c85c80a2463315ab837f7abae2fd1b",
+    "chrome-settings.png": "1b3c52b0bf6fc1e57860c650778e600a30c9a389a8225bdef56db303d65c6fcf",
+    "chrome.json": "f2d9c32093e0d29335be5c6e51e06e7972b001624534a2105bc339f55acd1101",
+    "en-experiment.json": "abf765dcc8d7552967b090b7a094dc3bea2b37e4dc423fcc01865e4c46338779",
+    "language-corrected.json": "1b53660924e1071089de81dd2ad03e275704996eb95d02478b5650d43b09c786",
+    "language-probe.json": "d879482b7c4823450afedbb235e7faef80ff89962d68ff05e8c81a0b9a2480cd"
+  }
+}

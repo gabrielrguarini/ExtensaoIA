@@ -4,6 +4,12 @@
 
 Consulta em 01/10/2026. Estas referências orientam B/C/D e a entrega final; não substituem execução no navegador alvo.
 
+## Correção vigente na STEP-15-G — 02/10/2026
+
+O aviso de saída sem idioma foi reproduzido no Chrome 154.0.8037.93: pt e pt-BR declarados continuam unavailable. O usuário autorizou configurar expectedOutputs com en e orientar a resposta em pt-BR no sistema, após verificar a abordagem. O candidato produziu 12/12 respostas em português nas nove ações, incluindo a correção da frase relatada, sem o aviso. A entrada é textual sem idioma declarado; não é rotulada inglesa. As opções são iguais na disponibilidade e na criação, e a configuração com idioma real/API especializada pronta tem prioridade.
+
+Essa autorização substitui a omissão de saída B/F e a restrição anterior à declaração en. O caminho continua experimental: en é o idioma configurado, pt-BR o idioma solicitado/observado; não comprova suporte formal nem atestação de segurança para português. Preservar revisão manual, alternativa local antes da geração quando indisponível e ausência de serviços remotos. A documentação oficial ainda lista somente en/ja/es/de/fr; instrução e tipagens não ampliam essa lista. O aviso pertence ao domínio Log do navegador, não necessariamente ao console JavaScript. As seções seguintes descrevem procedimentos e resultados históricos.
+
 ## Português por instrução e idioma declarado
 
 A [Prompt API, inclusive na página em português](https://developer.chrome.com/docs/ai/prompt-api?hl=pt-br#add_expected_input_and_output), documenta `expectedInputs`/`expectedOutputs` com en, ja, es, de e fr; outros idiomas estão em desenvolvimento. `hl=pt-br` muda o idioma da documentação. O modelo pode conseguir produzir português por instrução mesmo quando a lista documentada não o inclui; essa possibilidade deve ser avaliada com rascunhos pt-BR e a configuração real da sessão. Uma instrução não altera, por si, a disponibilidade declarada pelo navegador.

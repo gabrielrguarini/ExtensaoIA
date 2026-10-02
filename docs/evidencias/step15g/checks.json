@@ -1,0 +1,24 @@
+{
+  "checkedAt": "2026-10-02T18:42:59.810Z",
+  "command": "npm.cmd run check",
+  "exitCode": 0,
+  "tests": 274,
+  "testFiles": 40,
+  "typecheck": true,
+  "lint": true,
+  "format": true,
+  "build": true,
+  "browser": "154.0.8037.93",
+  "offline": true,
+  "productChecks": 14,
+  "portugueseFixtures": 12,
+  "missingOutputLanguageWarnings": 0,
+  "historicalHashes": {
+    "docs/benchmark/step15d": 65,
+    "docs/evidencias/step15c": 11,
+    "docs/evidencias/step15e": 7,
+    "docs/evidencias/step15f": 18
+  },
+  "markdownLinks": 496,
+  "markdownFiles": 50
+}

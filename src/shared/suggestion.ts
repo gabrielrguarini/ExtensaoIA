@@ -33,7 +33,7 @@ export interface EngineCapabilities {
 export interface AvailabilityQuery {
   action: WritingAction | 'semantic-review';
   language: string;
-  /** Compatibilidade pt-BR por instrução, explicitamente escolhida nas preferências. */
+  /** Compatibilidade automática autorizada: saída da sessão en, pt-BR por instrução. */
   chromePortuguesePrompt?: boolean;
 }
 /** Não consulta/download de pesos nem promete memória livre. */

@@ -58,7 +58,7 @@ describe('seleção anterior à única geração', () => {
     );
     expect(h.native.send).not.toHaveBeenCalled();
   });
-  it('português por instrução é automático quando a configuração declarada não está pronta', async () => {
+  it('consulta Prompt automaticamente se a API especializada não está pronta', async () => {
     expect(parsePreferences({ version: 6, chromePortuguesePrompt: true })).not.toHaveProperty(
       'chromePortuguesePrompt',
     );

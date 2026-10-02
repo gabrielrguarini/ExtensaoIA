@@ -15,7 +15,7 @@ Entregar o pacote local com verificações completas e instruções de instalaç
 ## Pré-requisitos
 
 - Ler [PLANO.md](../PLANO.md) e [PROGRESSO.md](../PROGRESSO.md).
-- [STEP-15](STEP-15.md), incluindo [A](STEP-15-A.md), [B](STEP-15-B.md), [C](STEP-15-C.md), [D](STEP-15-D.md) e [E](STEP-15-E.md) e [F](STEP-15-F.md), e todas as etapas anteriores concluídas, com evidências registradas.
+- [STEP-15](STEP-15.md), incluindo [A](STEP-15-A.md), [B](STEP-15-B.md), [C](STEP-15-C.md), [D](STEP-15-D.md), [E](STEP-15-E.md), [F](STEP-15-F.md) e [G](STEP-15-G.md), e todas as etapas anteriores concluídas, com evidências registradas.
 
 ## Tarefas
 
@@ -30,7 +30,7 @@ Entregar o pacote local com verificações completas e instruções de instalaç
 - [ ] Confirmar que downloads se restringem aos artefatos registrados e que código executável é local.
 - [ ] Gerar a pasta final instalável e documentar chrome://extensions → Modo do desenvolvedor → Carregar sem compactação.
 - [ ] Documentar versões/hardware testados, requisitos, atualização da extensão, descarga da GPU, remoção dos modelos, privacidade, diagnóstico sem conteúdo e limitações conhecidas.
-- [ ] Conferir o idioma efetivo pt-BR e documentar as configurações nativas validadas, incluindo a seleção automática da compatibilidade por prompt da STEP-15-F, sem interruptor de idioma. Disponibilidade genérica/documentação traduzida não certificam idioma ou qualidade. Usar [referências de idioma/cache](../REFERENCIAS-IA-CHROME.md), evidências reais B e resultados D.
+- [ ] Conferir o idioma efetivo pt-BR e documentar a compatibilidade autorizada da STEP-15-G (sessão en, resposta pt-BR por instrução), sua ausência de aviso e limitações. A seleção é automática, sem interruptor de idioma. Disponibilidade/documentação traduzida não certificam idioma, qualidade ou cobertura de segurança para pt-BR. Usar [referências de idioma/cache](../REFERENCIAS-IA-CHROME.md) e as evidências G; resultados B/D permanecem históricos.
 - [ ] Reproduzir as recomendações por ação/hardware da STEP-15-D, incluindo respostas idênticas, aspas externas e possíveis alterações de sentido. Conferir que a STEP-15-E retirou a avaliação de conteúdo e os falsos avisos; as recomendações D permanecem evidências históricas. Não apresentar o nome do perfil Qualidade como prova de superioridade; preservar a escolha manual e a revisão antes de aplicar.
 
 ## Limites

@@ -44,7 +44,7 @@ afterEach(() => {
 });
 
 describe('adaptador Chrome com contratos oficiais', () => {
-  it('compatibilidade pt-BR usa Prompt sem declarar inglês como idioma dos dados', async () => {
+  it('compatibilidade pt-BR declara saída en e pede português na consulta/criação equivalentes', async () => {
     const clone = { destroy: vi.fn(), prompt: vi.fn(() => Promise.resolve('Você pode conferir?')) };
     const base = { destroy: vi.fn(), clone: vi.fn(() => Promise.resolve(clone)) };
     const api = {
@@ -56,8 +56,12 @@ describe('adaptador Chrome com contratos oficiais', () => {
     const config = nativeConfig(query);
     const review = nativeConfig({ ...query, action: 'semantic-review' });
     expect(config.api).toBe('prompt');
-    expect(config.options).not.toHaveProperty('expectedInputs');
-    expect(config.options).not.toHaveProperty('expectedOutputs');
+    expect(config.options).toMatchObject({
+      expectedInputs: [{ type: 'text' }],
+      expectedOutputs: [{ type: 'text', languages: ['en'] }],
+    });
+    if (config.api !== 'prompt') throw new Error('Configuração Prompt esperada.');
+    expect(config.options.initialPrompts?.[0]?.content).toContain('Brazilian Portuguese');
     expect(config.options).not.toEqual(review.options);
     await engine.initialize({ query });
     expect(api.availability).toHaveBeenCalledWith(config.options);
@@ -66,6 +70,34 @@ describe('adaptador Chrome com contratos oficiais', () => {
     expect(engine.identity().runtime).toContain('experimental');
     expect(clone.destroy).toHaveBeenCalledOnce();
     await engine.unload();
+  });
+  it('configuração de compatibilidade rejeitada não cria sessão sem idioma nem tenta gerar', async () => {
+    const api = {
+      availability: vi.fn(() => Promise.resolve<Availability>('unavailable')),
+      create: vi.fn(),
+    };
+    const engine = new ChromeEngine({ prompt: api as unknown as typeof LanguageModel });
+    const query = { action: 'corrigir' as const, language: 'pt-BR', chromePortuguesePrompt: true };
+    await expect(engine.initialize({ query })).rejects.toMatchObject({
+      code: 'NATIVE_NOT_SUPPORTED',
+    });
+    expect(api.availability).toHaveBeenCalledWith(
+      expect.objectContaining({
+        expectedOutputs: [{ type: 'text', languages: ['en'] }],
+      }),
+    );
+    expect(api.create).not.toHaveBeenCalled();
+    await engine.unload();
+  });
+  it('todas as ações Prompt declaram saída, inclusive sem a alternativa pt-BR', () => {
+    for (const language of ['pt-BR', 'en']) {
+      for (const action of ['profissional', 'natural', 'engracado', 'semantic-review'] as const) {
+        expect(nativeConfig({ action, language }).options).toMatchObject({
+          expectedInputs: [{ type: 'text', languages: [...new Set(['en', language])] }],
+          expectedOutputs: [{ type: 'text', languages: [language] }],
+        });
+      }
+    }
   });
   it('adaptador não exige streaming de um runtime experimental sem esse método', async () => {
     const session = {
