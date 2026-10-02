@@ -52,28 +52,42 @@ describe('seleção anterior à única geração', () => {
     expect(h.local.reset).toHaveBeenCalledOnce();
     expect(h.local.ensure).not.toHaveBeenCalled();
     expect(h.native.prepare).toHaveBeenCalledWith(
-      { action: 'corrigir', language: 'pt-BR' },
+      { action: 'corrigir', language: 'pt-BR', chromePortuguesePrompt: false },
       signal,
       request,
     );
     expect(h.native.send).not.toHaveBeenCalled();
   });
-  it('português por prompt exige escolha explícita e consulta/cria a mesma configuração', async () => {
-    expect(DEFAULT_PREFERENCES.chromePortuguesePrompt).toBe(false);
-    expect(
-      parsePreferences({ version: 3, chromePortuguesePrompt: true }).chromePortuguesePrompt,
-    ).toBe(false);
-    const selected = parsePreferences({ version: 4, chromePortuguesePrompt: true });
+  it('português por instrução é automático quando a configuração declarada não está pronta', async () => {
+    expect(parsePreferences({ version: 6, chromePortuguesePrompt: true })).not.toHaveProperty(
+      'chromePortuguesePrompt',
+    );
     const h = hosts();
-    await selectEngine(request, new AbortController().signal, selected, h.native, h.local);
-    expect(h.native.model.availability).toHaveBeenCalledWith({
+    h.native.model.availability.mockResolvedValueOnce({
+      state: 'unavailable',
+      nativeAvailability: 'unavailable',
+    });
+    await selectEngine(
+      request,
+      new AbortController().signal,
+      DEFAULT_PREFERENCES,
+      h.native,
+      h.local,
+    );
+    expect(h.native.model.availability).toHaveBeenNthCalledWith(1, {
+      action: 'corrigir',
+      language: 'pt-BR',
+      chromePortuguesePrompt: false,
+    });
+    expect(h.native.model.availability).toHaveBeenNthCalledWith(2, {
       action: 'corrigir',
       language: 'pt-BR',
       chromePortuguesePrompt: true,
     });
     expect(h.native.prepare.mock.calls[0]?.[0]).toEqual(
-      h.native.model.availability.mock.calls[0]?.[0],
+      h.native.model.availability.mock.calls[1]?.[0],
     );
+    expect(h.local.ensure).not.toHaveBeenCalled();
   });
   it.each([
     { state: 'unavailable' },

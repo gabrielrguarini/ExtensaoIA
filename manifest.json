@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "IA local — WhatsApp Web (desenvolvimento)",
-  "version": "0.15.4",
-  "description": "STEP-15-E: IA local com Chrome, Gemma e WebLLM. Revisão e substituição pelo usuário. Sem envio de mensagens.",
+  "name": "IA local — WhatsApp Web",
+  "version": "0.15.5",
+  "description": "Corrija e reescreva rascunhos com IA local. Configure a ação e revise antes de substituir. Sem envio automático.",
   "minimum_chrome_version": "116",
   "permissions": ["storage", "offscreen", "sidePanel"],
   "host_permissions": [

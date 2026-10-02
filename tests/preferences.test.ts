@@ -144,7 +144,7 @@ describe('preferências locais sem análise de conteúdo', () => {
     await Promise.resolve();
     const state = session.getState();
     expect(state.kind).toBe('notice');
-    if (state.kind === 'notice') expect(state.message).toContain('Equilibrado');
+    if (state.kind === 'notice') expect(state.message).toContain('configurações da extensão');
     expect(preferences.setProfile).not.toHaveBeenCalled();
     expect(prove.mock.calls[0]?.slice(2)).toEqual([false, 'qualidade']);
     expect(prove).toHaveBeenCalledOnce();
@@ -220,7 +220,6 @@ describe('migração sem avaliação de conteúdo', () => {
       localModel: 'gemma',
       profile: 'qualidade',
       theme: 'dark',
-      chromePortuguesePrompt: true,
     };
     expect(await updatePreferences({})).toEqual(expected);
     expect(stored).toEqual(expected);

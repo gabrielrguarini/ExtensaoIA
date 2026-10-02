@@ -67,8 +67,7 @@ chrome.runtime.onMessage.addListener((value: unknown, sender, sendResponse) => {
             if (
               saved.profile !== previous.profile ||
               saved.engine !== previous.engine ||
-              saved.localModel !== previous.localModel ||
-              saved.chromePortuguesePrompt !== previous.chromePortuguesePrompt
+              saved.localModel !== previous.localModel
             )
               await host.reset();
             return saved;

@@ -1,51 +1,42 @@
 # Extensão de IA local para WhatsApp Web
 
-Base incremental com React, TypeScript strict e pacote Manifest V3. O menu **IA** oferece nove ações com Chrome nativo quando disponível, Gemma 4 E2B via Transformers.js e perfis locais Econômico (Llama 3.2 3B), Equilibrado (Qwen3 4B) e Qualidade (Qwen3 8B) via WebGPU. Português por prompt no Chrome é uma opção experimental validada no navegador instalado. A geração mostra trechos provisórios e pode ser cancelada. As ações usam o original e apresentam respostas legíveis para o usuário revisar, Copiar ou Substituir. A prova sintética e a prévia simulada continuam identificadas. Nenhuma mensagem é enviada. O diagnóstico da STEP-03 permanece disponível.
+Assistente de escrita em português do Brasil. Configure a ação na extensão e clique em **IA** no WhatsApp: a sugestão aparece junto ao rascunho para **Copiar** ou **Substituir**. Nenhuma mensagem é enviada automaticamente. O modo automático prefere a IA do navegador já preparada; também permite escolher Llama, Qwen ou Gemma para processamento neste computador.
 
-O estado e as evidências ficam em [docs/PROGRESSO.md](docs/PROGRESSO.md). Consulte o [plano](docs/PLANO.md) e execute somente a etapa solicitada. A conclusão depende das verificações automatizadas e da validação correspondente no Chrome.
+O estado e as evidências ficam em [docs/PROGRESSO.md](docs/PROGRESSO.md). Consulte o [plano](docs/PLANO.md) e execute somente a etapa solicitada. O ajuste de interface [STEP-15-F](docs/steps/STEP-15-F.md) precede a entrega final STEP-16.
 
 ## Requisitos e instalação
 
-- Node.js 22.13+ na linha 22, ou versão compatível das linhas 24/26+; npm 10.9.2+ compatível com o Node instalado.
-- Ambiente usado: Windows, Node 22.14.0 e npm 10.9.2. Nenhuma atualização global é necessária.
-- Chrome 116+ para runtime.getContexts, offscreen e identificação de documentos. O mínimo declarado é um requisito das APIs, não certificação de todas as versões ou de WebGPU.
-- Internet para instalar dependências e, por ação explícita, baixar os dados do modelo de uma revisão fixa. Após o download completo, a inferência pode usar o cache local.
+Node.js 22.13+ na linha 22, ou versão compatível 24/26+, e npm 10.9.2+. Ambiente validado: Windows, Node 22.14.0 e npm 10.9.2. Chrome 116 é o mínimo das APIs de extensão; a compatibilidade efetiva da IA depende da versão e do equipamento. Modelos próprios exigem WebGPU; a IA do Chrome pode usar CPU administrada pelo navegador.
 
-Na pasta do projeto:
+Na pasta do projeto, execute:
 
 ```sh
 npm ci
 npm run check
 ```
 
-No PowerShell, use npm.cmd se a política local bloquear npm.ps1; não altere a política do sistema.
+No PowerShell, use npm.cmd se a política local bloquear npm.ps1. Em chrome://extensions, habilite o modo do desenvolvedor, escolha **Carregar sem compactação** e selecione **dist**. Após atualizar, recarregue a extensão e a aba do WhatsApp.
 
-Abra chrome://extensions, habilite o modo do desenvolvedor, escolha **Carregar sem compactação** e selecione a pasta **dist**. Recarregue as abas do WhatsApp após instalar ou atualizar. O ícone da extensão abre o popup de configurações. Clique em **Abrir painel lateral** para manter as preferências e informações visíveis. O link **Diagnóstico da comunicação simulada** continua disponível no rodapé dessas interfaces.
+## Como usar
 
-Siga o [roteiro completo da STEP-03](docs/VALIDACAO-STEP-03.md), que cobre circuito, duas abas, concorrência, cancelamento, desconexão e reinício. Não é necessário abrir conversas ou enviar mensagens.
+1. Abra o ícone da extensão e escolha a **Ação do botão IA**: Corrigir, Melhorar, Formal, Profissional, Amigável, Natural, Conciso, Engraçado ou Reescrever.
+2. Ajuste gírias, novos emojis e tema se desejar. Em **IA e modelos**, mantenha Automática ou escolha um modelo. Use **Abrir painel lateral** para preparar a IA do navegador quando necessário.
+3. Escreva o rascunho no WhatsApp e clique em **IA**. Esse gesto captura somente o rascunho atual e inicia a ação salva, sem menu intermediário.
+4. Revise o resultado e escolha **Copiar** ou **Substituir**. Ctrl+Z desfaz a substituição. Fechar, Cancelar, Escape ou clique fora descartam o pedido. Alteração do rascunho ou troca de conversa invalida o resultado anterior.
 
-Para testar a escrita, consulte [validação e limites da STEP-05](docs/VALIDACAO-STEP-05.md). Escreva um rascunho sintético, clique em **IA → Criar prévia simulada** e revise o resultado. Abrir o menu não lê o texto; solicitar a prévia o captura em memória e o encaminha ao Worker local. **Substituir** confirma a edição nativa, que pode ser desfeita com Ctrl+Z. **Copiar** grava a sugestão na área de transferência somente pelo clique. **Cancelar**, Escape e clique fora descartam a prévia; edição ou troca de contexto invalidam sugestões anteriores.
+Português brasileiro é automático. A extensão consulta as APIs especializadas com idioma declarado; se não estiverem prontas, consulta a Prompt API com a instrução de responder em português do Brasil. Essa compatibilidade foi validada nas versões registradas, sem promessa de qualidade universal. Consulte as [referências de idioma/cache](docs/REFERENCIAS-IA-CHROME.md).
 
-Para usar a IA, escreva um rascunho e escolha **Corrigir**, **Melhorar**, **Formal**, **Profissional**, **Amigável**, **Natural**, **Conciso**, **Engraçado** ou **Reescrever** no menu **IA**. O motor padrão é **Chrome preferencial**, quando a ação e pt-BR estiverem disponíveis no documento de inferência. **Modelo local e alternativa** escolhe WebLLM com seu perfil ou **Gemma 4 E2B via Transformers.js** antes da geração. **Modelo local selecionado** usa essa escolha manualmente. Prepare a IA nativa no painel lateral por clique em **Verificar IA do Chrome** e, quando elegível, **Preparar**. Downloads próprios exigem **Baixar e continuar**. Os textos são processados localmente, sem ler a conversa.
+Downloads sempre exigem ação explícita: **Preparar IA** no painel lateral para o navegador; **Baixar e continuar**, com o tamanho informado, para o modelo escolhido. A inferência preparada funciona offline; o WhatsApp ainda depende da própria conexão. Cache ausente ou incompleto exige preparação novamente. A variante compatível é escolhida automaticamente, sem controles técnicos na interface.
 
-Cada pedido faz uma geração com o texto original. Trechos provisórios não podem ser aplicados. Após conferir a validade técnica da saída, a prévia oferece **Copiar** e **Substituir**, sem avaliação de conteúdo ou confirmação adicional. A resposta idêntica aparece como sem alterações; saída vazia ou tecnicamente inutilizável é erro. **Cancelar**, desconexão e rascunho alterado impedem aplicação. A decisão sobre o conteúdo pertence ao usuário.
+Cada pedido faz uma única geração com o original, sem repetição automática após falha. Trechos em geração não podem ser aplicados. A [STEP-15-E](docs/steps/STEP-15-E.md) retirou a avaliação automática de conteúdo: a revisão e a decisão pertencem ao usuário. Saída idêntica indica **Sem alterações**; saídas vazias ou tecnicamente inutilizáveis continuam sendo erros. Textos multilinha e estruturas especiais oferecem somente cópia para preservar menções e formatação.
 
-A [STEP-15-E](docs/steps/STEP-15-E.md) remove a verificação automática de alterações, os avisos de conteúdo e o botão Analisar sentido. Os relatórios A–D preservam o comportamento anterior para consulta histórica. Os prompts continuam orientados a preservar o significado, sem certificar a resposta.
+## Configurações e privacidade
 
-Os perfis usam variantes q4f16_1 com `shader-f16` e q4f32_1 sem esse recurso. A variante f32 pede mais memória; o navegador informa limites de buffer, mas não a VRAM livre. A troca cancela pedidos ativos e libera o modelo anterior. Uma falha de recursos mantém a escolha e indica um perfil menor. Os pesos vêm apenas das revisões fixadas do Hugging Face; os seis WASM compatíveis com WebLLM 0.2.82 já estão no pacote.
+Preferências ficam somente no popup e painel lateral. Padrões: Automática, Llama 3.2 3B como alternativa, Corrigir, tema do sistema, preservar gírias e não adicionar novos emojis. As escolhas anteriores são preservadas na migração para o esquema v7; os antigos interruptores de idioma e avaliação semântica são descartados.
 
-Gemma usa Transformers.js **4.2.0**, modelo ONNX textual e tokenizer fixados por revisão/SHA-256. Baixa cerca de **3,13 GB** em q4f16, ou **3,65 GB** em q4 quando shader-f16 não estiver disponível; não baixa áudio/visão. Ambas as variantes quantizam pesos em quatro bits. Contexto do produto: 4.096 tokens. O nome E2B não comprova menor memória que Llama 3B. Os controles **Atualizar estado do Gemma**, **Liberar Gemma** e **Apagar arquivos do Gemma** administram somente seus artefatos. A integridade é conferida ao carregar; cache íntegro permite reinício e inferência offline, sem garantia de persistência. [Validação C e limites de hardware](docs/VALIDACAO-STEP-15-C.md).
+Em **IA e modelos → Armazenamento e memória**, **Liberar memória** cancela pedidos ativos e mantém o download; **Remover download** pede confirmação e remove os artefatos selecionados. A memória também é liberada após cinco minutos sem uso. O navegador administra separadamente os próprios recursos de IA. Os recibos de integridade descrevem apenas artefatos públicos, sem hashes de mensagens; integridade completa é conferida ao carregar, sem recalcular pesos nas consultas da interface.
 
-Para conferir a inferência, clique em **IA → Testar IA local**. Se o perfil escolhido ainda não estiver no cache, use **Baixar e continuar** após revisar o tamanho e a variante. O teste usa somente a frase sintética fixa; o resultado aparece separado da prévia e não oferece Substituir ou Copiar. O download aceita apenas `huggingface.co` e o redirecionamento observado `us.aws.cdn.hf.co`, sem JavaScript remoto. As bibliotecas WASM já estão no pacote. Se o redirecionamento mudar para outra origem, o download falhará de forma segura até que a configuração seja revista. Consulte [a matriz, os artefatos e a prova real dos perfis](docs/VALIDACAO-STEP-12.md).
-
-O menu oferece **Remover cache da variante selecionada**. Essa ação cancela o pedido ativo, encerra o Worker e remove somente arquivos e recibos sob a revisão fixa daquela variante; preserva preferências, outros modelos e dados de outros sites. No WebLLM, antes de uma inicialização fria, todos os shards passam pela conferência de tamanho e MD5 publicado no índice; JSONs passam por conferência estrutural, e recibos SHA-256 locais detectam mudanças posteriores em todos os arquivos. Gemma confere tamanho/SHA-256 fixados no catálogo. Os recibos descrevem somente artefatos públicos, sem hashes de mensagens. Cache ausente, interrompido ou inconsistente exige **Baixar e continuar**; o reparo reaproveita arquivos válidos. A persistência depende do navegador, espaço e políticas de armazenamento. Limpeza ou remoção pode exigir novo download. A disponibilidade offline refere-se à inferência após preparação completa, não ao WhatsApp. Veja [a validação da STEP-13](docs/VALIDACAO-STEP-13.md).
-Textos com várias linhas, menções estruturadas, formatação especial e editores sem suporte oferecem **somente cópia**. O teste real encontrou perda de quebras de linha na inserção nativa do WhatsApp; o rascunho multilinha permanece intacto e a cópia preserva suas linhas. Confira menções e formatação ao colar. Nenhuma API interna do site é utilizada para contornar esse limite.
-
-## Preferências e interfaces auxiliares
-
-O popup, o painel lateral e o menu junto ao editor compartilham motor, idioma pt-BR, tema Sistema/Claro/Escuro, ação padrão, perfil local, preservação de gírias e permissão de novos emojis. Os padrões são Chrome preferencial, Sistema, Corrigir, Econômico, preservar gírias, sem novos emojis e português por prompt experimental desligado. Os emojis originais são solicitados na geração e revisados pelo usuário; Formal pode adaptar gírias. **Usar ação padrão** executa a escolha salva. Copiar e Substituir permanecem na prévia.
-
-Privacidade local é obrigatória e informativa. Somente `writingPreferences`, no esquema v6, vai para `chrome.storage.local`; migrações de v1/v2/v3/v4/v5 preservam valores válidos e descartam a preferência de revisão semântica e campos desconhecidos. Dados inválidos recebem padrões seguros. Não se armazenam textos, prompts, respostas, contatos ou histórico. As interfaces oferecem licença local, presença dos arquivos por **Atualizar estado do modelo** (integridade completa conferida ao carregar) e controles separados: **Liberar memória da GPU** encerra o Worker, cancela pedidos e conserva os artefatos; **Apagar arquivos do modelo** pede confirmação e apaga apenas a revisão/variante selecionada, preservando preferências. Gemma possui controles próprios. O estado exibido corresponde à última consulta; atualize depois de usar a IA. Veja o [relatório da STEP-14](docs/VALIDACAO-STEP-14.md).
+Somente preferências são persistidas. Rascunhos, prompts, respostas, contatos e histórico não são gravados nem enviados a serviços de IA. Bibliotecas JavaScript/WASM são locais; apenas dados de modelos podem ser baixados das origens restritas do Manifest. [Licenças](NOTICE.txt) acompanham o pacote. Simulações e provas continuam restritas às ferramentas de desenvolvimento e aos registros históricos, sem atalhos na interface.
 
 ## Comandos
 
@@ -83,12 +74,14 @@ Os roteiros de navegador STEP-06 até STEP-15-D preservam os contratos históric
 | npm run benchmark:step15d                     | Comparar cinco motores em blocos retomáveis, com conjunto reservado e fontes congeladas.                      |
 | npm run benchmark:step15d:report -- diretório | Validar anotações/hashes e resumir qualidade, avisos e latência da campanha.                                  |
 | npm run test:step15e:browser                  | Validar revisão manual, migração, cópia/substituição, desfazer e obsolescência com Chrome/WebLLM/Gemma reais. |
+| npm run test:step15f:browser                  | Validar configurações simples e ação salva por um clique com Chrome/WebLLM/Gemma reais.                       |
+| npm run test:step15f:popup                    | Conferir o popup nativo real do Chrome, sua largura, título e ausência de rolagem horizontal.                 |
 | npm run test:watch                            | Reexecutar testes durante a edição.                                                                           |
 | npm run build                                 | Conferir tipos e gerar a extensão completa em dist.                                                           |
 | npm run preview                               | Servir as páginas construídas em http://127.0.0.1:4173.                                                       |
 | npm run check                                 | Executar tipos, lint, formatação, testes e build; parar na primeira falha.                                    |
 
-Os roteiros de navegador das STEP-06 a STEP-11 reproduzem as versões registradas nos respectivos commits. Para o pacote atual, use os roteiros da STEP-15-A/B/C, o benchmark D e os checks; os testes automatizados continuam cobrindo as funcionalidades acumuladas.
+Os roteiros de navegador anteriores à STEP-15-F reproduzem os respectivos commits históricos. Para o pacote atual, use test:step15f:browser e os checks. Benchmarks e registros históricos permanecem disponíveis.
 
 Os servidores escutam apenas no computador local e falham se a porta estiver ocupada. Encerre com Ctrl+C. O preview valida React e estilos; **localhost não executa APIs de extensão**. O diagnóstico nesse endereço informa que precisa ser aberto pela extensão instalada.
 
@@ -100,14 +93,14 @@ Os servidores escutam apenas no computador local e falham se a porta estiver ocu
 | src/extension/background | Coordenador, remetentes, roteador e criação idempotente do offscreen.                                 |
 | src/extension/offscreen  | Seleção de motor, adaptador nativo e Worker; comunicação por chrome.runtime.                          |
 | src/extension/ai         | Chrome/WebLLM/Gemma, ciclo de vida, prompts, streaming, saída técnica, orçamento e simulador.         |
-| src/extension/content    | Botão, menu/prévia React com Shadow DOM, sessão em memória e clientes de comunicação.                 |
+| src/extension/content    | Botão e sugestão React com Shadow DOM, sessão em memória e clientes de comunicação.                   |
 | src/integration/whatsapp | Seletores, detecção, leitura de blocos, revisão e substituição nativa do editor.                      |
-| src/extension/diagnostic | Página de comunicação simulada acessível pelo link no popup/painel.                                   |
+| src/extension/diagnostic | Página de comunicação simulada para desenvolvimento, sem link na interface.                           |
 | src/shared               | Contratos, validação dos payloads/remetentes e fixture sintética.                                     |
 | src/development          | Página React auxiliar da STEP-02, preservada.                                                         |
 | tests                    | Contratos, remetentes, roteamento, cancelamento, recuperação, simulador, pacote e fixtures do editor. |
 
-WebLLM 0.2.82 executa a prova sintética e as nove ações na mesma instância do perfil selecionado. A versão foi fixada devido à falha de GPU observada com 0.2.85; as bibliotecas WASM locais são compatíveis com o catálogo `v0_2_80`. Popup, painel lateral e menu do editor compartilham as preferências da STEP-14.
+WebLLM 0.2.82 executa a prova sintética e as nove ações na mesma instância do perfil selecionado. A versão foi fixada devido à falha de GPU observada com 0.2.85; as bibliotecas WASM locais são compatíveis com o catálogo `v0_2_80`. Popup e painel lateral guardam as preferências; o editor executa a ação salva (STEP-15-F).
 
 ## Detecção e revisão do editor
 

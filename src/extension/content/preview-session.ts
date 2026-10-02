@@ -14,7 +14,7 @@ import type { PreferenceStore } from './preferences-client';
 import { DEFAULT_PREFERENCES } from '../../shared/preferences';
 import type { PreferencePatch, WritingPreferences } from '../../shared/preferences';
 import type { ModelProfile } from '../ai/model-catalog';
-import { PROFILE_LABELS, smallerProfile } from '../ai/model-catalog';
+import { smallerProfile } from '../ai/model-catalog';
 import { probeHardware } from './model-hardware';
 import type { HardwareStatus } from './model-hardware';
 import { removeSelectedCache } from './cache-client';
@@ -22,7 +22,7 @@ import { manageGemma } from '../settings/gemma-client';
 import type { LocalVariant, LocalModel } from '../../shared/local-model';
 
 export type PreviewState =
-  | { kind: 'closed' | 'loading' }
+  | { kind: 'closed' | 'loading' | 'preparing-action' }
   | {
       kind: 'menu';
       profile: ModelProfile;
@@ -63,7 +63,7 @@ export class PreviewSession {
   private profile: ModelProfile = 'economico';
   private engine: WritingPreferences['engine'] = DEFAULT_PREFERENCES.engine;
   private localModel: LocalModel = DEFAULT_PREFERENCES.localModel;
-  private chromePortuguesePrompt = DEFAULT_PREFERENCES.chromePortuguesePrompt;
+  private latestPreferences: WritingPreferences | undefined;
   private hardware: HardwareStatus = { state: 'checking' };
   private readonly listeners = new Set<() => void>();
   constructor(
@@ -98,6 +98,49 @@ export class PreviewSession {
     this.snapshot = null;
     this.set({ kind: 'closed' });
   }
+  /** Fluxo do produto: um gesto, uma ação salva, sem menu de configurações. */
+  executeConfigured(): void {
+    this.close();
+    const snapshot = this.adapter.capture();
+    if (!snapshot || !snapshot.text.replace(/[\s\u200b\u200e\u200f]/g, '')) {
+      this.set({ kind: 'notice', message: 'Escreva uma mensagem antes de usar a IA.' });
+      return;
+    }
+    if (snapshot.text.length > MAX_TEXT_LENGTH) {
+      this.set({ kind: 'notice', message: 'Mensagem muito longa. Reduza o rascunho.' });
+      return;
+    }
+    this.snapshot = snapshot;
+    this.latestPreferences = undefined;
+    const sequence = this.sequence;
+    this.set({ kind: 'preparing-action' });
+    this.unsubscribePreferences = this.preferences.subscribe?.((value) =>
+      this.preferencesChanged(value),
+    );
+    void this.preferences.read().then(
+      (saved) => {
+        if (sequence !== this.sequence) return;
+        this.validate();
+        if (sequence !== this.sequence) return;
+        const value = this.latestPreferences ?? saved;
+        this.latestPreferences = value;
+        this.profile = value.profile;
+        this.engine = value.engine;
+        this.localModel = value.localModel;
+        this.runAction(value.defaultAction, snapshot, false);
+      },
+      () => {
+        if (sequence !== this.sequence) return;
+        this.close();
+        this.set({
+          kind: 'notice',
+          message: 'Não foi possível ler as configurações. Clique em IA para tentar novamente.',
+        });
+      },
+    );
+  }
+
+  // Entrada histórica usada pelos testes das etapas anteriores; não exposta na interface.
   open(): void {
     this.close();
     const sequence = this.sequence;
@@ -127,7 +170,7 @@ export class PreviewSession {
           this.profile = value.profile;
           this.engine = value.engine;
           this.localModel = value.localModel;
-          this.chromePortuguesePrompt = value.chromePortuguesePrompt;
+
           this.set({
             ...this.state,
             profile: value.profile,
@@ -148,11 +191,14 @@ export class PreviewSession {
       this.profile !== value.profile ||
       this.engine !== value.engine ||
       this.localModel !== value.localModel ||
-      this.chromePortuguesePrompt !== value.chromePortuguesePrompt;
+      (this.latestPreferences !== undefined &&
+        (this.latestPreferences.defaultAction !== value.defaultAction ||
+          this.latestPreferences.preserveSlang !== value.preserveSlang ||
+          this.latestPreferences.addEmojis !== value.addEmojis));
     this.profile = value.profile;
     this.engine = value.engine;
     this.localModel = value.localModel;
-    this.chromePortuguesePrompt = value.chromePortuguesePrompt;
+    this.latestPreferences = value;
     if (this.state.kind === 'menu') {
       this.set({
         ...this.state,
@@ -168,7 +214,7 @@ export class PreviewSession {
       this.set({
         kind: 'notice',
         message:
-          'O motor ou perfil de IA mudou. O pedido foi cancelado. Abra o menu para continuar.',
+          'As configurações de escrita mudaram. O pedido foi cancelado. Clique em IA para continuar.',
       });
     }
   }
@@ -258,7 +304,6 @@ export class PreviewSession {
           if (preferenceRevision === this.preferenceRevision) {
             this.engine = saved.engine;
             this.localModel = saved.localModel;
-            this.chromePortuguesePrompt = saved.chromePortuguesePrompt;
           }
           this.set({
             ...this.state,
@@ -280,7 +325,7 @@ export class PreviewSession {
       this.close();
       this.set({
         kind: 'notice',
-        message: 'O rascunho ou a conversa mudou. Feche e crie uma nova prévia.',
+        message: 'O rascunho ou a conversa mudou. Clique em IA novamente.',
       });
     }
   }
@@ -419,16 +464,16 @@ export class PreviewSession {
       );
     } catch {
       this.snapshot = null;
-      this.set({ kind: 'notice', message: 'Não foi possível conectar ao motor local.' });
+      this.set({ kind: 'notice', message: 'Não foi possível iniciar a IA. Tente novamente.' });
     }
   }
 
   private resourceMessage(message: string, code?: string): string {
     if (code !== 'INSUFFICIENT_RESOURCES') return message;
     if (this.localModel === 'gemma')
-      return `${message} Você pode escolher WebLLM e um perfil menor no menu. A escolha atual foi mantida.`;
+      return `${message} Escolha outro modelo nas configurações da extensão.`;
     const smaller = smallerProfile(this.profile);
-    return `${message}${smaller ? ` Você pode selecionar o perfil ${PROFILE_LABELS[smaller]} no menu.` : ''} A escolha atual foi mantida.`;
+    return `${message}${smaller ? ` Você pode escolher um modelo menor nas configurações da extensão.` : ''} A escolha atual foi mantida.`;
   }
 
   confirmDownload(): void {
@@ -439,7 +484,7 @@ export class PreviewSession {
       const snapshot = this.snapshot;
       if (!snapshot || !this.adapter.isCurrent(snapshot)) {
         this.snapshot = null;
-        this.set({ kind: 'notice', message: 'O rascunho mudou. Crie uma nova prévia.' });
+        this.set({ kind: 'notice', message: 'O rascunho mudou. Clique em IA novamente.' });
         return;
       }
       this.runAction(task, snapshot, true);
@@ -487,7 +532,7 @@ export class PreviewSession {
         this.profile,
       );
     } catch {
-      this.set({ kind: 'notice', message: 'Não foi possível conectar ao motor local.' });
+      this.set({ kind: 'notice', message: 'Não foi possível iniciar a IA. Tente novamente.' });
     }
   }
 
@@ -548,7 +593,7 @@ export class PreviewSession {
       kind: 'notice',
       message:
         result === 'stale'
-          ? 'O rascunho ou a conversa mudou. Crie uma nova prévia.'
+          ? 'O rascunho ou a conversa mudou. Clique em IA novamente.'
           : result === 'failed-preserved'
             ? 'A substituição não foi aceita. O rascunho original foi preservado.'
             : 'Não foi possível confirmar a substituição. Confira o rascunho e use Ctrl+Z para desfazer a última edição, se necessário.',

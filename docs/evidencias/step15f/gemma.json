@@ -1,0 +1,69 @@
+{
+  "version": "0.15.5",
+  "browser": "154.0.8037.0",
+  "engine": "gemma",
+  "profile": "step15c-chrome",
+  "startedAt": "2026-10-02T18:03:45.035Z",
+  "syntheticFixture": true,
+  "noMessageSent": true,
+  "checks": {
+    "legacyPortugueseSwitchRemoved": true,
+    "legacyPreferenceRemoved": true,
+    "modelChoiceThroughSettings": true,
+    "settingsWithoutTechnicalControls": true,
+    "narrowDarkSettings": true,
+    "workerObserved": true,
+    "oneClickWithoutSettings": true,
+    "readablePreviewWithoutAssessment": true,
+    "copy": true,
+    "manualReplacementAndUndo": true,
+    "savedActionApplied": true,
+    "staleDraftBlocksApplication": true,
+    "storageOnlyPreferences": true
+  },
+  "requests": [
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/gemma-worker-MRWFfeBg.js",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/transformers.web-DFmlKpLR.js",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/runtime/ort-wasm-simd-threaded.asyncify.mjs",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/runtime/ort-wasm-simd-threaded.asyncify.wasm",
+      "method": "GET",
+      "hasPostData": false
+    }
+  ],
+  "consoleEvents": [],
+  "observerErrors": [],
+  "preferences": {
+    "version": 7,
+    "engine": "local",
+    "localModel": "gemma",
+    "profile": "economico",
+    "language": "pt-BR",
+    "theme": "dark",
+    "defaultAction": "corrigir",
+    "preserveSlang": true,
+    "addEmojis": false
+  },
+  "syntheticInput": "fazendo o teste da extensao apra ver se funciona de verdade",
+  "syntheticOutput": "Fazendo o teste da extensão para ver se funciona de verdade.",
+  "offline": true,
+  "configuredActionOutput": "Pode revisar este texto, por favor?",
+  "pageErrors": 0,
+  "finishedAt": "2026-10-02T18:04:37.054Z"
+}

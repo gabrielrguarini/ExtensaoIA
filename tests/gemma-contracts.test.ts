@@ -10,7 +10,7 @@ import { isGemmaCommand } from '../src/shared/gemma-management';
 import { isClientEvent } from '../src/shared/protocol';
 import { binding } from './fixtures';
 describe('Gemma e preferências v5', () => {
-  it('migra escolha manual WebLLM preservando perfil e opção experimental de português', () => {
+  it('migra escolha manual WebLLM preservando perfil e descartando interruptor de português', () => {
     expect(
       parsePreferences({
         version: 4,
@@ -23,7 +23,6 @@ describe('Gemma e preferências v5', () => {
       ...DEFAULT_PREFERENCES,
       engine: 'local',
       profile: 'qualidade',
-      chromePortuguesePrompt: true,
     });
     expect(parsePreferences({ version: 3, profile: 'equilibrado' }).localModel).toBe('webllm');
     expect(

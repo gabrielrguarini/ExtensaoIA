@@ -9,7 +9,6 @@ export interface NativeActionStatus {
 export interface ChromeStatus {
   ok: true;
   language: 'pt-BR';
-  chromePortuguesePrompt: boolean;
   actions: NativeActionStatus[];
   sessionReady: boolean;
 }
@@ -25,10 +24,9 @@ export function isChromeCommand(value: unknown): value is ChromeCommand {
 export function isChromeStatus(value: unknown): value is ChromeStatus {
   return (
     record(value) &&
-    fields(value, ['ok', 'language', 'chromePortuguesePrompt', 'actions', 'sessionReady']) &&
+    fields(value, ['ok', 'language', 'actions', 'sessionReady']) &&
     value.ok === true &&
     value.language === 'pt-BR' &&
-    typeof value.chromePortuguesePrompt === 'boolean' &&
     typeof value.sessionReady === 'boolean' &&
     Array.isArray(value.actions) &&
     value.actions.length === WRITING_ACTIONS.length &&

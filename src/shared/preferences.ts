@@ -6,10 +6,9 @@ import type { LocalModel } from './local-model';
 
 export const PREFERENCES_KEY = 'writingPreferences';
 export interface WritingPreferences {
-  version: 6;
+  version: 7;
   engine: 'chrome-preferred' | 'local';
   localModel: LocalModel;
-  chromePortuguesePrompt: boolean;
   /** Modelo WebLLM escolhido, inclusive como alternativa ao Chrome. */
   profile: ModelProfile;
   language: 'pt-BR';
@@ -19,10 +18,9 @@ export interface WritingPreferences {
   addEmojis: boolean;
 }
 export const DEFAULT_PREFERENCES: WritingPreferences = {
-  version: 6,
+  version: 7,
   engine: 'chrome-preferred',
   localModel: 'webllm',
-  chromePortuguesePrompt: false,
   profile: 'economico',
   language: 'pt-BR',
   theme: 'system',
@@ -48,7 +46,6 @@ export function isPreferencePatch(value: unknown): value is PreferencePatch {
         return isWritingAction(item);
       case 'profile':
         return isModelProfile(item);
-      case 'chromePortuguesePrompt':
       case 'preserveSlang':
       case 'addEmojis':
         return typeof item === 'boolean';
@@ -83,7 +80,7 @@ export function isPreferenceCommand(value: unknown): value is PreferenceCommand 
 
 export function parsePreferences(value: unknown): WritingPreferences {
   const result = { ...DEFAULT_PREFERENCES };
-  if (!record(value) || ![1, 2, 3, 4, 5, 6].includes(value.version as number)) return result;
+  if (!record(value) || ![1, 2, 3, 4, 5, 6, 7].includes(value.version as number)) return result;
   if (value.version === 4 && value.engine === 'webllm') result.engine = 'local';
   // Lista fechada: migra valores válidos e descarta qualquer conteúdo/ chave desconhecida.
   for (const key of Object.keys(DEFAULT_PREFERENCES)) {
@@ -91,7 +88,6 @@ export function parsePreferences(value: unknown): WritingPreferences {
       key === 'version' ||
       (key === 'localModel' && (value.version as number) < 5) ||
       (key === 'engine' && (value.version as number) < 5) ||
-      (key === 'chromePortuguesePrompt' && (value.version as number) < 4) ||
       value.version === 1 ||
       (value.version === 2 && key !== 'profile')
     )

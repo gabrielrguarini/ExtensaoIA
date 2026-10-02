@@ -17,7 +17,6 @@ describe('gestão separada dos artefatos Chrome', () => {
     const status = {
       ok: true,
       language: 'pt-BR',
-      chromePortuguesePrompt: false,
       sessionReady: false,
       actions: [...WRITING_ACTIONS.map(({ id }) => ({ action: id, availability: null }))],
     };

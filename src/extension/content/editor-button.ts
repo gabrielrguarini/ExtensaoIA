@@ -126,7 +126,7 @@ export function mountEditorButton(document: Document): () => void {
   });
   const click = (event: MouseEvent): void => {
     if (!event.isTrusted) return;
-    if (session.getState().kind === 'closed') session.open();
+    if (session.getState().kind === 'closed') session.executeConfigured();
     else cancel();
   };
   const keydown = (event: KeyboardEvent): void => {

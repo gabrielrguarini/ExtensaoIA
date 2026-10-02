@@ -1,0 +1,39 @@
+{
+  "validatedAt": "2026-10-02T18:21:36.075Z",
+  "command": "npm.cmd run check",
+  "exitCode": 0,
+  "tests": 272,
+  "testFiles": 40,
+  "typecheck": true,
+  "lint": true,
+  "format": true,
+  "build": true,
+  "browsers": {
+    "chrome": {
+      "browser": "154.0.8037.93",
+      "profile": "step15b-chrome",
+      "passedChecks": 12,
+      "requests": 0
+    },
+    "webllm": {
+      "browser": "154.0.8037.0",
+      "profile": "step15-isolated",
+      "passedChecks": 13,
+      "requests": 5
+    },
+    "gemma": {
+      "browser": "154.0.8037.0",
+      "profile": "step15c-chrome",
+      "passedChecks": 13,
+      "requests": 4
+    }
+  },
+  "checkedAt": "2026-10-02T18:21:35.983Z",
+  "historicalHashes": {
+    "docs/benchmark/step15d": 65,
+    "docs/evidencias/step15c": 11,
+    "docs/evidencias/step15e": 7
+  },
+  "markdownLinks": 475,
+  "files": 48
+}

@@ -1,0 +1,24 @@
+{
+  "algorithm": "SHA-256",
+  "scope": "Arquivos sintéticos desta etapa, exceto este manifesto.",
+  "files": {
+    "attempts.json": "f7a5da8afd6308f67d56f4d52e20720861a46891ceab96a580dc4e4c3a109298",
+    "checks.json": "238895e7d6226d67c3f702eb726ee459904acc8470129926841a26184ff5903c",
+    "chrome-models.png": "de4a2922363ca7b7a7d6af1b9786625f4bfdddf3e6d17ff32644ef82bb7732f1",
+    "chrome-preview.png": "18701eadaf8c11adb1349a0ed0f29248ad291cee25011b7dc4d421c9c3741a69",
+    "chrome-settings.png": "1b3c52b0bf6fc1e57860c650778e600a30c9a389a8225bdef56db303d65c6fcf",
+    "chrome.json": "e50d9a7e3ffa7a63ce264ca848c633add4317daa667003eb0c2e641934dcf403",
+    "gemma-models.png": "ac31d4c8e091c71862ce9a49d48d78316cd30bae836bff03ca20847cfde9484d",
+    "gemma-preview.png": "b23999c036e9f274e1ed1bab7f78194d39c85c80a2463315ab837f7abae2fd1b",
+    "gemma-settings.png": "1b3c52b0bf6fc1e57860c650778e600a30c9a389a8225bdef56db303d65c6fcf",
+    "gemma.json": "5cc236f11ba58c90d9bca6625878fc0a0833bf85667da2fd93de43e5bf4d3e97",
+    "popup-real-baseline.json": "ec0b43a0e1da2a18388567ec282cc2509fa95a9f797a68649fe2aa63377e9435",
+    "popup-real-baseline.png": "9501e74bd7b5a9736ce6f1e7e875de02eb01769802cd13bd4f55aa6b818152ac",
+    "popup-real-corrected.json": "7a0df1ed45f37119f38ff89022c66d853094c5f9c4e50c66f6c2542ce558f1f2",
+    "popup-real-corrected.png": "0f9843a84ce16c5f32685b3f4ac19b4a126f62ac324e6c5c535806976a754835",
+    "webllm-models.png": "6f5ce103f5e03423bd5b36bebb15f26ff4381b7428bd664245620052eb79edb3",
+    "webllm-preview.png": "605f35e4654182882adebfc1d3428943de12aff84be0215c759abe9aad3a9fe5",
+    "webllm-settings.png": "1b3c52b0bf6fc1e57860c650778e600a30c9a389a8225bdef56db303d65c6fcf",
+    "webllm.json": "caa6a030681c805c78324b67ae10f51cd328c03809e473a978db49a0423e058f"
+  }
+}

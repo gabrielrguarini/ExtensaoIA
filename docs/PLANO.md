@@ -32,9 +32,13 @@ As regras duráveis estão em [AGENTS.md](../AGENTS.md).
 
 Construir uma extensão Chrome instalável localmente que corrija e reescreva o rascunho do WhatsApp Web usando IA local, nativa do Chrome quando idioma/ação forem suportados, com alternativas WebGPU. A interface será em português brasileiro e a sugestão aparecerá **junto ao campo de mensagem**.
 
-Fluxo: escrever → clicar em IA → escolher uma ação → processar localmente → visualizar a sugestão → confirmar → substituir o rascunho.
+Fluxo: configurar a ação na extensão → escrever → clicar em IA → processar localmente → revisar a sugestão → copiar ou substituir o rascunho.
 
 A extensão nunca envia a mensagem. Substituir e Copiar são ações explícitas. O campo original deve permanecer intacto em cancelamento, incompatibilidade, erro de inferência ou falha técnica da sugestão. A revisão do conteúdo e a decisão de substituir pertencem ao usuário.
+
+## Interface vigente — ajuste STEP-15-F
+
+A [STEP-15-F](steps/STEP-15-F.md) simplifica o produto antes da STEP-16: o botão IA executa diretamente a ação salva; preferências ficam apenas no popup/painel lateral. Português brasileiro e escolha de variante são automáticos. Nomes de frameworks, provas sintéticas, simulação e diagnóstico não aparecem na interface. A compatibilidade nativa por instrução passa a ser automática quando a configuração específica não está pronta, sempre antes da geração e sem download silencioso. Essa decisão substitui os controles manuais descritos nas etapas históricas.
 
 ## Decisões de produto
 
@@ -72,15 +76,15 @@ A IA implementadora deve criar arquivos completos, sem marcadores como “resto 
 
 ## Arquitetura
 
-| Componente            | Responsabilidade                                                                              |
-| --------------------- | --------------------------------------------------------------------------------------------- |
-| Content Script        | Detectar o editor e apresentar botão, menu e preview; capturar somente o rascunho solicitado. |
-| Adaptador do WhatsApp | Isolar seletores, snapshot do editor, leitura, inserção e validação da edição.                |
-| Service Worker        | Validar remetentes e mensagens, coordenar configurações e criar o contexto da IA.             |
-| Documento offscreen   | Validar e rotear pedidos da aba e hospedar um Worker com finalidade WORKERS.                  |
-| Worker de IA          | Executar WebLLM ou Transformers.js e manter uma única instância do modelo local selecionado.  |
-| Núcleo de reescrita   | Produzir prompts com texto original e conferir apenas a validade técnica da resposta.         |
-| Armazenamento         | Guardar preferências e artefatos dos modelos; mensagens ficam somente em memória temporária.  |
+| Componente            | Responsabilidade                                                                             |
+| --------------------- | -------------------------------------------------------------------------------------------- |
+| Content Script        | Detectar o editor e apresentar botão e sugestão; capturar somente o rascunho solicitado.     |
+| Adaptador do WhatsApp | Isolar seletores, snapshot do editor, leitura, inserção e validação da edição.               |
+| Service Worker        | Validar remetentes e mensagens, coordenar configurações e criar o contexto da IA.            |
+| Documento offscreen   | Validar e rotear pedidos da aba e hospedar um Worker com finalidade WORKERS.                 |
+| Worker de IA          | Executar WebLLM ou Transformers.js e manter uma única instância do modelo local selecionado. |
+| Núcleo de reescrita   | Produzir prompts com texto original e conferir apenas a validade técnica da resposta.        |
+| Armazenamento         | Guardar preferências e artefatos dos modelos; mensagens ficam somente em memória temporária. |
 
 O offscreen comunica-se com a extensão por chrome.runtime; acesso a preferências passa pelo coordenador. O pedido e a resposta usam uma porta direta entre content script e offscreen, com origem validada pelo remetente do Chrome. O encerramento do Service Worker por inatividade não perde esse contexto; perder a aba, a porta ou a IA continua encerrando o pedido sem replay. Essa correção do escopo acumulado da STEP-12 está registrada no [relatório](VALIDACAO-STEP-12.md#correção-da-conexão-durante-inferência--30092026). O Worker deve usar a interface própria AIEngine, deixando APIs WebLLM/Transformers.js restritas aos adaptadores.
 
@@ -140,7 +144,7 @@ Preservar ENTITY_* e avaliações antigas somente para reprodução histórica d
 
 Sugestões aparecem junto ao campo de mensagem, com Substituir, Copiar e Cancelar, sem avisos automáticos de conteúdo. Usar isolamento de estilos e controles acessíveis. Nunca simular envio da mensagem.
 
-Padrões de configuração: pt-BR, tema do sistema, ação Corrigir, perfil Econômico, preservar gírias e emojis existentes, não adicionar emojis. Preferências v6 descartam a revisão semântica antiga e preservam as escolhas válidas. A privacidade local é informativa e obrigatória.
+Padrões de configuração: pt-BR, tema do sistema, ação Corrigir, perfil Econômico, preservar gírias e emojis existentes, não adicionar emojis. Preferências v7 descartam os interruptores antigos de revisão semântica e compatibilidade de idioma e preservam as escolhas válidas. A privacidade local é informativa e obrigatória.
 
 A inserção nativa por Selection/Range e execCommand('insertText') ficará isolada no adaptador. Por ser uma API obsoleta, validar suporte, resultado e desfazer no Chrome alvo. Estruturas não preserváveis, como chips de menção, terão somente cópia.
 
@@ -175,6 +179,7 @@ Cada etapa depende das anteriores. A conclusão de implementação sem validaç�
 | [STEP-14](steps/STEP-14.md)     | Finalizar configurações e interfaces auxiliares           |
 | [STEP-15](steps/STEP-15.md)     | Executar STEP-15-A → B → C → D → E antes da entrega final |
 | [STEP-15-E](steps/STEP-15-E.md) | Retirar avaliação de conteúdo e manter revisão manual     |
+| [STEP-15-F](steps/STEP-15-F.md) | Simplificar interface e executar ação configurada         |
 | [STEP-16](steps/STEP-16.md)     | Validar e preparar a entrega instalável                   |
 
 Marco de MVP: concluir até STEP-08. Depois, adicionar modos e streaming, revisão opcional, perfis/cache, configurações, benchmark e entrega final.

@@ -1,0 +1,15 @@
+{
+  "version": "0.15.5",
+  "browser": "154.0.8037.93",
+  "baseline": true,
+  "actualChromeActionPopup": true,
+  "targetType": "page",
+  "nativePopupViews": 1,
+  "width": 71,
+  "height": 600,
+  "bodyWidth": 56,
+  "scrollWidth": 56,
+  "titleHeight": 240,
+  "titleFontSize": 20,
+  "measuredAt": "2026-10-02T17:54:54.095Z"
+}

@@ -1,0 +1,75 @@
+{
+  "version": "0.15.5",
+  "browser": "154.0.8037.0",
+  "engine": "webllm",
+  "profile": "step15-isolated",
+  "startedAt": "2026-10-02T18:02:18.133Z",
+  "syntheticFixture": true,
+  "noMessageSent": true,
+  "checks": {
+    "legacyPortugueseSwitchRemoved": true,
+    "legacyPreferenceRemoved": true,
+    "modelChoiceThroughSettings": true,
+    "settingsWithoutTechnicalControls": true,
+    "narrowDarkSettings": true,
+    "workerObserved": true,
+    "oneClickWithoutSettings": true,
+    "readablePreviewWithoutAssessment": true,
+    "copy": true,
+    "manualReplacementAndUndo": true,
+    "savedActionApplied": true,
+    "staleDraftBlocksApplication": true,
+    "storageOnlyPreferences": true
+  },
+  "requests": [
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/worker-rhvVgwe-.js",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/lib-DN7xhl6-.js",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/__vite-browser-external-DQ5ciJWJ.js",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/Llama-3.2-3B-Instruct-q4f16_1-ctx4k_cs1k-webgpu-BSFeQ0Om.wasm",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/lib-Cv3edfyV.js",
+      "method": "GET",
+      "hasPostData": false
+    }
+  ],
+  "consoleEvents": [],
+  "observerErrors": [],
+  "preferences": {
+    "version": 7,
+    "engine": "local",
+    "localModel": "webllm",
+    "profile": "economico",
+    "language": "pt-BR",
+    "theme": "dark",
+    "defaultAction": "corrigir",
+    "preserveSlang": true,
+    "addEmojis": false
+  },
+  "syntheticInput": "fazendo o teste da extensao apra ver se funciona de verdade",
+  "syntheticOutput": "fazendo o teste da extensão, à para ver se funciona de verdade",
+  "offline": true,
+  "configuredActionOutput": "Olá! Gostaria de saber se você pode revisar este texto, por favor? 🤔",
+  "pageErrors": 0,
+  "finishedAt": "2026-10-02T18:02:54.765Z"
+}

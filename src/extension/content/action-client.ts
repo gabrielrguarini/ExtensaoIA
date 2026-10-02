@@ -89,9 +89,9 @@ const generateRequest: RequestGenerator = (
     ) {
       const message =
         value.code === 'NATIVE_QUOTA'
-          ? 'O texto excedeu a quota da API do Chrome. Reduza o rascunho. Nenhuma nova geração foi feita.'
+          ? 'Mensagem muito longa para esta ação. Reduza o rascunho.'
           : value.code === 'NATIVE_NOT_SUPPORTED'
-            ? 'O Chrome não aceitou o idioma ou as opções deste pedido. Nenhuma nova geração foi feita.'
+            ? 'Não foi possível realizar esta ação. Experimente outro modelo nas configurações da extensão.'
             : value.code === 'BUSY'
               ? 'IA ocupada. Tente novamente quando o pedido atual terminar.'
               : value.code === 'CONTEXT_LIMIT'
@@ -101,11 +101,11 @@ const generateRequest: RequestGenerator = (
                   : value.code === 'EMPTY_OUTPUT'
                     ? 'A IA local retornou uma resposta vazia. O rascunho permanece intacto.'
                     : value.code === 'INVALID_OUTPUT'
-                      ? 'A IA local retornou uma resposta inadequada. O rascunho permanece intacto.'
+                      ? 'Não foi possível obter uma resposta utilizável. O rascunho permanece intacto.'
                       : value.code === 'WEBGPU_UNAVAILABLE'
-                        ? 'A IA local precisa de WebGPU neste navegador/computador. Seu texto não foi enviado a servidores.'
+                        ? 'O modelo escolhido não está disponível neste computador. Experimente a IA automática nas configurações da extensão.'
                         : value.code === 'INSUFFICIENT_RESOURCES'
-                          ? 'A GPU não oferece os recursos necessários. O rascunho permanece intacto.'
+                          ? 'O computador não tem recursos suficientes para este modelo. O rascunho permanece intacto.'
                           : value.code === 'MODEL_DOWNLOAD'
                             ? 'Não foi possível baixar o modelo. Verifique a conexão; o rascunho permanece intacto.'
                             : 'Não foi possível processar o texto localmente. O rascunho permanece intacto.';

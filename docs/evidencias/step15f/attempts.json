@@ -1,0 +1,10 @@
+[
+  {
+    "engine": "webllm",
+    "outcome": "harness-timeout",
+    "script": "tests/browser/step15f-interface.mjs",
+    "at": "2026-10-02T17:46:21Z",
+    "message": "Tempo de 240 s aguardando a primeira sugestão; roteiro encerrou sem resultado. Causa não isolada nesta tentativa; não representa incompatibilidade presumida.",
+    "followup": "Reexecutar com captura explícita de erro/download requerido, sem autorizar downloads."
+  }
+]

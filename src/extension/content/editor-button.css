@@ -24,39 +24,6 @@
     --writing-surface: #142127;
   }
 }
-.preference-fields {
-  border: 1px solid #8696a0;
-  min-width: 0;
-  margin: 12px 0;
-  padding: 10px;
-  font:
-    14px/1.5 system-ui,
-    sans-serif;
-}
-.preference-fields label {
-  display: grid;
-  gap: 4px;
-  margin: 12px 0;
-}
-.preference-fields label:has(input) {
-  display: flex;
-  gap: 8px;
-  align-items: flex-start;
-}
-.preference-fields select {
-  font: inherit;
-  padding: 7px;
-  background: var(--writing-surface);
-  color: var(--writing-fg);
-  border: 1px solid #8696a0;
-  border-radius: 7px;
-  min-width: 0;
-}
-input:focus-visible,
-select:focus-visible {
-  outline: 3px solid #007fff;
-  outline-offset: 2px;
-}
 *,
 *::before,
 *::after {
@@ -70,39 +37,6 @@ pre {
   font:
     14px/1.5 system-ui,
     sans-serif;
-}
-.semantic-setting {
-  display: flex;
-  gap: 8px;
-  align-items: flex-start;
-  margin: 12px 0;
-  font:
-    14px/1.5 system-ui,
-    sans-serif;
-}
-.profile-setting {
-  display: grid;
-  gap: 4px;
-  margin: 12px 0;
-  font:
-    14px/1.5 system-ui,
-    sans-serif;
-}
-.profile-setting select {
-  min-width: 0;
-  padding: 7px;
-  border: 1px solid #187566;
-  border-radius: 8px;
-  background: inherit;
-  color: inherit;
-  pointer-events: auto;
-}
-.hardware-info {
-  font-size: 12px;
-}
-.semantic-setting input {
-  margin-top: 4px;
-  pointer-events: auto;
 }
 button {
   border: 1px solid #187566;
@@ -158,7 +92,9 @@ button:disabled {
   overflow: auto;
 }
 .preview-heading {
-  display: grid;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 6px;
 }
 h2 {
@@ -166,49 +102,8 @@ h2 {
   font-size: 18px;
   font-weight: 650;
 }
-h3 {
-  margin: 0;
-  font-size: 14px;
-}
-.model-proof {
-  margin-top: 16px;
-  padding-top: 12px;
-  border-top: 1px solid #8696a0;
-}
-.action-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-}
-.action-grid button {
-  display: grid;
-  gap: 2px;
-  min-width: 0;
-  text-align: left;
-}
-.action-grid strong,
-.action-grid small {
-  font: inherit;
-}
-.action-grid strong {
-  font-weight: 650;
-}
-.action-grid small {
-  font-size: 12px;
-  opacity: 0.8;
-}
 p {
   margin: 12px 0;
-}
-.simulation {
-  width: fit-content;
-  padding: 3px 8px;
-  border-radius: 12px;
-  background: #fff2cd;
-  color: #604200;
-  font:
-    12px/1.4 system-ui,
-    sans-serif;
 }
 pre {
   max-height: 240px;
@@ -221,7 +116,7 @@ pre {
   overflow-wrap: anywhere;
   user-select: text;
 }
-.streaming-preview pre {
+.streaming-preview {
   border-style: dashed;
   user-select: none;
 }
@@ -241,6 +136,12 @@ pre {
   padding: 8px;
   background: #fff2cd;
   color: #604200;
+}
+.review-note {
+  font-size: 12px;
+}
+.dismiss {
+  margin-top: 4px;
 }
 .feedback:empty {
   margin: 0;

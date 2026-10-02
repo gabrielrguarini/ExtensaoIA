@@ -3,6 +3,7 @@ import type { BoundRequest } from '../../shared/protocol';
 import type { WritingPreferences } from '../../shared/preferences';
 import type { AvailabilityQuery, EngineAvailability } from '../../shared/suggestion';
 import { isWritingAction } from '../../shared/actions';
+import { selectNativeQuery } from '../ai/native-choice';
 
 interface NativeHost extends Engine {
   model: { availability(query: AvailabilityQuery): Promise<EngineAvailability> };
@@ -18,17 +19,19 @@ export async function selectEngine(
 ): Promise<Engine> {
   const action = isWritingAction(request.action) ? request.action : undefined;
   if (preferences.engine === 'chrome-preferred' && action) {
-    const query: AvailabilityQuery = {
-      action,
-      language: preferences.language,
-      ...(preferences.chromePortuguesePrompt ? { chromePortuguesePrompt: true } : {}),
-    };
-    const available = await native.model.availability(query);
+    const selected = await selectNativeQuery(
+      {
+        action,
+        language: preferences.language,
+      },
+      (query) => native.model.availability(query),
+      signal,
+    );
     signal.throwIfAborted();
-    if (available.state === 'ready') {
+    if (selected.availability.state === 'ready') {
       local.reset();
       try {
-        return await native.prepare(query, signal, request);
+        return await native.prepare(selected.query, signal, request);
       } catch {
         signal.throwIfAborted();
       }

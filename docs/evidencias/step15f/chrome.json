@@ -1,0 +1,43 @@
+{
+  "version": "0.15.5",
+  "browser": "154.0.8037.93",
+  "engine": "chrome",
+  "profile": "step15b-chrome",
+  "startedAt": "2026-10-02T18:07:28.875Z",
+  "syntheticFixture": true,
+  "noMessageSent": true,
+  "checks": {
+    "legacyPortugueseSwitchRemoved": true,
+    "legacyPreferenceRemoved": true,
+    "modelChoiceThroughSettings": true,
+    "settingsWithoutTechnicalControls": true,
+    "narrowDarkSettings": true,
+    "oneClickWithoutSettings": true,
+    "readablePreviewWithoutAssessment": true,
+    "copy": true,
+    "manualReplacementAndUndo": true,
+    "savedActionApplied": true,
+    "staleDraftBlocksApplication": true,
+    "storageOnlyPreferences": true
+  },
+  "requests": [],
+  "consoleEvents": [],
+  "observerErrors": [],
+  "preferences": {
+    "version": 7,
+    "engine": "chrome-preferred",
+    "localModel": "webllm",
+    "profile": "economico",
+    "language": "pt-BR",
+    "theme": "dark",
+    "defaultAction": "corrigir",
+    "preserveSlang": true,
+    "addEmojis": false
+  },
+  "syntheticInput": "fazendo o teste da extensao apra ver se funciona de verdade",
+  "syntheticOutput": "Fazendo o teste da extensão pra ver se funciona de verdade.",
+  "offline": true,
+  "configuredActionOutput": "Olá! Pode dar uma olhada neste texto, por favor? Valeu!",
+  "pageErrors": 0,
+  "finishedAt": "2026-10-02T18:07:43.434Z"
+}

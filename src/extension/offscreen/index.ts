@@ -9,6 +9,7 @@ import { removeModelArtifacts, modelArtifactsPresent } from '../ai/model-cache';
 import { isModelCommand } from '../../shared/model-management';
 import { ChromeHost } from './chrome-host';
 import { selectEngine } from './engine-selection';
+import { selectNativeQuery } from '../ai/native-choice';
 import { isChromeCommand } from '../../shared/chrome-management';
 import { WRITING_ACTIONS } from '../../shared/actions';
 import { isGemmaCommand } from '../../shared/gemma-management';
@@ -132,24 +133,21 @@ chrome.runtime.onMessage.addListener((value: unknown, sender, sendResponse) => {
       return false;
     }
     void preferences()
-      .then(async (saved) => {
+      .then(async () => {
         const actions = await Promise.all(
           WRITING_ACTIONS.map(({ id }) => id).map(async (action) => ({
             action,
             availability:
               (
-                await native.model.availability({
-                  action,
-                  language: 'pt-BR',
-                  chromePortuguesePrompt: saved.chromePortuguesePrompt,
-                })
-              ).nativeAvailability ?? null,
+                await selectNativeQuery({ action, language: 'pt-BR' }, (query) =>
+                  native.model.availability(query),
+                )
+              ).availability.nativeAvailability ?? null,
           })),
         );
         return {
           ok: true,
           language: 'pt-BR',
-          chromePortuguesePrompt: saved.chromePortuguesePrompt,
           actions,
           sessionReady: native.model.isReady(),
         };

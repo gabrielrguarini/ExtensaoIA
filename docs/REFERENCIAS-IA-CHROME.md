@@ -10,6 +10,10 @@ A [Prompt API, inclusive na página em português](https://developer.chrome.com/
 
 Na extensão, a sessão Prompt inclui a instrução explícita **Write exclusively in Brazilian Portuguese (português do Brasil, pt-BR)**. O padrão consulta/cria com o idioma declarado; se estiver indisponível, usa o modelo local selecionado. A opção manual **Português por prompt no Chrome (experimental)** consulta/cria sem declarações de idioma e usa Prompt nas nove ações e na revisão explícita. Disponibilidade e criação recebem a mesma configuração em ambos os caminhos. Não declarar inglês para mascarar um rascunho português nem anunciar qualidade a partir de disponibilidade genérica.
 
+## Interface vigente na STEP-15-F
+
+O interruptor manual foi removido a pedido do usuário. A seleção automática consulta primeiro a configuração com idioma declarado e API especializada; se não estiver pronta, consulta Prompt sem declarações e com a mesma instrução de português brasileiro. Prefere um caminho pronto, preserva downloads explícitos no painel visível e confirma as opções no offscreen antes de gerar. Não há troca de motor após iniciar a geração. A migração v7 descarta a preferência antiga sem perder modelo ou ação. Os procedimentos B abaixo descrevem a versão histórica; os resultados medidos permanecem intactos.
+
 ## O que o localstudio faz
 
 Referência fixada: commit `6512a521947077977d1d14df58f656e13675c227`, também HEAD de main na consulta. Foram lidos os arquivos públicos, sem executar o aplicativo:

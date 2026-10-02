@@ -67,8 +67,12 @@ function harness(text = original) {
 }
 describe('prévia com revisão pelo usuário', () => {
   it.each([
-    [original, corrected, 'Sugestão gerada.'],
-    ['Não envie R$ 25 para João.', 'Envie R$ 50 para Maria.', 'Sugestão gerada.'],
+    [original, corrected, 'Revise o texto antes de usar a sugestão.'],
+    [
+      'Não envie R$ 25 para João.',
+      'Envie R$ 50 para Maria.',
+      'Revise o texto antes de usar a sugestão.',
+    ],
     ['Pode revisar? 🙂', 'Pode revisar? 🙂', 'Sem alterações.'],
   ])(
     'apresenta a resposta sem julgamento e permite copiar/substituir: caso %#',

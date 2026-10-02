@@ -5,11 +5,11 @@
 ## Estado atual
 
 - Última atualização: 02/10/2026.
-- Última subetapa concluída: **STEP-15-E — Revisão e substituição pelo usuário**.
+- Última subetapa concluída: **STEP-15-F — Interface de escrita e configurações simplificadas**.
 - Situação: **STEP-15 Concluída** pelas novas campanhas D: 108 pares históricos por perfil WebLLM, comparação ENTITY_* e 108 rascunhos reservados distintos × cinco candidatos × três rodadas. Os 191 casos Qwen antes interrompidos foram cobertos em campanhas novas, preservando intactos os relatórios antigos. [Relatório D](VALIDACAO-STEP-15-D.md).
 - Validação complementar no WhatsApp real: 14 pedidos no grupo autorizado, duas alterações consideradas úteis, seis recusas, três respostas sem mudança e três prévias insatisfatórias; duas substituições e uma mensagem sintética enviada manualmente. A qualidade varia e exige revisão. [Resultados](VALIDACAO-STEP-12.md#validação-complementar-no-whatsapp-real--30092026).
-- Ajuste anterior à entrega final: **STEP-15-E Concluída**, removendo a avaliação de alterações e a análise de sentido a pedido do usuário. [Relatório E](VALIDACAO-STEP-15-E.md). Próxima etapa **STEP-16 Pendente**, somente mediante solicitação; não iniciada. Evidências A–D preservadas.
-- Implementação: Manifest V3, comunicação, adaptador do editor, botão IA, prévia, substituição manual, prova sintética e nove ações. Chrome preferencial quando elegível; modelos locais WebLLM (Llama/Qwen) ou Gemma 4 E2B via Transformers.js/WebGPU, com escolha manual e download explícito. A STEP-15-E removeu a avaliação de conteúdo e a análise semântica da interface; o usuário revisa e escolhe Copiar/Substituir. A simulação continua identificada. Textos multilinha e estruturas especiais oferecem somente cópia.
+- Ajuste anterior à entrega final: **STEP-15-F Concluída**, com ação salva executada por um clique, português automático e configurações exclusivas da extensão. [Relatório F](VALIDACAO-STEP-15-F.md). A [STEP-15-E](VALIDACAO-STEP-15-E.md) retirou a avaliação de alterações. Próxima etapa **STEP-16 Pendente**, não iniciada. Evidências históricas preservadas.
+- Implementação: Manifest V3, comunicação, adaptador do editor, botão IA, prévia, substituição manual, nove ações e configurações na extensão. Chrome preferencial quando elegível; modelos locais WebLLM (Llama/Qwen) ou Gemma 4 E2B via Transformers.js/WebGPU, com escolha manual e download explícito. A STEP-15-E removeu a avaliação de conteúdo e a análise semântica da interface; o usuário revisa e escolhe Copiar/Substituir. Simulação/provas permanecem somente como ferramentas internas; não aparecem na interface. O botão IA executa diretamente a ação salva. Textos multilinha e estruturas especiais oferecem somente cópia.
 
 ## Significado dos status
 
@@ -45,6 +45,7 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 | [STEP-15-C](steps/STEP-15-C.md) | Gemma via Transformers.js                       | Concluída | 254 testes/build; Gemma q4f16 em WebGPU real, nove ações offline, cancelamento/idle/cache e regressões Chrome/WebLLM. [Relatório](VALIDACAO-STEP-15-C.md).                                    |
 | [STEP-15-D](steps/STEP-15-D.md) | Comparação e otimização                         | Concluída | 2.448 pedidos, 2.314 sugestões revisadas, retomada íntegra, cinco motores/108 textos/3 rodadas, regressões offline e check. [Relatório](VALIDACAO-STEP-15-D.md).                              |
 | [STEP-15-E](steps/STEP-15-E.md) | Revisão e substituição pelo usuário             | Concluída | 265 testes/check e Chrome/WebLLM/Gemma reais offline, prévia sem avaliação, cópia, aplicação/desfazer e obsolescência. [Relatório](VALIDACAO-STEP-15-E.md).                                   |
+| [STEP-15-F](steps/STEP-15-F.md) | Interface e ação configurada                    | Concluída | 272 testes/check, três motores offline, configurações simples e inferência por um clique. [Relatório](VALIDACAO-STEP-15-F.md).                                                                |
 | [STEP-16](steps/STEP-16.md)     | Validar e preparar a entrega instalável         | Pendente  | Não iniciada.                                                                                                                                                                                 |
 
 ## Registro de execução
@@ -361,3 +362,14 @@ Copiar o bloco abaixo para cada execução e preencher somente com fatos verific
 - Evidências: [relatório E](VALIDACAO-STEP-15-E.md), docs/evidencias/step15e com três resultados, três capturas sintéticas e hashes/check. Relatórios e evidências históricos intactos; harnesses antigos reproduzíveis em seus commits.
 - Commit próprio: fix(step-15-e): remover avaliação de conteúdo das sugestões, identidade humana configurada; hash no histórico Git e relato final. Sem push.
 - Status final: **Concluída**, após validações e commit próprio. **STEP-16 Pendente**, não iniciada; sua especificação incorpora a revisão pelo usuário.
+
+## STEP-15-F — 02/10/2026
+
+- Escopo: ação salva executada por um clique em IA; configurações somente no popup/painel lateral; português automático; remoção de interface técnica, simulada e provas de desenvolvimento.
+- Implementação: preferência v7 preserva escolhas anteriores e remove o interruptor de português; seletor nativo compartilhado escolhe configuração antes da geração; captura/guardas de rascunho e preferências concorrentes mantidas. Interface inicial com ação, gírias, novos emojis e tema; IA e modelos recolhidos; escolha única Llama/Qwen/Gemma e manutenção somente do modelo selecionado. Mensagens de erro em linguagem do usuário. Pacote/Manifest/lockfile 0.15.5, dependências fixadas preservadas.
+- Verificações: npm.cmd run check aprovado com tipos, lint, formatação, 272 testes em 40 arquivos e build. Testes novos de execução direta, leitura atrasada, cancelamento, obsolescência, migração e ausência de controles técnicos; suites acumuladas preservadas.
+- Validação real: Chrome instalado 154.0.8037.93/Prompt e CfT 154.0.8037.0/Llama/Gemma em WebGPU. Três execuções offline, quatro modelos escolhidos por teclado, configurações a 360 px/tema escuro, Corrigir por um clique e troca para Conciso; Copiar, Substituir, Ctrl+Z e edição durante o pedido passaram. Frase fornecida corrigida exatamente pelo Chrome, sem interruptor pt-BR. Popup real relatado pelo usuário reproduzido com 71 px de largura e corrigido para 375 px (corpo 360 px, título em uma linha), sem emulação de viewport. Qualidade variável dos modelos permanece; nenhum ganho de desempenho/qualidade foi medido neste ajuste.
+- Privacidade: fixtures sintéticas, nenhuma conversa/envio; Workers observados, apenas GETs de executáveis locais, zero console/exceções/página, storage somente preferências. Rede observada nos contextos da extensão, não no navegador inteiro.
+- Evidências: [relatório F](VALIDACAO-STEP-15-F.md), docs/evidencias/step15f com resultados, nove capturas sintéticas, popup real antes/depois, tentativa interrompida, checks e hashes. Integridade de 65 arquivos D, 11 C e sete E confirmada. README, plano, referências Chrome e STEP-16 atualizados.
+- Commit próprio: feat(step-15-f): simplificar interface e executar ação configurada; autor/committer humanos configurados, hash no histórico Git e entrega final. Sem push.
+- Status final: **Concluída**, após checks, validações e commit próprio. Próxima etapa **STEP-16 Pendente**, não iniciada.
