@@ -74,6 +74,58 @@ button:disabled {
   border-radius: 16px;
   font-weight: 700;
   box-shadow: 0 2px 6px #0002;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.launcher.is-loading::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: writing-spin 0.8s linear infinite;
+}
+@keyframes writing-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .launcher.is-loading::before {
+    animation: none;
+  }
+}
+.writing-tooltip {
+  position: fixed;
+  width: max-content;
+  max-width: min(296px, calc(100vw - 16px));
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #172b32;
+  color: #fff;
+  font:
+    12px/1.4 system-ui,
+    sans-serif;
+  box-shadow: 0 2px 8px #0003;
+  pointer-events: none;
+  overflow-wrap: anywhere;
+}
+.writing-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: min(var(--tooltip-arrow, 16px), calc(100% - 12px));
+  width: 8px;
+  height: 8px;
+  background: inherit;
+  transform: rotate(45deg);
+}
+.writing-tooltip[data-side='bottom']::after {
+  top: -4px;
+  bottom: auto;
 }
 .panel-container {
   position: fixed;

@@ -16,7 +16,7 @@ export function PreviewPanel({
     if (state.kind !== 'closed')
       panel.current?.querySelector<HTMLButtonElement>('button:not(:disabled)')?.focus();
   }, [state.kind]);
-  if (state.kind === 'closed') return null;
+  if (state.kind === 'closed' || session.isDirect()) return null;
   const choice =
     state.kind === 'download-confirm' ? localChoice(state.profile, state.variant) : null;
   return (

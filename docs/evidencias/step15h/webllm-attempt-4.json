@@ -1,0 +1,74 @@
+{
+  "version": "0.15.7",
+  "browser": "154.0.8037.0",
+  "engine": "webllm",
+  "profile": "step15-isolated",
+  "startedAt": "2026-10-02T19:22:38.087Z",
+  "syntheticFixture": true,
+  "noMessageSent": true,
+  "checks": {
+    "legacyPortugueseSwitchRemoved": true,
+    "legacyPreferenceRemoved": true,
+    "modelChoiceThroughSettings": true,
+    "settingsWithoutTechnicalControls": true,
+    "narrowDarkSettings": true,
+    "workerObserved": true,
+    "directReplacementWithoutDialogAndUndo": true,
+    "escapeCancelsDirectRequest": true,
+    "directStaleDraftPreserved": true,
+    "previewChosenInSettings": true
+  },
+  "requests": [
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/worker-rhvVgwe-.js",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/lib-DN7xhl6-.js",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/__vite-browser-external-DQ5ciJWJ.js",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/Llama-3.2-3B-Instruct-q4f16_1-ctx4k_cs1k-webgpu-BSFeQ0Om.wasm",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/lib-Cv3edfyV.js",
+      "method": "GET",
+      "hasPostData": false
+    }
+  ],
+  "consoleEvents": [],
+  "missingOutputLanguageWarnings": [],
+  "observerErrors": [],
+  "preferences": {
+    "version": 8,
+    "engine": "local",
+    "localModel": "webllm",
+    "profile": "economico",
+    "language": "pt-BR",
+    "theme": "dark",
+    "defaultAction": "corrigir",
+    "interaction": "direct",
+    "preserveSlang": true,
+    "addEmojis": false
+  },
+  "directOutput": "fazendo o teste da extensão, à para ver se funciona de verdade",
+  "failure": {
+    "name": "Error",
+    "message": "IA ocupada. Tente novamente quando o pedido atual terminar."
+  },
+  "fixtureState": "Sugestão\n\nIA ocupada. Tente novamente quando o pedido atual terminar.\n\nFechar"
+}

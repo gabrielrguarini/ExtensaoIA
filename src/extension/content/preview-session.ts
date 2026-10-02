@@ -22,7 +22,7 @@ import { manageGemma } from '../settings/gemma-client';
 import type { LocalVariant, LocalModel } from '../../shared/local-model';
 
 export type PreviewState =
-  | { kind: 'closed' | 'loading' | 'preparing-action' }
+  | { kind: 'closed' | 'loading' | 'preparing-action' | 'applying' }
   | {
       kind: 'menu';
       profile: ModelProfile;
@@ -64,6 +64,8 @@ export class PreviewSession {
   private engine: WritingPreferences['engine'] = DEFAULT_PREFERENCES.engine;
   private localModel: LocalModel = DEFAULT_PREFERENCES.localModel;
   private latestPreferences: WritingPreferences | undefined;
+  private interaction: WritingPreferences['interaction'] = DEFAULT_PREFERENCES.interaction;
+  private noticeTimer: ReturnType<typeof setTimeout> | undefined;
   private hardware: HardwareStatus = { state: 'checking' };
   private readonly listeners = new Set<() => void>();
   constructor(
@@ -77,6 +79,9 @@ export class PreviewSession {
   ) {}
 
   getState = (): PreviewState => this.state;
+  isDirect = (): boolean => this.interaction === 'direct';
+  isRunning = (): boolean =>
+    ['preparing-action', 'action-loading', 'applying'].includes(this.state.kind);
   subscribe = (listener: () => void): (() => void) => {
     this.listeners.add(listener);
     return () => {
@@ -84,10 +89,14 @@ export class PreviewSession {
     };
   };
   private set(state: PreviewState): void {
+    clearTimeout(this.noticeTimer);
     this.state = state;
+    if (this.isDirect() && state.kind === 'notice')
+      this.noticeTimer = setTimeout(() => this.close(), 6_000);
     for (const listener of this.listeners) listener();
   }
   close(): void {
+    clearTimeout(this.noticeTimer);
     this.sequence++;
     this.unsubscribePreferences?.();
     this.unsubscribePreferences = undefined;
@@ -100,6 +109,7 @@ export class PreviewSession {
   }
   /** Fluxo do produto: um gesto, uma ação salva, sem menu de configurações. */
   executeConfigured(): void {
+    this.interaction = 'direct';
     this.close();
     const snapshot = this.adapter.capture();
     if (!snapshot || !snapshot.text.replace(/[\s\u200b\u200e\u200f]/g, '')) {
@@ -127,6 +137,7 @@ export class PreviewSession {
         this.profile = value.profile;
         this.engine = value.engine;
         this.localModel = value.localModel;
+        this.interaction = value.interaction;
         this.runAction(value.defaultAction, snapshot, false);
       },
       () => {
@@ -142,6 +153,7 @@ export class PreviewSession {
 
   // Entrada histórica usada pelos testes das etapas anteriores; não exposta na interface.
   open(): void {
+    this.interaction = 'preview';
     this.close();
     const sequence = this.sequence;
     this.set({
@@ -193,6 +205,7 @@ export class PreviewSession {
       this.localModel !== value.localModel ||
       (this.latestPreferences !== undefined &&
         (this.latestPreferences.defaultAction !== value.defaultAction ||
+          this.latestPreferences.interaction !== value.interaction ||
           this.latestPreferences.preserveSlang !== value.preserveSlang ||
           this.latestPreferences.addEmojis !== value.addEmojis));
     this.profile = value.profile;
@@ -208,7 +221,7 @@ export class PreviewSession {
       });
     } else if (
       changedProfile &&
-      ['download-confirm', 'action-loading', 'model-loading'].includes(this.state.kind)
+      ['download-confirm', 'action-loading', 'model-loading', 'applying'].includes(this.state.kind)
     ) {
       this.close();
       this.set({
@@ -320,7 +333,12 @@ export class PreviewSession {
     );
   }
   validate(): void {
-    if (this.state.kind === 'preview' && this.state.busy === 'replace') return;
+    // A escrita nativa gera nossas próprias mutações; o adaptador valida cada await.
+    if (
+      this.state.kind === 'applying' ||
+      (this.state.kind === 'preview' && this.state.busy === 'replace')
+    )
+      return;
     if (this.snapshot && !this.adapter.isCurrent(this.snapshot)) {
       this.close();
       this.set({
@@ -429,6 +447,14 @@ export class PreviewSession {
           this.validate();
           if (sequence !== this.sequence) return;
           if (!outcome.ok && outcome.code === 'DOWNLOAD_REQUIRED') {
+            if (this.isDirect()) {
+              this.close();
+              this.set({
+                kind: 'notice',
+                message: 'Prepare o modelo nas configurações da extensão antes de usar.',
+              });
+              return;
+            }
             this.set({
               kind: 'download-confirm',
               task: action,
@@ -445,6 +471,10 @@ export class PreviewSession {
                 ? 'A IA local retornou uma resposta vazia.'
                 : this.resourceMessage(outcome.message, outcome.code),
             });
+            return;
+          }
+          if (this.isDirect()) {
+            void this.applyDirect(snapshot, outcome.text);
             return;
           }
           this.set({
@@ -474,6 +504,45 @@ export class PreviewSession {
       return `${message} Escolha outro modelo nas configurações da extensão.`;
     const smaller = smallerProfile(this.profile);
     return `${message}${smaller ? ` Você pode escolher um modelo menor nas configurações da extensão.` : ''} A escolha atual foi mantida.`;
+  }
+
+  private async applyDirect(snapshot: DraftSnapshot, text: string): Promise<void> {
+    if (text === snapshot.text) {
+      this.close();
+      this.set({ kind: 'notice', message: 'Sem alterações.' });
+      return;
+    }
+    if (!this.adapter.canReplace(snapshot, text)) {
+      this.close();
+      this.set({
+        kind: 'notice',
+        message: 'Este rascunho exige revisão. Selecione Revisar sugestão nas configurações.',
+      });
+      return;
+    }
+    const sequence = this.sequence;
+    this.replacement = new AbortController();
+    this.set({ kind: 'applying' });
+    let result;
+    try {
+      result = await this.adapter.replace(snapshot, text, this.replacement.signal);
+    } catch {
+      result = 'failed-review' as const;
+    }
+    if (sequence !== this.sequence) return;
+    this.close();
+    if (result === 'applied') return;
+    this.set({
+      kind: 'notice',
+      message:
+        result === 'stale'
+          ? 'O rascunho ou a conversa mudou. Clique em IA novamente.'
+          : result === 'copy-only'
+            ? 'Este rascunho exige revisão. Selecione Revisar sugestão nas configurações.'
+            : result === 'failed-preserved'
+              ? 'Não foi possível substituir. O rascunho original foi preservado.'
+              : 'Confira o rascunho. Use Ctrl+Z para desfazer a última edição, se necessário.',
+    });
   }
 
   confirmDownload(): void {

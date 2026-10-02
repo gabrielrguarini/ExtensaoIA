@@ -142,7 +142,7 @@ export class WhatsAppAdapter {
     );
   }
 
-  /** Releitura só no gesto explícito de copiar/substituir. */
+  /** Releitura na aplicação autorizada pelo clique em IA ou em Copiar/Substituir. */
   matches(snapshot: DraftSnapshot): boolean {
     if (!this.isCurrent(snapshot) || !this.target) return false;
     if (readDraft(this.target.editor).text === snapshot.text) return true;

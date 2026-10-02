@@ -109,7 +109,7 @@ describe('ação salva com um clique', () => {
       expect(container.textContent).not.toMatch(
         /pt-BR|WebLLM|Transformers|Simulação|Testar IA|Perfil/iu,
       );
-      expect(container.textContent).toContain('Cancelar');
+      expect(container.children).toHaveLength(0);
     } finally {
       await act(async () => {
         await Promise.resolve();
@@ -157,7 +157,7 @@ describe('ação salva com um clique', () => {
       theme: 'dark',
     });
     expect(migrated).toMatchObject({
-      version: 7,
+      version: 8,
       defaultAction: 'natural',
       localModel: 'gemma',
       profile: 'qualidade',

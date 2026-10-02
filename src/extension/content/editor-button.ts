@@ -27,18 +27,85 @@ export function mountEditorButton(document: Document): () => void {
   button.textContent = 'IA';
   button.className = 'launcher';
   button.setAttribute('aria-label', 'IA — assistente de escrita local');
-  button.setAttribute('aria-haspopup', 'dialog');
   button.setAttribute('aria-expanded', 'false');
-  button.title = 'Assistente de escrita local';
+  const tooltip = document.createElement('div');
+  tooltip.className = 'writing-tooltip';
+  tooltip.id = 'local-writing-tooltip';
+  tooltip.setAttribute('role', 'tooltip');
+  tooltip.setAttribute('aria-live', 'polite');
+  tooltip.hidden = true;
+  button.setAttribute('aria-describedby', tooltip.id);
   button.hidden = true;
   const panelContainer = document.createElement('div');
   panelContainer.className = 'panel-container';
-  shadow.append(style, button, panelContainer);
+  shadow.append(style, button, tooltip, panelContainer);
   const root = createRoot(panelContainer);
   const unsubscribeTheme = watchTheme(host);
   let target: EditorTarget | null = null;
   let frame: number | undefined;
   let stopped = false;
+  let hovered = false;
+  let focused = false;
+  let tooltipDismissed = false;
+
+  function feedback(): void {
+    const state = session.getState();
+    const running = session.isRunning();
+    const direct = session.isDirect();
+    button.setAttribute('aria-busy', String(running));
+    button.setAttribute('aria-label', running ? 'Cancelar IA' : 'IA — assistente de escrita local');
+    button.classList.toggle('is-loading', running);
+    const expanded = !direct && state.kind !== 'closed';
+    button.setAttribute('aria-expanded', String(expanded));
+    if (direct) button.removeAttribute('aria-haspopup');
+    else button.setAttribute('aria-haspopup', 'dialog');
+    const label =
+      direct && state.kind === 'notice'
+        ? state.message
+        : running
+          ? 'Carregando IA'
+          : 'Aplicar a ação configurada';
+    if (tooltip.textContent !== label) tooltip.textContent = label;
+    tooltip.hidden =
+      button.hidden ||
+      tooltipDismissed ||
+      !(running || (direct && state.kind === 'notice') || hovered || focused);
+    if (!tooltip.hidden) {
+      const rect = button.getBoundingClientRect();
+      const box = tooltip.getBoundingClientRect();
+      const left = Math.max(
+        8,
+        Math.min(rect.left + rect.width / 2 - box.width / 2, innerWidth - box.width - 8),
+      );
+      tooltip.style.left = `${String(left)}px`;
+      tooltip.style.setProperty(
+        '--tooltip-arrow',
+        `${String(rect.left + rect.width / 2 - left - 4)}px`,
+      );
+      const above = rect.top - box.height - 10 >= 8;
+      tooltip.dataset.side = above ? 'top' : 'bottom';
+      tooltip.style.top = above ? 'auto' : `${String(rect.bottom + 10)}px`;
+      tooltip.style.bottom = above ? `${String(innerHeight - rect.top + 10)}px` : 'auto';
+    }
+  }
+  const mouseenter = (): void => {
+    hovered = true;
+    tooltipDismissed = false;
+    feedback();
+  };
+  const mouseleave = (): void => {
+    hovered = false;
+    feedback();
+  };
+  const focus = (): void => {
+    focused = true;
+    tooltipDismissed = false;
+    feedback();
+  };
+  const blur = (): void => {
+    focused = false;
+    feedback();
+  };
 
   function dismiss(): void {
     session.close();
@@ -48,14 +115,13 @@ export function mountEditorButton(document: Document): () => void {
     if (target) adapter.focusEditor(target.editorId);
   }
   root.render(createElement(PreviewPanel, { session, onClose: cancel }));
-  const unsubscribeSession = session.subscribe(() => {
-    button.setAttribute('aria-expanded', String(session.getState().kind !== 'closed'));
-  });
+  const unsubscribeSession = session.subscribe(feedback);
 
   function position(): void {
     frame = undefined;
     if (!target) {
       button.hidden = true;
+      feedback();
       return;
     }
     const editor = target.editor.getBoundingClientRect();
@@ -96,6 +162,7 @@ export function mountEditorButton(document: Document): () => void {
     button.hidden = !editorVisible || safeLeft === undefined;
     button.style.left = `${String(left)}px`;
     button.style.top = `${String(top)}px`;
+    feedback();
     panelContainer.style.left = `${String(Math.max(8, Math.min(left - 320, innerWidth - 388)))}px`;
     panelContainer.style.bottom = `${String(innerHeight - top + 8)}px`;
     panelContainer.style.setProperty('--panel-height', `${String(Math.max(120, top - 16))}px`);
@@ -126,20 +193,28 @@ export function mountEditorButton(document: Document): () => void {
   });
   const click = (event: MouseEvent): void => {
     if (!event.isTrusted) return;
-    if (session.getState().kind === 'closed') session.executeConfigured();
+    tooltipDismissed = false;
+    if (session.getState().kind === 'closed' || (session.isDirect() && !session.isRunning()))
+      session.executeConfigured();
     else cancel();
   };
   const keydown = (event: KeyboardEvent): void => {
-    if (event.key === 'Escape' && session.getState().kind !== 'closed') {
+    if (event.key === 'Escape' && (session.getState().kind !== 'closed' || !tooltip.hidden)) {
       event.preventDefault();
       event.stopPropagation();
-      cancel();
+      if (session.getState().kind !== 'closed') cancel();
+      tooltipDismissed = true;
+      feedback();
     }
   };
   const outside = (event: PointerEvent): void => {
     if (!event.composedPath().includes(host)) dismiss();
   };
   button.addEventListener('click', click);
+  button.addEventListener('mouseenter', mouseenter);
+  button.addEventListener('mouseleave', mouseleave);
+  button.addEventListener('focus', focus);
+  button.addEventListener('blur', blur);
   document.addEventListener('keydown', keydown, true);
   document.addEventListener('pointerdown', outside, true);
   globalThis.addEventListener('resize', schedulePosition);
@@ -156,6 +231,10 @@ export function mountEditorButton(document: Document): () => void {
     resize.disconnect();
     if (frame !== undefined) cancelAnimationFrame(frame);
     button.removeEventListener('click', click);
+    button.removeEventListener('mouseenter', mouseenter);
+    button.removeEventListener('mouseleave', mouseleave);
+    button.removeEventListener('focus', focus);
+    button.removeEventListener('blur', blur);
     document.removeEventListener('keydown', keydown, true);
     document.removeEventListener('pointerdown', outside, true);
     globalThis.removeEventListener('resize', schedulePosition);

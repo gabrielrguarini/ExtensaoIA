@@ -1,0 +1,47 @@
+{
+  "checkedAt": "2026-10-02T19:40:30.391Z",
+  "command": "npm.cmd run check",
+  "exitCode": 0,
+  "version": "0.15.7",
+  "preferencesVersion": 8,
+  "tests": 286,
+  "testFiles": 41,
+  "typecheck": true,
+  "lint": true,
+  "format": true,
+  "build": true,
+  "syntheticFixture": true,
+  "noMessageSent": true,
+  "browsers": {
+    "chrome": {
+      "version": "154.0.8037.93",
+      "profile": "step15b-chrome",
+      "productChecks": 16,
+      "offline": true,
+      "directReplacementAndUndo": true
+    },
+    "webllm": {
+      "version": "154.0.8037.0",
+      "profile": "step15-isolated",
+      "productChecks": 19,
+      "offline": true,
+      "directReplacementAndUndo": true
+    },
+    "gemma": {
+      "version": "154.0.8037.0",
+      "profile": "step15c-chrome",
+      "productChecks": 17,
+      "offline": true,
+      "directReplacementAndUndo": true
+    }
+  },
+  "historicalHashes": {
+    "docs/benchmark/step15d": 65,
+    "docs/evidencias/step15c": 11,
+    "docs/evidencias/step15e": 7,
+    "docs/evidencias/step15f": 18,
+    "docs/evidencias/step15g": 8
+  },
+  "markdownFiles": 52,
+  "markdownLinks": 526
+}

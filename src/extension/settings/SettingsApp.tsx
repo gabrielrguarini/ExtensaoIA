@@ -105,13 +105,13 @@ export function SettingsApp() {
             {preferences.engine === 'chrome-preferred' && (
               <ChromePreparation visiblePanel={!popup} action={preferences.defaultAction} />
             )}
-            <SelectedModelControls preferences={preferences} />
+            <SelectedModelControls preferences={preferences} visiblePanel={!popup} />
           </>
         )}
       </PreferenceFields>
       <footer className="privacy-note">
         <p>
-          Seus textos são processados neste computador. Você revisa e decide o que usar. Nenhuma
+          Seus textos são processados neste computador. A IA pode substituir o rascunho; nenhuma
           mensagem é enviada automaticamente.
         </p>
         <a href="NOTICE.txt" target="_blank" rel="noopener noreferrer">

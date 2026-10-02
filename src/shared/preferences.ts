@@ -6,7 +6,7 @@ import type { LocalModel } from './local-model';
 
 export const PREFERENCES_KEY = 'writingPreferences';
 export interface WritingPreferences {
-  version: 7;
+  version: 8;
   engine: 'chrome-preferred' | 'local';
   localModel: LocalModel;
   /** Modelo WebLLM escolhido, inclusive como alternativa ao Chrome. */
@@ -14,17 +14,19 @@ export interface WritingPreferences {
   language: 'pt-BR';
   theme: 'system' | 'light' | 'dark';
   defaultAction: WritingAction;
+  interaction: 'direct' | 'preview';
   preserveSlang: boolean;
   addEmojis: boolean;
 }
 export const DEFAULT_PREFERENCES: WritingPreferences = {
-  version: 7,
+  version: 8,
   engine: 'chrome-preferred',
   localModel: 'webllm',
   profile: 'economico',
   language: 'pt-BR',
   theme: 'system',
   defaultAction: 'corrigir',
+  interaction: 'direct',
   preserveSlang: true,
   addEmojis: false,
 };
@@ -44,6 +46,8 @@ export function isPreferencePatch(value: unknown): value is PreferencePatch {
         return item === 'system' || item === 'light' || item === 'dark';
       case 'defaultAction':
         return isWritingAction(item);
+      case 'interaction':
+        return item === 'direct' || item === 'preview';
       case 'profile':
         return isModelProfile(item);
       case 'preserveSlang':
@@ -80,12 +84,13 @@ export function isPreferenceCommand(value: unknown): value is PreferenceCommand 
 
 export function parsePreferences(value: unknown): WritingPreferences {
   const result = { ...DEFAULT_PREFERENCES };
-  if (!record(value) || ![1, 2, 3, 4, 5, 6, 7].includes(value.version as number)) return result;
+  if (!record(value) || ![1, 2, 3, 4, 5, 6, 7, 8].includes(value.version as number)) return result;
   if (value.version === 4 && value.engine === 'webllm') result.engine = 'local';
   // Lista fechada: migra valores válidos e descarta qualquer conteúdo/ chave desconhecida.
   for (const key of Object.keys(DEFAULT_PREFERENCES)) {
     if (
       key === 'version' ||
+      (key === 'interaction' && (value.version as number) < 8) ||
       (key === 'localModel' && (value.version as number) < 5) ||
       (key === 'engine' && (value.version as number) < 5) ||
       value.version === 1 ||

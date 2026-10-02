@@ -24,6 +24,27 @@ export function PreferenceFields({
     <fieldset className="preference-fields" disabled={disabled}>
       <legend>Como escrever</legend>
       <label>
+        Ao clicar em IA
+        <select
+          aria-label="Ao clicar em IA"
+          value={value.interaction}
+          onChange={(e) => {
+            if (e.nativeEvent.isTrusted) {
+              focus.current = e.currentTarget;
+              onChange({ interaction: e.currentTarget.value as WritingPreferences['interaction'] });
+            }
+          }}
+        >
+          <option value="direct">Substituir diretamente</option>
+          <option value="preview">Revisar sugestão</option>
+        </select>
+      </label>
+      <p className="field-hint">
+        {value.interaction === 'direct'
+          ? 'A IA aplica o resultado no rascunho. Use Ctrl+Z para desfazer.'
+          : 'Confira a sugestão antes de copiar ou substituir.'}
+      </p>
+      <label>
         Ação do botão IA
         <select
           aria-label="Ação do botão IA"

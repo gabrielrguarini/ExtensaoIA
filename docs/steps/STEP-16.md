@@ -15,7 +15,7 @@ Entregar o pacote local com verificações completas e instruções de instalaç
 ## Pré-requisitos
 
 - Ler [PLANO.md](../PLANO.md) e [PROGRESSO.md](../PROGRESSO.md).
-- [STEP-15](STEP-15.md), incluindo [A](STEP-15-A.md), [B](STEP-15-B.md), [C](STEP-15-C.md), [D](STEP-15-D.md), [E](STEP-15-E.md), [F](STEP-15-F.md) e [G](STEP-15-G.md), e todas as etapas anteriores concluídas, com evidências registradas.
+- [STEP-15](STEP-15.md), incluindo [A](STEP-15-A.md), [B](STEP-15-B.md), [C](STEP-15-C.md), [D](STEP-15-D.md), [E](STEP-15-E.md), [F](STEP-15-F.md), [G](STEP-15-G.md) e [H](STEP-15-H.md), e todas as etapas anteriores concluídas, com evidências registradas.
 
 ## Tarefas
 
@@ -23,7 +23,7 @@ Entregar o pacote local com verificações completas e instruções de instalaç
 - [ ] Validar instalação limpa com seleção nativa/local, idioma pt-BR indisponível, preparação explícita e Substituir sem avaliação automática de conteúdo ou confirmação adicional.
 - [ ] Conferir sessões nativas isoladas, Rewriter por configuração, quotas/cancelamento, Gemma e perfis WebLLM selecionáveis, cache administrado pelo Chrome separado dos modelos próprios.
 - [ ] Executar os checks do projeto e testes de integração em fixtures controladas com múltiplos editores/abas e textos sintéticos.
-- [ ] Validar manualmente o fluxo no WhatsApp Web real: configurar a ação na extensão, digitar, clicar em IA, acompanhar, revisar e substituir. Não automatizar envio de mensagens.
+- [ ] Validar no WhatsApp Web real os dois modos: padrão Corrigir/Substituir diretamente com tooltip e Ctrl+Z, sem janela; selecionar Revisar sugestão e conferir Copiar/Substituir. Verificar cancelamento, edição, troca de conversa, erros e download nas configurações. Não automatizar envio de mensagens.
 - [ ] Cobrir troca de conversa, rascunho alterado, Unicode, quebras de linha, menções estruturadas, cópia, desfazer, cancelamento e respostas atrasadas.
 - [ ] Revalidar download, cache, inicialização offline, troca de modelo, perda de GPU, reinício dos componentes e falta de suporte WebGPU.
 - [ ] Auditar Manifest, CSP, permissões, pacote, logs e storage. Inspecionar em ambiente de teste requisições originadas pela extensão com textos sintéticos identificáveis, sem adicionar interceptação de tráfego ao produto.
@@ -31,7 +31,7 @@ Entregar o pacote local com verificações completas e instruções de instalaç
 - [ ] Gerar a pasta final instalável e documentar chrome://extensions → Modo do desenvolvedor → Carregar sem compactação.
 - [ ] Documentar versões/hardware testados, requisitos, atualização da extensão, descarga da GPU, remoção dos modelos, privacidade, diagnóstico sem conteúdo e limitações conhecidas.
 - [ ] Conferir o idioma efetivo pt-BR e documentar a compatibilidade autorizada da STEP-15-G (sessão en, resposta pt-BR por instrução), sua ausência de aviso e limitações. A seleção é automática, sem interruptor de idioma. Disponibilidade/documentação traduzida não certificam idioma, qualidade ou cobertura de segurança para pt-BR. Usar [referências de idioma/cache](../REFERENCIAS-IA-CHROME.md) e as evidências G; resultados B/D permanecem históricos.
-- [ ] Reproduzir as recomendações por ação/hardware da STEP-15-D, incluindo respostas idênticas, aspas externas e possíveis alterações de sentido. Conferir que a STEP-15-E retirou a avaliação de conteúdo e os falsos avisos; as recomendações D permanecem evidências históricas. Não apresentar o nome do perfil Qualidade como prova de superioridade; preservar a escolha manual e a revisão antes de aplicar.
+- [ ] Reproduzir as recomendações por ação/hardware da STEP-15-D, incluindo respostas idênticas, aspas externas e possíveis alterações de sentido. Conferir que a STEP-15-E retirou a avaliação de conteúdo e os falsos avisos; as recomendações D permanecem evidências históricas. Não apresentar o nome do perfil Qualidade como prova de superioridade; preservar a escolha do modelo, a prévia opcional e a decisão de enviar pelo usuário.
 
 ## Limites
 
@@ -42,7 +42,7 @@ Entregar o pacote local com verificações completas e instruções de instalaç
 ## Critérios de conclusão e verificação
 
 - [ ] Instalação limpa do pacote funciona sem depender de servidor de desenvolvimento.
-- [ ] O fluxo completo real atende aos critérios de privacidade, revisão pelo usuário e substituição manual.
+- [ ] O fluxo completo real atende aos critérios de privacidade, substituição direta autorizada pelo clique, revisão opcional, cancelamento e undo. Nenhuma mensagem é enviada pela extensão.
 - [ ] Testes automatizados e verificações manuais obrigatórias estão registrados com evidências.
 - [ ] Nenhum conteúdo sintético de rascunho aparece em requisições externas, logs ou storage persistente da extensão.
 - [ ] A inferência funciona offline após preparação completa e reinício; limitações são documentadas.

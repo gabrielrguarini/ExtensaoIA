@@ -1,8 +1,8 @@
 # Extensão de IA local para WhatsApp Web
 
-Assistente de escrita em português do Brasil. Configure a ação na extensão e clique em **IA** no WhatsApp: a sugestão aparece junto ao rascunho para **Copiar** ou **Substituir**. Nenhuma mensagem é enviada automaticamente. O modo automático prefere a IA do navegador já preparada; também permite escolher Llama, Qwen ou Gemma para processamento neste computador.
+Assistente de escrita em português do Brasil. Por padrão, clique em **IA** no WhatsApp para corrigir e substituir o rascunho diretamente, com um tooltip **Carregando IA** durante o processamento. A ação e o comportamento podem ser alterados nas configurações; **Revisar sugestão** recupera a prévia com **Copiar/Substituir**. Nenhuma mensagem é enviada automaticamente. A IA do navegador já preparada tem preferência; também é possível escolher Llama, Qwen ou Gemma para processamento neste computador.
 
-O estado e as evidências ficam em [docs/PROGRESSO.md](docs/PROGRESSO.md). Consulte o [plano](docs/PLANO.md) e execute somente a etapa solicitada. O ajuste de interface [STEP-15-F](docs/steps/STEP-15-F.md) precede a entrega final STEP-16.
+O estado e as evidências ficam em [docs/PROGRESSO.md](docs/PROGRESSO.md). Consulte o [plano](docs/PLANO.md) e execute somente a etapa solicitada. O ajuste vigente [STEP-15-H](docs/steps/STEP-15-H.md) precede a entrega final STEP-16.
 
 ## Requisitos e instalação
 
@@ -22,17 +22,17 @@ No PowerShell, use npm.cmd se a política local bloquear npm.ps1. Em chrome://ex
 1. Abra o ícone da extensão e escolha a **Ação do botão IA**: Corrigir, Melhorar, Formal, Profissional, Amigável, Natural, Conciso, Engraçado ou Reescrever.
 2. Ajuste gírias, novos emojis e tema se desejar. Em **IA e modelos**, mantenha Automática ou escolha um modelo. Use **Abrir painel lateral** para preparar a IA do navegador quando necessário.
 3. Escreva o rascunho no WhatsApp e clique em **IA**. Esse gesto captura somente o rascunho atual e inicia a ação salva, sem menu intermediário.
-4. Revise o resultado e escolha **Copiar** ou **Substituir**. Ctrl+Z desfaz a substituição. Fechar, Cancelar, Escape ou clique fora descartam o pedido. Alteração do rascunho ou troca de conversa invalida o resultado anterior.
+4. No padrão **Substituir diretamente**, aguarde o tooltip; a resposta final é aplicada ao rascunho sem janela. **Ctrl+Z** desfaz a substituição. Clicar novamente em IA, Escape ou clique fora cancela o pedido. Alteração do rascunho ou troca de conversa impede aplicação. Em **Ao clicar em IA → Revisar sugestão**, confira o resultado e escolha Copiar/Substituir.
 
 Português brasileiro é automático. A extensão consulta as APIs especializadas com idioma declarado; se não estiverem prontas, consulta a Prompt API com a instrução de responder em português do Brasil. Essa compatibilidade foi validada nas versões registradas, sem promessa de qualidade universal. Consulte as [referências de idioma/cache](docs/REFERENCIAS-IA-CHROME.md).
 
-Downloads sempre exigem ação explícita: **Preparar IA** no painel lateral para o navegador; **Baixar e continuar**, com o tamanho informado, para o modelo escolhido. A inferência preparada funciona offline; o WhatsApp ainda depende da própria conexão. Cache ausente ou incompleto exige preparação novamente. A variante compatível é escolhida automaticamente, sem controles técnicos na interface.
+Downloads sempre exigem ação explícita: **Preparar IA** no painel lateral para o navegador e **Baixar modelo** para o modelo escolhido, com tamanho informado, progresso e cancelamento. No modo de prévia, Baixar e continuar também permanece disponível. No modo direto, cache ausente é informado no tooltip; o rascunho permanece intacto até preparar o modelo nas configurações. A inferência preparada funciona offline; o WhatsApp ainda depende da própria conexão. A variante compatível é escolhida automaticamente, sem controles técnicos na interface.
 
-Cada pedido faz uma única geração com o original, sem repetição automática após falha. Trechos em geração não podem ser aplicados. A [STEP-15-E](docs/steps/STEP-15-E.md) retirou a avaliação automática de conteúdo: a revisão e a decisão pertencem ao usuário. Saída idêntica indica **Sem alterações**; saídas vazias ou tecnicamente inutilizáveis continuam sendo erros. Textos multilinha e estruturas especiais oferecem somente cópia para preservar menções e formatação.
+Cada pedido faz uma única geração com o original, sem repetição automática após falha. Trechos em geração não são aplicados. A [STEP-15-E](docs/steps/STEP-15-E.md) retirou a avaliação automática de conteúdo; o usuário decide o conteúdo e quando enviar. Saída idêntica indica **Sem alterações**, sem criar transação de escrita; saídas vazias ou tecnicamente inutilizáveis são erros. Textos multilinha e estruturas especiais preservam o rascunho e orientam escolher Revisar sugestão para copiar, protegendo menções e formatação.
 
 ## Configurações e privacidade
 
-Preferências ficam somente no popup e painel lateral. Padrões: Automática, Llama 3.2 3B como alternativa, Corrigir, tema do sistema, preservar gírias e não adicionar novos emojis. As escolhas anteriores são preservadas na migração para o esquema v7; os antigos interruptores de idioma e avaliação semântica são descartados.
+Preferências ficam somente no popup e painel lateral. Padrões: Substituir diretamente, Corrigir, IA automática, Llama 3.2 3B como alternativa, tema do sistema, preservar gírias e não adicionar novos emojis. O esquema v8 preserva escolhas anteriores de ação/modelo/opções e adota o modo direto na migração; Revisar sugestão é uma seleção explícita. Os antigos interruptores de idioma e avaliação semântica são descartados.
 
 Em **IA e modelos → Armazenamento e memória**, **Liberar memória** cancela pedidos ativos e mantém o download; **Remover download** pede confirmação e remove os artefatos selecionados. A memória também é liberada após cinco minutos sem uso. O navegador administra separadamente os próprios recursos de IA. Os recibos de integridade descrevem apenas artefatos públicos, sem hashes de mensagens; integridade completa é conferida ao carregar, sem recalcular pesos nas consultas da interface.
 
@@ -40,7 +40,7 @@ Somente preferências são persistidas. Rascunhos, prompts, respostas, contatos 
 
 ## Comandos
 
-Os roteiros de navegador STEP-06 até STEP-15-D preservam os contratos históricos e devem ser executados no commit da etapa correspondente. Para o produto vigente, use `check` e `test:step15e:browser`; as evidências anteriores continuam disponíveis nos relatórios.
+Os roteiros de navegador STEP-06 até STEP-15-D preservam os contratos históricos e devem ser executados no commit da etapa correspondente. Para o produto vigente, use `check` e `test:step15h:browser`; as evidências anteriores continuam disponíveis nos relatórios.
 
 | Comando                                       | Finalidade                                                                                                    |
 | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
@@ -76,12 +76,13 @@ Os roteiros de navegador STEP-06 até STEP-15-D preservam os contratos históric
 | npm run test:step15e:browser                  | Validar revisão manual, migração, cópia/substituição, desfazer e obsolescência com Chrome/WebLLM/Gemma reais. |
 | npm run test:step15f:browser                  | Validar configurações simples e ação salva por um clique com Chrome/WebLLM/Gemma reais.                       |
 | npm run test:step15f:popup                    | Conferir o popup nativo real do Chrome, sua largura, título e ausência de rolagem horizontal.                 |
+| npm run test:step15h:browser                  | Validar modo direto, tooltip, Ctrl+Z, cancelamento e prévia opcional; requer STEP15H_CHROME e STEP15H_ENGINE. |
 | npm run test:watch                            | Reexecutar testes durante a edição.                                                                           |
 | npm run build                                 | Conferir tipos e gerar a extensão completa em dist.                                                           |
 | npm run preview                               | Servir as páginas construídas em http://127.0.0.1:4173.                                                       |
 | npm run check                                 | Executar tipos, lint, formatação, testes e build; parar na primeira falha.                                    |
 
-Os roteiros de navegador anteriores à STEP-15-F reproduzem os respectivos commits históricos. Para o pacote atual, use test:step15f:browser e os checks. Benchmarks e registros históricos permanecem disponíveis.
+O roteiro H aceita STEP15H_ENGINE=chrome, webllm ou gemma, usa os perfis de teste dedicados e exige cache preparado. Reutiliza o roteiro F para a regressão da prévia; não acessa o perfil pessoal nem envia mensagens. [Evidências H](docs/VALIDACAO-STEP-15-H.md). Benchmarks e registros históricos permanecem disponíveis.
 
 Os servidores escutam apenas no computador local e falham se a porta estiver ocupada. Encerre com Ctrl+C. O preview valida React e estilos; **localhost não executa APIs de extensão**. O diagnóstico nesse endereço informa que precisa ser aberto pela extensão instalada.
 
@@ -112,17 +113,17 @@ Capturas têm UUIDs aleatórios e revisão, sem identidade de contato. Edição,
 
 Copiar e Substituir conferem novamente o texto, documento, editor e revisão capturados. A substituição aguarda a restauração de foco/seleção do editor controlado, limita a seleção ao campo e usa execCommand('insertText') exclusivamente no adaptador. O resultado é conferido antes e depois da reconciliação da página. Uma inserção incorreta pode ser desfeita sincronamente pela própria transação; não há segunda tentativa automática nem rollback tardio que possa apagar uma edição posterior. Uma falha não confirmada orienta a conferir o rascunho. A API é obsoleta e o suporte foi validado no Chrome indicado no relatório, sem garantia para versões futuras.
 
-## Sugestões e revisão manual — STEP-15-E
+## Geração e revisão opcional
 
-O modelo recebe o rascunho original e gera uma vez. Toda resposta final legível aparece para o usuário revisar. **Copiar** e **Substituir** são escolhas explícitas, sem confirmação adicional ou avisos automáticos de conteúdo. Resultado idêntico aparece como **Sem alterações**; falhas técnicas, cancelamento, desconexão ou rascunho alterado continuam impedindo aplicação. A extensão nunca envia mensagens.
+O modelo recebe o rascunho original e gera uma vez. No padrão direto, a resposta final tecnicamente válida é aplicada ao snapshot atual após o clique em IA; não se abre janela. Na opção Revisar sugestão, **Copiar/Substituir** são escolhas explícitas, sem confirmação adicional ou avisos automáticos de conteúdo. Resultado idêntico indica **Sem alterações**; falhas técnicas, cancelamento, desconexão ou rascunho alterado impedem aplicação. A extensão nunca envia mensagens.
 
 Correções de capitalização e ortografia não recebem julgamento automático. A análise de sentido e sua preferência foram removidas; preferências v6 preservam as demais escolhas. Os dados de avaliação dos benchmarks e relatórios anteriores permanecem históricos.
 
 O pacote atual inclui [STEP-15-B](docs/steps/STEP-15-B.md): **Chrome preferencial** e escolha manual de WebLLM, com modelo local preservado como alternativa. A seleção consulta ação e pt-BR no documento offscreen; Chrome só é escolhido se estiver disponível e sua sessão puder ser criada sem download. Uma falha após começar a geração encerra o pedido, sem repetição ou troca de motor.
 
-No painel lateral, **Verificar IA do Chrome** mostra disponibilidade por ação no painel e no contexto de inferência. **Preparar** chama a API diretamente no clique visível e acompanha o download. Corrigir usa Proofreader; Formal/Amigável/Conciso/Melhorar/Reescrever usam Rewriter; Profissional/Natural/Engraçado usam Prompt. O Chrome administra CPU/GPU e seus próprios artefatos; liberar sessões não remove esses modelos.
+Nas configurações, **IA e modelos** mostra o estado da ação selecionada. **Preparar IA** chama a API no clique visível e acompanha o download, confirmado no offscreen. APIs especializadas têm preferência quando disponíveis para o idioma e ação; as demais ações usam Prompt. O Chrome administra CPU/GPU e seus próprios artefatos, separadamente dos modelos selecionáveis.
 
-Para usar o contorno de idioma validado no Chrome instalado 154.0.8037.92, ative **Português por prompt no Chrome (experimental)** nas preferências, depois **Verificar IA do Chrome → Preparar Corrigir** no painel lateral. Nesse modo, as nove ações usam Prompt sem declarações de idioma, com instrução explícita de português do Brasil. A prévia identifica o caminho experimental; revise os textos. Essa opção fica desligada por padrão. Se o navegador estiver indisponível, a alternativa local continua sendo escolhida antes de gerar.
+A compatibilidade de idioma é automática: tenta idioma declarado/API especializada, depois a abordagem autorizada e verificada na [STEP-15-G](docs/VALIDACAO-STEP-15-G.md), com sessão en e resposta pt-BR por instrução. Não há interruptor de idioma. Se essa configuração não estiver pronta, o modelo local selecionado é escolhido antes da geração. Os resultados B/D continuam históricos; a compatibilidade não garante qualidade universal.
 
 As tipagens `@types/dom-chromium-ai` **0.0.17** estão fixadas. Português declarado nas opções segue indisponível no Chrome testado, mas 12 fixtures e o fluxo nativo/offscreen offline passaram pelo modo por prompt. STEP-15-B **Concluída**, conforme [evidências e limitações](docs/VALIDACAO-STEP-15-B.md). [Gemma/STEP-15-C](docs/VALIDACAO-STEP-15-C.md) concluída; [STEP-15-D](docs/VALIDACAO-STEP-15-D.md) concluída, com campanhas reservadas e revisão independente de qualidade/desempenho. Casos históricos pendentes cobertos em novas campanhas, preservando os arquivos antigos. STEP-16 ainda não iniciada.
 

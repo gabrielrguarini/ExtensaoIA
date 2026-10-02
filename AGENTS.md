@@ -27,5 +27,5 @@
 - Usar fixtures locais e rascunhos primeiro. Se um teste realmente exigir envio manual, usar somente esse contato, textos sintéticos curtos e claramente identificados como teste.
 - Confirmar na interface que a conversa corresponde ao contato indicado. Se a identificação for ambígua ou o contato não for encontrado, pedir esclarecimento; não escolher outra conversa.
 - A autorização vale para testes rotineiros necessários ao projeto. Não enviar dados pessoais, informações de conversas, compromissos, conteúdo financeiro ou mensagens sem relação com o teste.
-- Não implementar envio automático na extensão: a aplicação continua sendo uma ferramenta de escrita com substituição manual.
+- Não implementar envio automático na extensão. A aplicação é uma ferramenta de escrita: o usuário autorizou em 02/10/2026 a substituição direta após clicar em IA, com revisão por prévia opcional nas configurações. Guardas de rascunho/conversa e cancelamento permanecem obrigatórias.
 - Não gravar conteúdo real da conversa em código, logs, screenshots versionadas ou relatórios. Registrar somente procedimento e resultado do teste.

@@ -1,13 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import type { WritingPreferences } from '../../shared/preferences';
 import { MODEL_CHOICES } from '../ai/model-catalog';
-import { gemmaBytes } from '../ai/gemma-cache';
+import { gemmaBytes, prepareGemma } from '../ai/gemma-cache';
+import { cacheModelArtifacts } from '../ai/model-cache';
 import { probeHardware } from '../content/model-hardware';
 import { manageModel } from './model-client';
 import { manageGemma } from './gemma-client';
 import type { GemmaVariant } from '../../shared/local-model';
 
-export function SelectedModelControls({ preferences }: { preferences: WritingPreferences }) {
+export function SelectedModelControls({
+  preferences,
+  visiblePanel,
+}: {
+  preferences: WritingPreferences;
+  visiblePanel: boolean;
+}) {
   const { localModel, profile } = preferences;
   const [f16, setF16] = useState<boolean>();
   const [supported, setSupported] = useState(true);
@@ -16,6 +23,8 @@ export function SelectedModelControls({ preferences }: { preferences: WritingPre
   const [confirm, setConfirm] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [percent, setPercent] = useState<number>();
+  const download = useRef<AbortController | undefined>(undefined);
   const revision = useRef(0);
   const confirmButton = useRef<HTMLButtonElement>(null);
   const removeButton = useRef<HTMLButtonElement>(null);
@@ -35,6 +44,7 @@ export function SelectedModelControls({ preferences }: { preferences: WritingPre
     setConfirm(false);
     setMessage('');
     setError('');
+    setPercent(undefined);
     void probeHardware()
       .then(async (hardware) => {
         if (current !== revision.current) return;
@@ -66,6 +76,8 @@ export function SelectedModelControls({ preferences }: { preferences: WritingPre
       });
     return () => {
       revision.current++;
+      download.current?.abort();
+      download.current = undefined;
     };
   }, [localModel, profile]);
   useEffect(() => {
@@ -105,6 +117,50 @@ export function SelectedModelControls({ preferences }: { preferences: WritingPre
       }
     }
   }
+  async function prepare() {
+    if (busy || !visiblePanel || document.visibilityState !== 'visible' || f16 === undefined)
+      return;
+    const current = revision.current;
+    const controller = new AbortController();
+    download.current = controller;
+    setBusy(true);
+    setPercent(0);
+    setError('');
+    setMessage('');
+    const progress = (value: number) => {
+      if (current === revision.current && !controller.signal.aborted) setPercent(Math.floor(value));
+    };
+    try {
+      // Cancelar a instância selecionada antes de reparar/gravar seu cache canônico.
+      if (localModel === 'gemma') {
+        await manageGemma({ target: 'gemma-cache', type: 'unload' });
+        controller.signal.throwIfAborted();
+        await prepareGemma(gemmaVariant, true, controller.signal, progress);
+      } else {
+        await manageModel({ target: 'model-cache', type: 'unload' });
+        controller.signal.throwIfAborted();
+        await cacheModelArtifacts(MODEL_CHOICES[profile][webVariant], controller.signal, progress);
+      }
+      controller.signal.throwIfAborted();
+      if (current === revision.current) {
+        setCached(true);
+        setMessage('Modelo preparado. Clique em IA no WhatsApp para usar.');
+      }
+    } catch {
+      if (current === revision.current)
+        setError(
+          controller.signal.aborted
+            ? 'Download cancelado.'
+            : 'Não foi possível preparar o modelo. Verifique a conexão e tente novamente.',
+        );
+    } finally {
+      if (current === revision.current) {
+        download.current = undefined;
+        setBusy(false);
+        setPercent(undefined);
+      }
+    }
+  }
   const bytes =
     localModel === 'gemma'
       ? gemmaBytes(gemmaVariant)
@@ -121,10 +177,33 @@ export function SelectedModelControls({ preferences }: { preferences: WritingPre
               ? 'Verificando download…'
               : cached
                 ? 'Download pronto. O modelo carrega quando você usa a IA.'
-                : 'O primeiro uso pedirá autorização para baixar até ' +
-                  (bytes / 1e9).toFixed(2) +
-                  ' GB.'}
+                : 'Prepare o modelo para baixar até ' + (bytes / 1e9).toFixed(2) + ' GB.'}
           </p>
+          {cached === false && (
+            <>
+              {!visiblePanel && <p>Abra o painel lateral para preparar o modelo.</p>}
+              <button
+                disabled={busy || !visiblePanel || f16 === undefined}
+                onClick={(e) => {
+                  if (e.isTrusted) void prepare();
+                }}
+              >
+                Baixar modelo
+              </button>
+            </>
+          )}
+          {percent !== undefined && (
+            <>
+              <p role="status">Baixando modelo… {percent}%</p>
+              <button
+                onClick={(e) => {
+                  if (e.isTrusted) download.current?.abort();
+                }}
+              >
+                Cancelar download
+              </button>
+            </>
+          )}
           <details>
             <summary>Armazenamento e memória</summary>
             <p>

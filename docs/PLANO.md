@@ -32,9 +32,9 @@ As regras duráveis estão em [AGENTS.md](../AGENTS.md).
 
 Construir uma extensão Chrome instalável localmente que corrija e reescreva o rascunho do WhatsApp Web usando IA local, nativa do Chrome quando idioma/ação forem suportados, com alternativas WebGPU. A interface será em português brasileiro e a sugestão aparecerá **junto ao campo de mensagem**.
 
-Fluxo: configurar a ação na extensão → escrever → clicar em IA → processar localmente → revisar a sugestão → copiar ou substituir o rascunho.
+Fluxo padrão: configurar na extensão → escrever → clicar em IA → tooltip de carregamento → substituir o rascunho. Corrigir é a ação inicial. A opção Revisar sugestão recupera a prévia com Copiar/Substituir.
 
-A extensão nunca envia a mensagem. Substituir e Copiar são ações explícitas. O campo original deve permanecer intacto em cancelamento, incompatibilidade, erro de inferência ou falha técnica da sugestão. A revisão do conteúdo e a decisão de substituir pertencem ao usuário.
+A extensão nunca envia a mensagem. O clique em IA autoriza a substituição no modo direto; no modo Revisar sugestão, Copiar/Substituir exigem novo clique. O campo original deve permanecer intacto em cancelamento, incompatibilidade, erro de inferência ou falha técnica. Edição/conversa alteradas impedem aplicação. O usuário continua decidindo o conteúdo e quando enviar.
 
 ## Interface vigente — ajuste STEP-15-F
 
@@ -46,14 +46,16 @@ A [STEP-15-G](steps/STEP-15-G.md) corrige o aviso relatado sobre saída sem idio
 
 ## Decisões de produto
 
+O ajuste vigente [STEP-15-H](steps/STEP-15-H.md) torna a substituição direta padrão e mantém a prévia como opção explícita nas configurações. Substitui os requisitos históricos de prévia/confirmação obrigatória, preservando guardas técnicas, cancelamento e undo.
+
 - Priorizar computadores comuns; na STEP-15-B adotar Chrome preferencial, preservando o perfil local atual como alternativa.
 - Oferecer Corrigir, Melhorar, Formal, Profissional, Amigável, Natural, Conciso, Engraçado e Reescrever.
 - Tradução, expansão e publicação na loja ficam fora desta versão. Aceitar CPU administrada pelo Chrome; runtimes próprios seguem WebGPU.
-- Não avaliar automaticamente alterações de conteúdo nem oferecer análise semântica na prévia. O usuário revisa a sugestão e decide se deseja copiar ou substituir (ajuste STEP-15-E).
+- Não avaliar automaticamente alterações de conteúdo nem oferecer análise semântica na prévia (ajuste STEP-15-E). No modo direto, o clique autoriza substituir o rascunho; Revisar sugestão oferece Copiar/Substituir (ajuste STEP-15-H).
 - Preservar gírias e emojis existentes por padrão. A escolha explícita de formalização permite adaptar gírias sem alterar o significado.
 - Antecipar preview, cache básico e testes para acompanhar o MVP.
-- Manter o preview no editor mesmo depois de adicionar popup e painel lateral para configurações.
-- Não estabelecer uma promessa universal de desempenho ou equivalência semântica. Medir qualidade em um conjunto conhecido e exigir revisão/confirmação do usuário.
+- Manter a prévia opcional no editor; popup e painel lateral concentram as configurações.
+- Não estabelecer uma promessa universal de desempenho ou equivalência semântica. Medir qualidade em um conjunto conhecido; o usuário decide o conteúdo e quando enviar.
 
 ## Privacidade, segurança e limites de integração
 
@@ -134,9 +136,9 @@ Padrões:
 
 A STEP-15-D compara a delimitação JSON do rascunho original no WebLLM e conserva os prompts anteriores de Chrome/Gemma conforme os pilotos. Contabilizar o envelope real na entrada sem inflar a reserva da saída. Esse formato não garante isolamento de comandos citados; novas otimizações após a avaliação reservada precisam de outro conjunto reservado. Recomendações dependem da ação/hardware e devem registrar a troca entre utilidade, preservação e latência.
 
-## Sugestões e revisão manual
+## Aplicação e revisão opcional
 
-Pipeline vigente: snapshot → uma geração com texto original → validade técnica → prévia completa → Copiar/Substituir → nova verificação do snapshot → inserção manual.
+Pipeline vigente: snapshot → uma geração com texto original → validade técnica → verificação do snapshot → substituir diretamente. No modo Revisar sugestão, a prévia completa aguarda Copiar/Substituir e nova verificação do snapshot. Cancelamento, edição e troca de conversa impedem aplicação; saída idêntica dispensa escrita.
 
 A STEP-15-E remove a comparação automática de conteúdo e a análise semântica da interface. Não classificar qualidade, risco ou equivalência. O usuário revisa e decide se a sugestão atende ao pedido. Os prompts continuam orientados a preservar fatos, intenção, gírias e emojis; isso não certifica o resultado.
 
@@ -185,6 +187,7 @@ Cada etapa depende das anteriores. A conclusão de implementação sem validaç�
 | [STEP-15-E](steps/STEP-15-E.md) | Retirar avaliação de conteúdo e manter revisão manual     |
 | [STEP-15-F](steps/STEP-15-F.md) | Simplificar interface e executar ação configurada         |
 | [STEP-15-G](steps/STEP-15-G.md) | Corrigir idioma de saída na Prompt API                    |
+| [STEP-15-H](steps/STEP-15-H.md) | Substituir diretamente com tooltip e prévia opcional      |
 | [STEP-16](steps/STEP-16.md)     | Validar e preparar a entrega instalável                   |
 
 Marco de MVP: concluir até STEP-08. Depois, adicionar modos e streaming, revisão opcional, perfis/cache, configurações, benchmark e entrega final.
