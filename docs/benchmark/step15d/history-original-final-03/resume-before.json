@@ -1,0 +1,127 @@
+{
+  "recordedAt": "2026-10-02T11:56:30.765Z",
+  "bytes": 26919,
+  "sha256": "8e0287e88a5eef61fd5d09b22db3864f7c563f4579214c25f3c43f6969973c97",
+  "completed": [
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B01-corrigir"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B01-melhorar"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B01-formal"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B01-profissional"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B01-amigavel"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B01-natural"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B01-conciso"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B01-engracado"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B01-reescrever"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B02-corrigir"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B02-melhorar"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B02-formal"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B02-profissional"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B02-amigavel"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B02-natural"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B02-conciso"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B02-engracado"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B02-reescrever"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B03-corrigir"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B03-melhorar"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B03-formal"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B03-profissional"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B03-amigavel"
+    },
+    {
+      "profile": "economico",
+      "round": 1,
+      "id": "B03-natural"
+    }
+  ]
+}

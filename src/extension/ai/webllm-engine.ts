@@ -5,7 +5,12 @@ import { MODEL_CHOICES } from './model-catalog';
 import { MODEL_LIBRARIES } from './model-libraries';
 import { cacheModelArtifacts, inspectModelArtifacts } from './model-cache';
 import type { ModelChoice, ModelProfile } from './model-catalog';
-import { actionMessages, systemPromptFor, legacySystemPromptFor } from './correction-prompt';
+import {
+  actionMessages,
+  systemPromptFor,
+  legacySystemPromptFor,
+  quotedDraft,
+} from './correction-prompt';
 import {
   correctionTokenBudget,
   parseLlamaTemplate,
@@ -222,6 +227,7 @@ export class WebLLMEngine implements AIEngine {
             options.inputFormat === 'legacy-protected'
               ? legacySystemPromptFor(action, options.writingOptions)
               : systemPromptFor(action, options.writingOptions),
+            options.inputFormat === 'legacy-protected' ? text : quotedDraft(text),
             text,
           );
           if (!budget) throw new ModelEnvironmentError('CONTEXT_LIMIT');

@@ -30,6 +30,7 @@ Entregar o pacote local com verificações completas e instruções de instalaç
 - [ ] Gerar a pasta final instalável e documentar chrome://extensions → Modo do desenvolvedor → Carregar sem compactação.
 - [ ] Documentar versões/hardware testados, requisitos, atualização da extensão, descarga da GPU, remoção dos modelos, privacidade, diagnóstico sem conteúdo e limitações conhecidas.
 - [ ] Conferir o idioma efetivo pt-BR e documentar as configurações nativas validadas, incluindo ativação/desativação manual da compatibilidade experimental por prompt da STEP-15-B. Disponibilidade genérica/documentação traduzida não certificam idioma ou qualidade. Usar [referências de idioma/cache](../REFERENCIAS-IA-CHROME.md), evidências reais B e resultados D.
+- [ ] Reproduzir as recomendações por ação/hardware da STEP-15-D, incluindo respostas idênticas, aspas externas, alterações de sentido sem aviso e falsos avisos por capitalização. Não apresentar o nome do perfil Qualidade como prova de superioridade; preservar a escolha manual e a revisão antes de aplicar.
 
 ## Limites
 

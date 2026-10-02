@@ -1,0 +1,127 @@
+{
+  "verifiedAt": "2026-10-02T13:52:46.905Z",
+  "method": "SHA-256 dos casos, snapshots de fontes, checkpoints e vínculo por resultado/rodada de cada revisão; recomputação integral dos denominadores e resumos. Binários WASM excluídos dos snapshots, hashes verificados contra o workspace.",
+  "currentMeasuredSourcesMatch": true,
+  "campaigns": [
+    {
+      "run": "training-baseline-03",
+      "completed": 60,
+      "reviewed": 60,
+      "pending": 0,
+      "qualityPending": 0,
+      "sourceFiles": 47,
+      "wasmHashesWithoutEmbeddedBinary": [
+        "src/extension/ai/wasm/Llama-3.2-3B-Instruct-q4f16_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Llama-3.2-3B-Instruct-q4f32_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Qwen3-4B-q4f16_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Qwen3-4B-q4f32_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Qwen3-8B-q4f16_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Qwen3-8B-q4f32_1-ctx4k_cs1k-webgpu.wasm"
+      ],
+      "networkObserved": false,
+      "networkRequests": 0,
+      "audits": 0,
+      "consoleEvents": 0
+    },
+    {
+      "run": "training-compact-01",
+      "completed": 60,
+      "reviewed": 59,
+      "pending": 0,
+      "qualityPending": 0,
+      "sourceFiles": 48,
+      "wasmHashesWithoutEmbeddedBinary": [
+        "src/extension/ai/wasm/Llama-3.2-3B-Instruct-q4f16_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Llama-3.2-3B-Instruct-q4f32_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Qwen3-4B-q4f16_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Qwen3-4B-q4f32_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Qwen3-8B-q4f16_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Qwen3-8B-q4f32_1-ctx4k_cs1k-webgpu.wasm"
+      ],
+      "networkObserved": true,
+      "networkRequests": 24,
+      "audits": 5,
+      "consoleEvents": 0
+    },
+    {
+      "run": "training-quoted-01",
+      "completed": 60,
+      "reviewed": 60,
+      "pending": 0,
+      "qualityPending": 0,
+      "sourceFiles": 48,
+      "wasmHashesWithoutEmbeddedBinary": [
+        "src/extension/ai/wasm/Llama-3.2-3B-Instruct-q4f16_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Llama-3.2-3B-Instruct-q4f32_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Qwen3-4B-q4f16_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Qwen3-4B-q4f32_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Qwen3-8B-q4f16_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Qwen3-8B-q4f32_1-ctx4k_cs1k-webgpu.wasm"
+      ],
+      "networkObserved": true,
+      "networkRequests": 24,
+      "audits": 5,
+      "consoleEvents": 0
+    },
+    {
+      "run": "reserved-final-01",
+      "completed": 1620,
+      "reviewed": 1620,
+      "pending": 0,
+      "qualityPending": 0,
+      "sourceFiles": 48,
+      "wasmHashesWithoutEmbeddedBinary": [
+        "src/extension/ai/wasm/Llama-3.2-3B-Instruct-q4f16_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Llama-3.2-3B-Instruct-q4f32_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Qwen3-4B-q4f16_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Qwen3-4B-q4f32_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Qwen3-8B-q4f16_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Qwen3-8B-q4f32_1-ctx4k_cs1k-webgpu.wasm"
+      ],
+      "networkObserved": true,
+      "networkRequests": 360,
+      "audits": 63,
+      "consoleEvents": 0
+    },
+    {
+      "run": "history-original-final-03",
+      "completed": 324,
+      "reviewed": 324,
+      "pending": 0,
+      "qualityPending": 0,
+      "sourceFiles": 48,
+      "wasmHashesWithoutEmbeddedBinary": [
+        "src/extension/ai/wasm/Llama-3.2-3B-Instruct-q4f16_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Llama-3.2-3B-Instruct-q4f32_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Qwen3-4B-q4f16_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Qwen3-4B-q4f32_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Qwen3-8B-q4f16_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Qwen3-8B-q4f32_1-ctx4k_cs1k-webgpu.wasm"
+      ],
+      "networkObserved": true,
+      "networkRequests": 120,
+      "audits": 20,
+      "consoleEvents": 0
+    },
+    {
+      "run": "history-legacy-final-01",
+      "completed": 324,
+      "reviewed": 191,
+      "pending": 0,
+      "qualityPending": 0,
+      "sourceFiles": 48,
+      "wasmHashesWithoutEmbeddedBinary": [
+        "src/extension/ai/wasm/Llama-3.2-3B-Instruct-q4f16_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Llama-3.2-3B-Instruct-q4f32_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Qwen3-4B-q4f16_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Qwen3-4B-q4f32_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Qwen3-8B-q4f16_1-ctx4k_cs1k-webgpu.wasm",
+        "src/extension/ai/wasm/Qwen3-8B-q4f32_1-ctx4k_cs1k-webgpu.wasm"
+      ],
+      "networkObserved": true,
+      "networkRequests": 114,
+      "audits": 19,
+      "consoleEvents": 0
+    }
+  ]
+}

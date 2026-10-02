@@ -1,0 +1,1818 @@
+{
+  "expected": 324,
+  "completed": 324,
+  "pending": 0,
+  "suggestionsReviewed": 191,
+  "qualityPending": 0,
+  "byCandidate": {
+    "economico": {
+      "denominator": 108,
+      "attempted": 108,
+      "pending": 0,
+      "suggestions": 11,
+      "unavailableSuggestions": 97,
+      "preservationRejections": 96,
+      "errors": 1,
+      "unchanged": 1,
+      "reviewed": 11,
+      "qualityPending": 0,
+      "useful": 7,
+      "usefulPercentOfAll": 6.481481481481481,
+      "preserved": 10,
+      "contentChanges": 1,
+      "entityContractEdits": 0,
+      "languageFailures": 0,
+      "warned": 0,
+      "warningsReviewed": 0,
+      "correctWarnings": 0,
+      "undueWarnings": 0,
+      "missedRisks": 1,
+      "firstVisibleMs": {
+        "denominator": 108,
+        "measured": 11,
+        "unavailable": 97,
+        "median": 1610.7000000476837,
+        "p95": 3145.2000000476837
+      },
+      "totalMs": {
+        "denominator": 108,
+        "measured": 11,
+        "unavailable": 97,
+        "median": 2015.2000000476837,
+        "p95": 9296.300000071526
+      },
+      "allAttemptTotalMs": {
+        "denominator": 108,
+        "measured": 108,
+        "unavailable": 0,
+        "median": 2116.5,
+        "p95": 3769.5
+      },
+      "initializeForActionMs": {
+        "denominator": 108,
+        "measured": 108,
+        "unavailable": 0,
+        "median": 0,
+        "p95": 0
+      },
+      "decodeTokensPerSecond": {
+        "denominator": 108,
+        "measured": 11,
+        "unavailable": 97,
+        "median": 39.42828980256305,
+        "p95": 42.51062763410404
+      },
+      "cachedLoadMs": {
+        "denominator": 1,
+        "measured": 1,
+        "unavailable": 0,
+        "median": 27713.700000047684,
+        "p95": 27713.700000047684
+      },
+      "preparationMs": {
+        "denominator": 1,
+        "measured": 1,
+        "unavailable": 0,
+        "median": 19838.200000047684,
+        "p95": 19838.200000047684
+      },
+      "residentInitializeMs": {
+        "denominator": 8,
+        "measured": 8,
+        "unavailable": 0,
+        "median": 0,
+        "p95": 0.10000002384185791
+      },
+      "byAction": {
+        "corrigir": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 4,
+          "unavailableSuggestions": 8,
+          "preservationRejections": 8,
+          "errors": 0,
+          "unchanged": 1,
+          "reviewed": 4,
+          "qualityPending": 0,
+          "useful": 2,
+          "usefulPercentOfAll": 16.666666666666664,
+          "preserved": 4,
+          "contentChanges": 0,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 0,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 4,
+            "unavailable": 8,
+            "median": 2491.899999976158,
+            "p95": 3145.2000000476837
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 4,
+            "unavailable": 8,
+            "median": 3022.600000023842,
+            "p95": 9296.300000071526
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 3022.600000023842,
+            "p95": 9296.300000071526
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 4,
+            "unavailable": 8,
+            "median": 36.90518958773316,
+            "p95": 39.47062920389573
+          }
+        },
+        "melhorar": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 0,
+          "unavailableSuggestions": 12,
+          "preservationRejections": 12,
+          "errors": 0,
+          "unchanged": 0,
+          "reviewed": 0,
+          "qualityPending": 0,
+          "useful": 0,
+          "usefulPercentOfAll": 0,
+          "preserved": 0,
+          "contentChanges": 0,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 0,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 0,
+            "unavailable": 12,
+            "median": null,
+            "p95": null
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 0,
+            "unavailable": 12,
+            "median": null,
+            "p95": null
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 2008.6999999284744,
+            "p95": 2482.8000000715256
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 0,
+            "unavailable": 12,
+            "median": null,
+            "p95": null
+          }
+        },
+        "formal": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 1,
+          "unavailableSuggestions": 11,
+          "preservationRejections": 10,
+          "errors": 1,
+          "unchanged": 0,
+          "reviewed": 1,
+          "qualityPending": 0,
+          "useful": 1,
+          "usefulPercentOfAll": 8.333333333333332,
+          "preserved": 1,
+          "contentChanges": 0,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 0,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 1,
+            "unavailable": 11,
+            "median": 1544.8999999761581,
+            "p95": 1544.8999999761581
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 1,
+            "unavailable": 11,
+            "median": 1952.0999999046326,
+            "p95": 1952.0999999046326
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 2137.2999999523163,
+            "p95": 6508.700000047684
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 1,
+            "unavailable": 11,
+            "median": 39.42828980256305,
+            "p95": 39.42828980256305
+          }
+        },
+        "profissional": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 1,
+          "unavailableSuggestions": 11,
+          "preservationRejections": 11,
+          "errors": 0,
+          "unchanged": 0,
+          "reviewed": 1,
+          "qualityPending": 0,
+          "useful": 1,
+          "usefulPercentOfAll": 8.333333333333332,
+          "preserved": 1,
+          "contentChanges": 0,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 0,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 1,
+            "unavailable": 11,
+            "median": 1516,
+            "p95": 1516
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 1,
+            "unavailable": 11,
+            "median": 1786.1000000238419,
+            "p95": 1786.1000000238419
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 1928,
+            "p95": 6070.299999952316
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 1,
+            "unavailable": 11,
+            "median": 37.147102519423065,
+            "p95": 37.147102519423065
+          }
+        },
+        "amigavel": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 2,
+          "unavailableSuggestions": 10,
+          "preservationRejections": 10,
+          "errors": 0,
+          "unchanged": 0,
+          "reviewed": 2,
+          "qualityPending": 0,
+          "useful": 1,
+          "usefulPercentOfAll": 8.333333333333332,
+          "preserved": 1,
+          "contentChanges": 1,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 1,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 2,
+            "unavailable": 10,
+            "median": 1511.8999999761581,
+            "p95": 1542.5
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 2,
+            "unavailable": 10,
+            "median": 1894.2999999523163,
+            "p95": 2015
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 2015,
+            "p95": 2545
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0.10000002384185791
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 2,
+            "unavailable": 10,
+            "median": 39.349422882514396,
+            "p95": 42.426813737704414
+          }
+        },
+        "natural": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 1,
+          "unavailableSuggestions": 11,
+          "preservationRejections": 11,
+          "errors": 0,
+          "unchanged": 0,
+          "reviewed": 1,
+          "qualityPending": 0,
+          "useful": 1,
+          "usefulPercentOfAll": 8.333333333333332,
+          "preserved": 1,
+          "contentChanges": 0,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 0,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 1,
+            "unavailable": 11,
+            "median": 1539.3000000715256,
+            "p95": 1539.3000000715256
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 1,
+            "unavailable": 11,
+            "median": 2015.2000000476837,
+            "p95": 2015.2000000476837
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 2098,
+            "p95": 2698.2000000476837
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 1,
+            "unavailable": 11,
+            "median": 40.05059021117301,
+            "p95": 40.05059021117301
+          }
+        },
+        "conciso": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 1,
+          "unavailableSuggestions": 11,
+          "preservationRejections": 11,
+          "errors": 0,
+          "unchanged": 0,
+          "reviewed": 1,
+          "qualityPending": 0,
+          "useful": 1,
+          "usefulPercentOfAll": 8.333333333333332,
+          "preserved": 1,
+          "contentChanges": 0,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 0,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 1,
+            "unavailable": 11,
+            "median": 1610.7000000476837,
+            "p95": 1610.7000000476837
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 1,
+            "unavailable": 11,
+            "median": 2013.2000000476837,
+            "p95": 2013.2000000476837
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 2260.100000023842,
+            "p95": 3214.7000000476837
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0.10000002384185791
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 1,
+            "unavailable": 11,
+            "median": 42.33067728832359,
+            "p95": 42.33067728832359
+          }
+        },
+        "engracado": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 1,
+          "unavailableSuggestions": 11,
+          "preservationRejections": 11,
+          "errors": 0,
+          "unchanged": 0,
+          "reviewed": 1,
+          "qualityPending": 0,
+          "useful": 0,
+          "usefulPercentOfAll": 0,
+          "preserved": 1,
+          "contentChanges": 0,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 0,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 1,
+            "unavailable": 11,
+            "median": 1633.5999999046326,
+            "p95": 1633.5999999046326
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 1,
+            "unavailable": 11,
+            "median": 2034.1999999284744,
+            "p95": 2034.1999999284744
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 2034.1999999284744,
+            "p95": 4717.299999952316
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 1,
+            "unavailable": 11,
+            "median": 42.51062763410404,
+            "p95": 42.51062763410404
+          }
+        },
+        "reescrever": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 0,
+          "unavailableSuggestions": 12,
+          "preservationRejections": 12,
+          "errors": 0,
+          "unchanged": 0,
+          "reviewed": 0,
+          "qualityPending": 0,
+          "useful": 0,
+          "usefulPercentOfAll": 0,
+          "preserved": 0,
+          "contentChanges": 0,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 0,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 0,
+            "unavailable": 12,
+            "median": null,
+            "p95": null
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 0,
+            "unavailable": 12,
+            "median": null,
+            "p95": null
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 1787.5,
+            "p95": 7314.600000023842
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 0,
+            "unavailable": 12,
+            "median": null,
+            "p95": null
+          }
+        }
+      }
+    },
+    "equilibrado": {
+      "denominator": 108,
+      "attempted": 108,
+      "pending": 0,
+      "suggestions": 92,
+      "unavailableSuggestions": 16,
+      "preservationRejections": 16,
+      "errors": 0,
+      "unchanged": 69,
+      "reviewed": 92,
+      "qualityPending": 0,
+      "useful": 10,
+      "usefulPercentOfAll": 9.25925925925926,
+      "preserved": 92,
+      "contentChanges": 0,
+      "entityContractEdits": 0,
+      "languageFailures": 0,
+      "warned": 0,
+      "warningsReviewed": 0,
+      "correctWarnings": 0,
+      "undueWarnings": 0,
+      "missedRisks": 0,
+      "firstVisibleMs": {
+        "denominator": 108,
+        "measured": 92,
+        "unavailable": 16,
+        "median": 2124.0999999046326,
+        "p95": 3551.2999999523163
+      },
+      "totalMs": {
+        "denominator": 108,
+        "measured": 92,
+        "unavailable": 16,
+        "median": 3637.399999976158,
+        "p95": 18203.299999952316
+      },
+      "allAttemptTotalMs": {
+        "denominator": 108,
+        "measured": 108,
+        "unavailable": 0,
+        "median": 3563,
+        "p95": 18002.099999904633
+      },
+      "initializeForActionMs": {
+        "denominator": 108,
+        "measured": 108,
+        "unavailable": 0,
+        "median": 0,
+        "p95": 0.09999990463256836
+      },
+      "decodeTokensPerSecond": {
+        "denominator": 108,
+        "measured": 92,
+        "unavailable": 16,
+        "median": 20.468096472674162,
+        "p95": 24.42934575647519
+      },
+      "cachedLoadMs": {
+        "denominator": 9,
+        "measured": 9,
+        "unavailable": 0,
+        "median": 32768.39999997616,
+        "p95": 35028.39999997616
+      },
+      "preparationMs": {
+        "denominator": 9,
+        "measured": 9,
+        "unavailable": 0,
+        "median": 23571,
+        "p95": 25332.100000023842
+      },
+      "residentInitializeMs": {
+        "denominator": 0,
+        "measured": 0,
+        "unavailable": 0,
+        "median": null,
+        "p95": null
+      },
+      "byAction": {
+        "corrigir": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 10,
+          "unavailableSuggestions": 2,
+          "preservationRejections": 2,
+          "errors": 0,
+          "unchanged": 8,
+          "reviewed": 10,
+          "qualityPending": 0,
+          "useful": 2,
+          "usefulPercentOfAll": 16.666666666666664,
+          "preserved": 10,
+          "contentChanges": 0,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 0,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 3531.6999999284744,
+            "p95": 4401
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 4710.899999976158,
+            "p95": 18002.099999904633
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 4710.899999976158,
+            "p95": 18002.099999904633
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 21.42092110234228,
+            "p95": 25.170131434509415
+          }
+        },
+        "melhorar": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 11,
+          "unavailableSuggestions": 1,
+          "preservationRejections": 1,
+          "errors": 0,
+          "unchanged": 5,
+          "reviewed": 11,
+          "qualityPending": 0,
+          "useful": 4,
+          "usefulPercentOfAll": 33.33333333333333,
+          "preserved": 11,
+          "contentChanges": 0,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 0,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 11,
+            "unavailable": 1,
+            "median": 2106,
+            "p95": 2911.399999976158
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 11,
+            "unavailable": 1,
+            "median": 3415,
+            "p95": 15927.600000023842
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 3391.2999999523163,
+            "p95": 15927.600000023842
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 11,
+            "unavailable": 1,
+            "median": 21.57676349188087,
+            "p95": 24.63812750095299
+          }
+        },
+        "formal": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 11,
+          "unavailableSuggestions": 1,
+          "preservationRejections": 1,
+          "errors": 0,
+          "unchanged": 4,
+          "reviewed": 11,
+          "qualityPending": 0,
+          "useful": 2,
+          "usefulPercentOfAll": 16.666666666666664,
+          "preserved": 11,
+          "contentChanges": 0,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 0,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 11,
+            "unavailable": 1,
+            "median": 2130.5,
+            "p95": 3045
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 11,
+            "unavailable": 1,
+            "median": 3638,
+            "p95": 16140.299999952316
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 3568,
+            "p95": 16140.299999952316
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 11,
+            "unavailable": 1,
+            "median": 20.341281501282594,
+            "p95": 24.359688196799524
+          }
+        },
+        "profissional": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 10,
+          "unavailableSuggestions": 2,
+          "preservationRejections": 2,
+          "errors": 0,
+          "unchanged": 8,
+          "reviewed": 10,
+          "qualityPending": 0,
+          "useful": 0,
+          "usefulPercentOfAll": 0,
+          "preserved": 10,
+          "contentChanges": 0,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 0,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 2110.399999976158,
+            "p95": 2926.7999999523163
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 3688.399999976158,
+            "p95": 16753.100000023842
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 3637.399999976158,
+            "p95": 16753.100000023842
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0.10000002384185791
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 19.79594944994027,
+            "p95": 23.619722469092313
+          }
+        },
+        "amigavel": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 10,
+          "unavailableSuggestions": 2,
+          "preservationRejections": 2,
+          "errors": 0,
+          "unchanged": 8,
+          "reviewed": 10,
+          "qualityPending": 0,
+          "useful": 0,
+          "usefulPercentOfAll": 0,
+          "preserved": 10,
+          "contentChanges": 0,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 0,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 2025.2000000476837,
+            "p95": 2921.600000023842
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 3334.2000000476837,
+            "p95": 18203.299999952316
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 3334.2000000476837,
+            "p95": 18203.299999952316
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0.10000002384185791
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 19.9667221179024,
+            "p95": 24.42934575647519
+          }
+        },
+        "natural": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 10,
+          "unavailableSuggestions": 2,
+          "preservationRejections": 2,
+          "errors": 0,
+          "unchanged": 7,
+          "reviewed": 10,
+          "qualityPending": 0,
+          "useful": 1,
+          "usefulPercentOfAll": 8.333333333333332,
+          "preserved": 10,
+          "contentChanges": 0,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 0,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 2117.5,
+            "p95": 3033.7999999523163
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 3563,
+            "p95": 18276.799999952316
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 3541.399999976158,
+            "p95": 18276.799999952316
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0.10000002384185791
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 17.83590963054847,
+            "p95": 24.7242297445897
+          }
+        },
+        "conciso": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 10,
+          "unavailableSuggestions": 2,
+          "preservationRejections": 2,
+          "errors": 0,
+          "unchanged": 9,
+          "reviewed": 10,
+          "qualityPending": 0,
+          "useful": 1,
+          "usefulPercentOfAll": 8.333333333333332,
+          "preserved": 10,
+          "contentChanges": 0,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 0,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 2130.399999976158,
+            "p95": 3015
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 3636.0999999046326,
+            "p95": 18759.399999976158
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 3614.5,
+            "p95": 18759.399999976158
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0.10000002384185791
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 20.956719822320245,
+            "p95": 22.705157317815978
+          }
+        },
+        "engracado": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 10,
+          "unavailableSuggestions": 2,
+          "preservationRejections": 2,
+          "errors": 0,
+          "unchanged": 10,
+          "reviewed": 10,
+          "qualityPending": 0,
+          "useful": 0,
+          "usefulPercentOfAll": 0,
+          "preserved": 10,
+          "contentChanges": 0,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 0,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 2135,
+            "p95": 3051.600000023842
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 3406.5,
+            "p95": 19958.5
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 3406.5,
+            "p95": 19958.5
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 20.20785219364766,
+            "p95": 24.176488360274597
+          }
+        },
+        "reescrever": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 10,
+          "unavailableSuggestions": 2,
+          "preservationRejections": 2,
+          "errors": 0,
+          "unchanged": 10,
+          "reviewed": 10,
+          "qualityPending": 0,
+          "useful": 0,
+          "usefulPercentOfAll": 0,
+          "preserved": 10,
+          "contentChanges": 0,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 0,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 2034.7999999523163,
+            "p95": 2921.5
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 3211.5,
+            "p95": 21314.199999928474
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 3211.5,
+            "p95": 21314.199999928474
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0.10000002384185791
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 22.422961114233857,
+            "p95": 26.155187455024237
+          }
+        }
+      }
+    },
+    "qualidade": {
+      "denominator": 108,
+      "attempted": 108,
+      "pending": 0,
+      "suggestions": 88,
+      "unavailableSuggestions": 20,
+      "preservationRejections": 20,
+      "errors": 0,
+      "unchanged": 11,
+      "reviewed": 88,
+      "qualityPending": 0,
+      "useful": 30,
+      "usefulPercentOfAll": 27.77777777777778,
+      "preserved": 82,
+      "contentChanges": 6,
+      "entityContractEdits": 0,
+      "languageFailures": 0,
+      "warned": 0,
+      "warningsReviewed": 0,
+      "correctWarnings": 0,
+      "undueWarnings": 0,
+      "missedRisks": 6,
+      "firstVisibleMs": {
+        "denominator": 108,
+        "measured": 88,
+        "unavailable": 20,
+        "median": 3912.8000000715256,
+        "p95": 6432.100000023842
+      },
+      "totalMs": {
+        "denominator": 108,
+        "measured": 88,
+        "unavailable": 20,
+        "median": 5550.099999904633,
+        "p95": 36428.300000071526
+      },
+      "allAttemptTotalMs": {
+        "denominator": 108,
+        "measured": 108,
+        "unavailable": 0,
+        "median": 5550.099999904633,
+        "p95": 35016.200000047684
+      },
+      "initializeForActionMs": {
+        "denominator": 108,
+        "measured": 108,
+        "unavailable": 0,
+        "median": 0,
+        "p95": 0
+      },
+      "decodeTokensPerSecond": {
+        "denominator": 108,
+        "measured": 88,
+        "unavailable": 20,
+        "median": 17.817078002291616,
+        "p95": 20.616431292702604
+      },
+      "cachedLoadMs": {
+        "denominator": 9,
+        "measured": 9,
+        "unavailable": 0,
+        "median": 68072.5,
+        "p95": 70043.79999995232
+      },
+      "preparationMs": {
+        "denominator": 9,
+        "measured": 9,
+        "unavailable": 0,
+        "median": 50711.299999952316,
+        "p95": 52132.799999952316
+      },
+      "residentInitializeMs": {
+        "denominator": 0,
+        "measured": 0,
+        "unavailable": 0,
+        "median": null,
+        "p95": null
+      },
+      "byAction": {
+        "corrigir": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 11,
+          "unavailableSuggestions": 1,
+          "preservationRejections": 1,
+          "errors": 0,
+          "unchanged": 3,
+          "reviewed": 11,
+          "qualityPending": 0,
+          "useful": 8,
+          "usefulPercentOfAll": 66.66666666666666,
+          "preserved": 11,
+          "contentChanges": 0,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 0,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 11,
+            "unavailable": 1,
+            "median": 6428.299999952316,
+            "p95": 7920.400000095367
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 11,
+            "unavailable": 1,
+            "median": 8085.799999952316,
+            "p95": 23236.300000071526
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 8047.700000047684,
+            "p95": 23236.300000071526
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 11,
+            "unavailable": 1,
+            "median": 17.204301074008658,
+            "p95": 20.114497912670796
+          }
+        },
+        "melhorar": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 10,
+          "unavailableSuggestions": 2,
+          "preservationRejections": 2,
+          "errors": 0,
+          "unchanged": 1,
+          "reviewed": 10,
+          "qualityPending": 0,
+          "useful": 5,
+          "usefulPercentOfAll": 41.66666666666667,
+          "preserved": 10,
+          "contentChanges": 0,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 0,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 3891,
+            "p95": 5317.399999976158
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 5389.299999952316,
+            "p95": 25094.299999952316
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 5389.299999952316,
+            "p95": 25094.299999952316
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0.10000002384185791
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 17.965267144761338,
+            "p95": 20.73852180453623
+          }
+        },
+        "formal": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 9,
+          "unavailableSuggestions": 3,
+          "preservationRejections": 3,
+          "errors": 0,
+          "unchanged": 0,
+          "reviewed": 9,
+          "qualityPending": 0,
+          "useful": 4,
+          "usefulPercentOfAll": 33.33333333333333,
+          "preserved": 7,
+          "contentChanges": 2,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 2,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 9,
+            "unavailable": 3,
+            "median": 3942.3000000715256,
+            "p95": 5593.899999976158
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 9,
+            "unavailable": 3,
+            "median": 5459,
+            "p95": 36428.300000071526
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 5459,
+            "p95": 36428.300000071526
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0.10000002384185791
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 9,
+            "unavailable": 3,
+            "median": 18.055798242520176,
+            "p95": 20.551144327370277
+          }
+        },
+        "profissional": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 11,
+          "unavailableSuggestions": 1,
+          "preservationRejections": 1,
+          "errors": 0,
+          "unchanged": 1,
+          "reviewed": 11,
+          "qualityPending": 0,
+          "useful": 4,
+          "usefulPercentOfAll": 33.33333333333333,
+          "preserved": 11,
+          "contentChanges": 0,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 0,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 11,
+            "unavailable": 1,
+            "median": 3880.5,
+            "p95": 5432.600000023842
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 11,
+            "unavailable": 1,
+            "median": 5360.799999952316,
+            "p95": 48524.60000002384
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 5282.200000047684,
+            "p95": 48524.60000002384
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 11,
+            "unavailable": 1,
+            "median": 19.136721243700848,
+            "p95": 20.84636231288524
+          }
+        },
+        "amigavel": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 10,
+          "unavailableSuggestions": 2,
+          "preservationRejections": 2,
+          "errors": 0,
+          "unchanged": 1,
+          "reviewed": 10,
+          "qualityPending": 0,
+          "useful": 1,
+          "usefulPercentOfAll": 8.333333333333332,
+          "preserved": 10,
+          "contentChanges": 0,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 0,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 3744.7000000476837,
+            "p95": 5367.899999976158
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 5203.799999952316,
+            "p95": 35016.200000047684
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 5203.100000023842,
+            "p95": 35016.200000047684
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 18.996693164083645,
+            "p95": 20.616431292702604
+          }
+        },
+        "natural": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 10,
+          "unavailableSuggestions": 2,
+          "preservationRejections": 2,
+          "errors": 0,
+          "unchanged": 1,
+          "reviewed": 10,
+          "qualityPending": 0,
+          "useful": 3,
+          "usefulPercentOfAll": 25,
+          "preserved": 10,
+          "contentChanges": 0,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 0,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 3904.7999999523163,
+            "p95": 5609.300000071526
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 5389.899999976158,
+            "p95": 56337.300000071526
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 5389.899999976158,
+            "p95": 56337.300000071526
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 17.571059432607047,
+            "p95": 20.780420227038313
+          }
+        },
+        "conciso": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 7,
+          "unavailableSuggestions": 5,
+          "preservationRejections": 5,
+          "errors": 0,
+          "unchanged": 0,
+          "reviewed": 7,
+          "qualityPending": 0,
+          "useful": 1,
+          "usefulPercentOfAll": 8.333333333333332,
+          "preserved": 4,
+          "contentChanges": 3,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 3,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 7,
+            "unavailable": 5,
+            "median": 3910.100000023842,
+            "p95": 4222.700000047684
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 7,
+            "unavailable": 5,
+            "median": 5497.300000071526,
+            "p95": 6079.399999976158
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 5550.099999904633,
+            "p95": 31353.600000023842
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 7,
+            "unavailable": 5,
+            "median": 18.496180140257202,
+            "p95": 20.566366086358503
+          }
+        },
+        "engracado": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 10,
+          "unavailableSuggestions": 2,
+          "preservationRejections": 2,
+          "errors": 0,
+          "unchanged": 3,
+          "reviewed": 10,
+          "qualityPending": 0,
+          "useful": 0,
+          "usefulPercentOfAll": 0,
+          "preserved": 9,
+          "contentChanges": 1,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 1,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 3947.899999976158,
+            "p95": 5737.399999976158
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 5820,
+            "p95": 47747.10000002384
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 5820,
+            "p95": 47747.10000002384
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 15.621816208971975,
+            "p95": 20.595504294477966
+          }
+        },
+        "reescrever": {
+          "denominator": 12,
+          "attempted": 12,
+          "pending": 0,
+          "suggestions": 10,
+          "unavailableSuggestions": 2,
+          "preservationRejections": 2,
+          "errors": 0,
+          "unchanged": 1,
+          "reviewed": 10,
+          "qualityPending": 0,
+          "useful": 4,
+          "usefulPercentOfAll": 33.33333333333333,
+          "preserved": 10,
+          "contentChanges": 0,
+          "entityContractEdits": 0,
+          "languageFailures": 0,
+          "warned": 0,
+          "warningsReviewed": 0,
+          "correctWarnings": 0,
+          "undueWarnings": 0,
+          "missedRisks": 0,
+          "firstVisibleMs": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 3747.100000023842,
+            "p95": 5433.200000047684
+          },
+          "totalMs": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 5553.700000047684,
+            "p95": 51396
+          },
+          "allAttemptTotalMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 5222.899999976158,
+            "p95": 51396
+          },
+          "initializeForActionMs": {
+            "denominator": 12,
+            "measured": 12,
+            "unavailable": 0,
+            "median": 0,
+            "p95": 0
+          },
+          "decodeTokensPerSecond": {
+            "denominator": 12,
+            "measured": 10,
+            "unavailable": 2,
+            "median": 15.293708720563465,
+            "p95": 20.7007590323718
+          }
+        }
+      }
+    }
+  }
+}

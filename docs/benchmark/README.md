@@ -2,6 +2,8 @@
 
 [Relatório](../VALIDACAO-STEP-15.md) · [Progresso](../PROGRESSO.md) · [Dataset anotado](../../tests/benchmark/cases.ts)
 
+A comparação com Chrome/Gemma e os 108 rascunhos independentes pertence às [campanhas da STEP-15-D](STEP-15-D.md). Os arquivos e números históricos abaixo permanecem preservados.
+
 O conjunto tem **108 pares identificáveis**: 12 textos fictícios × nove ações, com 12 casos por ação. As repetições entre ações são deliberadas para comparar transformações sobre os mesmos fatos. Não são 108 rascunhos independentes. As anotações de entidades, fatos, intenção, gramática e naturalidade foram escritas antes da primeira execução. Nenhuma conversa real foi coletada.
 
 ## Executar

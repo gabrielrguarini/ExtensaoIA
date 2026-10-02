@@ -185,7 +185,7 @@ export class GemmaEngine implements AIEngine {
         options.signal?.removeEventListener('abort', cancel);
       };
       const messages = isWritingAction(options.task)
-        ? actionMessages(options.task, text, options.writingOptions)
+        ? actionMessages(options.task, text, options.writingOptions, options.inputFormat, 'raw')
         : [
             {
               role: 'system' as const,

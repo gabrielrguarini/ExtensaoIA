@@ -1,0 +1,146 @@
+{
+  "browser": "154.0.8037.0",
+  "version": "0.15.3",
+  "startedAt": "2026-10-02T13:36:28.550Z",
+  "checks": {
+    "workerNetworkObserved": true,
+    "realGemmaWebGPU": true,
+    "offline": true,
+    "manualReplacementUndo": true,
+    "modelProof": true,
+    "manualSemanticReview": true,
+    "streaming": true,
+    "concurrency": true,
+    "cancelledApplicationBlocked": true,
+    "workerCancellationAcknowledged": true,
+    "staleBlocked": true,
+    "modelSwitchUnload": true,
+    "requestIsolation": true,
+    "idleRelease": true,
+    "unloadPreservesCache": true
+  },
+  "actions": [
+    {
+      "action": "Corrigir",
+      "text": "Oi Mariana, você pode conferir os documentos amanhã?",
+      "totalMs": 37202
+    }
+  ],
+  "requests": [
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/gemma-worker-bDd5Wm0l.js",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/transformers.web-DFmlKpLR.js",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/runtime/ort-wasm-simd-threaded.asyncify.mjs",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/runtime/ort-wasm-simd-threaded.asyncify.wasm",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/gemma-worker-bDd5Wm0l.js",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/transformers.web-DFmlKpLR.js",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/runtime/ort-wasm-simd-threaded.asyncify.mjs",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/runtime/ort-wasm-simd-threaded.asyncify.wasm",
+      "method": "GET",
+      "hasPostData": false
+    }
+  ],
+  "consoleEvents": [],
+  "preferences": {
+    "version": 5,
+    "engine": "local",
+    "localModel": "gemma",
+    "chromePortuguesePrompt": false,
+    "semanticReview": true,
+    "profile": "economico",
+    "language": "pt-BR",
+    "theme": "system",
+    "defaultAction": "corrigir",
+    "preserveSlang": true,
+    "addEmojis": false
+  },
+  "hardware": {
+    "info": {
+      "vendor": "nvidia",
+      "architecture": "lovelace",
+      "device": "",
+      "description": ""
+    },
+    "features": [
+      "depth32float-stencil8",
+      "rg11b10ufloat-renderable",
+      "texture-formats-tier1",
+      "bgra8unorm-storage",
+      "texture-compression-bc",
+      "dual-source-blending",
+      "core-features-and-limits",
+      "float32-filterable",
+      "indirect-first-instance",
+      "float32-blendable",
+      "subgroup-size-control",
+      "depth-clip-control",
+      "texture-compression-bc-sliced-3d",
+      "texture-formats-tier2",
+      "timestamp-query",
+      "shader-f16",
+      "clip-distances",
+      "primitive-index",
+      "texture-component-swizzle",
+      "subgroups"
+    ],
+    "maxBufferSize": 2147483648,
+    "maxStorageBufferBindingSize": 2147483644
+  },
+  "coldPreparationAndGenerationMs": 37202,
+  "proof": "TESTE",
+  "review": "Sugestão gerada.\n\nonnx-community/gemma-4-E2B-it-ONNX:q4f16 · transformers\n\nPossível alteração de nomes. Confira o original e a sugestão.\n\nA análise de sentido também pode errar.",
+  "idleMs": 300248,
+  "storage": {
+    "writingPreferences": {
+      "addEmojis": false,
+      "chromePortuguesePrompt": false,
+      "defaultAction": "corrigir",
+      "engine": "local",
+      "language": "pt-BR",
+      "localModel": "gemma",
+      "preserveSlang": true,
+      "profile": "economico",
+      "semanticReview": true,
+      "theme": "system",
+      "version": 5
+    }
+  },
+  "pageErrors": 0,
+  "completedAt": "2026-10-02T13:42:54.423Z"
+}

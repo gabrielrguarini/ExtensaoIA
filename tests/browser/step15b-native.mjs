@@ -263,7 +263,7 @@ try {
       if (
         await evaluate(
           panel,
-          '(async()=>{const p=await chrome.runtime.sendMessage({target:"preferences",type:"get"});return p.chromePortuguesePrompt})()',
+          'Boolean([...document.querySelectorAll("label")].find(x=>x.textContent.includes("Português por prompt no Chrome"))?.querySelector("input")?.checked && !document.querySelector("fieldset")?.disabled && document.getElementById("chrome-ai-title").parentElement.textContent.includes("Português por prompt experimental ativado"))',
         )
       )
         break;
@@ -285,6 +285,10 @@ try {
       'chrome.runtime.sendMessage({target:"chrome-ai",type:"status"})',
     );
     assert.equal(report.status.chromePortuguesePrompt, true);
+    report.beforeNativePreparation = await evaluate(
+      panel,
+      '({text:document.getElementById("chrome-ai-title").parentElement.textContent,buttons:[...document.querySelectorAll("button")].map(b=>({text:b.textContent,disabled:b.disabled}))})',
+    );
     await click(panel, 'Preparar Corrigir');
     for (let i = 0; i < 1800; i++) {
       const prepared = await evaluate(

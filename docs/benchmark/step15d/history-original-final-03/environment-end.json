@@ -1,0 +1,121 @@
+{
+  "endedAt": "2026-10-02T12:37:43.113Z",
+  "errors": [],
+  "audits": [
+    {
+      "workers": 1,
+      "requests": 6,
+      "errors": [],
+      "consoleEvents": []
+    },
+    {
+      "workers": 1,
+      "requests": 6,
+      "errors": [],
+      "consoleEvents": []
+    },
+    {
+      "workers": 1,
+      "requests": 6,
+      "errors": [],
+      "consoleEvents": []
+    },
+    {
+      "workers": 1,
+      "requests": 6,
+      "errors": [],
+      "consoleEvents": []
+    },
+    {
+      "workers": 1,
+      "requests": 6,
+      "errors": [],
+      "consoleEvents": []
+    },
+    {
+      "workers": 1,
+      "requests": 6,
+      "errors": [],
+      "consoleEvents": []
+    },
+    {
+      "workers": 1,
+      "requests": 6,
+      "errors": [],
+      "consoleEvents": []
+    },
+    {
+      "workers": 1,
+      "requests": 6,
+      "errors": [],
+      "consoleEvents": []
+    },
+    {
+      "workers": 1,
+      "requests": 6,
+      "errors": [],
+      "consoleEvents": []
+    },
+    {
+      "workers": 1,
+      "requests": 6,
+      "errors": [],
+      "consoleEvents": []
+    },
+    {
+      "workers": 1,
+      "requests": 6,
+      "errors": [],
+      "consoleEvents": []
+    },
+    {
+      "workers": 1,
+      "requests": 6,
+      "errors": [],
+      "consoleEvents": []
+    },
+    {
+      "workers": 1,
+      "requests": 6,
+      "errors": [],
+      "consoleEvents": []
+    },
+    {
+      "workers": 1,
+      "requests": 6,
+      "errors": [],
+      "consoleEvents": []
+    },
+    {
+      "workers": 1,
+      "requests": 6,
+      "errors": [],
+      "consoleEvents": []
+    },
+    {
+      "workers": 1,
+      "requests": 6,
+      "errors": [],
+      "consoleEvents": []
+    },
+    {
+      "workers": 1,
+      "requests": 6,
+      "errors": [],
+      "consoleEvents": []
+    },
+    {
+      "workers": 1,
+      "requests": 6,
+      "errors": [],
+      "consoleEvents": []
+    },
+    {
+      "workers": 1,
+      "requests": 6,
+      "errors": [],
+      "consoleEvents": []
+    }
+  ],
+  "globalGpuMemory": "NVIDIA GeForce RTX 4060 Laptop GPU, 8188 MiB, 360 MiB, 7598 MiB, 555.97"
+}

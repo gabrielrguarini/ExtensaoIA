@@ -100,6 +100,7 @@ export function correctionTokenBudget(
   template: LlamaTemplate,
   systemPrompt: string,
   draft: string,
+  rawDraft = draft,
 ): TokenBudget | null {
   const system = template.systemTemplate.replace('{system_message}', systemPrompt);
   const user = `${template.userRole}${template.contentSep}${draft}${template.turnSep}`;
@@ -109,7 +110,7 @@ export function correctionTokenBudget(
     encode(system).length +
     encode(user).length +
     encode(assistant).length;
-  const draftTokens = encode(draft).length;
+  const draftTokens = encode(rawDraft).length;
   const outputTokens = Math.max(128, Math.min(2048, Math.ceil(draftTokens * 1.5) + 64));
   return promptTokens + outputTokens <= CONTEXT_TOKENS
     ? { promptTokens, draftTokens, outputTokens }

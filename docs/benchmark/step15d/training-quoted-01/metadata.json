@@ -1,0 +1,210 @@
+{
+  "campaign": {
+    "profiles": [
+      "chrome-prompt",
+      "economico",
+      "gemma",
+      "equilibrado",
+      "qualidade"
+    ],
+    "rounds": 1,
+    "ids": [
+      "B01-corrigir",
+      "B02-formal",
+      "B03-profissional",
+      "B04-corrigir",
+      "B05-conciso",
+      "B06-melhorar",
+      "B07-natural",
+      "B08-conciso",
+      "B09-amigavel",
+      "B10-reescrever",
+      "B11-engracado",
+      "B12-corrigir"
+    ],
+    "dataset": "training",
+    "pipeline": "original"
+  },
+  "startedAt": "2026-10-02T00:34:54.275Z",
+  "datasetSha256": "28170fd142216cf7cddb870486a29b185c787603fffd64c2be04165ee5c719a6",
+  "hashes": {
+    "src/extension/ai/action-validation.ts": "61375a875c3a6d07eaafb6c6dcafd8ce5fc1021e4d26ba20948c8f30da8c1140",
+    "src/extension/ai/ai-engine.ts": "58b1187afadf0487e6cf22fb4ca3ea5653baa70cec691d32a7ff8f3482765f7a",
+    "src/extension/ai/chrome-api.ts": "bad4e0765e2f81f19e730aec73f3c7e596a8761617219914d7a5da6b6681e67e",
+    "src/extension/ai/chrome-engine.ts": "792dd08b3f760be23a9226f819f6cd75d83bab8eb59a8139d4007ff423629303",
+    "src/extension/ai/correction-output.ts": "8fdcae9ddead444fca813ffbbf86ce9a1088887c03b0776c4710f469883d5528",
+    "src/extension/ai/correction-prompt.ts": "d738a1125cd10e5a6669cec6241074e75cc9a39c35b2e2a5762f3adab54db1d0",
+    "src/extension/ai/entities.ts": "8a026064b18df8240785135cd4f710ee38833d9cb6be58889e4e9dc88a7aadc8",
+    "src/extension/ai/gemma-cache.ts": "4ea19c1bc87b84958f42788b9ce5dd9ff4ee64428b65c8905c19b7fef06e3de1",
+    "src/extension/ai/gemma-catalog.ts": "bbd8c50a0c96a9fb4b808f3f146dcaae155bddd9aba4217dbe6cca269907ea93",
+    "src/extension/ai/gemma-engine.ts": "bc8739d8380aad2fafabea890a6be68b40ca51d49a4b0fd31559676ddced4dcb",
+    "src/extension/ai/gemma-worker.ts": "a6d8b790df17edcec1ff2de14fc78c63a47ccfb7d1fd1ef22009ce64fe361936",
+    "src/extension/ai/local-choice.ts": "82fc02f4bc67ded8f7f82e6b1c977ac67d317ce2dd25d565fdd77a377622a66c",
+    "src/extension/ai/meaning-anchors.ts": "e55cdd577ed62477d8c9a4b94cbbbba60ffe8bbb4867fb6d101e32412e4fc75e",
+    "src/extension/ai/model-cache.ts": "931fd7aca9840f0f70a4a7fb1d159baa87e788190aef803336c1a03ab5751065",
+    "src/extension/ai/model-catalog.ts": "3c44a25af2e3449b72ea3814eec35a80ffdd2fc9d2d0327789cf900181a37fc8",
+    "src/extension/ai/model-error.ts": "455d430404ad2332080739ac150afdb03bc4c9d97e017690c1682a41dd00a634",
+    "src/extension/ai/model-libraries.ts": "d8a5e2f05866b26827c762213d23349b811c70a8d733644c25458bef03c6a856",
+    "src/extension/ai/request-runner.ts": "5f4c5b59ff4dcb553f4f2a74c4e5dc62364e28baf8feca2903cd9cf05200b2fc",
+    "src/extension/ai/semantic-review.ts": "71fae2aa9c5e51f3fc66d2ba451d8a8203d8c8062c060d5e5656ac81ca39b359",
+    "src/extension/ai/simulated-engine.ts": "dba9ed267b7127d593bfdd0af55302ca823023c2cc2df107355187e4793ed73a",
+    "src/extension/ai/streaming-preview.ts": "b6f629a61c3fa189c5b1842e25f8e67df5327d8c4318220df71a24f00168825e",
+    "src/extension/ai/suggestion-assessment.ts": "cc3f6b0e47321a95d07d163e6fa03797979eaff2f27cd08c16ecb04d72ce590b",
+    "src/extension/ai/token-budget.ts": "a2a1069dfc86fddbaadc84b7d87e01ab62f3c990c326dcc62276844bcb2332f4",
+    "src/extension/ai/wasm/Llama-3.2-3B-Instruct-q4f16_1-ctx4k_cs1k-webgpu.wasm": "34de0d60ab598c6a85ae882b48474f250193076f902057a21070bb2daae96d5b",
+    "src/extension/ai/wasm/Llama-3.2-3B-Instruct-q4f32_1-ctx4k_cs1k-webgpu.wasm": "224e4cd5c235621684257aad3ebfdaf6e337d50f783614d1e7ed63e78d693ad6",
+    "src/extension/ai/wasm/Qwen3-4B-q4f16_1-ctx4k_cs1k-webgpu.wasm": "5ddf44e49b03e53e24fd29a45591850924346140452f60c29280190388571340",
+    "src/extension/ai/wasm/Qwen3-4B-q4f32_1-ctx4k_cs1k-webgpu.wasm": "6484148ff499c15433ab85e4d2c376aef453a6d797f48047e6bd6fd495a59e39",
+    "src/extension/ai/wasm/Qwen3-8B-q4f16_1-ctx4k_cs1k-webgpu.wasm": "fd0b332c81212e484ba56c15aac5af2548f14f849d3352039ad68d3c4663b6dd",
+    "src/extension/ai/wasm/Qwen3-8B-q4f32_1-ctx4k_cs1k-webgpu.wasm": "4705cca63950fca8a8bb50279ccc44a1233b41a75318ec87fd9395f46e77358f",
+    "src/extension/ai/webllm-engine.ts": "963df5007e46ade908e9f7fdc506470f08f9efb8143ff9f003526db68ee90dba",
+    "src/extension/ai/worker.ts": "e32b85647f6c97e692f0e78a91d394196d2f8a90befe57146a0c9cde61d319f1",
+    "src/shared/actions.ts": "4c50b496a8daf614f272e025f99197b40b83cfa766978ad309ef675b16b7b444",
+    "src/shared/chrome-management.ts": "3e4c5ac6323ab387651fec56ae1375f18071a53dc3a995db74ce92e6615b8568",
+    "src/shared/diagnostic.ts": "bd8f00c9c69ae584e8d6d05c90ba944b4a141730ad894c1e9a4d5caad03f2704",
+    "src/shared/gemma-management.ts": "a4f3b46a8f549c1060d46406e0c30868fd417eea96f9c37579d89b6dee3dccd7",
+    "src/shared/local-model.ts": "cc00535b89aecf962d757355dcda9768af0f59451873ee439c876031c303264b",
+    "src/shared/model-management.ts": "bd714abdbe89ce9573ce588fedb707e3dcdfecac90149ca8e867a8f4c12ca39d",
+    "src/shared/model-proof.ts": "19f077938e3bb4c6ce333e0d5d775a45de03efb17930ff4fb8a8aa6e0c6e13ec",
+    "src/shared/preferences.ts": "cbe1c5053421b5ec2088d044ac636c581c05a0274d3138653c2533d3b10a7394",
+    "src/shared/protocol.ts": "929753e53c3e2461e2417b6d01d18ca997e92812ec689d5952323d24ef81b6ee",
+    "src/shared/senders.ts": "266ea7c32776cf116f137c863ea6d7927a05d923245505df33a4aede78402933",
+    "src/shared/suggestion.ts": "debf08e3ded58601c9433dfbeb5252a95bac7500a35d82266812dd39250c714c",
+    "src/shared/webgpu-adapter.ts": "c9e041e4f5cb27d7f06754ec6e433c671b0f40ab36f0e1c0a27d1c1cd0b16903",
+    "src/shared/writing-options.ts": "f17ca9d5b8c1825316695b80aed69c3405e55e39c637cb48fa0470bf8cab8898",
+    "tests/benchmark/cases.ts": "ad64419c74e29bf17fffa9a5ff2615dc826078bba92827c2caffd0abd2d16bf4",
+    "tests/benchmark/reserved-cases.ts": "b3a8c854c125afd91c0067567c2536e4f155bf23d4b6cf73a80f97cb7a2ccd9e",
+    "tests/benchmark/comparison-run.ts": "7a3328b3e0f23319f2e181b76676fc2e6ab2439826d336a184a792dd1220addc",
+    "tests/benchmark/checkpoint.ts": "1f67f286ed3efe3adf86f504cbae97f6f2f51463ef86649470a12dbab6dadf4f",
+    "tests/browser/step15d-worker.ts": "3ae5cb7c5fed2fe33d2c282121d90cc7b9813bdce1633b6ad1ff360095d6cfe8",
+    "tests/browser/step15d-entry.ts": "5b7f3494635068ddedc8f5ad616732d2e14efeffdb5b220c65535fdafe27e3d9",
+    "tests/browser/step15d-benchmark.mjs": "d9eaacfd76df8ad782b7d021daabe48168f819995351ef2fbb307afbaf913a8c",
+    "tests/browser/step15d-network.mjs": "e7689842e6ccc61597a3ea3fb96ddaf3656c7c6c46ac96d6635199c111247aa0",
+    "build/webgpu-compatibility.ts": "1650724ef2470d22b28e91b8ce7a5a37116910cf7f8568f1576bef52f4543140",
+    "package-lock.json": "c0bcb3a065a3953f0dbdccbaaa9bee7616a1e2d4af14f69a1c76d7706ad10009"
+  },
+  "browser": "154.0.8037.93",
+  "node": "v22.14.0",
+  "cpu": "13th Gen Intel(R) Core(TM) i9-13980HX",
+  "systemMemoryBytes": 16779935744,
+  "os": "win32 10.0.26200",
+  "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU, 8188 MiB, 488 MiB, 7470 MiB, 555.97",
+  "manifestVersion": "0.15.2",
+  "parameters": {
+    "preserveSlang": true,
+    "addEmojis": false,
+    "thinking": false,
+    "localTemperature": 0,
+    "nativeTemperature": "default do Chrome",
+    "contextTokensLocal": 4096,
+    "semanticReview": false
+  },
+  "nativeAvailability": [
+    {
+      "action": "corrigir",
+      "declared": {
+        "state": "unavailable",
+        "reason": "api",
+        "nativeAvailability": "unavailable"
+      },
+      "experimental": {
+        "state": "ready",
+        "nativeAvailability": "available"
+      }
+    },
+    {
+      "action": "melhorar",
+      "declared": {
+        "state": "unavailable",
+        "reason": "api",
+        "nativeAvailability": "unavailable"
+      },
+      "experimental": {
+        "state": "ready",
+        "nativeAvailability": "available"
+      }
+    },
+    {
+      "action": "formal",
+      "declared": {
+        "state": "unavailable",
+        "reason": "api",
+        "nativeAvailability": "unavailable"
+      },
+      "experimental": {
+        "state": "ready",
+        "nativeAvailability": "available"
+      }
+    },
+    {
+      "action": "profissional",
+      "declared": {
+        "state": "unavailable",
+        "nativeAvailability": "unavailable"
+      },
+      "experimental": {
+        "state": "ready",
+        "nativeAvailability": "available"
+      }
+    },
+    {
+      "action": "amigavel",
+      "declared": {
+        "state": "unavailable",
+        "reason": "api",
+        "nativeAvailability": "unavailable"
+      },
+      "experimental": {
+        "state": "ready",
+        "nativeAvailability": "available"
+      }
+    },
+    {
+      "action": "natural",
+      "declared": {
+        "state": "unavailable",
+        "nativeAvailability": "unavailable"
+      },
+      "experimental": {
+        "state": "ready",
+        "nativeAvailability": "available"
+      }
+    },
+    {
+      "action": "conciso",
+      "declared": {
+        "state": "unavailable",
+        "reason": "api",
+        "nativeAvailability": "unavailable"
+      },
+      "experimental": {
+        "state": "ready",
+        "nativeAvailability": "available"
+      }
+    },
+    {
+      "action": "engracado",
+      "declared": {
+        "state": "unavailable",
+        "nativeAvailability": "unavailable"
+      },
+      "experimental": {
+        "state": "ready",
+        "nativeAvailability": "available"
+      }
+    },
+    {
+      "action": "reescrever",
+      "declared": {
+        "state": "unavailable",
+        "reason": "api",
+        "nativeAvailability": "unavailable"
+      },
+      "experimental": {
+        "state": "ready",
+        "nativeAvailability": "available"
+      }
+    }
+  ],
+  "scope": "offscreen real para Chrome; Workers locais para runtimes próprios; fixtures sintéticas sem conta/envio; aquecimento antes de cada bloco"
+}

@@ -2,7 +2,11 @@ import { describe, expect, it } from 'vitest';
 import { assessSuggestion, suggestionResult } from '../src/extension/ai/suggestion-assessment';
 import { CorrectionOutputError } from '../src/extension/ai/correction-output';
 import { isRiskAssessment } from '../src/shared/suggestion';
-import { actionMessages, legacySystemPromptFor } from '../src/extension/ai/correction-prompt';
+import {
+  actionMessages,
+  legacySystemPromptFor,
+  quotedDraft,
+} from '../src/extension/ai/correction-prompt';
 import { suggestionMetadata } from './fixtures';
 
 describe('sugestões legíveis com avisos', () => {
@@ -74,9 +78,12 @@ describe('sugestões legíveis com avisos', () => {
       ),
     ).toBe(false);
   });
-  it('mantém texto literal e prompt original, com legado acessível somente por opção', () => {
+  it('delimita o texto original sem mascarar códigos literais e mantém o legado por opção', () => {
     expect(actionMessages('formal', 'João, ENTITY_001 é um código literal.')[1]?.content).toBe(
-      'João, ENTITY_001 é um código literal.',
+      quotedDraft('João, ENTITY_001 é um código literal.'),
+    );
+    expect(actionMessages('formal', 'original', undefined, 'original', 'raw')[1]?.content).toBe(
+      'original',
     );
     expect(actionMessages('corrigir', 'original')[0]?.content).not.toContain('ENTITY_');
     expect(actionMessages('formal', 'ENTITY_001', undefined, 'legacy-protected')[0]?.content).toBe(

@@ -1,0 +1,29 @@
+{
+  "scope": "Falhas do harness antes de qualquer inferência; campanhas finais separadas, sem inferir incompatibilidade de IA.",
+  "attempts": [
+    {
+      "run": "training-baseline-01",
+      "beforeInference": true,
+      "cause": "Chrome rejeitou nome raiz __step15d-entry.js reservado.",
+      "correction": "Renomear entry para step15d-entry.js."
+    },
+    {
+      "run": "training-baseline-02",
+      "beforeInference": true,
+      "cause": "Preparação solicitada da página diagnostic.html não autorizada.",
+      "correction": "Preparar a partir da página popup.html autorizada."
+    },
+    {
+      "run": "history-original-final-01",
+      "beforeInference": true,
+      "cause": "Modo do desenvolvedor desativado; toggle da extensão desabilitado.",
+      "correction": "Habilitar modo no perfil dedicado antes da instalação."
+    },
+    {
+      "run": "history-original-final-02",
+      "beforeInference": true,
+      "cause": "Navegação à extensão bloqueada após reload antes de estabilizar instalação.",
+      "correction": "Habilitar modo de desenvolvedor, recarregar gerenciador e aguardar controles prontos."
+    }
+  ]
+}

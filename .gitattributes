@@ -1,3 +1,4 @@
 * text=auto eol=lf
 # Evidências canônicas com SHA-256: preservar os bytes medidos no Git.
 docs/evidencias/step15c/** -text whitespace=cr-at-eol
+docs/benchmark/step15d/** -text whitespace=cr-at-eol

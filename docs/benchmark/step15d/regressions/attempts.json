@@ -1,0 +1,39 @@
+{
+  "scope": "Tentativas de regressão com fixtures sintéticas da versão 0.15.3; nenhuma incompatibilidade de IA presumida.",
+  "attempts": [
+    {
+      "script": "test:step15:browser",
+      "beforeInference": true,
+      "cause": "O sandbox impediu acesso ao executável Chrome for Testing fora do workspace; Playwright relatou executável inexistente.",
+      "correction": "A existência do executável foi confirmada e a execução recebeu acesso ao Chrome instalado."
+    },
+    {
+      "script": "test:step15:browser",
+      "beforeInference": false,
+      "cause": "A assertiva lia o campo imediatamente após clicar Substituir, antes dos awaits da transação assíncrona do adaptador.",
+      "correction": "Aguardar fechamento da prévia por aplicação confirmada antes de verificar igualdade do campo; preservar verificação de Ctrl+Z. Fixar explicitamente motor local/WebLLM e conferir identidade na prévia."
+    },
+    {
+      "script": "test:step15c:controls",
+      "beforeInference": false,
+      "cause": "O teste iniciou nova geração logo após fechar a UI de cancelamento, antes da confirmação assíncrona do Worker; recebeu BUSY e aguardou streaming inexistente.",
+      "passedBeforeFailure": [
+        "inferência offline Gemma",
+        "substituição/desfazer",
+        "prova do modelo",
+        "revisão explícita",
+        "streaming",
+        "concorrência",
+        "aplicação cancelada bloqueada"
+      ],
+      "correction": "Observar confirmação cancelled do Worker no offscreen por CDP e aguardá-la antes do pedido seguinte; sem repetir geração após erro e sem mudar o código medido."
+    },
+    {
+      "script": "test:step15b:browser",
+      "beforeInference": true,
+      "cause": "Preparar Corrigir não ficou pronto na primeira consulta após trocar a preferência, apesar de o status offscreen já indicar available; estado do painel não havia sido capturado nessa tentativa.",
+      "correction": "Registrar disponibilidade no painel e aguardar checkbox, campos liberados e modo experimental efetivamente renderizados, em vez de esperar somente a persistência da preferência.",
+      "subsequentResult": "Repetição registrou painel/offscreen disponíveis e completou nove ações nativas, revisão, streaming e 11/11 clones destruídos."
+    }
+  ]
+}

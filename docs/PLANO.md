@@ -125,6 +125,8 @@ Padrões:
 - Sem WebGPU utilizável, informar indisponibilidade dos modelos próprios; Chrome pode administrar CPU. Não recorrer a serviços externos.
 - Seleção de modelos desacoplada do código de negócio, com catálogo local e origens de artefatos controladas.
 
+A STEP-15-D compara a delimitação JSON do rascunho original no WebLLM e conserva os prompts anteriores de Chrome/Gemma conforme os pilotos. Contabilizar o envelope real na entrada sem inflar a reserva da saída. Esse formato não garante isolamento de comandos citados; novas otimizações após a avaliação reservada precisam de outro conjunto reservado. Recomendações dependem da ação/hardware e devem registrar a troca entre utilidade, preservação e latência.
+
 ## Sugestões, preservação e avisos
 
 Pipeline padrão: snapshot → extração de entidades → uma geração com texto original → comparação e avisos → prévia completa → Copiar/Substituir mesmo assim → nova verificação do snapshot → inserção manual.

@@ -1,0 +1,35 @@
+{
+  "recordedAt": "2026-10-02T13:51:50.357Z",
+  "version": "0.15.3",
+  "command": "npm.cmd run check",
+  "exitCode": 0,
+  "typecheck": "passed",
+  "lint": "passed; zero warnings",
+  "prettier": "passed",
+  "vitest": {
+    "files": 39,
+    "tests": 260,
+    "passed": 260,
+    "durationSeconds": 2.62
+  },
+  "build": "passed",
+  "existingViteWarnings": "Módulos url/module das dependências WebLLM externalizados para browser; sem erro.",
+  "temporaryBenchmarkHarnessRemoved": true,
+  "distFileCount": 51,
+  "measuredSourcesMatch": true,
+  "previousCanonicalEvidenceUnchanged": true,
+  "benchmark": {
+    "attempted": 2448,
+    "suggestionsReviewed": 2314,
+    "executionPending": 0,
+    "qualityPending": 0
+  },
+  "realBrowserChecks": [
+    "WebLLM offline/manual replacement/undo/stale",
+    "Gemma offline/stream/concurrency/cancel-ack/switch/isolation/300248ms idle",
+    "Gemma incomplete cache/download disclosure/cancel/restore/fallback",
+    "Chrome native pt-BR experimental/offline/nine actions/review/11 destroyed clones"
+  ],
+  "noMessageSent": true,
+  "noPush": true
+}

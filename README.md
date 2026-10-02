@@ -49,41 +49,43 @@ Privacidade local é obrigatória e informativa. Somente `writingPreferences`, n
 
 ## Comandos
 
-| Comando                                    | Finalidade                                                                                            |
-| ------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
-| npm run dev                                | Servir as páginas auxiliares em http://127.0.0.1:5173.                                                |
-| npm run typecheck                          | Conferir tipos do navegador e das ferramentas sem emitir arquivos.                                    |
-| npm run lint                               | Conferir código com informação de tipos, sem aceitar avisos.                                          |
-| npm run format:check                       | Conferir formatação.                                                                                  |
-| npm run format                             | Aplicar formatação.                                                                                   |
-| npm test                                   | Executar testes, incluindo um build completo temporário.                                              |
-| npm run test:step06:browser -- online      | Executar a prova WebGPU em Chrome for Testing; requer `STEP06_CHROME`.                                |
-| npm run test:step07:browser -- corrections | Exercitar correção real em Chrome com fixture sintética; requer `STEP07_CHROME`.                      |
-| npm run test:step07:browser -- context     | Conferir vazio e orçamento de contexto no Chrome; requer `STEP07_CHROME`.                             |
-| npm run test:step07:browser -- regression  | Conferir a prévia simulada no Chrome; requer `STEP07_CHROME`.                                         |
-| npm run test:step08:browser -- corrections | Exercitar proteção e rejeições seguras no Chrome; requer `STEP08_CHROME`.                             |
-| npm run test:step08:browser -- context     | Conferir vazio e limite de contexto no Chrome; requer `STEP08_CHROME`.                                |
-| npm run test:step08:browser -- regression  | Conferir a prévia simulada no Chrome; requer `STEP08_CHROME`.                                         |
-| npm run test:step09:browser -- fixture     | Exercitar os nove modos em fixture no Chrome; requer `STEP09_CHROME`.                                 |
-| npm run test:step09:browser -- whatsapp    | Exercitar rascunhos sintéticos no grupo de teste autorizado; requer perfil logado.                    |
-| npm run test:step10:browser                | Conferir streaming e cancelamento no Chrome/WebGPU com fixture sintética.                             |
-| npm run test:step11:browser                | Avaliar o verificador e a preferência no Chrome/WebGPU; requer `STEP11_CHROME`.                       |
-| npm run test:step12:browser -- qualidade   | Validar o perfil no Chrome/WebGPU com fixture sintética; requer `STEP12_CHROME`.                      |
-| npm run test:step12:switch                 | Conferir troca durante geração e liberação do Worker; requer os perfis em cache.                      |
-| npm run test:step14:browser                | Validar popup/painel, migração, sincronização, temas, teclado e reinício; requer `STEP14_CHROME`.     |
-| npm run test:step14:model                  | Validar escrita WebGPU e liberar/apagar modelo com fixture; requer `STEP14_CHROME`.                   |
-| npm run test:step15b:browser               | Painel/offscreen reais offline; Chrome instalado ou CfT, conforme o relatório B.                      |
-| npm run test:step15b:portuguese            | Doze fixtures pt-BR por prompt; requer `STEP15B_REGULAR_CHROME`.                                      |
-| npm run test:step15b:specialized           | Rewriter/Proofreader reais em inglês; requer Chrome instalado, usa flags no perfil de teste.          |
-| npm run test:step15c:browser               | Nove ações Gemma reais; requer `STEP15C_CHROME`. Com `STEP15C_OFFLINE=1`, reinicia com cache offline. |
-| npm run test:step15c:controls              | Streaming, prova, revisão, concorrência, cancelamento, troca e idle de cinco minutos.                 |
-| npm run test:step15c:cache                 | Remoção real, interrupção, reparo autorizado e auditoria de rede; exige cache inicial preparado.      |
-| npm run test:watch                         | Reexecutar testes durante a edição.                                                                   |
-| npm run build                              | Conferir tipos e gerar a extensão completa em dist.                                                   |
-| npm run preview                            | Servir as páginas construídas em http://127.0.0.1:4173.                                               |
-| npm run check                              | Executar tipos, lint, formatação, testes e build; parar na primeira falha.                            |
+| Comando                                       | Finalidade                                                                                            |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| npm run dev                                   | Servir as páginas auxiliares em http://127.0.0.1:5173.                                                |
+| npm run typecheck                             | Conferir tipos do navegador e das ferramentas sem emitir arquivos.                                    |
+| npm run lint                                  | Conferir código com informação de tipos, sem aceitar avisos.                                          |
+| npm run format:check                          | Conferir formatação.                                                                                  |
+| npm run format                                | Aplicar formatação.                                                                                   |
+| npm test                                      | Executar testes, incluindo um build completo temporário.                                              |
+| npm run test:step06:browser -- online         | Executar a prova WebGPU em Chrome for Testing; requer `STEP06_CHROME`.                                |
+| npm run test:step07:browser -- corrections    | Exercitar correção real em Chrome com fixture sintética; requer `STEP07_CHROME`.                      |
+| npm run test:step07:browser -- context        | Conferir vazio e orçamento de contexto no Chrome; requer `STEP07_CHROME`.                             |
+| npm run test:step07:browser -- regression     | Conferir a prévia simulada no Chrome; requer `STEP07_CHROME`.                                         |
+| npm run test:step08:browser -- corrections    | Exercitar proteção e rejeições seguras no Chrome; requer `STEP08_CHROME`.                             |
+| npm run test:step08:browser -- context        | Conferir vazio e limite de contexto no Chrome; requer `STEP08_CHROME`.                                |
+| npm run test:step08:browser -- regression     | Conferir a prévia simulada no Chrome; requer `STEP08_CHROME`.                                         |
+| npm run test:step09:browser -- fixture        | Exercitar os nove modos em fixture no Chrome; requer `STEP09_CHROME`.                                 |
+| npm run test:step09:browser -- whatsapp       | Exercitar rascunhos sintéticos no grupo de teste autorizado; requer perfil logado.                    |
+| npm run test:step10:browser                   | Conferir streaming e cancelamento no Chrome/WebGPU com fixture sintética.                             |
+| npm run test:step11:browser                   | Avaliar o verificador e a preferência no Chrome/WebGPU; requer `STEP11_CHROME`.                       |
+| npm run test:step12:browser -- qualidade      | Validar o perfil no Chrome/WebGPU com fixture sintética; requer `STEP12_CHROME`.                      |
+| npm run test:step12:switch                    | Conferir troca durante geração e liberação do Worker; requer os perfis em cache.                      |
+| npm run test:step14:browser                   | Validar popup/painel, migração, sincronização, temas, teclado e reinício; requer `STEP14_CHROME`.     |
+| npm run test:step14:model                     | Validar escrita WebGPU e liberar/apagar modelo com fixture; requer `STEP14_CHROME`.                   |
+| npm run test:step15b:browser                  | Painel/offscreen reais offline; Chrome instalado ou CfT, conforme o relatório B.                      |
+| npm run test:step15b:portuguese               | Doze fixtures pt-BR por prompt; requer `STEP15B_REGULAR_CHROME`.                                      |
+| npm run test:step15b:specialized              | Rewriter/Proofreader reais em inglês; requer Chrome instalado, usa flags no perfil de teste.          |
+| npm run test:step15c:browser                  | Nove ações Gemma reais; requer `STEP15C_CHROME`. Com `STEP15C_OFFLINE=1`, reinicia com cache offline. |
+| npm run test:step15c:controls                 | Streaming, prova, revisão, concorrência, cancelamento, troca e idle de cinco minutos.                 |
+| npm run test:step15c:cache                    | Remoção real, interrupção, reparo autorizado e auditoria de rede; exige cache inicial preparado.      |
+| npm run benchmark:step15d                     | Comparar cinco motores em blocos retomáveis, com conjunto reservado e fontes congeladas.              |
+| npm run benchmark:step15d:report -- diretório | Validar anotações/hashes e resumir qualidade, avisos e latência da campanha.                          |
+| npm run test:watch                            | Reexecutar testes durante a edição.                                                                   |
+| npm run build                                 | Conferir tipos e gerar a extensão completa em dist.                                                   |
+| npm run preview                               | Servir as páginas construídas em http://127.0.0.1:4173.                                               |
+| npm run check                                 | Executar tipos, lint, formatação, testes e build; parar na primeira falha.                            |
 
-Os roteiros de navegador das STEP-06 a STEP-11 reproduzem as versões registradas nos respectivos commits. Para o pacote atual, use os roteiros da STEP-15-A/B/C e os checks; os testes automatizados continuam cobrindo as funcionalidades acumuladas.
+Os roteiros de navegador das STEP-06 a STEP-11 reproduzem as versões registradas nos respectivos commits. Para o pacote atual, use os roteiros da STEP-15-A/B/C, o benchmark D e os checks; os testes automatizados continuam cobrindo as funcionalidades acumuladas.
 
 Os servidores escutam apenas no computador local e falham se a porta estiver ocupada. Encerre com Ctrl+C. O preview valida React e estilos; **localhost não executa APIs de extensão**. O diagnóstico nesse endereço informa que precisa ser aberto pela extensão instalada.
 
@@ -120,15 +122,25 @@ O modelo recebe o rascunho original e gera uma vez. Toda resposta final legível
 
 Nas preferências, **Mostrar botão Analisar sentido na prévia** habilita uma análise local adicional somente quando você clicar nela. O botão não reescreve a sugestão; retorna avisos e pode falhar. Nenhum risco detectado não garante equivalência de sentido. A extensão continua sem enviar mensagens.
 
-O pacote 0.15.1 implementa [STEP-15-B](docs/steps/STEP-15-B.md): **Chrome preferencial** e escolha manual de WebLLM, com modelo local preservado como alternativa. A seleção consulta ação e pt-BR no documento offscreen; Chrome só é escolhido se estiver disponível e sua sessão puder ser criada sem download. Uma falha após começar a geração encerra o pedido, sem repetição ou troca de motor.
+O pacote atual inclui [STEP-15-B](docs/steps/STEP-15-B.md): **Chrome preferencial** e escolha manual de WebLLM, com modelo local preservado como alternativa. A seleção consulta ação e pt-BR no documento offscreen; Chrome só é escolhido se estiver disponível e sua sessão puder ser criada sem download. Uma falha após começar a geração encerra o pedido, sem repetição ou troca de motor.
 
 No painel lateral, **Verificar IA do Chrome** mostra disponibilidade por ação no painel e no contexto de inferência. **Preparar** chama a API diretamente no clique visível e acompanha o download. Corrigir usa Proofreader; Formal/Amigável/Conciso/Melhorar/Reescrever usam Rewriter; Profissional/Natural/Engraçado e análise explícita usam Prompt. O Chrome administra CPU/GPU e seus próprios artefatos; liberar sessões não remove esses modelos.
 
 Para usar o contorno de idioma validado no Chrome instalado 154.0.8037.92, ative **Português por prompt no Chrome (experimental)** nas preferências, depois **Verificar IA do Chrome → Preparar Corrigir** no painel lateral. Nesse modo, as nove ações e a revisão usam Prompt sem declarações de idioma, com instrução explícita de português do Brasil. A prévia identifica o caminho experimental; revise os textos e avisos. Essa opção fica desligada por padrão. Se o navegador estiver indisponível, a alternativa local continua sendo escolhida antes de gerar.
 
-As tipagens `@types/dom-chromium-ai` **0.0.17** estão fixadas. Português declarado nas opções segue indisponível no Chrome testado, mas 12 fixtures e o fluxo nativo/offscreen offline passaram pelo modo por prompt. STEP-15-B **Concluída**, conforme [evidências e limitações](docs/VALIDACAO-STEP-15-B.md). [Gemma/STEP-15-C](docs/steps/STEP-15-C.md) não iniciada; [STEP-15-D](docs/steps/STEP-15-D.md) determinará qualidade/desempenho comparativos. Resultados históricos e pendências preservados.
+As tipagens `@types/dom-chromium-ai` **0.0.17** estão fixadas. Português declarado nas opções segue indisponível no Chrome testado, mas 12 fixtures e o fluxo nativo/offscreen offline passaram pelo modo por prompt. STEP-15-B **Concluída**, conforme [evidências e limitações](docs/VALIDACAO-STEP-15-B.md). [Gemma/STEP-15-C](docs/VALIDACAO-STEP-15-C.md) concluída; [STEP-15-D](docs/VALIDACAO-STEP-15-D.md) concluída, com campanhas reservadas e revisão independente de qualidade/desempenho. Casos históricos pendentes cobertos em novas campanhas, preservando os arquivos antigos. STEP-16 ainda não iniciada.
 
 Reproduza o fluxo em perfil isolado com `STEP15B_REGULAR_CHROME` apontando para Chrome instalado, `STEP15B_PORTUGUESE_PROMPT=1` e `npm.cmd run test:step15b:browser`. Para a alternativa, use `STEP15B_CHROME`/CfT sem essas duas variáveis. O roteiro usa fixtures sintéticas, painel real e inferência offline; não acessa conversas nem envia mensagens. Os [controles especializados](tests/browser/step15b-specialized.mjs) usam inglês e flags somente no perfil de teste; não alegam pt-BR dessas APIs.
+
+## Comparação de IA — STEP-15-D
+
+Na RTX 4060 Laptop testada, Chrome Prompt experimental foi o mais rápido para Corrigir, Melhorar e Reescrever. Gemma foi a recomendação local geral, com menos mudanças de conteúdo e ganhos de utilidade em Formal, Natural e Conciso, à custa de maior latência. Os três tons Profissional, Amigável e Engraçado continuam com resultados fracos; o nome Qualidade do perfil Qwen 8B não comprova superioridade. Veja a [comparação por ação, métricas e limites](docs/VALIDACAO-STEP-15-D.md) antes de escolher.
+
+O WebLLM recebe o texto original delimitado como string JSON, com orçamento para a mensagem completa. A delimitação reduziu alguns problemas no piloto, mas continua permitindo aspas externas e execução de instruções citadas. Chrome e Gemma mantêm os prompts anteriores. Toda resposta exige revisão; os avisos também podem ser indevidos ou deixar de apontar uma mudança.
+
+As campanhas possuem [procedimento reproduzível](docs/benchmark/STEP-15-D.md) e [evidências sintéticas](docs/benchmark/step15d/README.md). A escolha de motor/modelo e os padrões atuais permanecem manuais/configuráveis; português por prompt no Chrome continua experimental e desligado por padrão.
+
+Para seguir a recomendação local nesta GPU, selecione **Gemma 4 E2B** em **Modelo local e alternativa** e prepare o modelo pelo fluxo explícito de download. O perfil WebLLM anterior permanece preservado para uma futura troca manual.
 
 ## Protocolo e ciclo de vida
 

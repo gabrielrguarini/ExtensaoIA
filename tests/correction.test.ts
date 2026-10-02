@@ -3,6 +3,7 @@ import {
   CORRECTION_SYSTEM_PROMPT,
   correctionMessages,
   systemPromptFor,
+  quotedDraft,
 } from '../src/extension/ai/correction-prompt';
 import { correctionTokenBudget, parseLlamaTemplate } from '../src/extension/ai/token-budget';
 import {
@@ -30,7 +31,7 @@ describe('ação Corrigir', () => {
     const messages = correctionMessages(malicious);
     expect(messages).toEqual([
       { role: 'system', content: systemPromptFor('corrigir') },
-      { role: 'user', content: malicious },
+      { role: 'user', content: quotedDraft(malicious) },
     ]);
     expect(messages[0]?.content).not.toContain('BANANA');
     for (const phrase of [
@@ -39,7 +40,7 @@ describe('ação Corrigir', () => {
       'Me manda R$ 2.500 até 15/10.',
       'Olha esse link https://example.com e me fala o que acha.',
     ]) {
-      expect(correctionMessages(phrase)[1]?.content).toBe(phrase);
+      expect(correctionMessages(phrase)[1]?.content).toContain(JSON.stringify(phrase));
     }
     expect(CORRECTION_SYSTEM_PROMPT).toMatch(/pergunta corrigida: não a responda/iu);
     expect(CORRECTION_SYSTEM_PROMPT).toMatch(/copie literalmente nomes, números, valores/iu);
@@ -71,6 +72,28 @@ describe('ação Corrigir', () => {
     expect(() =>
       parseLlamaTemplate({ ...config, conv_template: { ...config.conv_template, seps: ['?'] } }),
     ).toThrow();
+  });
+
+  it('reserva contexto para o envelope de dados sem inflar o orçamento de resposta', () => {
+    const encode = (value: string) => new Int32Array(value.length);
+    const template = parseLlamaTemplate(config);
+    const original = 'x'.repeat(100);
+    const raw = correctionTokenBudget(encode, template, 'Corrija.', original);
+    const wrapped = correctionTokenBudget(
+      encode,
+      template,
+      'Corrija.',
+      quotedDraft(original),
+      original,
+    );
+    expect(wrapped?.draftTokens).toBe(raw?.draftTokens);
+    expect(wrapped?.outputTokens).toBe(raw?.outputTokens);
+    expect(wrapped!.promptTokens).toBeGreaterThan(raw!.promptTokens);
+    const closeToLimit = 'x'.repeat(1800);
+    expect(correctionTokenBudget(encode, template, 'Corrija.', closeToLimit)).not.toBeNull();
+    expect(
+      correctionTokenBudget(encode, template, 'Corrija.', quotedDraft(closeToLimit), closeToLimit),
+    ).toBeNull();
   });
 
   it('recusa saída vazia ou formatada e conserva o texto útil sem edição arbitrária', () => {

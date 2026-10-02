@@ -1,0 +1,356 @@
+{
+  "browser": "154.0.8037.93",
+  "version": "0.15.3",
+  "experimental": false,
+  "regular": true,
+  "portuguesePrompt": true,
+  "checks": {
+    "migration": true,
+    "visibleSidePanel": true,
+    "nativePreparation": true,
+    "offscreenStatus": true,
+    "downloadBlockedWhenUnavailable": true,
+    "offline": true,
+    "engineSelectedBeforeGeneration": true,
+    "originalPreserved": true,
+    "reviewWarnings": true,
+    "nativeStructuredReview": true,
+    "manualReplacementUndo": true,
+    "nativeAllActions": true,
+    "nativeStreaming": true,
+    "staleBlocked": true,
+    "nativeUnloadCommand": true,
+    "nativeIsolatedClones": true,
+    "preferencesOnly": true
+  },
+  "nativeGeneration": "passed",
+  "startedAt": "2026-10-02T13:48:48.475Z",
+  "status": {
+    "ok": true,
+    "language": "pt-BR",
+    "chromePortuguesePrompt": true,
+    "actions": [
+      {
+        "action": "corrigir",
+        "availability": "available"
+      },
+      {
+        "action": "melhorar",
+        "availability": "available"
+      },
+      {
+        "action": "formal",
+        "availability": "available"
+      },
+      {
+        "action": "profissional",
+        "availability": "available"
+      },
+      {
+        "action": "amigavel",
+        "availability": "available"
+      },
+      {
+        "action": "natural",
+        "availability": "available"
+      },
+      {
+        "action": "conciso",
+        "availability": "available"
+      },
+      {
+        "action": "engracado",
+        "availability": "available"
+      },
+      {
+        "action": "reescrever",
+        "availability": "available"
+      },
+      {
+        "action": "semantic-review",
+        "availability": "available"
+      }
+    ],
+    "sessionReady": false
+  },
+  "declaredStatus": {
+    "ok": true,
+    "language": "pt-BR",
+    "chromePortuguesePrompt": false,
+    "actions": [
+      {
+        "action": "corrigir",
+        "availability": "unavailable"
+      },
+      {
+        "action": "melhorar",
+        "availability": "unavailable"
+      },
+      {
+        "action": "formal",
+        "availability": "unavailable"
+      },
+      {
+        "action": "profissional",
+        "availability": "unavailable"
+      },
+      {
+        "action": "amigavel",
+        "availability": "unavailable"
+      },
+      {
+        "action": "natural",
+        "availability": "unavailable"
+      },
+      {
+        "action": "conciso",
+        "availability": "unavailable"
+      },
+      {
+        "action": "engracado",
+        "availability": "unavailable"
+      },
+      {
+        "action": "reescrever",
+        "availability": "unavailable"
+      },
+      {
+        "action": "semantic-review",
+        "availability": "unavailable"
+      }
+    ],
+    "sessionReady": false
+  },
+  "checkboxBefore": {
+    "x": 39.5,
+    "y": 395.5
+  },
+  "beforeNativePreparation": {
+    "text": "IA nativa do Chrome · pt-BRPortuguês por prompt experimental ativado. Revise idioma, conteúdo e avisos.A disponibilidade depende da versão, idioma, ação e recursos deste navegador. O Chrome administra modelo e execução por CPU ou GPU. Os textos são processados localmente.Downloads só começam por Preparar no painel lateral visível. Se Chrome não estiver pronto no documento de inferência, usamos o modelo local selecionado antes de gerar.Verificar IA do ChromeCorrigir · promptPainel: Disponível. Inferência: Disponível.Preparar CorrigirMelhorar · promptPainel: Disponível. Inferência: Disponível.Preparar MelhorarFormal · promptPainel: Disponível. Inferência: Disponível.Preparar FormalProfissional · promptPainel: Disponível. Inferência: Disponível.Preparar ProfissionalAmigável · promptPainel: Disponível. Inferência: Disponível.Preparar AmigávelNatural · promptPainel: Disponível. Inferência: Disponível.Preparar NaturalConciso · promptPainel: Disponível. Inferência: Disponível.Preparar ConcisoEngraçado · promptPainel: Disponível. Inferência: Disponível.Preparar EngraçadoReescrever · promptPainel: Disponível. Inferência: Disponível.Preparar ReescreverAnalisar sentido · promptPainel: Disponível. Inferência: Disponível.Preparar Analisar sentidoAs sessões também são liberadas após cinco minutos sem uso. Liberar sessões mantém os artefatos administrados pelo Chrome; remover o cache WebLLM não apaga esses artefatos.Liberar sessões do ChromeDisponibilidade consultada no painel e no documento de inferência.",
+    "buttons": [
+      {
+        "text": "Verificar IA do Chrome",
+        "disabled": false
+      },
+      {
+        "text": "Preparar Corrigir",
+        "disabled": false
+      },
+      {
+        "text": "Preparar Melhorar",
+        "disabled": false
+      },
+      {
+        "text": "Preparar Formal",
+        "disabled": false
+      },
+      {
+        "text": "Preparar Profissional",
+        "disabled": false
+      },
+      {
+        "text": "Preparar Amigável",
+        "disabled": false
+      },
+      {
+        "text": "Preparar Natural",
+        "disabled": false
+      },
+      {
+        "text": "Preparar Conciso",
+        "disabled": false
+      },
+      {
+        "text": "Preparar Engraçado",
+        "disabled": false
+      },
+      {
+        "text": "Preparar Reescrever",
+        "disabled": false
+      },
+      {
+        "text": "Preparar Analisar sentido",
+        "disabled": false
+      },
+      {
+        "text": "Liberar sessões do Chrome",
+        "disabled": false
+      },
+      {
+        "text": "Atualizar estado do Gemma",
+        "disabled": false
+      },
+      {
+        "text": "Liberar Gemma",
+        "disabled": false
+      },
+      {
+        "text": "Apagar arquivos do Gemma",
+        "disabled": false
+      },
+      {
+        "text": "Atualizar estado do modelo",
+        "disabled": false
+      },
+      {
+        "text": "Liberar memória da GPU",
+        "disabled": false
+      },
+      {
+        "text": "Apagar arquivos do modelo",
+        "disabled": false
+      }
+    ]
+  },
+  "apisPresent": {
+    "prompt": true,
+    "rewriter": false,
+    "proofreader": false
+  },
+  "englishControl": {
+    "LanguageModel": "available",
+    "Rewriter": "absent",
+    "Proofreader": "absent"
+  },
+  "portugueseControl": {
+    "panel": {
+      "withoutDeclarations": "available",
+      "pt": "unavailable"
+    },
+    "offscreen": {
+      "withoutDeclarations": "available",
+      "pt": "unavailable"
+    },
+    "generation": "availability-control-only"
+  },
+  "panel": [
+    {
+      "text": "Corrigir · promptPainel: Disponível. Inferência: Disponível.Preparar Corrigir",
+      "disabled": false
+    },
+    {
+      "text": "Melhorar · promptPainel: Disponível. Inferência: Disponível.Preparar Melhorar",
+      "disabled": false
+    },
+    {
+      "text": "Formal · promptPainel: Disponível. Inferência: Disponível.Preparar Formal",
+      "disabled": false
+    },
+    {
+      "text": "Profissional · promptPainel: Disponível. Inferência: Disponível.Preparar Profissional",
+      "disabled": false
+    },
+    {
+      "text": "Amigável · promptPainel: Disponível. Inferência: Disponível.Preparar Amigável",
+      "disabled": false
+    },
+    {
+      "text": "Natural · promptPainel: Disponível. Inferência: Disponível.Preparar Natural",
+      "disabled": false
+    },
+    {
+      "text": "Conciso · promptPainel: Disponível. Inferência: Disponível.Preparar Conciso",
+      "disabled": false
+    },
+    {
+      "text": "Engraçado · promptPainel: Disponível. Inferência: Disponível.Preparar Engraçado",
+      "disabled": false
+    },
+    {
+      "text": "Reescrever · promptPainel: Disponível. Inferência: Disponível.Preparar Reescrever",
+      "disabled": false
+    },
+    {
+      "text": "Analisar sentido · promptPainel: Disponível. Inferência: Disponível.Preparar Analisar sentido",
+      "disabled": false
+    }
+  ],
+  "generationMs": 1328,
+  "engine": "chrome",
+  "actions": [
+    {
+      "action": "Melhorar",
+      "text": "Mano, você dá uma olhada nisso? 🙂",
+      "warnings": [],
+      "totalMs": 820
+    },
+    {
+      "action": "Formal",
+      "text": "Com licença, você poderia verificar isso, por favor? 🙂",
+      "warnings": [
+        "Possível alteração de nomes. Confira o original e a sugestão."
+      ],
+      "totalMs": 812
+    },
+    {
+      "action": "Profissional",
+      "text": "E aí, cara! Você dá uma olhada nisso? 🙂",
+      "warnings": [],
+      "totalMs": 815
+    },
+    {
+      "action": "Amigável",
+      "text": "E aí, cara! Você dá uma olhada nisso? 🙂",
+      "warnings": [],
+      "totalMs": 803
+    },
+    {
+      "action": "Natural",
+      "text": "Mano, você dá uma olhada nisso? 🙂",
+      "warnings": [],
+      "totalMs": 798
+    },
+    {
+      "action": "Conciso",
+      "text": "E aí, cara, você consegue dar uma olhada nisso? 🙂",
+      "warnings": [],
+      "totalMs": 820
+    },
+    {
+      "action": "Engraçado",
+      "text": "Mano, você consegue dar uma olhada nisso? 🙂",
+      "warnings": [],
+      "totalMs": 809
+    },
+    {
+      "action": "Reescrever",
+      "text": "mano, você dá uma olhada nisso? 🙂",
+      "warnings": [],
+      "totalMs": 813
+    }
+  ],
+  "nativeIdleValidation": "não repetida neste complemento; ver execução regular",
+  "lifecycle": {
+    "clones": 11,
+    "clonesDestroyed": 11,
+    "basesDestroyed": 3,
+    "baseUsage": [
+      83,
+      94,
+      83,
+      83,
+      83,
+      83,
+      83,
+      83,
+      83,
+      83,
+      83
+    ],
+    "baseIds": [
+      1,
+      2,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3
+    ]
+  },
+  "pageErrors": 0,
+  "completedAt": "2026-10-02T13:49:10.011Z"
+}

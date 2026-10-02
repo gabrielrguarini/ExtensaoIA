@@ -44,6 +44,7 @@ const socket = new WebSocket(endpoint.webSocketDebuggerUrl);
 await new Promise((resolve) => socket.addEventListener('open', resolve, { once: true }));
 const pending = new Map();
 let sequence = 0;
+let offscreenSession;
 async function command(sessionId, method, params = {}) {
   const num = ++sequence;
   const promise = new Promise((resolve, reject) => pending.set(num, { resolve, reject }));
@@ -77,6 +78,28 @@ socket.addEventListener('message', (e) => {
     void (async () => {
       await command(attached.sessionId, 'Network.enable');
       await command(attached.sessionId, 'Runtime.enable');
+      if (controls && attached.targetInfo.url.endsWith('/offscreen.html')) {
+        offscreenSession = attached.sessionId;
+        await command(offscreenSession, 'Runtime.evaluate', {
+          expression: `(()=>{
+            globalThis.gemmaCancellationCount=0;
+            const send=Worker.prototype.postMessage;
+            Worker.prototype.postMessage=function(message,...args){
+              if(message?.type==='cancel'){
+                const key=JSON.stringify(message.binding.key);
+                const terminal=event=>{
+                  if(event.data.type==='cancelled' && JSON.stringify(event.data.binding.key)===key){
+                    this.removeEventListener('message',terminal);
+                    globalThis.gemmaCancellationCount++;
+                  }
+                };
+                this.addEventListener('message',terminal);
+              }
+              return Reflect.apply(send,this,[message,...args]);
+            };
+          })()`,
+        });
+      }
       if (attached.targetInfo.type === 'worker') report.checks.workerNetworkObserved = true;
       await command(attached.sessionId, 'Runtime.runIfWaitingForDebugger');
     })();
@@ -267,6 +290,15 @@ try {
   }
   if (!controls && !cacheControls && !consent) report.checks.allActions = true;
   if (controls) {
+    async function cancellationCount() {
+      assert(offscreenSession);
+      const state = await command(offscreenSession, 'Runtime.evaluate', {
+        expression: 'globalThis.gemmaCancellationCount',
+        returnByValue: true,
+      });
+      assert.equal(typeof state.result.value, 'number');
+      return state.result.value;
+    }
     async function status() {
       return settings.evaluate(() =>
         chrome.runtime.sendMessage({ target: 'gemma-cache', type: 'status', variant: 'q4f16' }),
@@ -317,11 +349,19 @@ try {
       .getByText('IA ocupada. Tente novamente quando o pedido atual terminar.', { exact: true })
       .waitFor();
     report.checks.concurrency = true;
+    const cancelledBefore = await cancellationCount();
     await page.getByRole('button', { name: 'Cancelar', exact: true }).click();
     await page.locator('.preview-panel').waitFor({ state: 'hidden' });
     assert.equal(await page.getByRole('button', { name: /^Substituir/u }).count(), 0);
     await second.close();
     report.checks.cancelledApplicationBlocked = true;
+    // Fechar a UI é imediato; o próximo pedido precisa esperar a confirmação real do Worker.
+    for (let attempt = 0; attempt < 100; attempt++) {
+      if ((await cancellationCount()) > cancelledBefore) break;
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+    assert((await cancellationCount()) > cancelledBefore);
+    report.checks.workerCancellationAcknowledged = true;
     await draft.fill('outro rascunho sintético para a ação seguinte');
     await page.locator('[data-local-writing-host] button.launcher').click();
     await page.getByRole('button', { name: 'Formal com IA local', exact: true }).click();
@@ -541,7 +581,7 @@ try {
     ),
     JSON.stringify(report, null, 2) + '\n',
   );
-  process.stdout.write('STEP-15-C: nove ações reais concluídas.\n');
+  process.stdout.write('Validação Gemma concluída.\n');
 } catch (error) {
   report.error = error.message;
   const fixture = context

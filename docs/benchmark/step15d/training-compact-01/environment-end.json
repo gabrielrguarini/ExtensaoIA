@@ -1,0 +1,37 @@
+{
+  "endedAt": "2026-10-02T00:31:52.097Z",
+  "errors": [],
+  "audits": [
+    {
+      "workers": 0,
+      "requests": 1,
+      "errors": [],
+      "consoleEvents": []
+    },
+    {
+      "workers": 1,
+      "requests": 6,
+      "errors": [],
+      "consoleEvents": []
+    },
+    {
+      "workers": 1,
+      "requests": 5,
+      "errors": [],
+      "consoleEvents": []
+    },
+    {
+      "workers": 1,
+      "requests": 6,
+      "errors": [],
+      "consoleEvents": []
+    },
+    {
+      "workers": 1,
+      "requests": 6,
+      "errors": [],
+      "consoleEvents": []
+    }
+  ],
+  "globalGpuMemory": "NVIDIA GeForce RTX 4060 Laptop GPU, 8188 MiB, 454 MiB, 7504 MiB, 555.97"
+}

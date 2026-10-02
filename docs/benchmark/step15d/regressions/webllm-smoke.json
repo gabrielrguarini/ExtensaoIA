@@ -1,0 +1,16 @@
+{
+  "profile": "economico",
+  "browser": "154.0.8037.0",
+  "offline": true,
+  "realWebLLM": true,
+  "legiblePreviewWithWarnings": true,
+  "warningCount": 1,
+  "emojiPreserved": false,
+  "explicitSemanticReviewPreservesCandidate": true,
+  "originalPreservedBeforeExplicitReplacement": true,
+  "manualReplacementAndUndo": true,
+  "staleDraftBlocksApplication": true,
+  "pageErrors": 0,
+  "syntheticFixture": true,
+  "noMessageSent": true
+}

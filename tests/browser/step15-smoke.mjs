@@ -41,6 +41,8 @@ try {
         target: 'preferences',
         type: 'update',
         patch: {
+          engine: 'local',
+          localModel: 'webllm',
           profile,
           semanticReview: true,
           defaultAction: 'corrigir',
@@ -72,6 +74,7 @@ try {
   await preview.waitFor({ timeout: 180_000 });
   const output = await preview.innerText();
   assert(output.trim().length > 0);
+  assert((await page.locator('.preview-panel').innerText()).includes(' · webllm'));
   await page
     .getByText('Revise o texto e os avisos antes de usar a sugestão.', { exact: false })
     .waitFor();
@@ -100,8 +103,8 @@ try {
   assert.equal(semanticCompleted, 1);
   assert.equal(await draft.innerText(), original);
   await page.getByRole('button', { name: /^Substituir(?: mesmo assim)?$/u }).click();
-  assert.equal(await draft.innerText(), output);
   await preview.waitFor({ state: 'hidden' });
+  assert.equal(await draft.innerText(), output);
   await draft.focus();
   await draft.press('Control+z');
   assert.equal(await draft.innerText(), original);
@@ -118,6 +121,7 @@ try {
     profile: modelProfile,
     browser: context.browser().version(),
     offline: true,
+    realWebLLM: true,
     legiblePreviewWithWarnings: true,
     warningCount,
     emojiPreserved: output.includes('🙂'),
