@@ -1,6 +1,4 @@
-import type { EngineIdentity, RiskAssessment } from '../../shared/suggestion';
-import { reviewPreview } from './action-client';
-import type { ReviewGenerator } from './action-client';
+import type { EngineIdentity, SuggestionResult } from '../../shared/suggestion';
 import type { DraftSnapshot, WhatsAppAdapter } from '../../integration/whatsapp/adapter';
 import { MAX_TEXT_LENGTH } from '../../shared/protocol';
 import { generatePreview, SIMULATION_PREFIX } from './preview-client';
@@ -27,7 +25,6 @@ export type PreviewState =
   | { kind: 'closed' | 'loading' }
   | {
       kind: 'menu';
-      semanticReview: boolean;
       profile: ModelProfile;
       preferences: WritingPreferences;
       hardware: HardwareStatus;
@@ -49,10 +46,9 @@ export type PreviewState =
       action: WritingAction | null;
       text: string;
       canReplace: boolean;
-      busy: 'copy' | 'replace' | 'review' | null;
+      busy: 'copy' | 'replace' | null;
       engine?: EngineIdentity | undefined;
-      assessment?: RiskAssessment | undefined;
-      canReview?: boolean;
+      status?: SuggestionResult['status'] | undefined;
       message: string;
     };
 
@@ -68,7 +64,6 @@ export class PreviewSession {
   private engine: WritingPreferences['engine'] = DEFAULT_PREFERENCES.engine;
   private localModel: LocalModel = DEFAULT_PREFERENCES.localModel;
   private chromePortuguesePrompt = DEFAULT_PREFERENCES.chromePortuguesePrompt;
-  private showSemanticReview = false;
   private hardware: HardwareStatus = { state: 'checking' };
   private readonly listeners = new Set<() => void>();
   constructor(
@@ -79,7 +74,6 @@ export class PreviewSession {
     private readonly prove: ProofGenerator = runModelProof,
     private readonly write: ActionGenerator = generateAction,
     private readonly preferences: PreferenceStore = preferenceStore,
-    private readonly review: ReviewGenerator = reviewPreview,
   ) {}
 
   getState = (): PreviewState => this.state;
@@ -109,7 +103,6 @@ export class PreviewSession {
     const sequence = this.sequence;
     this.set({
       kind: 'menu',
-      semanticReview: false,
       profile: this.profile,
       preferences: { ...DEFAULT_PREFERENCES, profile: this.profile },
       hardware: this.hardware,
@@ -135,10 +128,8 @@ export class PreviewSession {
           this.engine = value.engine;
           this.localModel = value.localModel;
           this.chromePortuguesePrompt = value.chromePortuguesePrompt;
-          this.showSemanticReview = value.semanticReview;
           this.set({
             ...this.state,
-            semanticReview: value.semanticReview,
             profile: value.profile,
             preferences: value,
             preferenceStatus: 'ready',
@@ -166,14 +157,12 @@ export class PreviewSession {
       this.set({
         ...this.state,
         profile: value.profile,
-        semanticReview: value.semanticReview,
         preferences: value,
         preferenceStatus: this.state.preferenceStatus === 'saving' ? 'saving' : 'ready',
       });
     } else if (
       changedProfile &&
-      (['download-confirm', 'action-loading', 'model-loading'].includes(this.state.kind) ||
-        (this.state.kind === 'preview' && this.state.busy === 'review'))
+      ['download-confirm', 'action-loading', 'model-loading'].includes(this.state.kind)
     ) {
       this.close();
       this.set({
@@ -182,32 +171,6 @@ export class PreviewSession {
           'O motor ou perfil de IA mudou. O pedido foi cancelado. Abra o menu para continuar.',
       });
     }
-  }
-  setSemanticReview(value: boolean): void {
-    if (this.state.kind !== 'menu' || this.state.preferenceStatus !== 'ready') return;
-    const sequence = this.sequence;
-    const preferenceRevision = this.preferenceRevision;
-    const previous = this.state.semanticReview;
-    this.set({ ...this.state, semanticReview: previous, preferenceStatus: 'saving' });
-    void this.preferences.setSemanticReview(value).then(
-      (saved) => {
-        if (this.sequence === sequence && this.state.kind === 'menu')
-          this.set({
-            ...this.state,
-            semanticReview:
-              preferenceRevision === this.preferenceRevision
-                ? saved.semanticReview
-                : this.state.semanticReview,
-            preferences:
-              preferenceRevision === this.preferenceRevision ? saved : this.state.preferences,
-            preferenceStatus: 'ready',
-          });
-      },
-      () => {
-        if (this.sequence === sequence && this.state.kind === 'menu')
-          this.set({ ...this.state, semanticReview: previous, preferenceStatus: 'error' });
-      },
-    );
   }
   setProfile(profile: ModelProfile): void {
     if (
@@ -278,10 +241,6 @@ export class PreviewSession {
   updatePreferences(patch: PreferencePatch): void {
     if (patch.profile) {
       this.setProfile(patch.profile);
-      return;
-    }
-    if (patch.semanticReview !== undefined) {
-      this.setSemanticReview(patch.semanticReview);
       return;
     }
     if (
@@ -376,7 +335,6 @@ export class PreviewSession {
 
   startAction(action: WritingAction): void {
     if (this.state.kind !== 'menu') return;
-    this.showSemanticReview = this.state.semanticReview;
     const snapshot = this.adapter.capture();
     if (!snapshot || !snapshot.text.replace(/[\s\u200b\u200e\u200f]/g, '')) {
       this.set({
@@ -450,8 +408,7 @@ export class PreviewSession {
             action,
             text: outcome.text,
             engine: outcome.engine,
-            assessment: outcome.assessment,
-            canReview: this.showSemanticReview,
+            status: outcome.status,
             canReplace: this.adapter.canReplace(snapshot, outcome.text),
             busy: null,
             message: '',
@@ -531,50 +488,6 @@ export class PreviewSession {
       );
     } catch {
       this.set({ kind: 'notice', message: 'Não foi possível conectar ao motor local.' });
-    }
-  }
-
-  reviewMeaning(): void {
-    const state = this.state;
-    const snapshot = this.snapshot;
-    if (
-      state.kind !== 'preview' ||
-      state.source !== 'action' ||
-      state.busy ||
-      !state.canReview ||
-      !snapshot
-    )
-      return;
-    this.validate();
-    if (this.state !== state) return;
-    const sequence = ++this.sequence;
-    this.set({ ...state, busy: 'review', message: 'Analisando sentido com IA local…' });
-    try {
-      this.cancelGeneration = this.review(
-        snapshot,
-        state.text,
-        (outcome) => {
-          if (sequence !== this.sequence) return;
-          this.cancelGeneration = undefined;
-          this.validate();
-          if (sequence !== this.sequence) return;
-          this.set({
-            ...state,
-            busy: null,
-            assessment: outcome.ok ? outcome.assessment : state.assessment,
-            message: outcome.ok
-              ? 'Análise adicional concluída. Revise os avisos.'
-              : outcome.message,
-          });
-        },
-        this.profile,
-      );
-    } catch {
-      this.set({
-        ...state,
-        busy: null,
-        message: 'Não foi possível analisar o sentido. Revise manualmente.',
-      });
     }
   }
 

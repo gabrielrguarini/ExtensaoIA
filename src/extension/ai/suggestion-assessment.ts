@@ -1,10 +1,5 @@
 import { MAX_TEXT_LENGTH } from '../../shared/protocol';
-import type {
-  ContentRisk,
-  RiskAssessment,
-  SuggestionResult,
-  EngineIdentity,
-} from '../../shared/suggestion';
+import type { ContentRisk, RiskAssessment, EngineIdentity } from '../../shared/suggestion';
 import { extractEntities, invalidCharacters, temporalKey } from './entities';
 import { CorrectionOutputError } from './correction-output';
 import { preserveMeaningAnchors } from './meaning-anchors';
@@ -43,7 +38,7 @@ function counts(text: string, pattern: RegExp) {
     .join('|');
 }
 
-/** Heurísticas de risco, nunca uma prova de equivalência ou barreira de aplicação. */
+/** Avaliação histórica do benchmark; não usada no fluxo do produto desde STEP-15-E. */
 export function assessSuggestion(
   original: string,
   raw: string,
@@ -128,6 +123,6 @@ export function suggestionResult(
   raw: string,
   engine: EngineIdentity,
   addEmojis = false,
-): SuggestionResult {
+): { text: string; assessment: RiskAssessment; engine: EngineIdentity } {
   return { ...assessSuggestion(original, raw, addEmojis), engine };
 }

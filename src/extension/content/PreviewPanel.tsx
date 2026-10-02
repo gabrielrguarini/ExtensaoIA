@@ -233,11 +233,9 @@ export function PreviewPanel({
                   ? 'IA pronta.'
                   : state.progress.phase === 'validating'
                     ? 'Validando resposta...'
-                    : state.progress.phase === 'reviewing'
-                      ? 'Revisando significado com IA local...'
-                      : state.kind === 'action-loading'
-                        ? `Gerando sugestão · ${writingAction(state.action).label}...`
-                        : 'Gerando resposta sintética...'}
+                    : state.kind === 'action-loading'
+                      ? `Gerando sugestão · ${writingAction(state.action).label}...`
+                      : 'Gerando resposta sintética...'}
           {state.progress.variant === 'q4f32_1' && (
             <span> Variante sem shader-f16: maior consumo estimado de GPU.</span>
           )}
@@ -245,7 +243,7 @@ export function PreviewPanel({
       )}
       {state.kind === 'action-loading' && !!state.partial && (
         <div className="streaming-preview">
-          <p>Trecho provisório. Aguarde a validação para copiar ou substituir.</p>
+          <p>Trecho provisório. Aguarde a conclusão para copiar ou substituir.</p>
           <pre aria-label="Texto em geração" aria-live="off" tabIndex={0}>
             {state.partial}
           </pre>
@@ -263,35 +261,18 @@ export function PreviewPanel({
       {state.kind === 'notice' && <p role="alert">{state.message}</p>}
       {state.kind === 'preview' && (
         <>
-          <p>Revise o texto e os avisos antes de usar a sugestão. Nenhuma mensagem será enviada.</p>
+          <p>Revise o texto antes de usar a sugestão. Nenhuma mensagem será enviada.</p>
           <pre aria-label="Texto da sugestão" tabIndex={0}>
             {state.text}
           </pre>
           {state.source === 'action' && (
-            <div role="status" className="suggestion-warnings">
-              <p>
-                {state.assessment?.status === 'unchanged' ? 'Sem alterações.' : 'Sugestão gerada.'}
-              </p>
+            <div role="status" className="suggestion-info">
+              <p>{state.status === 'unchanged' ? 'Sem alterações.' : 'Sugestão gerada.'}</p>
               <p>
                 {state.engine
                   ? (state.engine.model ?? state.engine.runtime) + ' · ' + state.engine.id
                   : ''}
               </p>
-              {state.assessment?.risks.length ? (
-                <ul>
-                  {state.assessment.risks.map((risk, index) => (
-                    <li key={index}>{risk.message}</li>
-                  ))}
-                </ul>
-              ) : (
-                <p>
-                  Nenhum risco detectado pelas verificações. Isso não garante equivalência de
-                  sentido.
-                </p>
-              )}
-              {state.assessment?.semanticReview === 'completed' && (
-                <p>A análise de sentido também pode errar.</p>
-              )}
             </div>
           )}
           {!state.canReplace && (
@@ -309,11 +290,7 @@ export function PreviewPanel({
                 if (event.isTrusted) void session.replace();
               }}
             >
-              {state.busy === 'replace'
-                ? 'Substituindo…'
-                : state.source === 'action' && !!state.assessment?.risks.length
-                  ? 'Substituir mesmo assim'
-                  : 'Substituir'}
+              {state.busy === 'replace' ? 'Substituindo…' : 'Substituir'}
             </button>
             <button
               type="button"
@@ -325,17 +302,6 @@ export function PreviewPanel({
               {state.busy === 'copy' ? 'Copiando…' : 'Copiar'}
             </button>
           </div>
-          {state.source === 'action' && state.canReview && (
-            <button
-              type="button"
-              disabled={!!state.busy}
-              onClick={(event) => {
-                if (event.isTrusted) session.reviewMeaning();
-              }}
-            >
-              {state.busy === 'review' ? 'Analisando…' : 'Analisar sentido'}
-            </button>
-          )}
           <p className="feedback" role="status">
             {state.message}
           </p>

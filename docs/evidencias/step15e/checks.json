@@ -1,0 +1,9 @@
+{
+  "command": "npm.cmd run check",
+  "exitCode": 0,
+  "startedAt": "2026-10-02T15:53:26.7772542Z",
+  "finishedAt": "2026-10-02T15:54:08.1228313Z",
+  "version": "0.15.4",
+  "testsPassed": 265,
+  "testFilesPassed": 39
+}

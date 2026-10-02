@@ -43,15 +43,11 @@ export class RequestRouter {
   constructor(
     private readonly ensureEngine: (request: BoundRequest, signal: AbortSignal) => Promise<Engine>,
     private readonly timeoutMs = 15_000,
-    _semanticReviewEnabled: () => Promise<boolean> = () => Promise.resolve(false),
     private readonly selectedProfile: () => Promise<ModelProfile> = () =>
       Promise.resolve('economico'),
     private readonly writingOptions: () => Promise<WritingOptions> = () =>
       Promise.resolve(DEFAULT_WRITING_OPTIONS),
-  ) {
-    // Compatibilidade com injeções anteriores; a preferência não dispara geração.
-    void _semanticReviewEnabled;
-  }
+  ) {}
 
   receive(client: Client, value: unknown): void {
     if (!isClientCommand(value)) {
@@ -116,10 +112,8 @@ export class RequestRouter {
         ...binding,
         text: value.text,
         action: value.action,
-        semanticReview: false,
         profile: 'economico',
         allowDownload: value.allowDownload === true,
-        ...(value.suggestion === undefined ? {} : { suggestion: value.suggestion }),
       },
       value.expectedProfile,
     );
@@ -137,8 +131,6 @@ export class RequestRouter {
           this.selectedProfile(),
           this.writingOptions(),
         ]);
-        // A preferência mostra o botão; nenhuma segunda geração automática.
-        request.semanticReview = false;
         request.profile = profile;
         request.writingOptions = options;
         if (
@@ -170,8 +162,7 @@ export class RequestRouter {
         value.type === 'action-result' ||
         value.type === 'action-rejected') &&
         active.action !== value.action) ||
-      (value.type === 'proof-result' && active.action !== 'prova-modelo') ||
-      (value.type === 'review-result' && active.action !== 'revisar-sentido')
+      (value.type === 'proof-result' && active.action !== 'prova-modelo')
     )
       return;
     // Após cancelar, nem mesmo um resultado que estava em trânsito pode ser aplicado.
@@ -179,7 +170,6 @@ export class RequestRouter {
     if (
       value.type === 'result' ||
       value.type === 'action-result' ||
-      value.type === 'review-result' ||
       value.type === 'action-rejected' ||
       value.type === 'proof-result' ||
       value.type === 'cancelled' ||

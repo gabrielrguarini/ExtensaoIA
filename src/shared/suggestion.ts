@@ -12,6 +12,7 @@ export interface ContentRisk {
   code: RiskCode;
   message: string;
 }
+/** Somente avaliação histórica dos benchmarks; não integra o resultado do produto. */
 export interface RiskAssessment {
   status: 'changed' | 'unchanged';
   risks: ContentRisk[];
@@ -20,7 +21,7 @@ export interface RiskAssessment {
 export interface SuggestionResult {
   text: string;
   engine: EngineIdentity;
-  assessment: RiskAssessment;
+  status: 'changed' | 'unchanged';
 }
 export interface EngineCapabilities {
   actions: readonly WritingAction[];

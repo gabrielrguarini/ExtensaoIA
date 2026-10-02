@@ -15,11 +15,10 @@ export type ActionGenerator = (
   done: (outcome: PreviewOutcome) => void,
   allowDownload?: boolean,
   expectedProfile?: ModelProfile,
-  suggestion?: string,
 ) => () => void;
 
 type RequestGenerator = (
-  action: WritingAction | 'revisar-sentido',
+  action: WritingAction,
   ...args: Parameters<ActionGenerator> extends [unknown, ...infer Rest] ? Rest : never
 ) => () => void;
 const generateRequest: RequestGenerator = (
@@ -30,7 +29,6 @@ const generateRequest: RequestGenerator = (
   done,
   allowDownload = false,
   expectedProfile,
-  suggestion,
 ) => {
   const port = connectClient();
   const key: RequestKey = {
@@ -75,7 +73,6 @@ const generateRequest: RequestGenerator = (
         value.type === 'error' ||
         value.type === 'action-rejected' ||
         value.type === 'action-result' ||
-        value.type === 'review-result' ||
         value.type === 'rejected'
       )
         close();
@@ -84,9 +81,7 @@ const generateRequest: RequestGenerator = (
     if (value.type === 'model-progress') progress(value);
     if (value.type === 'action-fragment' && value.action === action) fragment(value.text);
     if (value.type === 'action-result' && value.action === action)
-      finish({ ok: true, text: value.text, engine: value.engine, assessment: value.assessment });
-    if (value.type === 'review-result' && action === 'revisar-sentido' && value.text === suggestion)
-      finish({ ok: true, text: value.text, engine: value.engine, assessment: value.assessment });
+      finish({ ok: true, text: value.text, engine: value.engine, status: value.status });
     if (
       value.type === 'rejected' ||
       value.type === 'error' ||
@@ -107,19 +102,13 @@ const generateRequest: RequestGenerator = (
                     ? 'A IA local retornou uma resposta vazia. O rascunho permanece intacto.'
                     : value.code === 'INVALID_OUTPUT'
                       ? 'A IA local retornou uma resposta inadequada. O rascunho permanece intacto.'
-                      : value.code === 'PRESERVATION_RISK'
-                        ? 'A sugestão pode ter omitido ou alterado conteúdo do rascunho. Nenhuma alteração foi aplicada.'
-                        : value.code === 'SEMANTIC_RISK'
-                          ? 'A revisão semântica encontrou possível mudança de significado. O rascunho permanece intacto.'
-                          : value.code === 'SEMANTIC_INVALID'
-                            ? 'A revisão semântica não pôde confirmar o significado. O rascunho permanece intacto.'
-                            : value.code === 'WEBGPU_UNAVAILABLE'
-                              ? 'A IA local precisa de WebGPU neste navegador/computador. Seu texto não foi enviado a servidores.'
-                              : value.code === 'INSUFFICIENT_RESOURCES'
-                                ? 'A GPU não oferece os recursos necessários. O rascunho permanece intacto.'
-                                : value.code === 'MODEL_DOWNLOAD'
-                                  ? 'Não foi possível baixar o modelo. Verifique a conexão; o rascunho permanece intacto.'
-                                  : 'Não foi possível processar o texto localmente. O rascunho permanece intacto.';
+                      : value.code === 'WEBGPU_UNAVAILABLE'
+                        ? 'A IA local precisa de WebGPU neste navegador/computador. Seu texto não foi enviado a servidores.'
+                        : value.code === 'INSUFFICIENT_RESOURCES'
+                          ? 'A GPU não oferece os recursos necessários. O rascunho permanece intacto.'
+                          : value.code === 'MODEL_DOWNLOAD'
+                            ? 'Não foi possível baixar o modelo. Verifique a conexão; o rascunho permanece intacto.'
+                            : 'Não foi possível processar o texto localmente. O rascunho permanece intacto.';
       finish(
         value.code === 'DOWNLOAD_REQUIRED'
           ? {
@@ -151,7 +140,6 @@ const generateRequest: RequestGenerator = (
       action,
       text: snapshot.text,
       allowDownload,
-      ...(suggestion === undefined ? {} : { suggestion }),
       ...(expectedProfile ? { expectedProfile } : {}),
     });
   } catch {
@@ -171,23 +159,5 @@ const generateRequest: RequestGenerator = (
     cancelFallback = setTimeout(close, 2_000);
   };
 };
-
-export type ReviewGenerator = (
-  snapshot: DraftSnapshot,
-  suggestion: string,
-  done: (outcome: PreviewOutcome) => void,
-  profile: ModelProfile,
-) => () => void;
-export const reviewPreview: ReviewGenerator = (snapshot, suggestion, done, profile) =>
-  generateRequest(
-    'revisar-sentido',
-    snapshot,
-    () => undefined,
-    () => undefined,
-    done,
-    false,
-    profile,
-    suggestion,
-  );
 
 export const generateAction: ActionGenerator = generateRequest;

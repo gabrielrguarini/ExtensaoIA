@@ -11,12 +11,11 @@ import { MODEL_PROOF_TEXT } from '../../shared/model-proof';
 import { CorrectionOutputError } from './correction-output';
 import { isWritingAction } from '../../shared/actions';
 import { MAX_TEXT_LENGTH } from '../../shared/protocol';
-import { analyzeSuggestion, semanticApproved, SemanticReviewError } from './semantic-review';
-import { suggestionResult } from './suggestion-assessment';
+import { createSuggestion } from './suggestion-result';
 import { DEFAULT_WRITING_OPTIONS } from '../../shared/writing-options';
 import type { LocalVariant } from '../../shared/local-model';
 
-/** Mesmas guardas e avaliação para o Worker local e documento nativo. */
+/** Mesmas guardas técnicas para o Worker local e documento nativo. */
 export class ModelRequestRunner {
   private active: { binding: Binding; controller: AbortController } | undefined;
   constructor(
@@ -72,51 +71,6 @@ export class ModelRequestRunner {
           },
         });
       if (controller.signal.aborted) throw controller.signal.reason;
-      if (request.action === 'revisar-sentido' && request.suggestion) {
-        this.emit({
-          type: 'model-progress',
-          binding,
-          phase: 'reviewing',
-          percent: 100,
-          variant: this.variant() ?? null,
-        });
-        const result = suggestionResult(
-          request.text,
-          request.suggestion,
-          this.model.identity(),
-          request.writingOptions?.addEmojis,
-        );
-        try {
-          const verdict = await analyzeSuggestion(
-            this.model,
-            request.text,
-            request.suggestion,
-            controller.signal,
-          );
-          result.assessment.semanticReview = 'completed';
-          if (!semanticApproved(verdict)) {
-            result.assessment.risks.push(
-              ...(verdict.issues.length
-                ? verdict.issues
-                : ['A análise adicional identificou possível mudança de sentido.']
-              )
-                .map((message) => ({ code: 'semantic' as const, message }))
-                .slice(0, 24 - result.assessment.risks.length),
-            );
-          }
-        } catch (error) {
-          if (controller.signal.aborted) throw controller.signal.reason;
-          if (!(error instanceof SemanticReviewError)) throw error;
-          result.assessment.semanticReview = 'unavailable';
-          result.assessment.risks.push({
-            code: 'semantic',
-            message:
-              'A análise adicional não retornou uma avaliação utilizável. Revise o sentido manualmente.',
-          });
-        }
-        terminal = { type: 'review-result', binding, ...result };
-        return;
-      }
       this.emit({
         type: 'model-progress',
         binding,
@@ -169,12 +123,7 @@ export class ModelRequestRunner {
           type: 'action-result',
           binding,
           action,
-          ...suggestionResult(
-            request.text,
-            response,
-            this.model.identity(),
-            request.writingOptions?.addEmojis,
-          ),
+          ...createSuggestion(request.text, response, this.model.identity()),
         };
       } else {
         const variant = this.variant();
@@ -185,9 +134,7 @@ export class ModelRequestRunner {
       if (controller.signal.aborted) terminal = { type: 'cancelled', binding };
       else {
         const code =
-          error instanceof CorrectionOutputError || error instanceof SemanticReviewError
-            ? error.code
-            : this.environmentError(error);
+          error instanceof CorrectionOutputError ? error.code : this.environmentError(error);
         terminal = action
           ? { type: 'action-rejected', binding, action, code }
           : { type: 'error', binding, code };

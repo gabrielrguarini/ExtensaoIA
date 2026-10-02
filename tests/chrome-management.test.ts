@@ -19,10 +19,7 @@ describe('gestão separada dos artefatos Chrome', () => {
       language: 'pt-BR',
       chromePortuguesePrompt: false,
       sessionReady: false,
-      actions: [
-        ...WRITING_ACTIONS.map(({ id }) => ({ action: id, availability: 'unavailable' })),
-        { action: 'semantic-review', availability: null },
-      ],
+      actions: [...WRITING_ACTIONS.map(({ id }) => ({ action: id, availability: null }))],
     };
     expect(isChromeStatus(status)).toBe(true);
     expect(isChromeStatus({ ...status, actions: status.actions.slice(1) })).toBe(false);

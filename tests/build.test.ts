@@ -115,6 +115,14 @@ describe('pacote de produção', () => {
     expect((await stat(path.join(outputDirectory, 'content.js'))).size).toBeLessThan(1_000_000);
     expect(() => new Script(content)).not.toThrow(); // Script clássico, sem imports ESM.
     expect(content).not.toContain('process.env');
+    for (const script of scriptContents)
+      for (const removed of [
+        'Possível alteração de',
+        'Nenhum risco detectado',
+        'Analisar sentido',
+        'Substituir mesmo assim',
+      ])
+        expect(script).not.toContain(removed);
     expect(outputFiles.some((file) => /worker-.*\.js$/.test(file))).toBe(true);
     expect(
       scriptContents.some((script) => script.startsWith('/* WebLLM 0.2.82 modified locally:')),

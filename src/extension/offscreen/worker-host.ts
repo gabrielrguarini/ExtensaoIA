@@ -83,7 +83,7 @@ export class WorkerHost {
             if (event.data.type === 'model-progress') {
               if (
                 event.data.phase === 'ready' ||
-                ['generating', 'validating', 'reviewing'].includes(event.data.phase)
+                ['generating', 'validating'].includes(event.data.phase)
               )
                 this.runtime = 'loaded';
               else this.runtime = 'loading';
@@ -105,7 +105,6 @@ export class WorkerHost {
               [
                 'result',
                 'action-result',
-                'review-result',
                 'proof-result',
                 'action-rejected',
                 'cancelled',

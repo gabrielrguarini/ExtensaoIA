@@ -16,11 +16,7 @@ export async function selectEngine(
   native: NativeHost,
   local: { ensure(): Promise<Engine>; reset(): void },
 ): Promise<Engine> {
-  const action = isWritingAction(request.action)
-    ? request.action
-    : request.action === 'revisar-sentido'
-      ? 'semantic-review'
-      : undefined;
+  const action = isWritingAction(request.action) ? request.action : undefined;
   if (preferences.engine === 'chrome-preferred' && action) {
     const query: AvailabilityQuery = {
       action,

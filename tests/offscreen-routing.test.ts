@@ -156,7 +156,6 @@ describe('roteamento no documento offscreen', () => {
     const { command } = await ready(h);
     expect(command.request).toMatchObject({
       profile: 'equilibrado',
-      semanticReview: false,
       origin: { tabId: 1, frameId: 0, documentId: 'doc-a' },
     });
     expect(h.preferences).toHaveBeenCalledWith({ target: 'preferences', type: 'get' });

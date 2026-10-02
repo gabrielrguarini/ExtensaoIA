@@ -6,11 +6,10 @@ import type { LocalModel } from './local-model';
 
 export const PREFERENCES_KEY = 'writingPreferences';
 export interface WritingPreferences {
-  version: 5;
+  version: 6;
   engine: 'chrome-preferred' | 'local';
   localModel: LocalModel;
   chromePortuguesePrompt: boolean;
-  semanticReview: boolean;
   /** Modelo WebLLM escolhido, inclusive como alternativa ao Chrome. */
   profile: ModelProfile;
   language: 'pt-BR';
@@ -20,11 +19,10 @@ export interface WritingPreferences {
   addEmojis: boolean;
 }
 export const DEFAULT_PREFERENCES: WritingPreferences = {
-  version: 5,
+  version: 6,
   engine: 'chrome-preferred',
   localModel: 'webllm',
   chromePortuguesePrompt: false,
-  semanticReview: false,
   profile: 'economico',
   language: 'pt-BR',
   theme: 'system',
@@ -50,7 +48,6 @@ export function isPreferencePatch(value: unknown): value is PreferencePatch {
         return isWritingAction(item);
       case 'profile':
         return isModelProfile(item);
-      case 'semanticReview':
       case 'chromePortuguesePrompt':
       case 'preserveSlang':
       case 'addEmojis':
@@ -63,7 +60,6 @@ export function isPreferencePatch(value: unknown): value is PreferencePatch {
 
 export type PreferenceCommand =
   | { target: 'preferences'; type: 'get' }
-  | { target: 'preferences'; type: 'set'; semanticReview: boolean }
   | { target: 'preferences'; type: 'profile'; profile: ModelProfile }
   | { target: 'preferences'; type: 'update'; patch: PreferencePatch };
 
@@ -76,9 +72,6 @@ export function isPreferenceCommand(value: unknown): value is PreferenceCommand 
     record(value) &&
     value.target === 'preferences' &&
     ((fields(value, ['target', 'type']) && value.type === 'get') ||
-      (fields(value, ['target', 'type', 'semanticReview']) &&
-        value.type === 'set' &&
-        typeof value.semanticReview === 'boolean') ||
       (fields(value, ['target', 'type', 'profile']) &&
         value.type === 'profile' &&
         isModelProfile(value.profile)) ||
@@ -90,17 +83,17 @@ export function isPreferenceCommand(value: unknown): value is PreferenceCommand 
 
 export function parsePreferences(value: unknown): WritingPreferences {
   const result = { ...DEFAULT_PREFERENCES };
-  if (!record(value) || ![1, 2, 3, 4, 5].includes(value.version as number)) return result;
+  if (!record(value) || ![1, 2, 3, 4, 5, 6].includes(value.version as number)) return result;
   if (value.version === 4 && value.engine === 'webllm') result.engine = 'local';
   // Lista fechada: migra valores válidos e descarta qualquer conteúdo/ chave desconhecida.
   for (const key of Object.keys(DEFAULT_PREFERENCES)) {
     if (
       key === 'version' ||
-      (key === 'localModel' && value.version !== 5) ||
-      (key === 'engine' && value.version !== 5) ||
-      (key === 'chromePortuguesePrompt' && value.version !== 4 && value.version !== 5) ||
-      (value.version === 1 && key !== 'semanticReview') ||
-      (value.version === 2 && !['semanticReview', 'profile'].includes(key))
+      (key === 'localModel' && (value.version as number) < 5) ||
+      (key === 'engine' && (value.version as number) < 5) ||
+      (key === 'chromePortuguesePrompt' && (value.version as number) < 4) ||
+      value.version === 1 ||
+      (value.version === 2 && key !== 'profile')
     )
       continue;
     const patch = { [key]: value[key] };

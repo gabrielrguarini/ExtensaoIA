@@ -5,11 +5,11 @@
 ## Estado atual
 
 - Última atualização: 02/10/2026.
-- Última subetapa concluída: **STEP-15-D — Comparação e otimização**.
+- Última subetapa concluída: **STEP-15-E — Revisão e substituição pelo usuário**.
 - Situação: **STEP-15 Concluída** pelas novas campanhas D: 108 pares históricos por perfil WebLLM, comparação ENTITY_* e 108 rascunhos reservados distintos × cinco candidatos × três rodadas. Os 191 casos Qwen antes interrompidos foram cobertos em campanhas novas, preservando intactos os relatórios antigos. [Relatório D](VALIDACAO-STEP-15-D.md).
 - Validação complementar no WhatsApp real: 14 pedidos no grupo autorizado, duas alterações consideradas úteis, seis recusas, três respostas sem mudança e três prévias insatisfatórias; duas substituições e uma mensagem sintética enviada manualmente. A qualidade varia e exige revisão. [Resultados](VALIDACAO-STEP-12.md#validação-complementar-no-whatsapp-real--30092026).
-- Próxima etapa executável: **STEP-16**, somente mediante solicitação. D concluiu 2.448 pedidos comparativos e revisão das 2.314 sugestões disponíveis, regressões reais e check; STEP-16 permanece pendente, sem avanço automático.
-- Implementação: Manifest V3, comunicação, adaptador do editor, botão IA, prévia, substituição manual, prova sintética e nove ações. Chrome preferencial quando elegível; modelos locais WebLLM (Llama/Qwen) ou Gemma 4 E2B via Transformers.js/WebGPU, com escolha manual e download explícito. A STEP-15-A move a análise semântica opcional para ação explícita na prévia. A simulação continua identificada. Textos multilinha e estruturas especiais oferecem somente cópia.
+- Ajuste anterior à entrega final: **STEP-15-E Concluída**, removendo a avaliação de alterações e a análise de sentido a pedido do usuário. [Relatório E](VALIDACAO-STEP-15-E.md). Próxima etapa **STEP-16 Pendente**, somente mediante solicitação; não iniciada. Evidências A–D preservadas.
+- Implementação: Manifest V3, comunicação, adaptador do editor, botão IA, prévia, substituição manual, prova sintética e nove ações. Chrome preferencial quando elegível; modelos locais WebLLM (Llama/Qwen) ou Gemma 4 E2B via Transformers.js/WebGPU, com escolha manual e download explícito. A STEP-15-E removeu a avaliação de conteúdo e a análise semântica da interface; o usuário revisa e escolhe Copiar/Substituir. A simulação continua identificada. Textos multilinha e estruturas especiais oferecem somente cópia.
 
 ## Significado dos status
 
@@ -44,6 +44,7 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 | [STEP-15-B](steps/STEP-15-B.md) | APIs nativas do Chrome e tipagens 0.0.17        | Concluída | 235 testes; Chrome instalado: pt-BR por prompt, nove ações/offscreen offline, clones/idle; controles Rewriter/Proofreader ingleses e alternativa WebLLM. [Relatório](VALIDACAO-STEP-15-B.md). |
 | [STEP-15-C](steps/STEP-15-C.md) | Gemma via Transformers.js                       | Concluída | 254 testes/build; Gemma q4f16 em WebGPU real, nove ações offline, cancelamento/idle/cache e regressões Chrome/WebLLM. [Relatório](VALIDACAO-STEP-15-C.md).                                    |
 | [STEP-15-D](steps/STEP-15-D.md) | Comparação e otimização                         | Concluída | 2.448 pedidos, 2.314 sugestões revisadas, retomada íntegra, cinco motores/108 textos/3 rodadas, regressões offline e check. [Relatório](VALIDACAO-STEP-15-D.md).                              |
+| [STEP-15-E](steps/STEP-15-E.md) | Revisão e substituição pelo usuário             | Concluída | 265 testes/check e Chrome/WebLLM/Gemma reais offline, prévia sem avaliação, cópia, aplicação/desfazer e obsolescência. [Relatório](VALIDACAO-STEP-15-E.md).                                   |
 | [STEP-16](steps/STEP-16.md)     | Validar e preparar a entrega instalável         | Pendente  | Não iniciada.                                                                                                                                                                                 |
 
 ## Registro de execução
@@ -276,7 +277,7 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 
 ## Como continuar
 
-As STEP-01 a STEP-15 e subetapas STEP-15-A/B/C/D estão concluídas. Consulte os relatórios da [comunicação](VALIDACAO-STEP-03.md), do [editor](VALIDACAO-STEP-04.md), da [prévia](VALIDACAO-STEP-05.md), da [inferência local](VALIDACAO-STEP-06.md), da [correção](VALIDACAO-STEP-07.md), da [proteção determinística](VALIDACAO-STEP-08.md), dos [nove modos](VALIDACAO-STEP-09.md), do [streaming](VALIDACAO-STEP-10.md), da [revisão semântica](VALIDACAO-STEP-11.md), dos [perfis](VALIDACAO-STEP-12.md), do [cache](VALIDACAO-STEP-13.md) e das [configurações](VALIDACAO-STEP-14.md). A [STEP-15-A](VALIDACAO-STEP-15-A.md) acrescentou avisos e benchmark retomável, a [B](VALIDACAO-STEP-15-B.md) integrou Chrome e a [C](VALIDACAO-STEP-15-C.md) Gemma local. A [D](VALIDACAO-STEP-15-D.md) completou as avaliações obrigatórias em campanhas novas e preservou o [relatório histórico](VALIDACAO-STEP-15.md) com suas pendências originais. STEP-15 principal aceita; STEP-16 não foi iniciada.
+As STEP-01 a STEP-15 e subetapas STEP-15-A/B/C/D estão concluídas. Consulte os relatórios da [comunicação](VALIDACAO-STEP-03.md), do [editor](VALIDACAO-STEP-04.md), da [prévia](VALIDACAO-STEP-05.md), da [inferência local](VALIDACAO-STEP-06.md), da [correção](VALIDACAO-STEP-07.md), da [proteção determinística](VALIDACAO-STEP-08.md), dos [nove modos](VALIDACAO-STEP-09.md), do [streaming](VALIDACAO-STEP-10.md), da [revisão semântica](VALIDACAO-STEP-11.md), dos [perfis](VALIDACAO-STEP-12.md), do [cache](VALIDACAO-STEP-13.md) e das [configurações](VALIDACAO-STEP-14.md). A [STEP-15-A](VALIDACAO-STEP-15-A.md) acrescentou avisos e benchmark retomável, a [B](VALIDACAO-STEP-15-B.md) integrou Chrome e a [C](VALIDACAO-STEP-15-C.md) Gemma local. A [D](VALIDACAO-STEP-15-D.md) completou as avaliações obrigatórias em campanhas novas e preservou o [relatório histórico](VALIDACAO-STEP-15.md) com suas pendências originais. STEP-15 principal aceita nas avaliações D; ajuste [E](VALIDACAO-STEP-15-E.md) concluído antes da STEP-16, que não foi iniciada.
 
 Em futuras execuções, ler o plano e a etapa indicada, validar os pré-requisitos e atualizar este documento ao terminar. Não mudar o estado de etapas futuras apenas porque suas descrições foram criadas.
 
@@ -349,3 +350,14 @@ Copiar o bloco abaixo para cada execução e preencher somente com fatos verific
 - Verificações finais: npm.cmd run check aprovado com **260 testes em 39 arquivos**, tipos, lint, formatação e build; instrumentação de benchmark ausente de dist 0.15.3. Hashes de datasets/fontes/checkpoints/revisões/resumos e links locais conferidos. Histórico anterior intacto, nenhuma mensagem enviada.
 - Commit próprio: `perf(step-15-d): comparar e otimizar motores de escrita locais`, com identidade humana configurada; hash no histórico Git e relato final. Sem push.
 - Status final: **Concluída** na D e na STEP-15 principal; próxima etapa **STEP-16 Pendente**, não iniciada. Recomendações dependem de ação/hardware e revisão manual; tons fracos e riscos/avisos indevidos permanecem documentados.
+
+## STEP-15-E — 02/10/2026
+
+- Escopo solicitado: retirar a verificação de alterações antes da STEP-16; a revisão e a decisão de copiar/substituir passam ao usuário. Nenhuma etapa final iniciada.
+- Implementação: executor compartilhado sem comparação de conteúdo, resultado texto/motor/status de igualdade, remoção de avisos e Analisar sentido na prévia, preferência v6 migrada sem perder escolhas, protocolo recusa a análise removida. Prompts/modelos e as guardas técnicas, cancelamento, isolamento, rascunho atual e geração única preservados. Pacote/Manifest/lockfile 0.15.4, dependências exatas mantidas.
+- Verificações: npm.cmd run check aprovado com tipos, lint sem avisos, formatação, 265 testes em 39 arquivos e build instalável. Frase/resposta exatas, alterações de conteúdo, respostas idênticas/inválidas, migração e obsolescência cobertas; build sem os avisos/rótulos removidos.
+- Execução real: Chrome instalado 154.0.8037.93/Prompt pt-BR experimental e CfT 154.0.8037.0/Llama WebLLM e Gemma Transformers.js/RTX4060, perfis isolados/cache preparado. Todos offline: prévia sem avaliação, cópia, rascunho intacto antes da escolha, Substituir sem confirmação extra, Ctrl+Z e bloqueio depois de edição. Chrome devolveu exatamente a correção relatada pelo usuário; Llama ainda produziu trecho inadequado. Não foi medido ganho de qualidade/latência.
+- Privacidade: fixtures sintéticas sem autenticação/conversa/envio; Workers observados, somente executáveis locais por GET sem corpo, zero erros/console, storage apenas preferências v6. Não é auditoria global de rede do navegador.
+- Evidências: [relatório E](VALIDACAO-STEP-15-E.md), docs/evidencias/step15e com três resultados, três capturas sintéticas e hashes/check. Relatórios e evidências históricos intactos; harnesses antigos reproduzíveis em seus commits.
+- Commit próprio: fix(step-15-e): remover avaliação de conteúdo das sugestões, identidade humana configurada; hash no histórico Git e relato final. Sem push.
+- Status final: **Concluída**, após validações e commit próprio. **STEP-16 Pendente**, não iniciada; sua especificação incorpora a revisão pelo usuário.

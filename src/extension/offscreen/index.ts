@@ -51,7 +51,6 @@ const router = new RequestRouter(
     });
   },
   15_000,
-  async () => (await preferences()).semanticReview,
   async () => (await preferences()).profile,
   async () => {
     const saved = await preferences();
@@ -135,19 +134,17 @@ chrome.runtime.onMessage.addListener((value: unknown, sender, sendResponse) => {
     void preferences()
       .then(async (saved) => {
         const actions = await Promise.all(
-          [...WRITING_ACTIONS.map(({ id }) => id), 'semantic-review' as const].map(
-            async (action) => ({
-              action,
-              availability:
-                (
-                  await native.model.availability({
-                    action,
-                    language: 'pt-BR',
-                    chromePortuguesePrompt: saved.chromePortuguesePrompt,
-                  })
-                ).nativeAvailability ?? null,
-            }),
-          ),
+          WRITING_ACTIONS.map(({ id }) => id).map(async (action) => ({
+            action,
+            availability:
+              (
+                await native.model.availability({
+                  action,
+                  language: 'pt-BR',
+                  chromePortuguesePrompt: saved.chromePortuguesePrompt,
+                })
+              ).nativeAvailability ?? null,
+          })),
         );
         return {
           ok: true,

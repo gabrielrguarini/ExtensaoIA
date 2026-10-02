@@ -62,12 +62,7 @@ chrome.runtime.onMessage.addListener((value: unknown, sender, sendResponse) => {
         ? migratePreferences()
         : (async () => {
             const previous = await readPreferences();
-            const patch =
-              value.type === 'set'
-                ? { semanticReview: value.semanticReview }
-                : value.type === 'profile'
-                  ? { profile: value.profile }
-                  : value.patch;
+            const patch = value.type === 'profile' ? { profile: value.profile } : value.patch;
             const saved = await updatePreferences(patch);
             if (
               saved.profile !== previous.profile ||

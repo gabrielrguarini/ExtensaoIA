@@ -15,10 +15,9 @@ describe('interfaces auxiliares e migração', () => {
       parsePreferences({
         version: 2,
         profile: 'qualidade',
-        semanticReview: true,
         prompt: 'fixture',
       }),
-    ).toEqual({ ...DEFAULT_PREFERENCES, profile: 'qualidade', semanticReview: true });
+    ).toEqual({ ...DEFAULT_PREFERENCES, profile: 'qualidade' });
     expect(
       parsePreferences({
         version: 3,
@@ -48,7 +47,6 @@ describe('interfaces auxiliares e migração', () => {
     let stored: unknown = {
       version: 2,
       profile: 'equilibrado',
-      semanticReview: true,
       text: 'fixture',
     };
     const set = vi.fn((value: { writingPreferences: unknown }) => {
@@ -62,7 +60,6 @@ describe('interfaces auxiliares e migração', () => {
     expect(stored).toEqual({
       ...DEFAULT_PREFERENCES,
       profile: 'equilibrado',
-      semanticReview: true,
     });
     await Promise.all([
       updatePreferences({ theme: 'dark' }),
@@ -72,7 +69,6 @@ describe('interfaces auxiliares e migração', () => {
     expect(stored).toEqual({
       ...DEFAULT_PREFERENCES,
       profile: 'equilibrado',
-      semanticReview: true,
       theme: 'dark',
       defaultAction: 'formal',
       preserveSlang: false,

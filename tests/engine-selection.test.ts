@@ -12,7 +12,6 @@ const request: BoundRequest = {
   ...binding,
   text: 'Texto sintético.',
   action: 'corrigir',
-  semanticReview: false,
 };
 function hosts(state: EngineAvailability = { state: 'ready', nativeAvailability: 'available' }) {
   const native = {

@@ -161,20 +161,7 @@ export function PreferenceFields({
         />
         Permitir novos emojis
       </label>
-      <p>A IA é orientada a preservar emojis existentes. Confira a sugestão e os avisos.</p>
-      <label>
-        <input
-          type="checkbox"
-          checked={value.semanticReview}
-          onChange={(e) => {
-            if (e.nativeEvent.isTrusted) {
-              focus.current = e.currentTarget;
-              onChange({ semanticReview: e.currentTarget.checked });
-            }
-          }}
-        />
-        Mostrar botão Analisar sentido na prévia (opcional, mais lento)
-      </label>
+      <p>A IA é orientada a preservar emojis existentes. Revise a sugestão antes de usar.</p>
     </fieldset>
   );
 }

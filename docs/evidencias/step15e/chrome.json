@@ -1,0 +1,37 @@
+{
+  "version": "0.15.4",
+  "browser": "154.0.8037.93",
+  "engine": "chrome",
+  "profile": "step15b-chrome",
+  "startedAt": "2026-10-02T15:42:47.644Z",
+  "syntheticFixture": true,
+  "noMessageSent": true,
+  "checks": {
+    "legacyPreferenceRemoved": true,
+    "readablePreviewWithoutAssessment": true,
+    "copy": true,
+    "manualReplacementAndUndo": true,
+    "staleDraftBlocksApplication": true,
+    "storageOnlyPreferences": true
+  },
+  "requests": [],
+  "consoleEvents": [],
+  "observerErrors": [],
+  "preferences": {
+    "version": 6,
+    "engine": "chrome-preferred",
+    "localModel": "webllm",
+    "chromePortuguesePrompt": true,
+    "profile": "economico",
+    "language": "pt-BR",
+    "theme": "dark",
+    "defaultAction": "corrigir",
+    "preserveSlang": true,
+    "addEmojis": false
+  },
+  "syntheticInput": "fazendo o teste da extensao apra ver se funciona de verdade",
+  "syntheticOutput": "Fazendo o teste da extensão pra ver se funciona de verdade.",
+  "offline": true,
+  "pageErrors": 0,
+  "finishedAt": "2026-10-02T15:43:01.241Z"
+}

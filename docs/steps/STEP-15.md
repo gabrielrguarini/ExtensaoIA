@@ -10,12 +10,13 @@ Melhorar rapidez e precisão em pt-BR por evidência real. Executar uma subetapa
 
 STEP-14 concluída; preservar implementação e resultados históricos da STEP-15 parcial.
 
-| Subetapa                  | Entrega                                                          |
-| ------------------------- | ---------------------------------------------------------------- |
-| [STEP-15-A](STEP-15-A.md) | Sugestões com avisos, contratos e benchmark retomável com WebLLM |
-| [STEP-15-B](STEP-15-B.md) | Tipagens oficiais e Prompt/Rewriter/Proofreader nativos          |
-| [STEP-15-C](STEP-15-C.md) | Gemma 4 E2B via Transformers.js/WebGPU                           |
-| [STEP-15-D](STEP-15-D.md) | Comparação, otimização e recomendações por ação/hardware         |
+| Subetapa                  | Entrega                                                            |
+| ------------------------- | ------------------------------------------------------------------ |
+| [STEP-15-A](STEP-15-A.md) | Sugestões com avisos, contratos e benchmark retomável com WebLLM   |
+| [STEP-15-B](STEP-15-B.md) | Tipagens oficiais e Prompt/Rewriter/Proofreader nativos            |
+| [STEP-15-C](STEP-15-C.md) | Gemma 4 E2B via Transformers.js/WebGPU                             |
+| [STEP-15-D](STEP-15-D.md) | Comparação, otimização e recomendações por ação/hardware           |
+| [STEP-15-E](STEP-15-E.md) | Retirar avaliação de conteúdo; revisão e substituição pelo usuário |
 
 ## Histórico preservado e pendências
 
@@ -32,10 +33,14 @@ A [STEP-15-B](STEP-15-B.md) confirmou português por instrução de prompt no Ch
 - [ ] Disponibilidade, utilidade, preservação, mudanças e avisos avaliados separadamente; mediana/p95 e limitações explícitas.
 - [ ] Rede/logs/storage sem conteúdo real, inferência local e aplicação manual preservadas.
 
-As interrupções registradas permanecem pendentes; não presumir incompatibilidade. O status principal continua Aguardando validação até resolver avaliações obrigatórias. Status exclusivamente em [PROGRESSO.md](../PROGRESSO.md).
+Interrupções não comprovam incompatibilidade; preservar os registros históricos. Validações obrigatórias pendentes mantêm Aguardando validação. A D cobriu os casos antes interrompidos em campanhas novas. O ajuste E deve ser concluído antes da STEP-16. Status exclusivamente em [PROGRESSO.md](../PROGRESSO.md).
 
 ## Entrega e encerramento
 
 Arquitetura com vários motores, seleção nativa condicional e modelos locais manuais; evidências reproduzíveis, recomendações medidas e documentação íntegra. npm.cmd run check e validação real conforme cada subetapa. Atualizar progresso, revisar arquivos preparados e confirmar identidade/mensagem/estado Git antes do commit próprio.
 
 Próxima etapa após A–D: [STEP-16](STEP-16.md). Não iniciar automaticamente.
+
+## Ajuste adicional autorizado em 02/10/2026
+
+A [STEP-15-E](STEP-15-E.md) remove a avaliação automática de conteúdo e a análise semântica da interface antes da STEP-16, a pedido do usuário. Esta decisão substitui os requisitos de avisos/avaliação no produto, mantendo as evidências históricas A–D. Copiar e Substituir passam a depender da revisão do usuário; guardas técnicas, cancelamento e vínculo ao rascunho permanecem obrigatórios.

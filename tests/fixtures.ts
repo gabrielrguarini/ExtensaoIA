@@ -18,5 +18,5 @@ export const suggestionMetadata = {
     runtime: '0.2.82',
     execution: 'webgpu' as const,
   },
-  assessment: { status: 'changed' as const, risks: [], semanticReview: 'not-requested' as const },
+  status: 'changed' as const,
 };

@@ -8,7 +8,6 @@ import { record } from '../../shared/protocol';
 
 export interface PreferenceStore {
   read(): Promise<WritingPreferences>;
-  setSemanticReview(value: boolean): Promise<WritingPreferences>;
   setProfile(value: WritingPreferences['profile']): Promise<WritingPreferences>;
   update?(patch: PreferencePatch): Promise<WritingPreferences>;
   subscribe?(listener: (value: WritingPreferences) => void): () => void;
@@ -36,8 +35,6 @@ function request(command: PreferenceCommand): Promise<WritingPreferences> {
 
 export const preferenceStore: PreferenceStore = {
   read: () => request({ target: 'preferences', type: 'get' }),
-  setSemanticReview: (semanticReview) =>
-    request({ target: 'preferences', type: 'set', semanticReview }),
   setProfile: (profile) => request({ target: 'preferences', type: 'profile', profile }),
   update: (patch) => request({ target: 'preferences', type: 'update', patch }),
   subscribe: (listener) => {

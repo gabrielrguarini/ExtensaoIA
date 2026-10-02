@@ -34,14 +34,14 @@ Construir uma extensão Chrome instalável localmente que corrija e reescreva o 
 
 Fluxo: escrever → clicar em IA → escolher uma ação → processar localmente → visualizar a sugestão → confirmar → substituir o rascunho.
 
-A extensão nunca envia a mensagem. Substituir e Copiar são ações explícitas. O campo original deve permanecer intacto em cancelamento, incompatibilidade, erro de inferência ou falha técnica da sugestão. Riscos de conteúdo são avisos.
+A extensão nunca envia a mensagem. Substituir e Copiar são ações explícitas. O campo original deve permanecer intacto em cancelamento, incompatibilidade, erro de inferência ou falha técnica da sugestão. A revisão do conteúdo e a decisão de substituir pertencem ao usuário.
 
 ## Decisões de produto
 
 - Priorizar computadores comuns; na STEP-15-B adotar Chrome preferencial, preservando o perfil local atual como alternativa.
 - Oferecer Corrigir, Melhorar, Formal, Profissional, Amigável, Natural, Conciso, Engraçado e Reescrever.
 - Tradução, expansão e publicação na loja ficam fora desta versão. Aceitar CPU administrada pelo Chrome; runtimes próprios seguem WebGPU.
-- Manter avaliação determinística de riscos sempre ligada. Análise semântica adicional somente sob ação explícita na prévia, desligada por padrão.
+- Não avaliar automaticamente alterações de conteúdo nem oferecer análise semântica na prévia. O usuário revisa a sugestão e decide se deseja copiar ou substituir (ajuste STEP-15-E).
 - Preservar gírias e emojis existentes por padrão. A escolha explícita de formalização permite adaptar gírias sem alterar o significado.
 - Antecipar preview, cache básico e testes para acompanhar o MVP.
 - Manter o preview no editor mesmo depois de adicionar popup e painel lateral para configurações.
@@ -79,7 +79,7 @@ A IA implementadora deve criar arquivos completos, sem marcadores como “resto 
 | Service Worker        | Validar remetentes e mensagens, coordenar configurações e criar o contexto da IA.             |
 | Documento offscreen   | Validar e rotear pedidos da aba e hospedar um Worker com finalidade WORKERS.                  |
 | Worker de IA          | Executar WebLLM ou Transformers.js e manter uma única instância do modelo local selecionado.  |
-| Núcleo de reescrita   | Produzir prompts com texto original e comparar entidades/risco após a geração.                |
+| Núcleo de reescrita   | Produzir prompts com texto original e conferir apenas a validade técnica da resposta.         |
 | Armazenamento         | Guardar preferências e artefatos dos modelos; mensagens ficam somente em memória temporária.  |
 
 O offscreen comunica-se com a extensão por chrome.runtime; acesso a preferências passa pelo coordenador. O pedido e a resposta usam uma porta direta entre content script e offscreen, com origem validada pelo remetente do Chrome. O encerramento do Service Worker por inatividade não perde esse contexto; perder a aba, a porta ou a IA continua encerrando o pedido sem replay. Essa correção do escopo acumulado da STEP-12 está registrada no [relatório](VALIDACAO-STEP-12.md#correção-da-conexão-durante-inferência--30092026). O Worker deve usar a interface própria AIEngine, deixando APIs WebLLM/Transformers.js restritas aos adaptadores.
@@ -99,8 +99,7 @@ Todo JavaScript e WebAssembly executável acompanha o pacote da extensão. Somen
 - **AIEngine:** initialize, isReady, generate retornando AsyncIterable de texto e unload. Opções locais incluem cancelamento, mapeado pelo adaptador para o runtime.
 - **Comunicação:** mensagens tipadas para iniciar, cancelar, consultar estado, progresso, fragmentos, resultado e erro, com validação em tempo de execução.
 - **Identidade do pedido:** requestId, origem confiável do remetente, documento/frame, snapshot e revisão do editor. Não confiar em aba ou destino arbitrário informado no payload.
-- **Resultado:** texto, identidade do motor e avaliação de riscos; sugestão aplicável depois de completa, com avisos; falha, cancelamento, resultado obsoleto e resultado inválido devem ser estados distintos.
-- **Verificação semântica:** resposta estruturada com valid, meaningPreserved e issues. Ambas as análises geram avisos; confidence, quando existente, não é probabilidade calibrada.
+- **Resultado:** texto, identidade do motor e indicação de resposta idêntica; sugestão aplicável depois de completa por escolha do usuário; falha, cancelamento, resultado obsoleto e resultado inválido são estados distintos.
 - **Configurações:** esquema versionado contendo somente preferências. Não adicionar API pública de rede ou endpoint de IA.
 
 ## Modelos e compatibilidade
@@ -127,23 +126,21 @@ Padrões:
 
 A STEP-15-D compara a delimitação JSON do rascunho original no WebLLM e conserva os prompts anteriores de Chrome/Gemma conforme os pilotos. Contabilizar o envelope real na entrada sem inflar a reserva da saída. Esse formato não garante isolamento de comandos citados; novas otimizações após a avaliação reservada precisam de outro conjunto reservado. Recomendações dependem da ação/hardware e devem registrar a troca entre utilidade, preservação e latência.
 
-## Sugestões, preservação e avisos
+## Sugestões e revisão manual
 
-Pipeline padrão: snapshot → extração de entidades → uma geração com texto original → comparação e avisos → prévia completa → Copiar/Substituir mesmo assim → nova verificação do snapshot → inserção manual.
+Pipeline vigente: snapshot → uma geração com texto original → validade técnica → prévia completa → Copiar/Substituir → nova verificação do snapshot → inserção manual.
 
-Preservar o pipeline ENTITY_* somente para comparação histórica. Nomes, datas, horários, URLs, números, valores, emojis, negações e intenção são conferidos posteriormente. Possíveis alterações produzem avisos específicos, sem ocultar respostas legíveis. O aviso geral exige revisão; nenhum risco detectado não comprova equivalência semântica.
+A STEP-15-E remove a comparação automática de conteúdo e a análise semântica da interface. Não classificar qualidade, risco ou equivalência. O usuário revisa e decide se a sugestão atende ao pedido. Os prompts continuam orientados a preservar fatos, intenção, gírias e emojis; isso não certifica o resultado.
 
-Uma geração por pedido, sem retry ou mudança de motor após falha. Saídas vazias, ilegíveis, tecnicamente inutilizáveis ou incompletas são erros. Saída idêntica aparece como sem alterações. Copiar e Substituir mesmo assim dispensam confirmação adicional; cancelamento, desconexão e rascunho desatualizado continuam impedindo aplicação. Nunca enviar mensagens.
+Uma geração por pedido, sem retry ou mudança de motor após falha. Saídas vazias, ilegíveis, tecnicamente inutilizáveis ou incompletas são erros. Saída idêntica aparece como sem alterações. Copiar e Substituir dispensam confirmação adicional. Cancelamento, desconexão e rascunho desatualizado continuam impedindo aplicação. Nunca enviar mensagens.
 
-A análise adicional de sentido é uma ação explícita na prévia, com a mesma infraestrutura de isolamento/cancelamento; retorna avisos e não reescreve a sugestão. Durante streaming/análise, cópia e substituição aguardam conclusão. A preferência opcional apenas mostra o botão de análise, sem disparar geração automática.
-
-As intenções de preservação e as nove ações continuam definidas na [STEP-09](steps/STEP-09.md). Seus critérios históricos de bloqueio não descrevem o novo fluxo.
+Preservar ENTITY_* e avaliações antigas somente para reprodução histórica do benchmark. As evidências A–D descrevem o produto anterior ao ajuste E; não reescrever seus resultados.
 
 ## Interface e preferências
 
-Sugestões aparecem junto ao campo de mensagem, com Substituir (ou Substituir mesmo assim quando houver avisos), Copiar, análise de sentido opcional e Cancelar. Usar isolamento de estilos e controles acessíveis. Nunca simular envio da mensagem.
+Sugestões aparecem junto ao campo de mensagem, com Substituir, Copiar e Cancelar, sem avisos automáticos de conteúdo. Usar isolamento de estilos e controles acessíveis. Nunca simular envio da mensagem.
 
-Padrões de configuração: pt-BR, tema do sistema, ação Corrigir, perfil Econômico, preservar gírias e emojis existentes, não adicionar emojis, revisão semântica desligada. A privacidade local é informativa e obrigatória.
+Padrões de configuração: pt-BR, tema do sistema, ação Corrigir, perfil Econômico, preservar gírias e emojis existentes, não adicionar emojis. Preferências v6 descartam a revisão semântica antiga e preservam as escolhas válidas. A privacidade local é informativa e obrigatória.
 
 A inserção nativa por Selection/Range e execCommand('insertText') ficará isolada no adaptador. Por ser uma API obsoleta, validar suporte, resultado e desfazer no Chrome alvo. Estruturas não preserváveis, como chips de menção, terão somente cópia.
 
@@ -160,24 +157,25 @@ Mensagens esperadas, contextualizadas conforme o erro real:
 
 Cada etapa depende das anteriores. A conclusão de implementação sem validação obrigatória não permite marcar uma etapa como Concluída.
 
-| Etapa                       | Entrega                                               |
-| --------------------------- | ----------------------------------------------------- |
-| [STEP-01](steps/STEP-01.md) | Organizar o plano e o acompanhamento                  |
-| [STEP-02](steps/STEP-02.md) | Criar a base do projeto                               |
-| [STEP-03](steps/STEP-03.md) | Implementar Manifest V3 e comunicação                 |
-| [STEP-04](steps/STEP-04.md) | Detectar o editor do WhatsApp                         |
-| [STEP-05](steps/STEP-05.md) | Criar preview e substituição manual                   |
-| [STEP-06](steps/STEP-06.md) | Executar o primeiro modelo local                      |
-| [STEP-07](steps/STEP-07.md) | Implementar a ação Corrigir                           |
-| [STEP-08](steps/STEP-08.md) | Proteger entidades e validar o resultado              |
-| [STEP-09](steps/STEP-09.md) | Adicionar os demais modos                             |
-| [STEP-10](steps/STEP-10.md) | Exibir geração progressiva e cancelamento             |
-| [STEP-11](steps/STEP-11.md) | Implementar verificação semântica opcional            |
-| [STEP-12](steps/STEP-12.md) | Adicionar modelos e perfis de hardware                |
-| [STEP-13](steps/STEP-13.md) | Consolidar cache, recuperação e desempenho            |
-| [STEP-14](steps/STEP-14.md) | Finalizar configurações e interfaces auxiliares       |
-| [STEP-15](steps/STEP-15.md) | Executar STEP-15-A → B → C → D antes da entrega final |
-| [STEP-16](steps/STEP-16.md) | Validar e preparar a entrega instalável               |
+| Etapa                           | Entrega                                                   |
+| ------------------------------- | --------------------------------------------------------- |
+| [STEP-01](steps/STEP-01.md)     | Organizar o plano e o acompanhamento                      |
+| [STEP-02](steps/STEP-02.md)     | Criar a base do projeto                                   |
+| [STEP-03](steps/STEP-03.md)     | Implementar Manifest V3 e comunicação                     |
+| [STEP-04](steps/STEP-04.md)     | Detectar o editor do WhatsApp                             |
+| [STEP-05](steps/STEP-05.md)     | Criar preview e substituição manual                       |
+| [STEP-06](steps/STEP-06.md)     | Executar o primeiro modelo local                          |
+| [STEP-07](steps/STEP-07.md)     | Implementar a ação Corrigir                               |
+| [STEP-08](steps/STEP-08.md)     | Proteger entidades e validar o resultado                  |
+| [STEP-09](steps/STEP-09.md)     | Adicionar os demais modos                                 |
+| [STEP-10](steps/STEP-10.md)     | Exibir geração progressiva e cancelamento                 |
+| [STEP-11](steps/STEP-11.md)     | Implementar verificação semântica opcional                |
+| [STEP-12](steps/STEP-12.md)     | Adicionar modelos e perfis de hardware                    |
+| [STEP-13](steps/STEP-13.md)     | Consolidar cache, recuperação e desempenho                |
+| [STEP-14](steps/STEP-14.md)     | Finalizar configurações e interfaces auxiliares           |
+| [STEP-15](steps/STEP-15.md)     | Executar STEP-15-A → B → C → D → E antes da entrega final |
+| [STEP-15-E](steps/STEP-15-E.md) | Retirar avaliação de conteúdo e manter revisão manual     |
+| [STEP-16](steps/STEP-16.md)     | Validar e preparar a entrega instalável                   |
 
 Marco de MVP: concluir até STEP-08. Depois, adicionar modos e streaming, revisão opcional, perfis/cache, configurações, benchmark e entrega final.
 
@@ -185,12 +183,12 @@ Marco de MVP: concluir até STEP-08. Depois, adicionar modos e streaming, revis�
 
 Adicionar testes junto da funcionalidade correspondente. Usar fixtures sintéticas e um motor simulado quando apropriado; distinguir isso da execução real em WebGPU.
 
-- Testar parsing, entidades, restauração, colisões, URLs, números, datas, negações, prompts, orçamento de tokens e verificação semântica.
+- Testar parsing técnico, prompts, orçamento de tokens e prévia sem avaliação de conteúdo. Testes de entidades/restauração/análise semântica permanecem para a comparação histórica do benchmark.
 - Cobrir integração entre componentes, validação de remetentes, isolamento de abas, cancelamento e mensagens atrasadas.
 - Verificar editor alterado ou recriado, troca de conversa com textos iguais, Unicode, multilinha, menções estruturadas e desfazer.
 - Verificar download interrompido, cache incompleto, falta de WebGPU, falta de memória, perda de GPU, reinícios e inferência offline após reiniciar o navegador.
 - Criar benchmark com pelo menos 100 casos sintéticos, medir todas as saídas e rejeições e revisar além do julgamento do próprio modelo.
-- Avaliar mudanças de entidades, fatos e intenção separadamente da disponibilidade de sugestão; medir avisos corretos, indevidos e riscos não sinalizados.
+- Avaliar no benchmark mudanças de entidades, fatos e intenção separadamente da disponibilidade de sugestão. As métricas de avisos A–D são históricas; o produto vigente não avalia riscos.
 - Auditar requisições originadas pela extensão, logs e armazenamento em ambiente de teste; não adicionar interceptação de tráfego ao produto.
 - Gerar e testar pasta instalável por “Carregar sem compactação”, sem servidor de desenvolvimento.
 

@@ -9,8 +9,7 @@ export type ProofOutcome =
   | { ok: true; text: string; variant: LocalVariant }
   | { ok: false; message: string; code?: 'DOWNLOAD_REQUIRED' | 'INSUFFICIENT_RESOURCES' };
 export type ProofProgress = {
-  phase:
-    'preparing' | 'downloading' | 'loading' | 'ready' | 'generating' | 'validating' | 'reviewing';
+  phase: 'preparing' | 'downloading' | 'loading' | 'ready' | 'generating' | 'validating';
   percent: number;
   variant: LocalVariant | null;
 };

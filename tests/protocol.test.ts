@@ -18,7 +18,6 @@ describe('contratos nas fronteiras dos contextos', () => {
       ...binding,
       text: 'fixture',
       action: 'corrigir',
-      semanticReview: false,
       profile: 'economico',
       allowDownload: false,
       writingOptions: { preserveSlang: true, addEmojis: false },
@@ -62,7 +61,7 @@ describe('contratos nas fronteiras dos contextos', () => {
     expect(
       isEngineCommand({
         type: 'start',
-        request: { ...binding, text: 'teste', action: 'corrigir', semanticReview: false },
+        request: { ...binding, text: 'teste', action: 'corrigir' },
       }),
     ).toBe(true);
     expect(isEngineCommand({ type: 'cancel', binding })).toBe(true);
@@ -71,7 +70,7 @@ describe('contratos nas fronteiras dos contextos', () => {
       expect(
         isEngineCommand({
           type: 'start',
-          request: { ...binding, text: 'teste', action: action.id, semanticReview: true },
+          request: { ...binding, text: 'teste', action: action.id },
         }),
       ).toBe(true);
       expect(
@@ -201,9 +200,8 @@ describe('remetentes do Chrome', () => {
   });
 });
 
-// A revisão tem payload próprio e não aceita resultados incompletos de escrita.
-describe('contratos de sugestão e revisão sob demanda', () => {
-  it('valida avaliação e identidade em profundidade', () => {
+describe('contratos de sugestão sem avaliação de conteúdo', () => {
+  it('valida identidade e status, rejeita avaliação legada e análise removida', () => {
     const event = {
       type: 'action-result',
       binding,
@@ -212,21 +210,9 @@ describe('contratos de sugestão e revisão sob demanda', () => {
       ...suggestionMetadata,
     };
     expect(isClientEvent(event)).toBe(true);
-    expect(
-      isClientEvent({
-        ...event,
-        assessment: { ...event.assessment, risks: [{ code: 'entity', message: 'risco' }] },
-      }),
-    ).toBe(false);
+    expect(isClientEvent({ ...event, status: 'approved' })).toBe(false);
     expect(isClientEvent({ ...event, engine: { ...event.engine, id: 'remote' } })).toBe(false);
-    expect(isClientEvent({ ...event, assessment: { ...event.assessment, approved: true } })).toBe(
-      false,
-    );
-    expect(
-      isClientEvent({ type: 'action-result', binding, action: 'corrigir', text: 'Sem avaliação.' }),
-    ).toBe(false);
-  });
-  it('aceita revisão explícita, recusa sugestão em ação normal e download na revisão', () => {
+    expect(isClientEvent({ ...event, assessment: { risks: [] } })).toBe(false);
     const command = {
       type: 'start',
       key: binding.key,
@@ -234,14 +220,26 @@ describe('contratos de sugestão e revisão sob demanda', () => {
       text: 'Original.',
       suggestion: 'Sugestão.',
     };
-    expect(isClientCommand(command)).toBe(true);
-    expect(isClientCommand({ ...command, action: 'corrigir' })).toBe(false);
-    expect(isClientCommand({ ...command, suggestion: '' })).toBe(false);
-    expect(isClientCommand({ ...command, allowDownload: true, expectedProfile: 'economico' })).toBe(
-      false,
-    );
+    expect(isClientCommand(command)).toBe(false);
+    expect(
+      isEngineCommand({
+        type: 'start',
+        request: {
+          ...binding,
+          text: 'Original.',
+          action: 'revisar-sentido',
+          suggestion: 'Sugestão.',
+        },
+      }),
+    ).toBe(false);
+    expect(
+      isEngineCommand({
+        type: 'start',
+        request: { ...binding, text: 'Original.', action: 'corrigir', semanticReview: true },
+      }),
+    ).toBe(false);
     expect(
       isClientEvent({ type: 'review-result', binding, text: 'Sugestão.', ...suggestionMetadata }),
-    ).toBe(true);
+    ).toBe(false);
   });
 });

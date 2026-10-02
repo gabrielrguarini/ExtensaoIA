@@ -1,11 +1,11 @@
-import type { EngineIdentity, RiskAssessment } from '../../shared/suggestion';
+import type { EngineIdentity, SuggestionResult } from '../../shared/suggestion';
 import { isClientEvent, sameBinding, sameKey } from '../../shared/protocol';
 import { connectClient } from './client-port';
 import type { Binding, RequestKey } from '../../shared/protocol';
 import type { DraftSnapshot } from '../../integration/whatsapp/adapter';
 
 export type PreviewOutcome =
-  | { ok: true; text: string; engine?: EngineIdentity; assessment?: RiskAssessment }
+  | { ok: true; text: string; engine?: EngineIdentity; status?: SuggestionResult['status'] }
   | { ok: false; message: string; code?: 'DOWNLOAD_REQUIRED' | 'INSUFFICIENT_RESOURCES' };
 export type PreviewGenerator = (
   snapshot: DraftSnapshot,

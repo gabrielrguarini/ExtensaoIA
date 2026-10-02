@@ -56,12 +56,7 @@ describe('roteamento sem mistura de abas, documentos e revisões', () => {
   });
   it('recusa confirmação de download de um perfil antigo antes de criar o motor', async () => {
     const ensure = vi.fn();
-    const router = new RequestRouter(
-      ensure,
-      2_000,
-      () => Promise.resolve(false),
-      () => Promise.resolve('qualidade'),
-    );
+    const router = new RequestRouter(ensure, 2_000, () => Promise.resolve('qualidade'));
     const a = client();
     router.receive(a.peer, {
       ...start,
@@ -90,42 +85,37 @@ describe('roteamento sem mistura de abas, documentos e revisões', () => {
     expect(sent).toHaveLength(2);
   });
 
-  it('não inicia revisão automática mesmo com preferência ligada ou indisponível', async () => {
+  it('encaminha as opções salvas e recusa falha de preferências antes de gerar', async () => {
     const sent: EngineCommand[] = [];
     const engine: Engine = { send: (value) => sent.push(value), reset: vi.fn() };
-    const preference = vi.fn(() => Promise.resolve(true));
+    const ensure = vi.fn(() => Promise.resolve(engine));
     const router = new RequestRouter(
-      () => Promise.resolve(engine),
+      ensure,
       2_000,
-      preference,
       () => Promise.resolve('economico'),
       () => Promise.resolve({ preserveSlang: false, addEmojis: true }),
     );
     const a = client();
     router.receive(a.peer, { ...start, action: 'corrigir' });
     for (let i = 0; i < 4; i++) await Promise.resolve();
-    expect(preference).not.toHaveBeenCalled();
     expect(sent.at(-1)).toMatchObject({
       type: 'start',
       request: {
         action: 'corrigir',
-        semanticReview: false,
         writingOptions: { preserveSlang: false, addEmojis: true },
       },
     });
+    expect(sent.at(-1)).not.toHaveProperty('request.semanticReview');
     router.disconnect(a.peer);
-
-    const unavailable = new RequestRouter(
-      () => Promise.resolve(engine),
-      2_000,
-      () => Promise.reject(new Error('storage indisponível')),
+    const unavailable = new RequestRouter(ensure, 2_000, () =>
+      Promise.reject(new Error('storage indisponível')),
     );
     const b = client();
     unavailable.receive(b.peer, { ...start, action: 'formal' });
     for (let i = 0; i < 4; i++) await Promise.resolve();
-    expect(sent).toHaveLength(2);
-    expect(sent.at(-1)).toMatchObject({ request: { semanticReview: false } });
-    unavailable.disconnect(b.peer);
+    expect(ensure).toHaveBeenCalledOnce();
+    expect(sent).toHaveLength(1);
+    expect(b.events.at(-1)).toMatchObject({ type: 'error', code: 'UNAVAILABLE' });
   });
 
   it('encerra uma correção reprovada sem liberar resultado ou manter o motor ocupado', async () => {
@@ -216,7 +206,6 @@ describe('roteamento sem mistura de abas, documentos e revisões', () => {
           ...binding,
           text: start.text,
           action: 'simular',
-          semanticReview: false,
           profile: 'economico',
           allowDownload: false,
         },
@@ -426,7 +415,7 @@ describe('motor simulado e coordenador integrados', () => {
     });
     simulator.receive({
       type: 'start',
-      request: { ...binding, text: 'Teste', action: 'simular', semanticReview: false },
+      request: { ...binding, text: 'Teste', action: 'simular' },
     });
     simulator.receive({ type: 'cancel', binding });
     await vi.advanceTimersByTimeAsync(2_000);

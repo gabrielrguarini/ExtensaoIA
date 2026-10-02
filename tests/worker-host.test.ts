@@ -40,7 +40,6 @@ describe('Worker independente do coordenador', () => {
         ...binding,
         text: 'fixture',
         action: 'corrigir',
-        semanticReview: false,
         profile: 'qualidade',
       },
     });
@@ -55,7 +54,6 @@ describe('Worker independente do coordenador', () => {
         ...binding,
         text: 'fixture',
         action: 'corrigir',
-        semanticReview: false,
         profile: 'qualidade',
       },
     });
@@ -78,7 +76,7 @@ describe('Worker independente do coordenador', () => {
     await vi.advanceTimersByTimeAsync(299_000);
     engine.send({
       type: 'start',
-      request: { ...binding, text: 'teste', action: 'corrigir', semanticReview: false },
+      request: { ...binding, text: 'teste', action: 'corrigir' },
     });
     await vi.advanceTimersByTimeAsync(600_000);
     expect(h.terminate).not.toHaveBeenCalled();

@@ -5,10 +5,7 @@ import type { ChromeStatus, NativeActionStatus } from '../../shared/chrome-manag
 import { createNative, nativeAvailability, nativeConfig } from '../ai/chrome-api';
 import { chromeStatus, unloadChrome } from './chrome-client';
 
-const ACTIONS = [
-  ...WRITING_ACTIONS.map(({ id, label }) => ({ action: id, label })),
-  { action: 'semantic-review' as const, label: 'Analisar sentido' },
-];
+const ACTIONS = WRITING_ACTIONS.map(({ id, label }) => ({ action: id, label }));
 function stateLabel(value: Availability | null | undefined): string {
   switch (value) {
     case 'available':
@@ -150,7 +147,7 @@ export function ChromePreparation({
     <section aria-labelledby="chrome-ai-title">
       <h2 id="chrome-ai-title">IA nativa do Chrome · pt-BR</h2>
       {portuguesePrompt && (
-        <p>Português por prompt experimental ativado. Revise idioma, conteúdo e avisos.</p>
+        <p>Português por prompt experimental ativado. Revise o idioma e o conteúdo.</p>
       )}
       <p>
         A disponibilidade depende da versão, idioma, ação e recursos deste navegador. O Chrome

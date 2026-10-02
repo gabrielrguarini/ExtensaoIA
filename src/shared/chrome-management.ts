@@ -3,7 +3,7 @@ import type { WritingAction } from './actions';
 import { fields, record } from './protocol';
 
 export interface NativeActionStatus {
-  action: WritingAction | 'semantic-review';
+  action: WritingAction;
   availability: Availability | null;
 }
 export interface ChromeStatus {
@@ -31,14 +31,14 @@ export function isChromeStatus(value: unknown): value is ChromeStatus {
     typeof value.chromePortuguesePrompt === 'boolean' &&
     typeof value.sessionReady === 'boolean' &&
     Array.isArray(value.actions) &&
-    value.actions.length === WRITING_ACTIONS.length + 1 &&
+    value.actions.length === WRITING_ACTIONS.length &&
     new Set(value.actions.map((item: unknown) => (record(item) ? item.action : null))).size ===
       value.actions.length &&
     value.actions.every(
       (item: unknown) =>
         record(item) &&
         fields(item, ['action', 'availability']) &&
-        (isWritingAction(item.action) || item.action === 'semantic-review') &&
+        isWritingAction(item.action) &&
         (item.availability === null ||
           (typeof item.availability === 'string' &&
             ['unavailable', 'downloadable', 'downloading', 'available'].includes(

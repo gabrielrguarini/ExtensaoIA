@@ -4,7 +4,7 @@ import type { WritingAction } from './actions';
 import type { ModelProfile } from '../extension/ai/model-catalog';
 import { isWritingOptions } from './writing-options';
 import type { WritingOptions } from './writing-options';
-import { isEngineIdentity, isRiskAssessment } from './suggestion';
+import { isEngineIdentity } from './suggestion';
 import type { SuggestionResult } from './suggestion';
 import { isLocalVariant } from './local-model';
 import type { LocalVariant } from './local-model';
@@ -32,9 +32,7 @@ export interface Binding {
 }
 export interface BoundRequest extends Binding {
   text: string;
-  action: 'simular' | WritingAction | 'prova-modelo' | 'revisar-sentido';
-  suggestion?: string;
-  semanticReview: boolean;
+  action: 'simular' | WritingAction | 'prova-modelo';
   writingOptions?: WritingOptions;
   profile?: ModelProfile;
   allowDownload?: boolean;
@@ -48,7 +46,6 @@ export type ClientCommand =
       action: BoundRequest['action'];
       allowDownload?: boolean;
       expectedProfile?: ModelProfile;
-      suggestion?: string;
     }
   | { type: 'cancel'; key: RequestKey }
   | { type: 'status' };
@@ -78,14 +75,7 @@ export type RequestEvent =
   | {
       type: 'model-progress';
       binding: Binding;
-      phase:
-        | 'preparing'
-        | 'downloading'
-        | 'loading'
-        | 'ready'
-        | 'generating'
-        | 'validating'
-        | 'reviewing';
+      phase: 'preparing' | 'downloading' | 'loading' | 'ready' | 'generating' | 'validating';
       percent: number;
       variant: LocalVariant | null;
     }
@@ -93,7 +83,6 @@ export type RequestEvent =
   | { type: 'action-fragment'; binding: Binding; action: WritingAction; text: string }
   | { type: 'result'; binding: Binding; text: string; simulated: true }
   | ({ type: 'action-result'; binding: Binding; action: WritingAction } & SuggestionResult)
-  | ({ type: 'review-result'; binding: Binding } & SuggestionResult)
   | { type: 'action-rejected'; binding: Binding; action: WritingAction; code: ErrorCode }
   | {
       type: 'proof-result';
@@ -189,13 +178,8 @@ export function isClientCommand(value: unknown): value is ClientCommand {
         optionalFields(
           value,
           ['type', 'key', 'text', 'action'],
-          ['allowDownload', 'expectedProfile', 'suggestion'],
+          ['allowDownload', 'expectedProfile'],
         ) &&
-        (value.action === 'revisar-sentido'
-          ? textValue(value.suggestion) &&
-            value.suggestion.trim().length > 0 &&
-            value.allowDownload !== true
-          : value.suggestion === undefined) &&
         (value.allowDownload === undefined || typeof value.allowDownload === 'boolean') &&
         (value.expectedProfile === undefined ||
           value.expectedProfile === 'economico' ||
@@ -206,7 +190,6 @@ export function isClientCommand(value: unknown): value is ClientCommand {
         textValue(value.text) &&
         value.text.trim().length > 0 &&
         (value.action === 'simular' ||
-          value.action === 'revisar-sentido' ||
           isWritingAction(value.action) ||
           (value.action === 'prova-modelo' && value.text === MODEL_PROOF_TEXT))
       );
@@ -258,15 +241,9 @@ export function isRequestEvent(value: unknown): value is RequestEvent {
     case 'model-progress':
       return (
         fields(value, ['type', 'binding', 'phase', 'percent', 'variant']) &&
-        [
-          'preparing',
-          'downloading',
-          'loading',
-          'ready',
-          'generating',
-          'validating',
-          'reviewing',
-        ].includes(String(value.phase)) &&
+        ['preparing', 'downloading', 'loading', 'ready', 'generating', 'validating'].includes(
+          String(value.phase),
+        ) &&
         typeof value.percent === 'number' &&
         Number.isFinite(value.percent) &&
         value.percent >= 0 &&
@@ -289,18 +266,11 @@ export function isRequestEvent(value: unknown): value is RequestEvent {
       );
     case 'action-result':
       return (
-        fields(value, ['type', 'binding', 'action', 'text', 'engine', 'assessment']) &&
+        fields(value, ['type', 'binding', 'action', 'text', 'engine', 'status']) &&
         isEngineIdentity(value.engine) &&
-        isRiskAssessment(value.assessment) &&
+        ['changed', 'unchanged'].includes(String(value.status)) &&
         isWritingAction(value.action) &&
         textValue(value.text)
-      );
-    case 'review-result':
-      return (
-        fields(value, ['type', 'binding', 'text', 'engine', 'assessment']) &&
-        textValue(value.text) &&
-        isEngineIdentity(value.engine) &&
-        isRiskAssessment(value.assessment)
       );
     case 'action-rejected':
       return (
@@ -355,14 +325,9 @@ export function isEngineCommand(value: unknown): value is EngineCommand {
   return (
     optionalFields(
       request,
-      ['key', 'origin', 'text', 'action', 'semanticReview'],
-      ['profile', 'allowDownload', 'writingOptions', 'suggestion'],
+      ['key', 'origin', 'text', 'action'],
+      ['profile', 'allowDownload', 'writingOptions'],
     ) &&
-    (request.action === 'revisar-sentido'
-      ? textValue(request.suggestion) &&
-        request.suggestion.trim().length > 0 &&
-        request.allowDownload !== true
-      : request.suggestion === undefined) &&
     (request.writingOptions === undefined || isWritingOptions(request.writingOptions)) &&
     isBinding({ key: request.key, origin: request.origin }) &&
     (request.profile === undefined ||
@@ -371,10 +336,7 @@ export function isEngineCommand(value: unknown): value is EngineCommand {
       request.profile === 'qualidade') &&
     (request.allowDownload === undefined || typeof request.allowDownload === 'boolean') &&
     textValue(request.text) &&
-    typeof request.semanticReview === 'boolean' &&
-    (isWritingAction(request.action) || request.semanticReview === false) &&
     (request.action === 'simular' ||
-      request.action === 'revisar-sentido' ||
       isWritingAction(request.action) ||
       (request.action === 'prova-modelo' && request.text === MODEL_PROOF_TEXT))
   );

@@ -15,11 +15,11 @@ Entregar o pacote local com verificações completas e instruções de instalaç
 ## Pré-requisitos
 
 - Ler [PLANO.md](../PLANO.md) e [PROGRESSO.md](../PROGRESSO.md).
-- [STEP-15](STEP-15.md), incluindo [A](STEP-15-A.md), [B](STEP-15-B.md), [C](STEP-15-C.md) e [D](STEP-15-D.md), e todas as etapas anteriores concluídas, com evidências registradas.
+- [STEP-15](STEP-15.md), incluindo [A](STEP-15-A.md), [B](STEP-15-B.md), [C](STEP-15-C.md), [D](STEP-15-D.md) e [E](STEP-15-E.md), e todas as etapas anteriores concluídas, com evidências registradas.
 
 ## Tarefas
 
-- [ ] Validar instalação limpa com seleção nativa/local, idioma pt-BR indisponível, preparação explícita, avisos e Substituir mesmo assim sem confirmação adicional.
+- [ ] Validar instalação limpa com seleção nativa/local, idioma pt-BR indisponível, preparação explícita e Substituir sem avaliação automática de conteúdo ou confirmação adicional.
 - [ ] Conferir sessões nativas isoladas, Rewriter por configuração, quotas/cancelamento, Gemma e perfis WebLLM selecionáveis, cache administrado pelo Chrome separado dos modelos próprios.
 - [ ] Executar os checks do projeto e testes de integração em fixtures controladas com múltiplos editores/abas e textos sintéticos.
 - [ ] Validar manualmente o fluxo no WhatsApp Web real: digitar, abrir IA, escolher ação, acompanhar, revisar e substituir. Não automatizar envio de mensagens.
@@ -30,7 +30,7 @@ Entregar o pacote local com verificações completas e instruções de instalaç
 - [ ] Gerar a pasta final instalável e documentar chrome://extensions → Modo do desenvolvedor → Carregar sem compactação.
 - [ ] Documentar versões/hardware testados, requisitos, atualização da extensão, descarga da GPU, remoção dos modelos, privacidade, diagnóstico sem conteúdo e limitações conhecidas.
 - [ ] Conferir o idioma efetivo pt-BR e documentar as configurações nativas validadas, incluindo ativação/desativação manual da compatibilidade experimental por prompt da STEP-15-B. Disponibilidade genérica/documentação traduzida não certificam idioma ou qualidade. Usar [referências de idioma/cache](../REFERENCIAS-IA-CHROME.md), evidências reais B e resultados D.
-- [ ] Reproduzir as recomendações por ação/hardware da STEP-15-D, incluindo respostas idênticas, aspas externas, alterações de sentido sem aviso e falsos avisos por capitalização. Não apresentar o nome do perfil Qualidade como prova de superioridade; preservar a escolha manual e a revisão antes de aplicar.
+- [ ] Reproduzir as recomendações por ação/hardware da STEP-15-D, incluindo respostas idênticas, aspas externas e possíveis alterações de sentido. Conferir que a STEP-15-E retirou a avaliação de conteúdo e os falsos avisos; as recomendações D permanecem evidências históricas. Não apresentar o nome do perfil Qualidade como prova de superioridade; preservar a escolha manual e a revisão antes de aplicar.
 
 ## Limites
 
@@ -41,7 +41,7 @@ Entregar o pacote local com verificações completas e instruções de instalaç
 ## Critérios de conclusão e verificação
 
 - [ ] Instalação limpa do pacote funciona sem depender de servidor de desenvolvimento.
-- [ ] O fluxo completo real atende aos critérios de privacidade, avisos de preservação e substituição manual.
+- [ ] O fluxo completo real atende aos critérios de privacidade, revisão pelo usuário e substituição manual.
 - [ ] Testes automatizados e verificações manuais obrigatórias estão registrados com evidências.
 - [ ] Nenhum conteúdo sintético de rascunho aparece em requisições externas, logs ou storage persistente da extensão.
 - [ ] A inferência funciona offline após preparação completa e reinício; limitações são documentadas.

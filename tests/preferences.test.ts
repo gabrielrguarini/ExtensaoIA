@@ -8,7 +8,7 @@ import {
 import {
   readPreferences,
   saveProfile,
-  saveSemanticReview,
+  updatePreferences,
 } from '../src/extension/background/preferences';
 import { PreviewSession } from '../src/extension/content/preview-session';
 import type { WhatsAppAdapter } from '../src/integration/whatsapp/adapter';
@@ -17,13 +17,12 @@ import type { ProofGenerator, ProofOutcome } from '../src/extension/content/mode
 
 afterEach(() => vi.unstubAllGlobals());
 
-describe('preferência local de revisão', () => {
+describe('preferências locais sem análise de conteúdo', () => {
   it('uma confirmação atrasada não desfaz preferências novas recebidas de outra interface', async () => {
     let changed: ((value: WritingPreferences) => void) | undefined;
     let resolveSave: ((value: WritingPreferences) => void) | undefined;
     const preferences = {
       read: () => Promise.resolve({ ...DEFAULT_PREFERENCES }),
-      setSemanticReview: vi.fn(),
       setProfile: vi.fn(),
       update: () =>
         new Promise<WritingPreferences>((resolve) => {
@@ -68,10 +67,10 @@ describe('preferência local de revisão', () => {
         },
       },
     });
-    await Promise.all([saveSemanticReview(true), saveProfile('qualidade')]);
+    await Promise.all([updatePreferences({ theme: 'dark' }), saveProfile('qualidade')]);
     expect(await readPreferences()).toEqual({
       ...DEFAULT_PREFERENCES,
-      semanticReview: true,
+      theme: 'dark',
       profile: 'qualidade',
     });
   });
@@ -86,7 +85,6 @@ describe('preferência local de revisão', () => {
     const unsubscribe = vi.fn();
     const preferences = {
       read: () => Promise.resolve({ ...DEFAULT_PREFERENCES }),
-      setSemanticReview: vi.fn(),
       setProfile: vi.fn(),
       subscribe: (listener: (value: WritingPreferences) => void) => {
         changed = listener;
@@ -103,13 +101,13 @@ describe('preferência local de revisão', () => {
     );
     session.open();
     await Promise.resolve();
-    changed?.({ ...DEFAULT_PREFERENCES, semanticReview: false, profile: 'equilibrado' });
+    changed?.({ ...DEFAULT_PREFERENCES, profile: 'equilibrado' });
     expect(session.getState()).toMatchObject({ kind: 'menu', profile: 'equilibrado' });
     session.startModelProof();
     expect(prove.mock.calls[0]?.slice(2)).toEqual([false, 'equilibrado']);
     done?.({ ok: false, code: 'DOWNLOAD_REQUIRED', message: 'Sem cache' });
     expect(session.getState()).toMatchObject({ kind: 'download-confirm', profile: 'equilibrado' });
-    changed?.({ ...DEFAULT_PREFERENCES, semanticReview: false, profile: 'qualidade' });
+    changed?.({ ...DEFAULT_PREFERENCES, profile: 'qualidade' });
     session.confirmDownload();
     expect(session.getState().kind).toBe('notice');
     expect(prove).toHaveBeenCalledOnce();
@@ -121,7 +119,6 @@ describe('preferência local de revisão', () => {
       read: () =>
         Promise.resolve({
           ...DEFAULT_PREFERENCES,
-          semanticReview: false,
           profile: 'qualidade' as const,
         }),
       setSemanticReview: vi.fn(),
@@ -152,69 +149,6 @@ describe('preferência local de revisão', () => {
     expect(prove.mock.calls[0]?.slice(2)).toEqual([false, 'qualidade']);
     expect(prove).toHaveBeenCalledOnce();
   });
-  it('começa desligada, persiste apenas o esquema versionado e recusa dados inválidos', async () => {
-    let stored: unknown;
-    vi.stubGlobal('chrome', {
-      storage: {
-        local: {
-          get: vi.fn(() =>
-            Promise.resolve(stored === undefined ? {} : { writingPreferences: stored }),
-          ),
-          set: vi.fn((value: { writingPreferences: unknown }) => {
-            stored = value.writingPreferences;
-            return Promise.resolve();
-          }),
-        },
-      },
-    });
-    expect(await readPreferences()).toEqual(DEFAULT_PREFERENCES);
-    expect(await saveSemanticReview(true)).toEqual({
-      ...DEFAULT_PREFERENCES,
-      semanticReview: true,
-      profile: 'economico',
-    });
-    expect(await readPreferences()).toEqual({
-      ...DEFAULT_PREFERENCES,
-      semanticReview: true,
-      profile: 'economico',
-    });
-    expect(await saveProfile('qualidade')).toEqual({
-      ...DEFAULT_PREFERENCES,
-      semanticReview: true,
-      profile: 'qualidade',
-    });
-    expect(await saveSemanticReview(false)).toEqual({
-      ...DEFAULT_PREFERENCES,
-      semanticReview: false,
-      profile: 'qualidade',
-    });
-    stored = { version: 1, semanticReview: true };
-    expect(await readPreferences()).toEqual({
-      ...DEFAULT_PREFERENCES,
-      semanticReview: true,
-      profile: 'economico',
-    });
-    stored = { version: 2, semanticReview: true };
-    expect(await readPreferences()).toEqual({ ...DEFAULT_PREFERENCES, semanticReview: true });
-    expect(parsePreferences({ version: 1, semanticReview: 'true' })).toEqual(DEFAULT_PREFERENCES);
-    expect(isPreferenceCommand({ target: 'preferences', type: 'set', semanticReview: true })).toBe(
-      true,
-    );
-    expect(isPreferenceCommand({ target: 'preferences', type: 'set', semanticReview: 1 })).toBe(
-      false,
-    );
-    expect(
-      isPreferenceCommand({ target: 'preferences', type: 'profile', profile: 'equilibrado' }),
-    ).toBe(true);
-    expect(
-      isPreferenceCommand({
-        target: 'preferences',
-        type: 'profile',
-        profile: 'https://example.com/model',
-      }),
-    ).toBe(false);
-  });
-
   it('mostra o valor salvo e ignora retorno atrasado de menu encerrado', async () => {
     let resolveRead: ((value: WritingPreferences) => void) | undefined;
     const preferences = {
@@ -223,13 +157,6 @@ describe('preferência local de revisão', () => {
           new Promise<WritingPreferences>((resolve) => {
             resolveRead = resolve;
           }),
-      ),
-      setSemanticReview: vi.fn((semanticReview: boolean) =>
-        Promise.resolve({
-          ...DEFAULT_PREFERENCES,
-          semanticReview,
-          profile: 'economico' as const,
-        }),
       ),
       setProfile: vi.fn(),
     };
@@ -244,25 +171,69 @@ describe('preferência local de revisão', () => {
     session.open();
     expect(session.getState()).toMatchObject({
       kind: 'menu',
-      semanticReview: false,
       preferenceStatus: 'loading',
     });
-    resolveRead?.({ ...DEFAULT_PREFERENCES, semanticReview: true, profile: 'economico' });
+    resolveRead?.({ ...DEFAULT_PREFERENCES, theme: 'dark', profile: 'economico' });
     await Promise.resolve();
     expect(session.getState()).toMatchObject({
       kind: 'menu',
-      semanticReview: true,
+      preferences: { theme: 'dark' },
       preferenceStatus: 'ready',
     });
-    session.setSemanticReview(false);
-    await Promise.resolve();
-    expect(preferences.setSemanticReview).toHaveBeenCalledWith(false);
-    expect(session.getState()).toMatchObject({ kind: 'menu', semanticReview: false });
     session.close();
     session.open();
     session.close();
-    resolveRead?.({ ...DEFAULT_PREFERENCES, semanticReview: true, profile: 'economico' });
+    resolveRead?.({ ...DEFAULT_PREFERENCES, theme: 'dark', profile: 'economico' });
     await Promise.resolve();
     expect(session.getState()).toEqual({ kind: 'closed' });
+  });
+});
+
+describe('migração sem avaliação de conteúdo', () => {
+  it('descarta análise ligada em v1–v5 e preserva escolhas válidas em v5/v6', async () => {
+    for (const version of [1, 2, 3, 4, 5])
+      expect(parsePreferences({ version, semanticReview: true })).toEqual(DEFAULT_PREFERENCES);
+    let stored: unknown = {
+      ...DEFAULT_PREFERENCES,
+      version: 5,
+      engine: 'local',
+      localModel: 'gemma',
+      profile: 'qualidade',
+      theme: 'dark',
+      chromePortuguesePrompt: true,
+      semanticReview: true,
+    };
+    vi.stubGlobal('chrome', {
+      storage: {
+        local: {
+          get: () => Promise.resolve({ writingPreferences: stored }),
+          set: (value: { writingPreferences: unknown }) => {
+            stored = value.writingPreferences;
+            return Promise.resolve();
+          },
+        },
+      },
+    });
+    const expected = {
+      ...DEFAULT_PREFERENCES,
+      engine: 'local',
+      localModel: 'gemma',
+      profile: 'qualidade',
+      theme: 'dark',
+      chromePortuguesePrompt: true,
+    };
+    expect(await updatePreferences({})).toEqual(expected);
+    expect(stored).toEqual(expected);
+    expect(parsePreferences(expected)).toEqual(expected);
+    expect(isPreferenceCommand({ target: 'preferences', type: 'set', semanticReview: true })).toBe(
+      false,
+    );
+    expect(
+      isPreferenceCommand({
+        target: 'preferences',
+        type: 'update',
+        patch: { semanticReview: true },
+      }),
+    ).toBe(false);
   });
 });

@@ -120,7 +120,7 @@ export async function analyzeSuggestion(
   return verdict;
 }
 
-/** Contrato histórico do benchmark com bloqueio; o produto usa analyzeSuggestion sob demanda. */
+/** Contrato histórico do benchmark; a STEP-15-E removeu a análise de sentido do produto. */
 export async function reviewSuggestion(
   model: Pick<AIEngine, 'generate'>,
   original: string,

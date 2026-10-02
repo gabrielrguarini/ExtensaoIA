@@ -1,0 +1,12 @@
+{
+  "algorithm": "SHA-256",
+  "files": {
+    "checks.json": "0ddc222c48b784a33c004df91f106e6e41686a161a6cfcd8ba4e64bca05af798",
+    "chrome-preview.png": "53fcc2119141b4eac77a29472a5d3037dfff074e4fa6827c93c2b6261b6ad5cf",
+    "chrome.json": "a3bf8ef59e416411be566ef3309f9be65f378bfbac4a2805b10ee65fa3491a32",
+    "gemma-preview.png": "a759cd37ec3feb674d9c87079ef012190af6545f0a5a8469d0ef786383591211",
+    "gemma.json": "8e29544d17050f1042d8336d03324e3e26356aa42c6db33b2e313e30902b9a51",
+    "webllm-preview.png": "ee548afa93d8c9efd545f008c486654ba1ddcb64c371d24fd6ddaed492c81756",
+    "webllm.json": "04389eb603bff1c1d060ca8a278d48ffaa1242d67e257497193e245521d6da93"
+  }
+}

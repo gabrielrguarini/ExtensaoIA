@@ -27,10 +27,6 @@ export function migratePreferences(): Promise<WritingPreferences> {
   return updatePreferences({});
 }
 
-export async function saveSemanticReview(semanticReview: boolean): Promise<WritingPreferences> {
-  return updatePreferences({ semanticReview });
-}
-
 export async function saveProfile(
   profile: WritingPreferences['profile'],
 ): Promise<WritingPreferences> {
