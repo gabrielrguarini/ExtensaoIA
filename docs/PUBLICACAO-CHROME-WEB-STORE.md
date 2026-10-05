@@ -48,7 +48,9 @@ Descrição sugerida:
 
 ## 5. Publicar a política de privacidade
 
-Disponibilize [PRIVACIDADE.md](PRIVACIDADE.md) em uma URL HTTPS pública, sem login, por exemplo a página desse documento em um repositório público ou no seu site. Abra a URL sem autenticação para confirmar o acesso. Defina um canal público de suporte e confira que política, descrição e código concordam.
+A [política pública](https://ia-local-whatsapp-privacidade.gabrielrguarini.chatgpt.site) já está publicada, sem login, e corresponde a [PRIVACIDADE.md](PRIVACIDADE.md). Use essa URL no campo de privacidade da loja. Acesso HTTPS sem cookies conferido em 05/10/2026: HTTP 200, texto e contato presentes. O contato é gabrielrguarini@gmail.com. [Fonte e manutenção da página](site-privacidade/README.md).
+
+O cadastro da loja foi preenchido e salvo em 05/10/2026, com descrição, categoria Ferramentas, português (Brasil), ícone, uma captura, propósito, justificativas de permissões, ausência de código remoto e declarações de dados. O e-mail do editor aparece como verificado. Após o preenchimento, o painel passou a mostrar **Revisão pendente**, com campos bloqueados, aguardando análise do Google. A extensão ainda não consta como publicada; a validação final do WhatsApp permanece pendente.
 
 A extensão trata rascunhos mesmo sem transmiti-los ao desenvolvedor. O Chrome exige divulgação do tratamento local e política de privacidade para produtos que tratam dados de usuário; não declare ausência de tratamento apenas porque a IA é local. [FAQ oficial de dados](https://developer.chrome.com/docs/webstore/program-policies/user-data-faq).
 

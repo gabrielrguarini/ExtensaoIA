@@ -30,4 +30,4 @@ Você pode cancelar um pedido, desfazer a substituição com Ctrl+Z, escolher re
 
 O acesso ao rascunho é limitado à função de escrita solicitada. Não há uso para venda, publicidade, criação de perfis, treinamento pelo desenvolvedor ou decisões sobre crédito. Mudanças nas práticas serão refletidas nesta política e na descrição da extensão.
 
-Para dúvidas, use o canal de suporte informado na página de distribuição ou no repositório do projeto. Relate problemas com exemplos sintéticos; não envie conversas ou credenciais. Consulte o [guia de uso](INSTALACAO.md) e o [README](../README.md).
+Para dúvidas, escreva para [gabrielrguarini@gmail.com](mailto:gabrielrguarini@gmail.com). Relate problemas com exemplos sintéticos; não envie conversas ou credenciais. Consulte o [guia de uso](INSTALACAO.md) e o [README](../README.md).

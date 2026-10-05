@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Política de privacidade da extensão IA local para WhatsApp Web. Saiba como os rascunhos são processados no seu computador e como controlar os dados."
+    />
+    <meta name="color-scheme" content="light" />
+    <title>Política de privacidade — IA local para WhatsApp Web</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #f6faf9;
+        color: #163a35;
+        font-family:
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          sans-serif;
+        line-height: 1.75;
+      }
+      header,
+      main,
+      footer {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 28px;
+      }
+      header {
+        padding-top: 52px;
+      }
+      .brand {
+        color: #146b5f;
+        font-size: 0.95rem;
+        font-weight: 700;
+        letter-spacing: 0.025em;
+      }
+      h1 {
+        font-size: clamp(2rem, 6vw, 2.75rem);
+        line-height: 1.15;
+        margin: 20px 0;
+        letter-spacing: -0.035em;
+      }
+      .meta {
+        color: #4d6964;
+        margin-bottom: 0;
+      }
+      main {
+        padding-top: 0;
+      }
+      h2 {
+        font-size: 1.35rem;
+        line-height: 1.4;
+        margin: 36px 0 12px;
+      }
+      p {
+        margin: 0 0 18px;
+      }
+      a {
+        color: #096858;
+        text-underline-offset: 0.2em;
+        overflow-wrap: anywhere;
+      }
+      a:focus-visible {
+        outline: 3px solid #096858;
+        outline-offset: 4px;
+        border-radius: 2px;
+      }
+      footer {
+        border-top: 1px solid #d7e7e2;
+        color: #4d6964;
+        font-size: 0.9rem;
+      }
+      @media print {
+        body {
+          background: white;
+          color: black;
+        }
+        header,
+        main,
+        footer {
+          max-width: none;
+          padding: 12px 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">IA local para WhatsApp Web</div>
+      <h1>Política de privacidade</h1>
+      <p class="meta">
+        Última atualização: <time datetime="2026-10-05">05/10/2026</time>. Aplica-se à versão
+        0.16.0.
+      </p>
+    </header>
+    <main>
+      <section aria-labelledby="finalidade">
+        <h2 id="finalidade">Finalidade e acesso ao texto</h2>
+        <p>
+          A extensão corrige e reescreve rascunhos no WhatsApp Web. Ao clicar em IA, você solicita
+          que o rascunho atual seja processado neste computador. No modo direto, esse clique também
+          autoriza substituir o texto. A prévia opcional permite copiar ou substituir depois de
+          conferir a sugestão. A extensão nunca envia mensagens.
+        </p>
+        <p>
+          O texto pode conter comunicações pessoais e outros dados fornecidos por você. Somente o
+          rascunho solicitado e sua sugestão são usados para a função de escrita. Fora desse texto,
+          a extensão não acessa histórico, mensagens recebidas, lista de contatos, números de
+          telefone, credenciais ou cookies de autenticação. Dados que você incluir no próprio
+          rascunho fazem parte do processamento local solicitado. A detecção do editor verifica
+          estrutura e estado, sem coletar conteúdo das conversas.
+        </p>
+      </section>
+      <section aria-labelledby="processamento">
+        <h2 id="processamento">Processamento e retenção</h2>
+        <p>
+          Rascunho, instruções e resposta são processados localmente pela IA do Chrome ou por um
+          modelo local selecionado. Não são enviados a um servidor de IA ou ao desenvolvedor.
+          Permanecem temporariamente em memória durante o pedido/prévia e são descartados pelo ciclo
+          de vida da extensão; não ficam gravados em logs ou armazenamento persistente. A extensão
+          não persiste hashes ou identificadores derivados das mensagens.
+        </p>
+        <p>
+          O navegador guarda preferências como ação, modelo, tema e modo direto/prévia. Também
+          guarda os arquivos públicos dos modelos e recibos de integridade desses arquivos. Recibos
+          identificam artefatos, não mensagens. Não há analytics, telemetria, publicidade
+          direcionada ou venda de dados.
+        </p>
+      </section>
+      <section aria-labelledby="downloads">
+        <h2 id="downloads">Downloads e serviços do navegador</h2>
+        <p>
+          Preparar um modelo exige uma ação explícita e conexão à internet. A extensão baixa
+          artefatos públicos de huggingface.co e us.aws.cdn.hf.co, em versões registradas no
+          catálogo. Esses servidores recebem os dados técnicos necessários à conexão, como endereço
+          IP e informações de requisição. A extensão não inclui seus rascunhos nessas requisições.
+          JavaScript e WASM executáveis acompanham o pacote instalado.
+        </p>
+        <p>
+          Os modelos nativos são administrados pelo Chrome, incluindo preparação, armazenamento e
+          liberação. O navegador e o WhatsApp mantêm suas próprias práticas de rede e privacidade,
+          independentes desta extensão. O processamento local preparado pode funcionar offline; o
+          funcionamento do WhatsApp depende da própria conexão.
+        </p>
+      </section>
+      <section aria-labelledby="controle">
+        <h2 id="controle">Cópia, controle e remoção</h2>
+        <p>
+          Copiar transfere a sugestão para a área de transferência somente após seu clique. A
+          extensão não lê a área de transferência. O sistema e outros aplicativos podem acessar seu
+          conteúdo conforme suas próprias configurações.
+        </p>
+        <p>
+          Você pode cancelar um pedido, desfazer a substituição com Ctrl+Z, escolher revisão por
+          prévia, liberar memória e remover o download do modelo selecionado nas configurações.
+          Liberar memória conserva os arquivos baixados. Remover download apaga somente os artefatos
+          próprios do modelo/variante escolhido; os modelos nativos são controlados pelo Chrome.
+          Desinstalar a extensão ou limpar seus dados no navegador remove os dados próprios conforme
+          as regras do Chrome.
+        </p>
+      </section>
+      <section aria-labelledby="contato">
+        <h2 id="contato">Uso limitado e contato</h2>
+        <p>
+          O acesso ao rascunho é limitado à função de escrita solicitada. Não há uso para venda,
+          publicidade, criação de perfis, treinamento pelo desenvolvedor ou decisões sobre crédito.
+          Mudanças nas práticas serão refletidas nesta política e na descrição da extensão.
+        </p>
+        <p>
+          Para dúvidas, escreva para
+          <a href="mailto:gabrielrguarini@gmail.com">gabrielrguarini@gmail.com</a>. Relate problemas
+          com exemplos sintéticos; não envie conversas ou credenciais.
+        </p>
+      </section>
+    </main>
+    <footer>IA local para WhatsApp Web · Política de privacidade</footer>
+  </body>
+</html>

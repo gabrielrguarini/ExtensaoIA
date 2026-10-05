@@ -52,7 +52,7 @@ O português brasileiro é solicitado ao modelo. O Chrome testado utiliza a comp
 
 A extensão acessa somente o rascunho solicitado, processa o texto localmente e não lê histórico, contatos ou mensagens recebidas. Preferências e artefatos dos modelos ficam no navegador; rascunhos, prompts e respostas não são persistidos. Downloads dos modelos exigem conexão; inferência preparada pode funcionar offline.
 
-Não há envio automático, telemetria ou provedor remoto de IA. **Copiar** utiliza a área de transferência por sua escolha. Leia a [política de privacidade](docs/PRIVACIDADE.md).
+Não há envio automático, telemetria ou provedor remoto de IA. **Copiar** utiliza a área de transferência por sua escolha. Leia a [política de privacidade pública](https://ia-local-whatsapp-privacidade.gabrielrguarini.chatgpt.site) ou a [cópia no projeto](docs/PRIVACIDADE.md).
 
 ## Documentação e suporte
 
