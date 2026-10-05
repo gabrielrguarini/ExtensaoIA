@@ -1,0 +1,101 @@
+{
+  "version": "0.16.0",
+  "browser": "154.0.8037.0",
+  "engine": "webllm",
+  "profile": "step15-isolated",
+  "startedAt": "2026-10-02T20:05:42.646Z",
+  "syntheticFixture": true,
+  "noMessageSent": true,
+  "checks": {
+    "legacyPortugueseSwitchRemoved": true,
+    "legacyPreferenceRemoved": true,
+    "modelChoiceThroughSettings": true,
+    "settingsWithoutTechnicalControls": true,
+    "narrowDarkSettings": true,
+    "workerObserved": true,
+    "directReplacementWithoutDialogAndUndo": true,
+    "escapeCancelsDirectRequest": true,
+    "directStaleDraftPreserved": true,
+    "previewChosenInSettings": true,
+    "oneClickWithoutSettings": true,
+    "readablePreviewWithoutAssessment": true,
+    "copy": true,
+    "manualReplacementAndUndo": true,
+    "savedActionApplied": true,
+    "staleDraftBlocksApplication": true,
+    "storageOnlyPreferences": true,
+    "modelPreparationCanCancel": true,
+    "modelPreparationInSettings": true
+  },
+  "requests": [
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/worker-rhvVgwe-.js",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/lib-DN7xhl6-.js",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/__vite-browser-external-DQ5ciJWJ.js",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/Llama-3.2-3B-Instruct-q4f16_1-ctx4k_cs1k-webgpu-BSFeQ0Om.wasm",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/lib-Cv3edfyV.js",
+      "method": "GET",
+      "hasPostData": false
+    }
+  ],
+  "consoleEvents": [],
+  "missingOutputLanguageWarnings": [],
+  "observerErrors": [],
+  "preferences": {
+    "version": 8,
+    "engine": "local",
+    "localModel": "webllm",
+    "profile": "economico",
+    "language": "pt-BR",
+    "theme": "dark",
+    "defaultAction": "corrigir",
+    "interaction": "direct",
+    "preserveSlang": true,
+    "addEmojis": false
+  },
+  "directOutput": "fazendo o teste da extensão, à para ver se funciona de verdade",
+  "syntheticInput": "fazendo o teste da extensao apra ver se funciona de verdade",
+  "syntheticOutput": "fazendo o teste da extensão, à para ver se funciona de verdade",
+  "offline": true,
+  "configuredActionOutput": "Olá! Gostaria de saber se você pode revisar este texto, por favor? 🤔",
+  "modelPreparationRequests": [
+    {
+      "url": "https://huggingface.co/mlc-ai/Llama-3.2-3B-Instruct-q4f16_1-MLC/resolve/1e80abf71e3d17cd564e2d2b63caa15cb226018e/mlc-chat-config.json",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "https://huggingface.co/mlc-ai/Llama-3.2-3B-Instruct-q4f16_1-MLC/resolve/1e80abf71e3d17cd564e2d2b63caa15cb226018e/mlc-chat-config.json",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "https://huggingface.co/api/resolve-cache/models/mlc-ai/Llama-3.2-3B-Instruct-q4f16_1-MLC/1e80abf71e3d17cd564e2d2b63caa15cb226018e/mlc-chat-config.json?%2Fmlc-ai%2FLlama-3.2-3B-Instruct-q4f16_1-MLC%2Fresolve%2F1e80abf71e3d17cd564e2d2b63caa15cb226018e%2Fmlc-chat-config.json=&etag=%229295fdd918a0a1ec5dc04fbf534b62f1aaadd908%22",
+      "method": "GET",
+      "hasPostData": false
+    }
+  ],
+  "pageErrors": 0,
+  "finishedAt": "2026-10-02T20:06:47.005Z"
+}

@@ -1,0 +1,112 @@
+{
+  "version": "0.16.0",
+  "browser": "154.0.8037.0",
+  "engine": "gemma",
+  "profile": "step15c-chrome",
+  "startedAt": "2026-10-02T19:55:38.749Z",
+  "syntheticFixture": true,
+  "noMessageSent": true,
+  "checks": {
+    "legacyPortugueseSwitchRemoved": true,
+    "legacyPreferenceRemoved": true,
+    "modelChoiceThroughSettings": true,
+    "settingsWithoutTechnicalControls": true,
+    "narrowDarkSettings": true,
+    "workerObserved": true,
+    "directReplacementWithoutDialogAndUndo": true,
+    "escapeCancelsDirectRequest": true,
+    "directStaleDraftPreserved": true,
+    "previewChosenInSettings": true,
+    "oneClickWithoutSettings": true,
+    "readablePreviewWithoutAssessment": true,
+    "copy": true,
+    "manualReplacementAndUndo": true,
+    "savedActionApplied": true,
+    "staleDraftBlocksApplication": true,
+    "multilineUnicodeCopyOnly": true,
+    "structuredMentionCopyOnly": true,
+    "twoTabsIsolatedAndBusy": true,
+    "sameDraftDifferentContextBlocked": true
+  },
+  "requests": [
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/gemma-worker-MRWFfeBg.js",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/transformers.web-DFmlKpLR.js",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/runtime/ort-wasm-simd-threaded.asyncify.mjs",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/runtime/ort-wasm-simd-threaded.asyncify.wasm",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/gemma-worker-MRWFfeBg.js",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/transformers.web-DFmlKpLR.js",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/runtime/ort-wasm-simd-threaded.asyncify.mjs",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/runtime/ort-wasm-simd-threaded.asyncify.wasm",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/gemma-worker-MRWFfeBg.js",
+      "method": "GET",
+      "hasPostData": false
+    }
+  ],
+  "consoleEvents": [],
+  "missingOutputLanguageWarnings": [],
+  "observerErrors": [],
+  "preferences": {
+    "version": 8,
+    "engine": "local",
+    "localModel": "gemma",
+    "profile": "economico",
+    "language": "pt-BR",
+    "theme": "dark",
+    "defaultAction": "corrigir",
+    "interaction": "direct",
+    "preserveSlang": true,
+    "addEmojis": false
+  },
+  "directOutput": "Fazendo o teste da extensão para ver se funciona de verdade.",
+  "syntheticInput": "fazendo o teste da extensao apra ver se funciona de verdade",
+  "syntheticOutput": "Fazendo o teste da extensão para ver se funciona de verdade.",
+  "offline": true,
+  "configuredActionOutput": "Pode revisar este texto, por favor?",
+  "failure": {
+    "name": "AssertionError",
+    "message": "Dispositivo real não capturado.\n\nfalse !== true\n"
+  },
+  "fixtureState": "painel fechado"
+}

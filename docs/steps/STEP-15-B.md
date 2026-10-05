@@ -2,10 +2,6 @@
 
 [Plano geral](../PLANO.md) · [Progresso](../PROGRESSO.md) · [STEP-15 principal](STEP-15.md)
 
-## Instrução de execução
-
-Executar somente esta subetapa. Ler o plano, progresso e este arquivo. Entregar todo o escopo acumulado, validar no ambiente exigido, revisar o diff e registrar commit próprio conforme [AGENTS.md](../../AGENTS.md). Não iniciar a próxima subetapa. Validação obrigatória pendente mantém Aguardando validação; não transformar interrupção em incompatibilidade presumida.
-
 ## Objetivo e pré-requisitos
 
 STEP-15-A concluída. Usar Chrome preferencial quando idioma pt-BR e ação forem realmente suportados, com modelo local escolhido como alternativa antes da geração.
@@ -34,11 +30,11 @@ Compilação com tipos oficiais; ausência de API; português/opções indispon�
 - [Prompt API](https://developer.chrome.com/docs/ai/prompt-api), [Rewriter](https://developer.chrome.com/docs/ai/rewriter-api), [Proofreader](https://developer.chrome.com/docs/ai/proofreader-api). Confirmar disponibilidade atual e alvo real.
 - [Português, localstudio e cache](../REFERENCIAS-IA-CHROME.md): código fixado, documentação em pt-BR e experimento de idioma por prompt. [Guia de cache](https://developer.chrome.com/docs/ai/cache-models?hl=pt-br) orienta os modelos próprios, sem misturar artefatos Chrome.
 
-## Evidências e commit
+## Evidências
 
-Registrar procedimentos, ambiente, resultados e pendências no progresso e relatório da subetapa. Usar dados sintéticos, npm.cmd run check e commit Conventional Commits com identidade humana configurada. Não publicar nem enviar mensagens automaticamente.
+Relatório com procedimentos, ambiente, resultados, pendências e evidências sintéticas da subetapa.
 
-Próxima subetapa: [STEP-15-C](STEP-15-C.md), somente após solicitação.
+Próxima subetapa: [STEP-15-C](STEP-15-C.md).
 
 ## Registro da execução em 01/10/2026
 

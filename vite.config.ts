@@ -39,6 +39,12 @@ function extensionPackage(): Plugin {
       });
       const manifest = await readFile(new URL('./manifest.json', import.meta.url));
       await writeFile(path.join(outDir, 'manifest.json'), manifest);
+      await mkdir(path.join(outDir, 'icons'), { recursive: true });
+      for (const size of [16, 32, 48, 128])
+        await copyFile(
+          new URL(`./assets/icons/icon-${size}.png`, import.meta.url),
+          path.join(outDir, 'icons', `icon-${size}.png`),
+        );
       await copyFile(new URL('./NOTICE.txt', import.meta.url), path.join(outDir, 'NOTICE.txt'));
       await mkdir(path.join(outDir, 'licenses'), { recursive: true });
       await mkdir(path.join(outDir, 'runtime'), { recursive: true });

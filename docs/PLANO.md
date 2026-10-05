@@ -2,21 +2,9 @@
 
 Plano aprovado em 24/09/2026. Este documento e os arquivos de etapas são a especificação de execução; não representam funcionalidades já implementadas.
 
-## Como começar ou retomar
+## Navegação
 
-1. Leia este documento e [PROGRESSO.md](PROGRESSO.md).
-2. Abra somente o arquivo da etapa solicitada no índice abaixo.
-3. Confirme que as etapas anteriores estão concluídas e que suas evidências continuam aplicáveis.
-4. Execute as tarefas e os critérios de conclusão daquela etapa.
-5. Atualize o progresso com evidências reais e encerre a execução, sem iniciar a etapa seguinte.
-
-A próxima etapa executável é indicada exclusivamente no registro de progresso. Os arquivos STEP descrevem o trabalho; não são registros independentes de status.
-
-Comando de continuidade: **Execute somente a STEP-XX do plano.**
-
-> Execute somente a etapa indicada. Leia o plano geral e o registro de progresso, confirme os pré-requisitos e implemente integralmente a entrega prevista. Execute as verificações pertinentes e registre os resultados. Não avance para a próxima etapa. Se houver impedimento, registre a causa e o que falta; não marque como concluído algo que não foi validado.
-
-Se uma solicitação apenas mandar continuar o plano, executar a próxima etapa pendente cujos pré-requisitos estejam concluídos e parar ao final dela. Mudanças explícitas de escopo feitas pelo usuário devem ser incorporadas à documentação antes de executar o novo escopo.
+Os documentos STEP registram o escopo e os critérios de cada etapa; o status e as evidências ficam em [PROGRESSO.md](PROGRESSO.md). Instruções operacionais do repositório ficam em [AGENTS.md](../AGENTS.md) e no [guia de desenvolvimento](DESENVOLVIMENTO.md).
 
 ## Entregas funcionais, commits e contato de teste
 
@@ -42,7 +30,7 @@ A [STEP-15-F](steps/STEP-15-F.md) simplifica o produto antes da STEP-16: o botã
 
 ## Correção vigente de idioma — STEP-15-G
 
-A [STEP-15-G](steps/STEP-15-G.md) corrige o aviso relatado sobre saída sem idioma. O usuário autorizou a configuração en com resposta pt-BR por instrução, após verificação real. Preferir idioma real/API especializada quando prontos; a compatibilidade usa saída en e entrada textual sem declarar idioma. As opções são iguais na consulta/criação; se também recusadas, usar o modelo local selecionado antes da geração. Substitui a omissão de saída da compatibilidade B/F e a restrição anterior à declaração en, sem certificar suporte formal ao português. STEP-16 permanece pendente.
+A [STEP-15-G](steps/STEP-15-G.md) corrige o aviso relatado sobre saída sem idioma. O usuário autorizou a configuração en com resposta pt-BR por instrução, após verificação real. Preferir idioma real/API especializada quando prontos; a compatibilidade usa saída en e entrada textual sem declarar idioma. As opções são iguais na consulta/criação; se também recusadas, usar o modelo local selecionado antes da geração. Substitui a omissão de saída da compatibilidade B/F e a restrição anterior à declaração en, sem certificar suporte formal ao português. A situação da entrega final está em PROGRESSO.md.
 
 ## Decisões de produto
 

@@ -1,0 +1,8 @@
+{
+  "command": "npm.cmd ci --offline --cache .cache/npm --no-audit",
+  "exitCode": 0,
+  "lockBefore": "F690E1F0B454D41CB44719D511162CC36C69BF34247E99F2773465376734C6E3",
+  "lockAfter": "F690E1F0B454D41CB44719D511162CC36C69BF34247E99F2773465376734C6E3",
+  "node": "v22.14.0",
+  "npm": "10.9.2"
+}

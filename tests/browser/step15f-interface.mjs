@@ -11,7 +11,9 @@ if (!executablePath) throw new Error('Defina STEP15F_CHROME.');
 assert(['chrome', 'webllm', 'gemma'].includes(engine));
 const regular = process.env.STEP15F_REGULAR === '1';
 const languageValidation = process.env.STEP15F_VALIDATION === 'step15g';
-const directValidation = process.env.STEP15F_VALIDATION === 'step15h';
+const finalValidation = process.env.STEP15F_VALIDATION === 'step16';
+const recoveryOnly = finalValidation && process.env.STEP16_RECOVERY_ONLY === '1';
+const directValidation = process.env.STEP15F_VALIDATION === 'step15h' || finalValidation;
 const extension = path.join(root, 'dist');
 const manifest = JSON.parse(await readFile(path.join(extension, 'manifest.json'), 'utf8'));
 const profile =
@@ -21,7 +23,13 @@ assert(/^[a-z0-9-]+$/u.test(profile), 'Use somente um perfil dedicado dentro de 
 const out = path.join(
   root,
   '.cache',
-  directValidation ? 'step15h' : languageValidation ? 'step15g' : 'step15f',
+  finalValidation
+    ? 'step16'
+    : directValidation
+      ? 'step15h'
+      : languageValidation
+        ? 'step15g'
+        : 'step15f',
 );
 await mkdir(out, { recursive: true });
 const context = await chromium.launchPersistentContext(path.join(root, '.cache', profile), {
@@ -47,12 +55,14 @@ const report = {
   syntheticFixture: true,
   noMessageSent: true,
   checks: {},
+  ...(recoveryOnly ? { validationMode: 'recovery-only' } : {}),
   requests: [],
   consoleEvents: [],
   missingOutputLanguageWarnings: [],
   observerErrors: [],
 };
 let pageErrors = 0;
+let localWorkerSession;
 context.on('page', (p) => p.on('pageerror', () => pageErrors++));
 const endpoint = await (await fetch('http://127.0.0.1:9241/json/version')).json();
 const socket = new WebSocket(endpoint.webSocketDebuggerUrl);
@@ -105,7 +115,16 @@ socket.addEventListener('message', (e) => {
         await command(a.sessionId, 'Network.enable');
         await command(a.sessionId, 'Runtime.enable');
         if (a.targetInfo.type === 'page') await command(a.sessionId, 'Log.enable');
-        if (a.targetInfo.type === 'worker') report.checks.workerObserved = true;
+        if (a.targetInfo.type === 'worker') {
+          report.checks.workerObserved = true;
+          if (
+            finalValidation &&
+            engine === 'gemma' &&
+            a.targetInfo.url.includes('/assets/gemma-worker-')
+          ) {
+            localWorkerSession = a.sessionId;
+          }
+        }
       } catch {
         report.observerErrors.push('enable');
       } finally {
@@ -275,166 +294,187 @@ try {
   await context.setOffline(true);
   const original = 'fazendo o teste da extensao apra ver se funciona de verdade';
   const draft = page.locator('#main footer [role=textbox]');
-  if (directValidation) {
+  if (!recoveryOnly) {
+    if (directValidation) {
+      await draft.fill(original);
+      await page.locator('[data-local-writing-host] button.launcher').click();
+      await page.getByRole('tooltip').filter({ hasText: 'Carregando IA' }).waitFor();
+      assert.equal(await page.locator('.preview-panel').count(), 0);
+      await page.screenshot({
+        path: path.join(out, engine + '-loading-tooltip.png'),
+        caret: 'initial',
+      });
+      await page.waitForFunction(
+        (original) => document.querySelector('#main footer [role=textbox]')?.innerText !== original,
+        original,
+        { timeout: 240000 },
+      );
+      await page.waitForFunction(
+        () =>
+          document
+            .querySelector('[data-local-writing-host]')
+            ?.shadowRoot.querySelector('.launcher')
+            ?.getAttribute('aria-busy') === 'false',
+      );
+      report.directOutput = await draft.innerText();
+      assert(report.directOutput.trim());
+      assert.equal(await page.locator('.preview-panel').count(), 0);
+      await page.screenshot({
+        path: path.join(out, engine + '-direct-result.png'),
+        caret: 'initial',
+      });
+      await draft.focus();
+      await draft.press('Control+z');
+      assert.equal(await draft.innerText(), original);
+      report.checks.directReplacementWithoutDialogAndUndo = true;
+      await page.locator('[data-local-writing-host] button.launcher').click();
+      await page.getByRole('tooltip').filter({ hasText: 'Carregando IA' }).waitFor();
+      await page.keyboard.press('Escape');
+      await page.waitForFunction(
+        () =>
+          document
+            .querySelector('[data-local-writing-host]')
+            ?.shadowRoot.querySelector('.launcher')
+            ?.getAttribute('aria-busy') === 'false',
+      );
+      assert.equal(await draft.innerText(), original);
+      report.checks.escapeCancelsDirectRequest = true;
+      // A UI cancela imediatamente; o protocolo pode levar 2 s até desconectar/resetar.
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      // Um pedido curto/quente pode terminar antes do comando de edição do roteiro.
+      await draft.fill((original + ' ').repeat(12).trim());
+      await page.locator('[data-local-writing-host] button.launcher').click();
+      await page.getByRole('tooltip').filter({ hasText: 'Carregando IA' }).waitFor();
+      await draft.fill('Rascunho sintético alterado durante o pedido direto.');
+      await page
+        .getByRole('tooltip')
+        .filter({ hasText: 'O rascunho ou a conversa mudou' })
+        .waitFor();
+      assert.equal(await page.locator('.preview-panel').count(), 0);
+      assert.equal(await draft.innerText(), 'Rascunho sintético alterado durante o pedido direto.');
+      report.checks.directStaleDraftPreserved = true;
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      const behavior = settings.getByLabel('Ao clicar em IA', { exact: true });
+      await behavior.focus();
+      await behavior.press('End');
+      await behavior.press('Enter');
+      await settings.waitForFunction(
+        () =>
+          document.querySelector('[aria-label="Ao clicar em IA"]')?.value === 'preview' &&
+          !document.querySelector('fieldset')?.disabled,
+      );
+      report.checks.previewChosenInSettings = true;
+    } else {
+      await settings.evaluate(() =>
+        chrome.runtime.sendMessage({
+          target: 'preferences',
+          type: 'update',
+          patch: { interaction: 'preview' },
+        }),
+      );
+    }
     await draft.fill(original);
     await page.locator('[data-local-writing-host] button.launcher').click();
-    await page.getByRole('tooltip').filter({ hasText: 'Carregando IA' }).waitFor();
-    assert.equal(await page.locator('.preview-panel').count(), 0);
-    await page.screenshot({
-      path: path.join(out, engine + '-loading-tooltip.png'),
-      caret: 'initial',
-    });
-    await page.waitForFunction(
-      (original) => document.querySelector('#main footer [role=textbox]')?.innerText !== original,
-      original,
-      { timeout: 240000 },
+    const preview = page.getByLabel('Texto da sugestão');
+    await Promise.race([
+      preview.waitFor({ timeout: 240000 }),
+      page
+        .locator('.preview-panel [role="alert"]')
+        .waitFor({ timeout: 240000 })
+        .then(async () => {
+          throw new Error(await page.locator('.preview-panel [role="alert"]').innerText());
+        }),
+      page
+        .getByRole('button', { name: 'Baixar e continuar', exact: true })
+        .waitFor({ timeout: 240000 })
+        .then(() => {
+          throw new Error(
+            'Cache requerido pela variante atual não está preparado; download não autorizado pelo roteiro.',
+          );
+        }),
+    ]);
+    const output = await preview.innerText();
+    assert(output.trim());
+    const panel = await page.locator('.preview-panel').innerText();
+    assert(!/WebLLM|transformers|pt-BR|VRAM|Worker|Testar IA|Simula|Perfil/iu.test(panel));
+    assert.equal(
+      await page
+        .locator('.preview-panel select, .preview-panel input, .preview-panel fieldset')
+        .count(),
+      0,
     );
-    await page.waitForFunction(
-      () =>
-        document
-          .querySelector('[data-local-writing-host]')
-          ?.shadowRoot.querySelector('.launcher')
-          ?.getAttribute('aria-busy') === 'false',
+    report.checks.oneClickWithoutSettings = true;
+    assert(!/Possível|Nenhum risco|Analisar sentido|Substituir mesmo assim|avisos/iu.test(panel));
+    assert.equal(await draft.innerText(), original);
+    assert.equal(
+      await page.getByRole('button', { name: 'Substituir', exact: true }).isEnabled(),
+      true,
     );
-    report.directOutput = await draft.innerText();
-    assert(report.directOutput.trim());
-    assert.equal(await page.locator('.preview-panel').count(), 0);
-    await page.screenshot({
-      path: path.join(out, engine + '-direct-result.png'),
-      caret: 'initial',
-    });
+    assert.equal(await page.locator('.suggestion-warnings').count(), 0);
+    await page.getByRole('button', { name: 'Copiar', exact: true }).click();
+    await page.getByText('Sugestão copiada.', { exact: true }).waitFor();
+    assert.equal(await page.evaluate(() => navigator.clipboard.readText()), output);
+    assert.equal(await draft.innerText(), original);
+    await page.screenshot({ path: path.join(out, engine + '-preview.png'), caret: 'initial' });
+    await page.getByRole('button', { name: 'Substituir', exact: true }).click();
+    await preview.waitFor({ state: 'hidden' });
+    assert.equal(await draft.innerText(), output);
     await draft.focus();
     await draft.press('Control+z');
     assert.equal(await draft.innerText(), original);
-    report.checks.directReplacementWithoutDialogAndUndo = true;
-    await page.locator('[data-local-writing-host] button.launcher').click();
-    await page.getByRole('tooltip').filter({ hasText: 'Carregando IA' }).waitFor();
-    await page.keyboard.press('Escape');
-    await page.waitForFunction(
-      () =>
-        document
-          .querySelector('[data-local-writing-host]')
-          ?.shadowRoot.querySelector('.launcher')
-          ?.getAttribute('aria-busy') === 'false',
-    );
-    assert.equal(await draft.innerText(), original);
-    report.checks.escapeCancelsDirectRequest = true;
-    // A UI cancela imediatamente; o protocolo pode levar 2 s até desconectar/resetar.
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    // Um pedido curto/quente pode terminar antes do comando de edição do roteiro.
-    await draft.fill((original + ' ').repeat(12).trim());
-    await page.locator('[data-local-writing-host] button.launcher').click();
-    await page.getByRole('tooltip').filter({ hasText: 'Carregando IA' }).waitFor();
-    await draft.fill('Rascunho sintético alterado durante o pedido direto.');
-    await page.getByRole('tooltip').filter({ hasText: 'O rascunho ou a conversa mudou' }).waitFor();
-    assert.equal(await page.locator('.preview-panel').count(), 0);
-    assert.equal(await draft.innerText(), 'Rascunho sintético alterado durante o pedido direto.');
-    report.checks.directStaleDraftPreserved = true;
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    const behavior = settings.getByLabel('Ao clicar em IA', { exact: true });
-    await behavior.focus();
-    await behavior.press('End');
-    await behavior.press('Enter');
+    report.checks.readablePreviewWithoutAssessment = true;
+    report.checks.copy = true;
+    report.checks.manualReplacementAndUndo = true;
+    report.syntheticInput = original;
+    report.syntheticOutput = output;
+    report.offline = true;
+    // Configuração com eventos de teclado confiáveis, fora do editor.
+    const actionSelect = settings.getByLabel('Ação do botão IA', { exact: true });
+    await actionSelect.focus();
+    await actionSelect.press('c');
+    await actionSelect.press('Enter');
     await settings.waitForFunction(
       () =>
-        document.querySelector('[aria-label="Ao clicar em IA"]')?.value === 'preview' &&
+        document.querySelector('[aria-label="Ação do botão IA"]')?.value === 'conciso' &&
         !document.querySelector('fieldset')?.disabled,
     );
-    report.checks.previewChosenInSettings = true;
-  } else {
-    await settings.evaluate(() =>
-      chrome.runtime.sendMessage({
-        target: 'preferences',
-        type: 'update',
-        patch: { interaction: 'preview' },
-      }),
+    await draft.fill(
+      'Olá! Gostaria de saber se você pode revisar este texto, por favor. Obrigado!',
     );
-  }
-  await draft.fill(original);
-  await page.locator('[data-local-writing-host] button.launcher').click();
-  const preview = page.getByLabel('Texto da sugestão');
-  await Promise.race([
-    preview.waitFor({ timeout: 240000 }),
-    page
-      .locator('.preview-panel [role="alert"]')
-      .waitFor({ timeout: 240000 })
-      .then(async () => {
-        throw new Error(await page.locator('.preview-panel [role="alert"]').innerText());
-      }),
-    page
-      .getByRole('button', { name: 'Baixar e continuar', exact: true })
-      .waitFor({ timeout: 240000 })
-      .then(() => {
-        throw new Error(
-          'Cache requerido pela variante atual não está preparado; download não autorizado pelo roteiro.',
-        );
-      }),
-  ]);
-  const output = await preview.innerText();
-  assert(output.trim());
-  const panel = await page.locator('.preview-panel').innerText();
-  assert(!/WebLLM|transformers|pt-BR|VRAM|Worker|Testar IA|Simula|Perfil/iu.test(panel));
-  assert.equal(
+    await page.locator('[data-local-writing-host] button.launcher').click();
+    await preview.waitFor({ timeout: 240000 });
+    assert((await page.locator('.preview-heading').innerText()).includes('Conciso'));
+    assert.equal(
+      await draft.innerText(),
+      'Olá! Gostaria de saber se você pode revisar este texto, por favor. Obrigado!',
+    );
+    report.configuredActionOutput = await preview.innerText();
+    report.checks.savedActionApplied = true;
+    await page.getByRole('button', { name: 'Fechar', exact: true }).click();
+    await draft.fill(original);
+    await page.locator('[data-local-writing-host] button.launcher').click();
+    await draft.fill('Rascunho sintético alterado durante o pedido.');
     await page
-      .locator('.preview-panel select, .preview-panel input, .preview-panel fieldset')
-      .count(),
-    0,
-  );
-  report.checks.oneClickWithoutSettings = true;
-  assert(!/Possível|Nenhum risco|Analisar sentido|Substituir mesmo assim|avisos/iu.test(panel));
-  assert.equal(await draft.innerText(), original);
-  assert.equal(
-    await page.getByRole('button', { name: 'Substituir', exact: true }).isEnabled(),
-    true,
-  );
-  assert.equal(await page.locator('.suggestion-warnings').count(), 0);
-  await page.getByRole('button', { name: 'Copiar', exact: true }).click();
-  await page.getByText('Sugestão copiada.', { exact: true }).waitFor();
-  assert.equal(await page.evaluate(() => navigator.clipboard.readText()), output);
-  assert.equal(await draft.innerText(), original);
-  await page.screenshot({ path: path.join(out, engine + '-preview.png'), caret: 'initial' });
-  await page.getByRole('button', { name: 'Substituir', exact: true }).click();
-  await preview.waitFor({ state: 'hidden' });
-  assert.equal(await draft.innerText(), output);
-  await draft.focus();
-  await draft.press('Control+z');
-  assert.equal(await draft.innerText(), original);
-  report.checks.readablePreviewWithoutAssessment = true;
-  report.checks.copy = true;
-  report.checks.manualReplacementAndUndo = true;
-  report.syntheticInput = original;
-  report.syntheticOutput = output;
-  report.offline = true;
-  // Configuração com eventos de teclado confiáveis, fora do editor.
-  const actionSelect = settings.getByLabel('Ação do botão IA', { exact: true });
-  await actionSelect.focus();
-  await actionSelect.press('c');
-  await actionSelect.press('Enter');
-  await settings.waitForFunction(
-    () =>
-      document.querySelector('[aria-label="Ação do botão IA"]')?.value === 'conciso' &&
-      !document.querySelector('fieldset')?.disabled,
-  );
-  await draft.fill('Olá! Gostaria de saber se você pode revisar este texto, por favor. Obrigado!');
-  await page.locator('[data-local-writing-host] button.launcher').click();
-  await preview.waitFor({ timeout: 240000 });
-  assert((await page.locator('.preview-heading').innerText()).includes('Conciso'));
-  assert.equal(
-    await draft.innerText(),
-    'Olá! Gostaria de saber se você pode revisar este texto, por favor. Obrigado!',
-  );
-  report.configuredActionOutput = await preview.innerText();
-  report.checks.savedActionApplied = true;
-  await page.getByRole('button', { name: 'Fechar', exact: true }).click();
-  await draft.fill(original);
-  await page.locator('[data-local-writing-host] button.launcher').click();
-  await draft.fill('Rascunho sintético alterado durante o pedido.');
-  await page
-    .getByText('O rascunho ou a conversa mudou. Clique em IA novamente.', { exact: true })
-    .waitFor();
-  assert.equal(await page.getByRole('button', { name: 'Substituir', exact: true }).count(), 0);
-  assert.equal(await draft.innerText(), 'Rascunho sintético alterado durante o pedido.');
-  report.checks.staleDraftBlocksApplication = true;
+      .getByText('O rascunho ou a conversa mudou. Clique em IA novamente.', { exact: true })
+      .waitFor();
+    assert.equal(await page.getByRole('button', { name: 'Substituir', exact: true }).count(), 0);
+    assert.equal(await draft.innerText(), 'Rascunho sintético alterado durante o pedido.');
+    report.checks.staleDraftBlocksApplication = true;
+  }
+  if (finalValidation && engine === 'gemma') {
+    const { finalControls } = await import('./step16-controls.mjs');
+    await finalControls({
+      context,
+      settings,
+      page,
+      draft,
+      report,
+      id,
+      command,
+      workerSession: () => localWorkerSession,
+      recoveryOnly,
+    });
+  }
   const storage = await settings.evaluate(() => chrome.storage.local.get(null));
   assert.deepEqual(Object.keys(storage), ['writingPreferences']);
   assert(!JSON.stringify(storage).includes(original));

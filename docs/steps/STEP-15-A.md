@@ -2,10 +2,6 @@
 
 [Plano geral](../PLANO.md) · [Progresso](../PROGRESSO.md) · [STEP-15 principal](STEP-15.md)
 
-## Instrução de execução
-
-Executar somente esta subetapa. Ler o plano, progresso e este arquivo. Entregar todo o escopo acumulado, validar no ambiente exigido, revisar o diff e registrar commit próprio conforme [AGENTS.md](../../AGENTS.md). Não iniciar a próxima subetapa. Validação obrigatória pendente mantém Aguardando validação; não transformar interrupção em incompatibilidade presumida.
-
 ## Objetivo e pré-requisitos
 
 Partir da STEP-14 concluída e da implementação parcial histórica da STEP-15. Melhorar disponibilidade das sugestões sem ocultar riscos. As avaliações dos Qwen continuam pendentes na etapa principal; não são pré-requisito para mudar o fluxo autorizado.
@@ -26,14 +22,14 @@ Partir da STEP-14 concluída e da implementação parcial histórica da STEP-15.
 - Testes de saídas arriscadas, vazias, idênticas, Unicode inválido, avisos, revisão explícita, fronteiras do protocolo e rascunho desatualizado.
 - Retomada reproduzível sem repetir casos concluídos nem apagar erros de tentativas anteriores.
 - Chrome instalado com WebLLM/WebGPU real: geração única, prévia, avisos, substituição manual, desfazer e inferência offline. Fixtures sintéticas são adequadas; não substituir esta verificação por mocks.
-- npm.cmd run check aprovado, documentação navegável, evidências e commit próprio.
+- Verificações completas do projeto aprovadas, documentação navegável e evidências.
 
 ## Limites
 
 Não implementar Chrome nativo, instalar tipagens nativas nem Transformers.js nesta subetapa. Não declarar o vencedor de desempenho nem completar artificialmente campanhas pendentes. A comparação e anotação de 108 novos rascunhos distintos ficam na STEP-15-D.
 
-## Evidências e commit
+## Evidências
 
-Registrar procedimentos, ambiente, resultados e pendências no progresso e relatório da subetapa. Usar dados sintéticos, npm.cmd run check e commit Conventional Commits com identidade humana configurada. Não publicar nem enviar mensagens automaticamente.
+Relatório com procedimentos, ambiente, resultados, pendências e evidências sintéticas da subetapa.
 
-Próxima subetapa: [STEP-15-B](STEP-15-B.md), somente após solicitação.
+Próxima subetapa: [STEP-15-B](STEP-15-B.md).

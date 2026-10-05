@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-05",
+  "scope": "Caches de modelos e downloads de componentes somente dos três perfis de teste dentro do projeto",
+  "personalChromeUntouched": true,
+  "preferencesPreserved": true,
+  "evidencePreserved": true,
+  "removed": [
+    {
+      "path": ".cache\\step15-isolated\\Default\\Service Worker\\CacheStorage",
+      "files": 131,
+      "bytes": 1816680299
+    },
+    {
+      "path": ".cache\\step15-isolated\\component_crx_cache",
+      "files": 1,
+      "bytes": 13
+    },
+    {
+      "path": ".cache\\step15c-chrome\\Default\\Service Worker\\CacheStorage",
+      "files": 26,
+      "bytes": 3130558199
+    },
+    {
+      "path": ".cache\\step15c-chrome\\component_crx_cache",
+      "files": 1,
+      "bytes": 13
+    },
+    {
+      "path": ".cache\\step15b-chrome\\Default\\Service Worker\\CacheStorage",
+      "files": 537,
+      "bytes": 11841253804
+    },
+    {
+      "path": ".cache\\step15b-chrome\\OptGuideOnDeviceModel",
+      "files": 8,
+      "bytes": 4269934869
+    },
+    {
+      "path": ".cache\\step15b-chrome\\component_crx_cache",
+      "files": 17,
+      "bytes": 39332944
+    }
+  ],
+  "bytesRemoved": 21097760141
+}

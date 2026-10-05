@@ -1,11 +1,14 @@
 node_modules/
 dist/
+release/
 .cache/
 .playwright-mcp/
 .vitest/
 coverage/
 *.tsbuildinfo
 *.log
+*.pem
+*.crx
 .env
 .env.*
 !.env.example

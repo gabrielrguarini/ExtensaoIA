@@ -1,0 +1,49 @@
+{
+  "checkedAt": "2026-10-05T16:41:11.767Z",
+  "status": "Aguardando validação do WhatsApp autenticado",
+  "command": "npm.cmd run check",
+  "exitCode": 0,
+  "tests": 286,
+  "testFiles": 41,
+  "typecheck": true,
+  "lint": true,
+  "format": true,
+  "build": true,
+  "cleanChecks": 9,
+  "candidates": {
+    "chrome": {
+      "browser": "154.0.8037.93",
+      "checks": 16,
+      "consoleEvents": 0,
+      "requests": 0
+    },
+    "webllm": {
+      "browser": "154.0.8037.0",
+      "checks": 19,
+      "consoleEvents": 0,
+      "requests": 5
+    },
+    "gemma": {
+      "browser": "154.0.8037.0",
+      "checks": 25,
+      "consoleEvents": 0,
+      "requests": 20
+    }
+  },
+  "npmVulnerabilities": 0,
+  "packageFiles": 50,
+  "packageBytes": 95533325,
+  "zipBytes": 21165213,
+  "weightsRemovedBytes": 21097760141,
+  "sourceFilesUnchanged": 10,
+  "historicalHashes": {
+    "docs/benchmark/step15d": 65,
+    "docs/evidencias/step15c": 11,
+    "docs/evidencias/step15e": 7,
+    "docs/evidencias/step15f": 18,
+    "docs/evidencias/step15g": 8,
+    "docs/evidencias/step15h": 28
+  },
+  "markdownFiles": 57,
+  "markdownLinks": 519
+}

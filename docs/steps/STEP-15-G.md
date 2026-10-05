@@ -14,8 +14,4 @@ O usuário autorizou declarar en na sessão e pedir pt-BR no prompt, desde que v
 - Quando pt-BR declarado não estiver pronto, usar a compatibilidade autorizada: expectedOutputs en, entrada textual sem idioma declarado e sistema pedindo português brasileiro. Não suprimir logs nem modificar o idioma do rascunho.
 - Se essa configuração também estiver indisponível, escolher o modelo local configurado antes de gerar. Manter downloads explícitos, uma geração, cancelamento e substituição manual.
 - Testar opções equivalentes em availability/create, APIs especializadas indisponíveis e alternativa local. Reproduzir o aviso antigo e verificar sua ausência nos logs nativos do Chrome real, além do console JavaScript.
-- Validar o fluxo com fixture sintética offline, sem envio; executar npm.cmd run check, registrar evidências e commit próprio com identidade humana.
-
-## Encerramento
-
-Sem validação real, manter Aguardando validação. Parar ao terminar; STEP-16 permanece Pendente.
+- Fluxo validado com fixture sintética offline, sem envio, verificações completas do projeto aprovadas e evidências registradas.

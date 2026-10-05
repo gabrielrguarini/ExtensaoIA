@@ -1,0 +1,9 @@
+{
+  "date": "2026-10-05",
+  "command": "npm.cmd ci --offline --cache .cache/npm --no-audit",
+  "exitCode": 0,
+  "lockBefore": "F0DE3D5C33BDAF79DD6D292962AAEA2B5E231392E5C2A8CB5734D78539350248",
+  "lockAfter": "F0DE3D5C33BDAF79DD6D292962AAEA2B5E231392E5C2A8CB5734D78539350248",
+  "node": "v22.14.0",
+  "npm": "10.9.2"
+}

@@ -2,10 +2,6 @@
 
 [Plano geral](../PLANO.md) · [Progresso](../PROGRESSO.md) · [STEP-15 principal](STEP-15.md)
 
-## Instrução de execução
-
-Executar somente esta subetapa. Ler o plano, progresso e este arquivo. Entregar todo o escopo acumulado, validar no ambiente exigido, revisar o diff e registrar commit próprio conforme [AGENTS.md](../../AGENTS.md). Não iniciar a próxima subetapa. Validação obrigatória pendente mantém Aguardando validação; não transformar interrupção em incompatibilidade presumida.
-
 ## Objetivo e pré-requisitos
 
 STEP-15-C concluída. Determinar recomendações por ação e hardware com medidas reais, sem presumir superioridade de Chrome, Gemma ou Transformers.js.
@@ -25,12 +21,12 @@ STEP-15-C concluída. Determinar recomendações por ação e hardware com medid
 
 Campanhas reproduzíveis e retomáveis, casos reservados anotados, três rodadas comparáveis, métricas/avaliação/limitações e recomendações documentadas. Testar troca, cache, reinício, sessões isoladas e offline no hardware real. STEP-15 principal continua Aguardando validação enquanto avaliações obrigatórias estiverem pendentes; interrupção não prova incompatibilidade.
 
-## Evidências e commit
+## Evidências
 
-O executor desta subetapa é `npm.cmd run benchmark:step15d`, com cinco candidatos, dataset reservado de 108 rascunhos independentes e checkpoints a cada caso. [Procedimento reproduzível](../benchmark/STEP-15-D.md). Congelar fontes de inferência antes da campanha reservada. Ajustes de prompt usam exclusivamente os exemplos históricos separados como desenvolvimento; não ajustar prompts às respostas reservadas.
+A campanha STEP-15-D usa cinco candidatos, dataset reservado de 108 rascunhos independentes e checkpoints a cada caso. [Procedimento reproduzível](../benchmark/STEP-15-D.md). Congelar fontes de inferência antes da campanha reservada. Ajustes de prompt usam exclusivamente os exemplos históricos separados como desenvolvimento; não ajustar prompts às respostas reservadas.
 
 No WebLLM, comparar também a delimitação do rascunho como string JSON original, sem ENTITY_*. Contar o texto realmente enviado ao modelo no orçamento de entrada; calcular a saída pelo rascunho original. O piloto mostrou redução de execução de instruções citadas, com aumento de latência e respostas entre aspas. Esse resultado não comprova proteção geral contra instruções no texto nem ganho universal de utilidade.
 
-Registrar procedimentos, ambiente, resultados e pendências no progresso e relatório da subetapa. Usar dados sintéticos, npm.cmd run check e commit Conventional Commits com identidade humana configurada. Não publicar nem enviar mensagens automaticamente.
+Relatório com procedimentos, ambiente, resultados, pendências e evidências sintéticas da subetapa.
 
-Próxima etapa: [STEP-16](STEP-16.md), somente após solicitação.
+Entrega final: [STEP-16](STEP-16.md).

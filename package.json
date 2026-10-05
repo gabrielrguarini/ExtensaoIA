@@ -1,9 +1,9 @@
 {
   "name": "extensao-ia-local",
   "private": true,
-  "version": "0.15.7",
+  "version": "0.16.0",
   "type": "module",
-  "description": "Assistente de escrita local para WhatsApp Web — desenvolvimento incremental.",
+  "description": "Assistente de escrita com IA local para WhatsApp Web.",
   "engines": {
     "node": "^22.13.0 || ^24.0.0 || >=26.0.0",
     "npm": ">=10.9.2"
@@ -34,6 +34,7 @@
     "test:step15:browser": "node tests/browser/step15-smoke.mjs",
     "test:watch": "vitest",
     "build": "npm run typecheck && vite build",
+    "package": "npm run build && node build/package.mjs",
     "preview": "vite preview",
     "check": "npm run typecheck && npm run lint && npm run format:check && npm test && npm run build",
     "test:step15b:browser": "node tests/browser/step15b-native.mjs",
@@ -48,7 +49,8 @@
     "test:step15f:browser": "node tests/browser/step15f-interface.mjs",
     "test:step15f:popup": "node tests/browser/step15f-popup.mjs",
     "test:step15g:browser": "node tests/browser/step15g-language.mjs",
-    "test:step15h:browser": "node tests/browser/step15h-direct.mjs"
+    "test:step15h:browser": "node tests/browser/step15h-direct.mjs",
+    "test:step16:browser": "node tests/browser/step16-release.mjs"
   },
   "dependencies": {
     "@huggingface/transformers": "4.2.0",
@@ -67,6 +69,7 @@
     "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react": "6.1.1",
     "@webgpu/types": "0.1.69",
+    "adm-zip": "0.6.1",
     "eslint": "10.11.0",
     "jsdom": "29.1.1",
     "playwright-core": "1.55.0",

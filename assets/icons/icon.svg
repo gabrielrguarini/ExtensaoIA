@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="IA local: escrita">
+  <rect x="16" y="16" width="96" height="96" rx="24" fill="#147d70"/>
+  <g fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m39 88 4-19 34-34 16 16-34 34-20 3Z"/>
+    <path d="m68 44 16 16M43 69l16 16M87 76v18M78 85h18"/>
+  </g>
+</svg>

@@ -1,0 +1,51 @@
+{
+  "version": "0.16.0",
+  "browser": "154.0.8037.0",
+  "engine": "gemma",
+  "profile": "step15c-chrome",
+  "startedAt": "2026-10-02T20:22:36.250Z",
+  "syntheticFixture": true,
+  "noMessageSent": true,
+  "checks": {
+    "legacyPortugueseSwitchRemoved": true,
+    "legacyPreferenceRemoved": true,
+    "modelChoiceThroughSettings": true,
+    "settingsWithoutTechnicalControls": true,
+    "narrowDarkSettings": true,
+    "workerObserved": true
+  },
+  "validationMode": "recovery-only",
+  "requests": [
+    {
+      "origin": "chrome-extension://aidedmjgoicccaoellhgnjgbkoaflhfe",
+      "path": "/assets/gemma-worker-MRWFfeBg.js",
+      "method": "GET",
+      "hasPostData": false
+    }
+  ],
+  "consoleEvents": [],
+  "missingOutputLanguageWarnings": [],
+  "observerErrors": [],
+  "preferences": {
+    "version": 8,
+    "engine": "local",
+    "localModel": "gemma",
+    "profile": "economico",
+    "language": "pt-BR",
+    "theme": "dark",
+    "defaultAction": "corrigir",
+    "interaction": "direct",
+    "preserveSlang": true,
+    "addEmojis": false
+  },
+  "gpuInstrumentation": {
+    "waitingForDebugger": true,
+    "installed": false,
+    "exception": "ReferenceError: GPUAdapter is not defined\n    at <anonymous>:1:22\n    at <anonymous>:1:232"
+  },
+  "failure": {
+    "name": "AssertionError",
+    "message": "Instrumentação GPU não instalada.\n\nfalse !== true\n"
+  },
+  "fixtureState": "painel fechado"
+}

@@ -2,10 +2,6 @@
 
 [Plano geral](../PLANO.md) · [Progresso](../PROGRESSO.md) · [STEP-15 principal](STEP-15.md)
 
-## Instrução de execução
-
-Executar somente esta subetapa. Ler o plano, progresso e este arquivo. Entregar todo o escopo acumulado, validar no ambiente exigido, revisar o diff e registrar commit próprio conforme [AGENTS.md](../../AGENTS.md). Não iniciar a próxima subetapa. Validação obrigatória pendente mantém Aguardando validação; não transformar interrupção em incompatibilidade presumida.
-
 ## Objetivo e pré-requisitos
 
 STEP-15-B concluída. Adicionar modelo local selecionável sem descartar infraestrutura de streaming, cancelamento e isolamento existentes.
@@ -21,7 +17,7 @@ STEP-15-B concluída. Adicionar modelo local selecionável sem descartar infraes
 
 ## Aceite e validação
 
-Instalação reproduzível, catálogo/licenças, seleção de Gemma, inferência real WebGPU, isolamento, cancelamento, concorrência, troca, cache removido, reinício/offline e auditoria de rede/storage. npm.cmd run check; nenhuma simulação apresentada como execução do modelo.
+Instalação reproduzível, catálogo/licenças, seleção de Gemma, inferência real WebGPU, isolamento, cancelamento, concorrência, troca, cache removido, reinício/offline e auditoria de rede/storage. Verificações completas do projeto aprovadas; nenhuma simulação apresentada como execução do modelo.
 
 ## Referências
 
@@ -36,8 +32,8 @@ Instalação reproduzível, catálogo/licenças, seleção de Gemma, inferência
 - Preferências v5 separam motor e modelo local; mantêm perfil WebLLM e opção pt-BR experimental. Seleção anterior à geração, Worker por runtime, pesos reutilizados e pedidos sem histórico. Orçamento inclui prompt real, limite de contexto, EOS e cancelamento; erro não repete geração.
 - Gerenciamento e avisos no menu/popup/painel; substituição manual e revisão explícita preservadas. [Relatório C](../VALIDACAO-STEP-15-C.md) registra aceite, procedimentos, tentativas corrigidas e limites da validação q4f16 no hardware alvo.
 
-## Evidências e commit
+## Evidências
 
-Registrar procedimentos, ambiente, resultados e pendências no progresso e relatório da subetapa. Usar dados sintéticos, npm.cmd run check e commit Conventional Commits com identidade humana configurada. Não publicar nem enviar mensagens automaticamente.
+Relatório com procedimentos, ambiente, resultados, pendências e evidências sintéticas da subetapa.
 
-Próxima subetapa: [STEP-15-D](STEP-15-D.md), somente após solicitação.
+Próxima subetapa: [STEP-15-D](STEP-15-D.md).

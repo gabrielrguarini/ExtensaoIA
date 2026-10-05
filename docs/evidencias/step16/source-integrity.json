@@ -1,0 +1,15 @@
+{
+  "baseCommit": "b73d57367e469c103a9c784eab74eecf241180fd",
+  "files": {
+    "src/extension/ai/chrome-engine.ts": "86af8be561ef2ebf300847cd8abb4ec8c1b1dc6670780929803c0cff0c0f7af5",
+    "src/extension/ai/chrome-api.ts": "788564454c0d6dbfe9c76349b05e9f21dd2e77d27438898ee29818a5316ff721",
+    "src/extension/ai/native-choice.ts": "e1c0dde342ddf7cd23f0aa3bcc6358b462455a5db233fb6a2590b48954165325",
+    "src/extension/ai/gemma-engine.ts": "0ad5876e6fde6e63e774cbea05d2728ba79ccf4836a6caff21b3f035f7329e8d",
+    "src/extension/ai/gemma-cache.ts": "4ea19c1bc87b84958f42788b9ce5dd9ff4ee64428b65c8905c19b7fef06e3de1",
+    "src/extension/ai/model-cache.ts": "931fd7aca9840f0f70a4a7fb1d159baa87e788190aef803336c1a03ab5751065",
+    "src/extension/ai/webllm-engine.ts": "963df5007e46ade908e9f7fdc506470f08f9efb8143ff9f003526db68ee90dba",
+    "src/extension/content/preview-session.ts": "124c1305ed58e7d65582a4a6a7778d57fde60cef126c6d5a6e16906ab476e139",
+    "src/integration/whatsapp/adapter.ts": "a2a854b4251af57bc6be916a5f613a3bca19007d3bbf0e0069acc3ba9cce471c",
+    "src/shared/preferences.ts": "a042560a54279bc24b5f4c1c96a4130ec18e3743c435182d519c9d33b47983e9"
+  }
+}

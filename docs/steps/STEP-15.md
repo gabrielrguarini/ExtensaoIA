@@ -4,7 +4,7 @@
 
 ## Objetivo e execução
 
-Melhorar rapidez e precisão em pt-BR por evidência real. Executar uma subetapa por vez com aceite, relatório e commit próprios; parar ao terminar. [AGENTS.md](../../AGENTS.md) continua obrigatório.
+Melhorar rapidez e precisão em pt-BR por evidência real.
 
 ## Pré-requisitos e sequência
 
@@ -35,11 +35,11 @@ A [STEP-15-B](STEP-15-B.md) confirmou português por instrução de prompt no Ch
 
 Interrupções não comprovam incompatibilidade; preservar os registros históricos. Validações obrigatórias pendentes mantêm Aguardando validação. A D cobriu os casos antes interrompidos em campanhas novas. O ajuste E deve ser concluído antes da STEP-16. Status exclusivamente em [PROGRESSO.md](../PROGRESSO.md).
 
-## Entrega e encerramento
+## Entrega
 
-Arquitetura com vários motores, seleção nativa condicional e modelos locais manuais; evidências reproduzíveis, recomendações medidas e documentação íntegra. npm.cmd run check e validação real conforme cada subetapa. Atualizar progresso, revisar arquivos preparados e confirmar identidade/mensagem/estado Git antes do commit próprio.
+Arquitetura com vários motores, seleção nativa condicional e modelos locais manuais; evidências reproduzíveis, recomendações medidas e documentação íntegra. Verificações completas do projeto e validação real conforme cada subetapa.
 
-Próxima etapa após A–D: [STEP-16](STEP-16.md). Não iniciar automaticamente.
+Próxima etapa após A–D: [STEP-16](STEP-16.md).
 
 ## Ajuste adicional autorizado em 02/10/2026
 

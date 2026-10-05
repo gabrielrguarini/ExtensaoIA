@@ -19,4 +19,4 @@ O clique em IA passa a executar a ação configurada e substituir o rascunho dir
 
 - Testes relevantes: migração/modos, uma geração, substituição apenas final, saída idêntica/inválida, cancelamento/obsolescência, troca de preferências e aplicação em andamento, modo de prévia e tooltip sem dialog.
 - Chrome real com inferência nativa e fixtures sintéticas: substituir sem janela, Ctrl+Z, tooltip visível durante geração, cancelamento/edição, opção Revisar sugestão e configurações. Regressão com alternativa local preparada, sem repetir grandes downloads.
-- npm.cmd run check, relatório/evidências e commit próprio conforme AGENTS.md. Sem validação obrigatória, manter Aguardando validação. Parar ao terminar; STEP-16 permanece Pendente.
+- Verificações completas do projeto aprovadas e relatório com evidências.
