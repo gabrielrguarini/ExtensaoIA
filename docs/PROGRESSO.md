@@ -417,3 +417,9 @@ Copiar o bloco abaixo para cada execução e preencher somente com fatos verific
 - Conferidos renderização, dimensões/transparência e referências do Manifest. Verificações completas novamente aprovadas: tipos, lint, formatação, 286 testes/41 arquivos e build. ZIP regenerado e arquivos conferidos por hash: somente os quatro PNGs mudaram, com os outros 46 arquivos preservados.
 - Evidências anteriores preservadas; [inventário atualizado](evidencias/step16/icon-package.json) e [verificações](evidencias/step16/icon-checks.json). Nenhuma dependência, preferência, lógica de IA ou permissão alterada. Sem nova inferência ou teste no WhatsApp.
 - Ajuste visual em commit próprio; STEP-16 permanece **Aguardando validação** pelo fluxo final no WhatsApp autenticado.
+
+### Print para a Chrome Web Store — 05/10/2026
+
+- Entrega de somente uma imagem, conforme solicitado: assets/store/screenshot-1280x800.png. PNG RGB de 24 bits, 1280 × 800, sem canal alfa; formato confirmado pelo cabeçalho e pelos metadados.
+- Captura das configurações reais da extensão instalada em perfil isolado do Chrome for Testing 154.0.8037.0, com composição de apresentação. Interface inteira conferida visualmente; sem conversa, dados pessoais, inferência ou download de modelos. O layout de divulgação não modifica o produto.
+- Guia de publicação aponta para o arquivo pronto. Verificações completas do projeto aprovadas: tipos, lint, formatação, 286 testes/41 arquivos e build. Captura e documentação em commit próprio; STEP-16 continua **Aguardando validação** no WhatsApp autenticado.

@@ -32,15 +32,15 @@ Não envie o repositório nem dist.crx/dist.pem. A chave PEM deve permanecer pri
 
 Use **IA local — WhatsApp Web** e a descrição curta do Manifest. A descrição completa deve explicar função, nove ações, substituição direta/prévia opcional, preparo local e requisitos de hardware. Não prometa precisão universal, qualquer equipamento ou vínculo oficial com WhatsApp/Google.
 
-| Material                   | Arquivo/formato                                                        |
-| -------------------------- | ---------------------------------------------------------------------- |
-| Ícone                      | assets/icons/icon-128.png, já incluído no ZIP                          |
-| Imagem promocional pequena | 440 × 280, PNG/JPEG; criar com a identidade do projeto                 |
-| Capturas                   | Pelo menos uma; 1280 × 800 ou 640 × 400, JPEG ou PNG sem transparência |
-| Suporte                    | URL pública de um canal/repositório que você acompanha                 |
-| Privacidade                | URL pública do documento preparado no passo 5                          |
+| Material                   | Arquivo/formato                                                                                      |
+| -------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Ícone                      | assets/icons/icon-128.png, já incluído no ZIP                                                        |
+| Imagem promocional pequena | 440 × 280, PNG/JPEG; criar com a identidade do projeto                                               |
+| Capturas                   | [Um print pronto](../assets/store/screenshot-1280x800.png): 1280 × 800, PNG RGB de 24 bits, sem alfa |
+| Suporte                    | URL pública de um canal/repositório que você acompanha                                               |
+| Privacidade                | URL pública do documento preparado no passo 5                                                        |
 
-Capture o produto com frases sintéticas: correção junto ao editor, tooltip, prévia e configurações. As evidências internas têm tamanhos variados; não envie automaticamente toda a pasta de testes. Imagens devem representar a funcionalidade disponível. [Especificações oficiais](https://developer.chrome.com/docs/webstore/images).
+Foi preparado somente um print para a loja, conforme solicitado: configurações reais da extensão em um perfil isolado do Chrome for Testing, com identidade visual e descrição dos recursos. Não inclui conversas, dados pessoais ou resultados de IA simulados. O arquivo está em assets/store/screenshot-1280x800.png. As evidências internas têm tamanhos variados; não envie automaticamente toda a pasta de testes. Imagens devem representar a funcionalidade disponível. [Especificações oficiais](https://developer.chrome.com/docs/webstore/images).
 
 Descrição sugerida:
 
