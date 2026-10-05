@@ -1,0 +1,73 @@
+{
+  "checkedAt": "2026-10-05T17:00:30.574Z",
+  "version": "0.16.0",
+  "scope": "Ícone vetorial, PNGs, Manifest e pacote; nenhuma nova inferência ou validação do WhatsApp.",
+  "command": "npm.cmd run check",
+  "exitCode": 0,
+  "tests": 286,
+  "testFiles": 41,
+  "typecheck": true,
+  "lint": true,
+  "format": true,
+  "build": true,
+  "package": true,
+  "visualInspection": [
+    "512 px",
+    "32 px"
+  ],
+  "unchangedPackageFiles": 46,
+  "changedPackageFiles": [
+    "icons/icon-128.png",
+    "icons/icon-16.png",
+    "icons/icon-32.png",
+    "icons/icon-48.png"
+  ],
+  "icons": {
+    "assets/icons/icon-16.png": {
+      "width": 16,
+      "height": 16,
+      "transparentCorners": true,
+      "bytes": 575,
+      "sha256": "0ea002a4e2ef30e76f64cbca2af5ca6ebe5e1386b28125ce6c87c342769027df"
+    },
+    "assets/icons/icon-32.png": {
+      "width": 32,
+      "height": 32,
+      "transparentCorners": true,
+      "bytes": 1158,
+      "sha256": "c801e37ce56019907e0d54617b16ddbcb9c5bf5bebae864096de8cc024aa0a6a"
+    },
+    "assets/icons/icon-48.png": {
+      "width": 48,
+      "height": 48,
+      "transparentCorners": true,
+      "bytes": 1756,
+      "sha256": "f41fbba77648b48d98472cf70a208bf345f7cd1c8fdbbc9b651c8d880245df48"
+    },
+    "assets/icons/icon-128.png": {
+      "width": 128,
+      "height": 128,
+      "transparentCorners": true,
+      "bytes": 3746,
+      "sha256": "037b42272a35a2de518e15405d2968e24b9237402d1f9ba950c11721a659ddc9"
+    },
+    "assets/icons/icon-512.png": {
+      "width": 512,
+      "height": 512,
+      "transparentCorners": true,
+      "bytes": 18709,
+      "sha256": "eb8a603b7f5da94f902979506e77fe684524c8bb7706c5df9b323d608215029d"
+    },
+    "assets/icons/icon-1024.png": {
+      "width": 1024,
+      "height": 1024,
+      "transparentCorners": true,
+      "bytes": 48448,
+      "sha256": "36b6374cb787fec370ca3c2b9572b5450a4a0ea56d2d217ceb4532e0ba8a3ee1"
+    }
+  },
+  "master": {
+    "file": "assets/icons/icon.svg",
+    "sha256": "4d6e09e85496c5e812138f85acea4340c1c2355607e0163ddd5f4afa946a5a4c"
+  }
+}

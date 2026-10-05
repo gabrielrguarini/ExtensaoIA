@@ -410,3 +410,10 @@ Copiar o bloco abaixo para cada execução e preencher somente com fatos verific
 - Trabalho preservado fora do commit: dist.crx e dist.pem criados na raiz pelo usuário; ignorados e não incluídos no ZIP. Não ler/expor a chave. Sem push, envio à loja ou publicação.
 - Evidências: [relatório](VALIDACAO-STEP-16.md), docs/evidencias/step16 com resultados, tentativas, checks, inventário e hashes; [guia de publicação](PUBLICACAO-CHROME-WEB-STORE.md). Commit de preparação próprio com identidade humana configurada, hash no histórico e resposta final.
 - Status: **Aguardando validação**. O controle do Windows em 02/10 foi interrompido por URL do Chrome não confirmada; não houve edição/conversa/envio nem contorno desse navegador. Falta conferir os dois modos, Ctrl+Z, Escape/edição/troca de conversa, erros e preparo no WhatsApp autenticado em @gabrielrguarini; registrar somente procedimento/resultado. Não concluir o plano sem essa evidência.
+
+### Ícone do produto — 05/10/2026
+
+- Novo símbolo solicitado pelo usuário: balão de conversa, lápis e estrela de IA, com fundo verde-petróleo e transparência externa. Fonte vetorial em assets/icons/icon.svg; PNGs 16/32/48/128 usados pelo Manifest e PNGs 512/1024 para divulgação. README apresenta o ícone.
+- Conferidos renderização, dimensões/transparência e referências do Manifest. Verificações completas novamente aprovadas: tipos, lint, formatação, 286 testes/41 arquivos e build. ZIP regenerado e arquivos conferidos por hash: somente os quatro PNGs mudaram, com os outros 46 arquivos preservados.
+- Evidências anteriores preservadas; [inventário atualizado](evidencias/step16/icon-package.json) e [verificações](evidencias/step16/icon-checks.json). Nenhuma dependência, preferência, lógica de IA ou permissão alterada. Sem nova inferência ou teste no WhatsApp.
+- Ajuste visual em commit próprio; STEP-16 permanece **Aguardando validação** pelo fluxo final no WhatsApp autenticado.

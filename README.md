@@ -1,5 +1,7 @@
 # IA local para WhatsApp Web
 
+![Ícone da IA local para WhatsApp Web](assets/icons/icon-128.png)
+
 Corrija e reescreva seus rascunhos em português do Brasil, diretamente no WhatsApp Web. A IA funciona no computador e a extensão nunca envia a mensagem por você.
 
 **Versão 0.16.0 · Chrome · Manifest V3**
