@@ -22,7 +22,54 @@ export function PreferenceFields({
   }, [disabled]);
   return (
     <fieldset className="preference-fields" disabled={disabled}>
-      <legend>Como escrever</legend>
+      <legend>Inteligência artificial</legend>
+      <label>
+        Tipo de IA
+        <select
+          aria-label="Tipo de IA"
+          value={value.engine}
+          onChange={(e) => {
+            if (e.nativeEvent.isTrusted) {
+              focus.current = e.currentTarget;
+              onChange({ engine: e.currentTarget.value as WritingPreferences['engine'] });
+            }
+          }}
+        >
+          <option value="chrome-preferred">IA Nativa</option>
+          <option value="local">Modelo</option>
+        </select>
+      </label>
+      <p className="field-hint">
+        {value.engine === 'chrome-preferred'
+          ? 'Usa a IA do Chrome quando estiver pronta. Se não estiver, tenta o modelo salvo, sem download automático.'
+          : 'Escolha o modelo que será usado neste computador.'}
+      </p>
+      {value.engine === 'local' && (
+        <label>
+          Modelo
+          <select
+            aria-label="Modelo"
+            value={value.localModel === 'gemma' ? 'gemma' : value.profile}
+            onChange={(e) => {
+              if (!e.nativeEvent.isTrusted) return;
+              focus.current = e.currentTarget;
+              const selected = e.currentTarget.value;
+              onChange(
+                selected === 'gemma'
+                  ? { localModel: 'gemma' }
+                  : { localModel: 'webllm', profile: selected as WritingPreferences['profile'] },
+              );
+            }}
+          >
+            <option value="economico">Llama 3.2 · 3B</option>
+            <option value="equilibrado">Qwen3 · 4B</option>
+            <option value="qualidade">Qwen3 · 8B</option>
+            <option value="gemma">Gemma 4 · E2B</option>
+          </select>
+        </label>
+      )}
+      {children}
+      <h2 className="writing-title">Como escrever</h2>
       <label>
         Ao clicar em IA
         <select
@@ -41,7 +88,7 @@ export function PreferenceFields({
       </label>
       <p className="field-hint">
         {value.interaction === 'direct'
-          ? 'A IA aplica o resultado no rascunho. Use Ctrl+Z para desfazer.'
+          ? 'A resposta aparece aos poucos no rascunho. Você decide quando enviar.'
           : 'Confira a sugestão antes de copiar ou substituir.'}
       </p>
       <label>
@@ -113,52 +160,6 @@ export function PreferenceFields({
           <option value="dark">Escuro</option>
         </select>
       </label>
-      <details className="ai-options">
-        <summary>IA e modelos</summary>
-        <label>
-          Inteligência artificial
-          <select
-            aria-label="Inteligência artificial"
-            value={value.engine}
-            onChange={(e) => {
-              if (e.nativeEvent.isTrusted) {
-                focus.current = e.currentTarget;
-                onChange({ engine: e.currentTarget.value as WritingPreferences['engine'] });
-              }
-            }}
-          >
-            <option value="chrome-preferred">Automática (recomendado)</option>
-            <option value="local">Usar o modelo escolhido</option>
-          </select>
-        </label>
-        <p className="field-hint">
-          No modo automático, usamos a IA do navegador quando estiver pronta. Caso contrário, usamos
-          o modelo abaixo. A escrita é em português do Brasil.
-        </p>
-        <label>
-          {value.engine === 'chrome-preferred' ? 'Modelo alternativo' : 'Modelo'}
-          <select
-            aria-label="Modelo"
-            value={value.localModel === 'gemma' ? 'gemma' : value.profile}
-            onChange={(e) => {
-              if (!e.nativeEvent.isTrusted) return;
-              focus.current = e.currentTarget;
-              const selected = e.currentTarget.value;
-              onChange(
-                selected === 'gemma'
-                  ? { localModel: 'gemma' }
-                  : { localModel: 'webllm', profile: selected as WritingPreferences['profile'] },
-              );
-            }}
-          >
-            <option value="economico">Llama 3.2 · 3B</option>
-            <option value="equilibrado">Qwen3 · 4B</option>
-            <option value="qualidade">Qwen3 · 8B</option>
-            <option value="gemma">Gemma 4 · E2B</option>
-          </select>
-        </label>
-        {children}
-      </details>
     </fieldset>
   );
 }

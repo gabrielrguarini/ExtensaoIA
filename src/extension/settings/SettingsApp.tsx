@@ -76,7 +76,7 @@ export function SettingsApp() {
     <main>
       <header>
         <h1>Configurações</h1>
-        <p>Escolha o que o botão IA faz no seu rascunho.</p>
+        <p>Escolha a IA e como o botão IA deve escrever.</p>
       </header>
       {popup && (
         <button
@@ -100,14 +100,12 @@ export function SettingsApp() {
           void save(patch);
         }}
       >
-        {loaded && (
-          <>
-            {preferences.engine === 'chrome-preferred' && (
-              <ChromePreparation visiblePanel={!popup} action={preferences.defaultAction} />
-            )}
+        {loaded &&
+          (preferences.engine === 'chrome-preferred' ? (
+            <ChromePreparation visiblePanel={!popup} action={preferences.defaultAction} />
+          ) : (
             <SelectedModelControls preferences={preferences} visiblePanel={!popup} />
-          </>
-        )}
+          ))}
       </PreferenceFields>
       <footer className="privacy-note">
         <p>

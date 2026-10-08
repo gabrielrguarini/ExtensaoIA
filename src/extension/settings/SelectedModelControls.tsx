@@ -169,7 +169,7 @@ export function SelectedModelControls({
     <section aria-labelledby="model-title">
       <h2 id="model-title">{name}</h2>
       {!supported ? (
-        <p>Este modelo não está disponível neste computador. Experimente a IA automática.</p>
+        <p>Este modelo não está disponível neste computador. Experimente a IA Nativa.</p>
       ) : (
         <>
           <p>

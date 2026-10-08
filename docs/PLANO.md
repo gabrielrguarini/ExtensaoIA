@@ -30,6 +30,8 @@ A [STEP-16-A](steps/STEP-16-A.md), solicitada em 08/10/2026, retira a exigência
 
 ## Interface vigente — ajuste STEP-15-F
 
+A [STEP-16-B](steps/STEP-16-B.md), solicitada em 08/10/2026, mostra **Tipo de IA → IA Nativa / Modelo** no início das configurações. O seletor Llama/Qwen/Gemma e seus controles aparecem somente em Modelo; IA Nativa mostra seu preparo. Preferências e alternativa automática antes da geração são preservadas. Substitui a escolha misturada e a seção recolhida descritas abaixo, sem alterar motores ou downloads explícitos.
+
 A [STEP-15-F](steps/STEP-15-F.md) simplifica o produto antes da STEP-16: o botão IA executa diretamente a ação salva; preferências ficam apenas no popup/painel lateral. Português brasileiro e escolha de variante são automáticos. Nomes de frameworks, provas sintéticas, simulação e diagnóstico não aparecem na interface. A compatibilidade nativa por instrução passa a ser automática quando a configuração específica não está pronta, sempre antes da geração e sem download silencioso. Essa decisão substitui os controles manuais descritos nas etapas históricas.
 
 ## Correção vigente de idioma — STEP-15-G
@@ -159,29 +161,30 @@ Mensagens esperadas, contextualizadas conforme o erro real:
 
 Cada etapa depende das anteriores. A conclusão de implementação sem validação obrigatória não permite marcar uma etapa como Concluída.
 
-| Etapa                           | Entrega                                                     |
-| ------------------------------- | ----------------------------------------------------------- |
-| [STEP-01](steps/STEP-01.md)     | Organizar o plano e o acompanhamento                        |
-| [STEP-02](steps/STEP-02.md)     | Criar a base do projeto                                     |
-| [STEP-03](steps/STEP-03.md)     | Implementar Manifest V3 e comunicação                       |
-| [STEP-04](steps/STEP-04.md)     | Detectar o editor do WhatsApp                               |
-| [STEP-05](steps/STEP-05.md)     | Criar preview e substituição manual                         |
-| [STEP-06](steps/STEP-06.md)     | Executar o primeiro modelo local                            |
-| [STEP-07](steps/STEP-07.md)     | Implementar a ação Corrigir                                 |
-| [STEP-08](steps/STEP-08.md)     | Proteger entidades e validar o resultado                    |
-| [STEP-09](steps/STEP-09.md)     | Adicionar os demais modos                                   |
-| [STEP-10](steps/STEP-10.md)     | Exibir geração progressiva e cancelamento                   |
-| [STEP-11](steps/STEP-11.md)     | Implementar verificação semântica opcional                  |
-| [STEP-12](steps/STEP-12.md)     | Adicionar modelos e perfis de hardware                      |
-| [STEP-13](steps/STEP-13.md)     | Consolidar cache, recuperação e desempenho                  |
-| [STEP-14](steps/STEP-14.md)     | Finalizar configurações e interfaces auxiliares             |
-| [STEP-15](steps/STEP-15.md)     | Executar STEP-15-A → B → C → D → E antes da entrega final   |
-| [STEP-15-E](steps/STEP-15-E.md) | Retirar avaliação de conteúdo e manter revisão manual       |
-| [STEP-15-F](steps/STEP-15-F.md) | Simplificar interface e executar ação configurada           |
-| [STEP-15-G](steps/STEP-15-G.md) | Corrigir idioma de saída na Prompt API                      |
-| [STEP-15-H](steps/STEP-15-H.md) | Substituir diretamente com tooltip e prévia opcional        |
-| [STEP-16](steps/STEP-16.md)     | Validar e preparar a entrega instalável                     |
-| [STEP-16-A](steps/STEP-16-A.md) | Aplicar streaming diretamente e preservar edições recebidas |
+| Etapa                           | Entrega                                                          |
+| ------------------------------- | ---------------------------------------------------------------- |
+| [STEP-01](steps/STEP-01.md)     | Organizar o plano e o acompanhamento                             |
+| [STEP-02](steps/STEP-02.md)     | Criar a base do projeto                                          |
+| [STEP-03](steps/STEP-03.md)     | Implementar Manifest V3 e comunicação                            |
+| [STEP-04](steps/STEP-04.md)     | Detectar o editor do WhatsApp                                    |
+| [STEP-05](steps/STEP-05.md)     | Criar preview e substituição manual                              |
+| [STEP-06](steps/STEP-06.md)     | Executar o primeiro modelo local                                 |
+| [STEP-07](steps/STEP-07.md)     | Implementar a ação Corrigir                                      |
+| [STEP-08](steps/STEP-08.md)     | Proteger entidades e validar o resultado                         |
+| [STEP-09](steps/STEP-09.md)     | Adicionar os demais modos                                        |
+| [STEP-10](steps/STEP-10.md)     | Exibir geração progressiva e cancelamento                        |
+| [STEP-11](steps/STEP-11.md)     | Implementar verificação semântica opcional                       |
+| [STEP-12](steps/STEP-12.md)     | Adicionar modelos e perfis de hardware                           |
+| [STEP-13](steps/STEP-13.md)     | Consolidar cache, recuperação e desempenho                       |
+| [STEP-14](steps/STEP-14.md)     | Finalizar configurações e interfaces auxiliares                  |
+| [STEP-15](steps/STEP-15.md)     | Executar STEP-15-A → B → C → D → E antes da entrega final        |
+| [STEP-15-E](steps/STEP-15-E.md) | Retirar avaliação de conteúdo e manter revisão manual            |
+| [STEP-15-F](steps/STEP-15-F.md) | Simplificar interface e executar ação configurada                |
+| [STEP-15-G](steps/STEP-15-G.md) | Corrigir idioma de saída na Prompt API                           |
+| [STEP-15-H](steps/STEP-15-H.md) | Substituir diretamente com tooltip e prévia opcional             |
+| [STEP-16](steps/STEP-16.md)     | Validar e preparar a entrega instalável                          |
+| [STEP-16-A](steps/STEP-16-A.md) | Aplicar streaming diretamente e preservar edições recebidas      |
+| [STEP-16-B](steps/STEP-16-B.md) | Separar IA Nativa/Modelo e seleção condicional nas configurações |
 
 Marco de MVP: concluir até STEP-08. Depois, adicionar modos e streaming, revisão opcional, perfis/cache, configurações, benchmark e entrega final.
 

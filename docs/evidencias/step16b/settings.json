@@ -1,0 +1,35 @@
+{
+  "version": "0.16.2",
+  "browser": "154.0.8037.98",
+  "actualChromeActionPopup": true,
+  "actualChromeSidePanel": true,
+  "checks": [
+    "Popup real mostra IA Nativa/Modelo no início; IA Nativa oculta seletor e controles de modelos.",
+    "Painel lateral real exibe quatro modelos e somente seus controles após escolher Modelo por teclado.",
+    "Llama, Qwen 4B/8B e Gemma selecionáveis por teclado, com sincronização entre interfaces.",
+    "Popup alterna modos por teclado, conserva foco e retorna ao último modelo; tema escuro sem rolagem horizontal.",
+    "Ação, comportamento, gírias, emojis e tema preservados; somente preferências persistidas, sem iniciar download.",
+    "Modo/modelo e ação permanecem após reiniciar o Chrome com a extensão instalada."
+  ],
+  "pageErrors": 0,
+  "panelExceptions": 0,
+  "pageModelRequests": 0,
+  "noModelDownloaded": true,
+  "noConversationOpened": true,
+  "noMessageSent": true,
+  "nativePopup": {
+    "source": "chrome-preferred",
+    "choices": ["IA Nativa", "Modelo"],
+    "models": 0,
+    "nativeControls": true,
+    "width": 375,
+    "scrollWidth": 360,
+    "firstChoiceVisible": true
+  },
+  "modelPopup": {
+    "width": 375,
+    "scrollWidth": 360,
+    "theme": "dark",
+    "focused": "Tipo de IA"
+  }
+}

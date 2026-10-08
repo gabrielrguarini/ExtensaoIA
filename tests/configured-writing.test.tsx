@@ -154,12 +154,29 @@ describe('ação salva com um clique', () => {
         container.querySelector('[aria-label="Ação do botão IA"]')?.querySelectorAll('option'),
       ).toHaveLength(9);
       expect(
-        container.querySelector('[aria-label="Modelo"]')?.querySelectorAll('option'),
-      ).toHaveLength(4);
+        [
+          ...(container.querySelector('[aria-label="Tipo de IA"]')?.querySelectorAll('option') ??
+            []),
+        ].map((option) => option.textContent),
+      ).toEqual(['IA Nativa', 'Modelo']);
+      expect(container.querySelector('[aria-label="Modelo"]')).toBeNull();
       expect(container.querySelectorAll('input[type="checkbox"]')).toHaveLength(2);
       expect(container.textContent).not.toMatch(
         /WebLLM|Transformers|experimental|shader|VRAM|simula/iu,
       );
+      await act(async () => {
+        await Promise.resolve();
+        root.render(
+          <PreferenceFields
+            value={{ ...DEFAULT_PREFERENCES, engine: 'local', localModel: 'gemma' }}
+            disabled={false}
+            onChange={() => undefined}
+          />,
+        );
+      });
+      const model = container.querySelector<HTMLSelectElement>('[aria-label="Modelo"]');
+      expect(model?.querySelectorAll('option')).toHaveLength(4);
+      expect(model?.value).toBe('gemma');
     } finally {
       await act(async () => {
         root.unmount();

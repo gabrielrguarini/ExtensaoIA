@@ -145,11 +145,9 @@ summary {
   color: #fff;
 }
 
-.ai-options {
+.writing-title {
   border-top: 1px solid var(--border);
   margin-top: 16px;
-  padding-top: 4px;
-}
-.ai-options > summary {
+  padding-top: 12px;
   font-weight: 650;
 }

@@ -1,7 +1,7 @@
 {
   "name": "extensao-ia-local",
   "private": true,
-  "version": "0.16.1",
+  "version": "0.16.2",
   "type": "module",
   "description": "Assistente de escrita com IA local para WhatsApp Web.",
   "engines": {
@@ -53,7 +53,8 @@
     "test:step16:browser": "node tests/browser/step16-release.mjs",
     "test:step16a:browser": "node tests/browser/step16a-streaming.mjs",
     "test:step16a:installed": "node tests/browser/step16a-installed.mjs",
-    "test:step16a:whatsapp": "node tests/browser/step16a-whatsapp.mjs"
+    "test:step16a:whatsapp": "node tests/browser/step16a-whatsapp.mjs",
+    "test:step16b:browser": "node tests/browser/step16b-settings.mjs"
   },
   "dependencies": {
     "@huggingface/transformers": "4.2.0",

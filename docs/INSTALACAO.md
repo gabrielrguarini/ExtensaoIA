@@ -4,9 +4,9 @@
 
 ## Pacote local
 
-Versão **0.16.1**. Na pasta do projeto, execute `npm.cmd ci`, `npm.cmd run check` e `npm.cmd run package`. O último comando gera **release/ia-local-whatsapp-0.16.1**, ZIP com Manifest na raiz e inventário SHA-256. A geração substitui somente os artefatos dessa versão. Não inclui node_modules, caches, pesos baixados, testes, páginas de desenvolvimento, CRX, chaves PEM ou conversas. O [guia da Chrome Web Store](PUBLICACAO-CHROME-WEB-STORE.md) explica a publicação pelo usuário.
+Versão **0.16.2**. Na pasta do projeto, execute `npm.cmd ci`, `npm.cmd run check` e `npm.cmd run package`. O último comando gera **release/ia-local-whatsapp-0.16.2**, ZIP com Manifest na raiz e inventário SHA-256. A geração substitui somente os artefatos dessa versão. Não inclui node_modules, caches, pesos baixados, testes, páginas de desenvolvimento, CRX, chaves PEM ou conversas. O [guia da Chrome Web Store](PUBLICACAO-CHROME-WEB-STORE.md) explica a publicação pelo usuário.
 
-Em chrome://extensions, habilite **Modo do desenvolvedor**, clique **Carregar sem compactação** e selecione a pasta release/ia-local-whatsapp-0.16.1, que contém manifest.json. Fixe o ícone da extensão se desejar. Abra/recarregue o WhatsApp Web e as configurações. O pacote dispensa um servidor local. [Procedimento oficial do Chrome](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-an-unpacked-extension).
+Em chrome://extensions, habilite **Modo do desenvolvedor**, clique **Carregar sem compactação** e selecione a pasta release/ia-local-whatsapp-0.16.2, que contém manifest.json. Fixe o ícone da extensão se desejar. Abra/recarregue o WhatsApp Web e as configurações. O pacote dispensa um servidor local. [Procedimento oficial do Chrome](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-an-unpacked-extension).
 
 Não carregue dist e release simultaneamente: duas instalações podem criar dois botões. Para atualizar uma instalação existente de dist, mantenha essa mesma pasta e use `npm.cmd run build`; em chrome://extensions, clique **Recarregar** na extensão e recarregue as abas do WhatsApp. Mudar a pasta de instalação pode mudar o identificador da extensão, suas preferências e acesso ao cache próprio. Não remova uma instalação antes de decidir se precisará do cache já baixado.
 
@@ -14,9 +14,11 @@ O pacote final foi instalado em perfil novo de teste, com preferências padrão 
 
 ## Preparar a IA
 
-**IA e modelos → Automática** prefere a IA do Chrome quando pronta para a ação e idioma. Abra o painel lateral e use **Preparar IA** se oferecido. O navegador verifica requisitos, administra seus próprios downloads e pode usar CPU. Não é possível selecionar ou apagar seus pesos pelos controles dos modelos próprios da extensão.
+No início das configurações, **Tipo de IA** oferece **IA Nativa** e **Modelo**. IA Nativa prefere a IA do Chrome quando pronta para a ação e idioma e mostra somente seus controles de preparo. Abra o painel lateral e use **Preparar IA** se oferecido. O navegador verifica requisitos, administra seus próprios downloads e pode usar CPU. Não é possível selecionar ou apagar seus pesos pelos controles dos modelos próprios da extensão.
 
-Se o caminho nativo não estiver pronto, a extensão usa o modelo local selecionado antes de gerar. Escolha Llama, Qwen ou Gemma em **IA e modelos**, abra o painel lateral e use **Baixar modelo**. O tamanho máximo aparece antes do clique; acompanhe o progresso ou cancele. Pesos válidos em cache são reutilizados, e a preparação confere integridade. Não há download silencioso. Falta de espaço, rede ou artefato inválido preserva o rascunho; nova tentativa exige uma nova ação do usuário.
+Ao escolher **Modelo**, aparece o seletor **Modelo** com Llama 3.2 3B, Qwen3 4B/8B e Gemma 4 E2B, seguido dos controles do escolhido. Abra o painel lateral e use **Baixar modelo**. O tamanho máximo aparece antes do clique; acompanhe o progresso ou cancele. Pesos válidos em cache são reutilizados, e a preparação confere integridade. Não há download silencioso. Falta de espaço, rede ou artefato inválido preserva o rascunho; nova tentativa exige uma nova ação do usuário.
+
+Alternar entre IA Nativa e Modelo conserva o último modelo selecionado e as outras preferências. O comportamento anterior de alternativa automática permanece: se a IA nativa não estiver pronta, a extensão tenta o modelo salvo antes de gerar. Para alterar essa alternativa, selecione Modelo, escolha-o e volte a IA Nativa. Se nenhum estiver preparado, é necessário preparar a IA ou baixar o modelo explicitamente.
 
 Depois da preparação, a inferência pode funcionar sem rede. O WhatsApp continua dependendo da própria conexão. Limpeza/evicção de armazenamento, políticas do navegador ou **Remover download** podem exigir novo preparo. Os arquivos do pacote não incluem os gigabytes de pesos.
 
@@ -40,7 +42,7 @@ Ambiente verificado: Windows, Chrome 154.0.8037.93 e Chrome for Testing 154.0.80
 
 ## Memória, problemas e diagnóstico
 
-Em **IA e modelos → Armazenamento e memória**, **Liberar memória** encerra a instância e conserva o download; **Remover download** pede confirmação e remove somente o modelo/variante selecionado. Inatividade por cinco minutos libera sessões automaticamente. Liberar/remover/trocar modelo cancela pedidos ativos; a próxima ação pode carregar novamente. Cancelar fecha a interface imediatamente, mas o runtime pode precisar de até dois segundos para liberar o pedido; **IA ocupada** exige aguardar e clicar novamente.
+Em **Tipo de IA → Modelo → Armazenamento e memória**, **Liberar memória** encerra a instância e conserva o download; **Remover download** pede confirmação e remove somente o modelo/variante selecionado. Inatividade por cinco minutos libera sessões automaticamente. Liberar/remover/trocar modelo cancela pedidos ativos; a próxima ação pode carregar novamente. Alternar o tipo de IA encerra preparações/downloads em andamento na interface. Cancelar fecha a interface imediatamente, mas o runtime pode precisar de até dois segundos para liberar o pedido; **IA ocupada** exige aguardar e clicar novamente.
 
 Se faltar IA, prepare o modelo nas configurações. Se a extensão perdeu conexão, recarregue a extensão e a aba. Se houver falta de recursos ou falha de GPU, libere memória/feche outras aplicações pesadas e tente por nova ação, ou escolha outro modelo. Nenhum pedido é repetido automaticamente. Confira o rascunho depois de falha de aplicação; Ctrl+Z pode desfazer a última edição. O navegador e o WhatsApp podem mudar suas APIs/estrutura, exigindo nova validação.
 

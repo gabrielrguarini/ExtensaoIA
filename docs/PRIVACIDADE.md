@@ -1,6 +1,6 @@
 # Política de privacidade — IA local para WhatsApp Web
 
-Última atualização: **08/10/2026**. Aplica-se à versão 0.16.1.
+Última atualização: **08/10/2026**. Aplica-se à versão 0.16.2.
 
 ## Finalidade e acesso ao texto
 
