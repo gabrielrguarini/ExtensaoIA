@@ -1,0 +1,18 @@
+{
+  "version": "0.16.1",
+  "commands": {
+    "npm.cmd run check": "passed",
+    "npm.cmd run package": "passed",
+    "npm.cmd run test:step16a:browser": "passed",
+    "npm.cmd run test:step16a:installed": "passed"
+  },
+  "tests": 300,
+  "testFiles": 42,
+  "modifiedDocumentLocalLinks": 246,
+  "dependencyVersionsChanged": false,
+  "generationSourceChanges": [],
+  "whatsappFinalValidation": "pending-reopen-confirmed-chat",
+  "realInference": "pending-prepared-model",
+  "noMessageSent": true,
+  "noRealConversationContentRecorded": true
+}

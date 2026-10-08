@@ -66,8 +66,6 @@ export function readDraft(editor: HTMLElement): DraftContent {
   const text = hasBlocks || !replacementAllowed ? representableText(editor) : editor.innerText;
   return {
     text,
-    // O editor real removeu quebras após insertText durante a validação. Manter
-    // esses rascunhos intactos e oferecer o texto completo somente para cópia.
-    replacementAllowed: replacementAllowed && !/[\r\n]/u.test(text),
+    replacementAllowed,
   };
 }

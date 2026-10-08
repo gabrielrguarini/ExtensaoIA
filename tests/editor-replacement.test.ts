@@ -54,21 +54,20 @@ describe('edição nativa isolada no adaptador', () => {
   it('lê parágrafos como quebras únicas, preservando linhas vazias e Unicode', () => {
     editor.innerHTML = '<p><br></p><p>Olá 👋</p><p><br></p><p>Fim</p><p><br></p>';
     expect(readDraft(editor).text).toBe('\nOlá 👋\n\nFim\n');
-    expect(readDraft(editor).replacementAllowed).toBe(false);
+    expect(readDraft(editor).replacementAllowed).toBe(true);
   });
-  it('mantém múltiplas linhas somente para cópia, inclusive em sugestões novas', async () => {
+  it('permite múltiplas linhas no original e na sugestão sem exigir revisão', () => {
     const snapshot = capture();
-    expect(adapter.canReplace(snapshot, 'Primeira\nSegunda')).toBe(false);
-    expect(await adapter.replace(snapshot, 'Primeira\nSegunda')).toBe('copy-only');
+    expect(adapter.canReplace(snapshot, 'Primeira\nSegunda')).toBe(true);
     editor.innerHTML = '<p>Primeira</p><p>Segunda</p>';
-    expect(await adapter.replace(capture(), 'Novo')).toBe('copy-only');
+    expect(adapter.canReplace(capture(), 'Novo')).toBe(true);
     expect(exec).not.toHaveBeenCalled();
   });
   it('preserva linhas vazias em blocos DIV criados pelo Chrome', () => {
     editor.innerHTML = 'Primeira<div><br></div><div>Terceira 👋</div><div><br></div>';
     expect(readDraft(editor)).toEqual({
       text: 'Primeira\n\nTerceira 👋\n',
-      replacementAllowed: false,
+      replacementAllowed: true,
     });
   });
   it('usa uma única inserção literal com seleção limitada ao editor', async () => {
@@ -86,6 +85,13 @@ describe('edição nativa isolada no adaptador', () => {
     const snapshot = capture();
     text = 'Texto alterado sem evento';
     expect(await adapter.replace(snapshot, 'Novo')).toBe('stale');
+    expect(exec).not.toHaveBeenCalled();
+  });
+  it('prévia multilinha respeita alteração da revisão enquanto aguarda foco, mesmo com texto igual', async () => {
+    const result = adapter.replace(capture(), 'Primeira\nSegunda');
+    editor.dispatchEvent(new Event('beforeinput'));
+    await vi.advanceTimersByTimeAsync(60);
+    expect(await result).toBe('stale');
     expect(exec).not.toHaveBeenCalled();
   });
   it('rejeita snapshots forjados e contexto substituído mesmo com texto idêntico', async () => {

@@ -1,5 +1,6 @@
 import type { EngineIdentity, SuggestionResult } from '../../shared/suggestion';
 import type { DraftSnapshot, WhatsAppAdapter } from '../../integration/whatsapp/adapter';
+import type { StreamingDraft } from '../../integration/whatsapp/streaming-draft';
 import { MAX_TEXT_LENGTH } from '../../shared/protocol';
 import { generatePreview, SIMULATION_PREFIX } from './preview-client';
 import type { PreviewGenerator } from './preview-client';
@@ -37,6 +38,7 @@ export type PreviewState =
       variant: LocalVariant;
     }
   | { kind: 'notice'; message: string }
+  | { kind: 'recovery'; message: string; busy: boolean }
   | { kind: 'action-loading'; action: WritingAction; progress: ProofProgress; partial: string }
   | { kind: 'model-loading'; progress: ProofProgress }
   | { kind: 'model-result'; text: string; variant: LocalVariant }
@@ -57,6 +59,10 @@ export class PreviewSession {
   private snapshot: DraftSnapshot | null = null;
   private cancelGeneration: (() => void) | undefined;
   private replacement: AbortController | undefined;
+  private stream: StreamingDraft | undefined;
+  private recovery: StreamingDraft | undefined;
+  private restoring: StreamingDraft | undefined;
+  private recoveryTask: Promise<void> | undefined;
   private sequence = 0;
   private preferenceRevision = 0;
   private unsubscribePreferences: (() => void) | undefined;
@@ -95,7 +101,8 @@ export class PreviewSession {
       this.noticeTimer = setTimeout(() => this.close(), 6_000);
     for (const listener of this.listeners) listener();
   }
-  close(): void {
+  close(restore = true): void {
+    if (!restore) this.restoring?.release();
     clearTimeout(this.noticeTimer);
     this.sequence++;
     this.unsubscribePreferences?.();
@@ -105,10 +112,49 @@ export class PreviewSession {
     this.cancelGeneration?.();
     this.cancelGeneration = undefined;
     this.snapshot = null;
+    const stream = this.stream;
+    this.stream = undefined;
+    this.recovery?.release();
+    this.recovery = undefined;
     this.set({ kind: 'closed' });
+    if (stream) {
+      if (!restore) stream.release();
+      else {
+        const sequence = this.sequence;
+        this.restoring = stream;
+        this.recoveryTask = stream
+          .cancel()
+          .then((result) => {
+            if (sequence !== this.sequence) return;
+            if (result === 'edited' || result === 'failed') {
+              this.recovery = stream;
+              this.set({
+                kind: 'recovery',
+                busy: false,
+                message:
+                  result === 'edited'
+                    ? 'A IA foi interrompida. Suas edições foram mantidas.'
+                    : 'Não foi possível recuperar o rascunho automaticamente.',
+              });
+            }
+          })
+          .finally(() => {
+            if (this.restoring === stream) this.restoring = undefined;
+            this.recoveryTask = undefined;
+          });
+      }
+    }
   }
   /** Fluxo do produto: um gesto, uma ação salva, sem menu de configurações. */
   executeConfigured(): void {
+    if (this.stream || this.recoveryTask) {
+      this.close();
+      const sequence = this.sequence;
+      void this.recoveryTask?.then(() => {
+        if (this.sequence === sequence) this.executeConfigured();
+      });
+      return;
+    }
     this.interaction = 'direct';
     this.close();
     const snapshot = this.adapter.capture();
@@ -130,14 +176,14 @@ export class PreviewSession {
     void this.preferences.read().then(
       (saved) => {
         if (sequence !== this.sequence) return;
-        this.validate();
-        if (sequence !== this.sequence) return;
         const value = this.latestPreferences ?? saved;
         this.latestPreferences = value;
         this.profile = value.profile;
         this.engine = value.engine;
         this.localModel = value.localModel;
         this.interaction = value.interaction;
+        this.validate();
+        if (sequence !== this.sequence) return;
         this.runAction(value.defaultAction, snapshot, false);
       },
       () => {
@@ -333,13 +379,22 @@ export class PreviewSession {
     );
   }
   validate(): void {
+    if (this.recovery && !this.recovery.isCurrent()) {
+      this.close(false);
+      return;
+    }
     // A escrita nativa gera nossas próprias mutações; o adaptador valida cada await.
     if (
       this.state.kind === 'applying' ||
       (this.state.kind === 'preview' && this.state.busy === 'replace')
     )
       return;
-    if (this.snapshot && !this.adapter.isCurrent(this.snapshot)) {
+    const current =
+      this.snapshot &&
+      (this.isDirect()
+        ? this.adapter.isContextCurrent(this.snapshot)
+        : this.adapter.isCurrent(this.snapshot));
+    if (this.snapshot && !current) {
       this.close();
       this.set({
         kind: 'notice',
@@ -419,6 +474,18 @@ export class PreviewSession {
   private runAction(action: WritingAction, snapshot: DraftSnapshot, allowDownload: boolean): void {
     this.snapshot = snapshot;
     const sequence = ++this.sequence;
+    if (this.isDirect())
+      this.stream = this.adapter.beginStream(snapshot, (reason) => {
+        if (sequence !== this.sequence) return;
+        this.close();
+        this.set({
+          kind: 'notice',
+          message:
+            reason === 'unsupported'
+              ? 'Este campo contém uma estrutura que não permite substituição direta.'
+              : 'A escrita foi interrompida. Confira o rascunho.',
+        });
+      });
     this.set({
       kind: 'action-loading',
       action,
@@ -438,8 +505,10 @@ export class PreviewSession {
         (partial) => {
           if (sequence !== this.sequence || this.state.kind !== 'action-loading') return;
           this.validate();
-          if (sequence === this.sequence && this.state.kind === 'action-loading')
+          if (sequence === this.sequence && this.state.kind === 'action-loading') {
             this.set({ ...this.state, partial });
+            this.stream?.push(partial);
+          }
         },
         (outcome) => {
           if (sequence !== this.sequence || this.state.kind !== 'action-loading') return;
@@ -464,7 +533,7 @@ export class PreviewSession {
             return;
           }
           if (!outcome.ok || !outcome.text.trim()) {
-            this.snapshot = null;
+            this.close();
             this.set({
               kind: 'notice',
               message: outcome.ok
@@ -474,7 +543,7 @@ export class PreviewSession {
             return;
           }
           if (this.isDirect()) {
-            void this.applyDirect(snapshot, outcome.text);
+            void this.finishDirect(outcome.text);
             return;
           }
           this.set({
@@ -493,7 +562,7 @@ export class PreviewSession {
         this.profile,
       );
     } catch {
-      this.snapshot = null;
+      this.close();
       this.set({ kind: 'notice', message: 'Não foi possível iniciar a IA. Tente novamente.' });
     }
   }
@@ -506,43 +575,34 @@ export class PreviewSession {
     return `${message}${smaller ? ` Você pode escolher um modelo menor nas configurações da extensão.` : ''} A escolha atual foi mantida.`;
   }
 
-  private async applyDirect(snapshot: DraftSnapshot, text: string): Promise<void> {
-    if (text === snapshot.text) {
-      this.close();
-      this.set({ kind: 'notice', message: 'Sem alterações.' });
-      return;
-    }
-    if (!this.adapter.canReplace(snapshot, text)) {
-      this.close();
-      this.set({
-        kind: 'notice',
-        message: 'Este rascunho exige revisão. Selecione Revisar sugestão nas configurações.',
-      });
-      return;
-    }
+  private async finishDirect(text: string): Promise<void> {
     const sequence = this.sequence;
-    this.replacement = new AbortController();
+    const stream = this.stream;
+    if (!stream) return;
     this.set({ kind: 'applying' });
-    let result;
-    try {
-      result = await this.adapter.replace(snapshot, text, this.replacement.signal);
-    } catch {
-      result = 'failed-review' as const;
-    }
+    const applied = await stream.finish(text);
     if (sequence !== this.sequence) return;
+    if (applied) {
+      this.stream = undefined;
+      stream.release();
+    }
     this.close();
-    if (result === 'applied') return;
-    this.set({
-      kind: 'notice',
-      message:
-        result === 'stale'
-          ? 'O rascunho ou a conversa mudou. Clique em IA novamente.'
-          : result === 'copy-only'
-            ? 'Este rascunho exige revisão. Selecione Revisar sugestão nas configurações.'
-            : result === 'failed-preserved'
-              ? 'Não foi possível substituir. O rascunho original foi preservado.'
-              : 'Confira o rascunho. Use Ctrl+Z para desfazer a última edição, se necessário.',
-    });
+  }
+
+  async restoreOriginal(): Promise<void> {
+    const recovery = this.recovery;
+    if (!recovery || this.state.kind !== 'recovery' || this.state.busy) return;
+    const sequence = this.sequence;
+    this.set({ ...this.state, busy: true });
+    const restored = await recovery.restoreOriginal();
+    if (sequence !== this.sequence) return;
+    if (restored) this.close(false);
+    else
+      this.set({
+        kind: 'recovery',
+        busy: false,
+        message: 'Não foi possível restaurar. Confira o campo antes de tentar novamente.',
+      });
   }
 
   confirmDownload(): void {

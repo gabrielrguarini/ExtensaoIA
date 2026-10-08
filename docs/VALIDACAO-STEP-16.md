@@ -2,6 +2,8 @@
 
 [Plano](PLANO.md) · [Progresso](PROGRESSO.md) · [Etapa](steps/STEP-16.md) · [Instalação](INSTALACAO.md)
 
+Registro histórico da versão 0.16.0. O ajuste autorizado em 08/10/2026 e o pacote 0.16.1 com streaming direto estão no [relatório STEP-16-A](VALIDACAO-STEP-16-A.md); seus novos critérios substituem a aplicação somente ao final e a invalidação por edição no modo direto descritas abaixo.
+
 ## Estado em 05/10/2026
 
 **Aguardando validação do WhatsApp autenticado.** Pacote, verificações automatizadas e integração em perfis isolados aprovados; não concluir a etapa/plano com essa evidência obrigatória pendente. O controle do Windows pela habilidade computer-use foi interrompido porque não conseguiu confirmar a URL atual do Chrome com segurança. Sua orientação para turnos interrompidos exige “stop issuing app input”; nenhuma conversa foi escolhida, editada ou enviada nessa tentativa. Foi solicitado ao usuário verificar os dois modos, desfazer, cancelamento, edição e troca de conversa somente em @gabrielrguarini, sem envio. A interrupção não foi contornada por outro meio de controle desse navegador.

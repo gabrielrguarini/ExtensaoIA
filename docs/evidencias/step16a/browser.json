@@ -1,0 +1,16 @@
+{
+  "browser": "154.0.8037.98",
+  "syntheticGeneration": true,
+  "realWhatsApp": false,
+  "checks": [
+    "primeiro trecho substitui digitação; sufixos preservam edição, Unicode e linhas vazias; cursor pode ir ao final",
+    "Escape restaura original e descarta conclusão atrasada",
+    "falha mantém edição humana e permite restaurar o original",
+    "troca de contexto impede escrita",
+    "rascunho longo multilinha não exige revisão e conserva histórico nativo",
+    "eventos de composição adiam escrita sem perder trechos",
+    "Enter/controle manual encerra escrita e ignora resposta atrasada, sem restauração",
+    "prévia opcional substitui múltiplas linhas sem restrição"
+  ],
+  "pageErrors": 0
+}

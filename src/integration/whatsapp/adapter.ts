@@ -1,4 +1,7 @@
 import { readDraft } from './draft';
+import { editDraft } from './native-edit';
+import { StreamingDraft } from './streaming-draft';
+import type { StreamWriteResult } from './streaming-draft';
 
 // Todos os seletores do site ficam aqui. Nenhum texto de contato ou histórico é lido.
 const selectors = {
@@ -78,7 +81,11 @@ export class WhatsAppAdapter {
   private frame: number | undefined;
   private active = false;
   private contextRevision = 0;
-  private readonly issued = new WeakMap<DraftSnapshot, { url: string; editor: HTMLElement }>();
+  private composing = false;
+  private readonly issued = new WeakMap<
+    DraftSnapshot,
+    { url: string; editor: HTMLElement; contextRevision: number }
+  >();
   private readonly listeners = new Set<(target: EditorTarget | null) => void>();
 
   constructor(private readonly document: Document) {}
@@ -127,7 +134,11 @@ export class WhatsAppAdapter {
       revision: this.revision,
       ...readDraft(this.target.editor),
     });
-    this.issued.set(snapshot, { url: this.document.URL, editor: this.target.editor });
+    this.issued.set(snapshot, {
+      url: this.document.URL,
+      editor: this.target.editor,
+      contextRevision: this.contextRevision,
+    });
     return snapshot;
   }
 
@@ -139,6 +150,55 @@ export class WhatsAppAdapter {
       this.target !== null &&
       snapshot.editorId === this.target.editorId &&
       snapshot.revision === this.revision
+    );
+  }
+
+  /** O modo direto autoriza digitação concorrente, mas nunca outro contexto. */
+  isContextCurrent(snapshot: DraftSnapshot): boolean {
+    this.flush();
+    const issued = this.issued.get(snapshot);
+    return (
+      this.active &&
+      !!issued &&
+      issued.url === this.document.URL &&
+      issued.contextRevision === this.contextRevision &&
+      issued.editor === this.target?.editor &&
+      snapshot.editorId === this.target.editorId
+    );
+  }
+
+  beginStream(
+    snapshot: DraftSnapshot,
+    failed: (reason: StreamWriteResult) => void,
+  ): StreamingDraft {
+    const editor = this.issued.get(snapshot)?.editor;
+    const current = () => !!editor && this.isContextCurrent(snapshot);
+    return new StreamingDraft(
+      {
+        current,
+        read: () => (editor ? readDraft(editor).text : ''),
+        write: (text, append, expected, active) =>
+          editor
+            ? editDraft(editor, text, append, expected, current, () => this.composing, active)
+            : Promise.resolve('stale'),
+        restore: async (expected, original, active) => {
+          if (!editor || !active() || !current() || readDraft(editor).text !== expected)
+            return false;
+          return (
+            (await editDraft(
+              editor,
+              original,
+              false,
+              expected,
+              current,
+              () => this.composing,
+              active,
+            )) === 'applied'
+          );
+        },
+      },
+      snapshot.text,
+      failed,
     );
   }
 
@@ -154,7 +214,7 @@ export class WhatsAppAdapter {
     try {
       return (
         snapshot.replacementAllowed &&
-        !/[\r\n]/u.test(suggestion) &&
+        typeof suggestion === 'string' &&
         typeof this.document.execCommand === 'function' &&
         typeof this.document.queryCommandSupported === 'function' &&
         this.document.queryCommandSupported('insertText') &&
@@ -184,6 +244,21 @@ export class WhatsAppAdapter {
     )
       return 'copy-only';
     const editor = this.target.editor;
+    if (/[\r\n]/u.test(text) || /[\r\n]/u.test(snapshot.text)) {
+      const result = await editDraft(
+        editor,
+        text.replace(/\r\n?/gu, '\n'),
+        false,
+        snapshot.text,
+        () => !signal?.aborted && this.isContextCurrent(snapshot),
+        () => this.composing,
+        () => !signal?.aborted && this.isCurrent(snapshot),
+      );
+      if (result === 'applied') return 'applied';
+      if (result === 'stale' || result === 'retry') return 'stale';
+      if (result === 'unsupported') return 'copy-only';
+      return readDraft(editor).text === snapshot.text ? 'failed-preserved' : 'failed-review';
+    }
     editor.focus({ preventScroll: true });
     // O foco também restaura a seleção anterior no editor controlado; esperar essa
     // restauração antes de selecionar evita que ela apague nossa seleção completa.
@@ -339,6 +414,8 @@ export class WhatsAppAdapter {
     this.revision++;
     this.target = next ? { ...next, editorId: crypto.randomUUID() } : null;
     this.target?.editor.addEventListener('beforeinput', this.invalidate);
+    this.target?.editor.addEventListener('compositionstart', this.startComposition);
+    this.target?.editor.addEventListener('compositionend', this.endComposition);
     this.target?.editor.addEventListener('input', this.invalidate);
     this.target?.editor.addEventListener('compositionstart', this.invalidate);
     this.observe();
@@ -349,7 +426,17 @@ export class WhatsAppAdapter {
     this.target?.editor.removeEventListener('beforeinput', this.invalidate);
     this.target?.editor.removeEventListener('input', this.invalidate);
     this.target?.editor.removeEventListener('compositionstart', this.invalidate);
+    this.target?.editor.removeEventListener('compositionstart', this.startComposition);
+    this.target?.editor.removeEventListener('compositionend', this.endComposition);
+    this.composing = false;
   }
+
+  private readonly startComposition = (): void => {
+    this.composing = true;
+  };
+  private readonly endComposition = (): void => {
+    this.composing = false;
+  };
 
   private observe(): void {
     const observer = this.observer;

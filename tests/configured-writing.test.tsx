@@ -14,6 +14,7 @@ import type { WritingPreferences } from '../src/shared/preferences';
 import type { WhatsAppAdapter } from '../src/integration/whatsapp/adapter';
 import { selectNativeQuery } from '../src/extension/ai/native-choice';
 import type { ActionGenerator } from '../src/extension/content/action-client';
+import { StreamingDraft } from '../src/integration/whatsapp/streaming-draft';
 
 vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
 function harness() {
@@ -24,7 +25,24 @@ function harness() {
     text: 'Teste sintético.',
     replacementAllowed: true,
   };
-  const adapter = { capture: vi.fn(() => snapshot), isCurrent: vi.fn(() => true) };
+  const adapter = {
+    capture: vi.fn(() => snapshot),
+    isCurrent: vi.fn(() => true),
+    isContextCurrent: vi.fn(() => true),
+    beginStream: vi.fn(
+      () =>
+        new StreamingDraft(
+          {
+            current: () => true,
+            read: () => snapshot.text,
+            write: () => Promise.resolve('applied'),
+            restore: () => Promise.resolve(true),
+          },
+          snapshot.text,
+          vi.fn(),
+        ),
+    ),
+  };
   let resolve: (value: WritingPreferences) => void = () => undefined;
   let changed: (value: WritingPreferences) => void = () => undefined;
   const cancel = vi.fn();
@@ -69,17 +87,17 @@ describe('ação salva com um clique', () => {
     expect(h.session.getState().kind).toBe('action-loading');
     h.session.close();
   });
-  it.each(['edição', 'cancelamento'])(
+  it.each(['troca de conversa', 'cancelamento'])(
     'não gera após %s enquanto lê as configurações',
     async (reason) => {
       const h = harness();
       h.session.executeConfigured();
-      if (reason === 'edição') h.adapter.isCurrent.mockReturnValue(false);
+      if (reason === 'troca de conversa') h.adapter.isContextCurrent.mockReturnValue(false);
       else h.session.close();
       h.resolve(DEFAULT_PREFERENCES);
       await Promise.resolve();
       expect(h.write).not.toHaveBeenCalled();
-      expect(h.session.getState().kind).toBe(reason === 'edição' ? 'notice' : 'closed');
+      expect(h.session.getState().kind).toBe(reason === 'troca de conversa' ? 'notice' : 'closed');
       h.session.close();
     },
   );

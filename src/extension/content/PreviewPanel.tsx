@@ -16,6 +16,24 @@ export function PreviewPanel({
     if (state.kind !== 'closed')
       panel.current?.querySelector<HTMLButtonElement>('button:not(:disabled)')?.focus();
   }, [state.kind]);
+  if (state.kind === 'recovery')
+    return (
+      <section className="preview-panel" role="status" aria-label="Recuperar rascunho">
+        <p>{state.message}</p>
+        <button
+          className="primary"
+          disabled={state.busy}
+          onClick={(event) => {
+            if (event.isTrusted) void session.restoreOriginal();
+          }}
+        >
+          Restaurar original
+        </button>
+        <button disabled={state.busy} onClick={() => session.close(false)}>
+          Manter edição
+        </button>
+      </section>
+    );
   if (state.kind === 'closed' || session.isDirect()) return null;
   const choice =
     state.kind === 'download-confirm' ? localChoice(state.profile, state.variant) : null;

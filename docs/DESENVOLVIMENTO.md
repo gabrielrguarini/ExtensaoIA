@@ -2,9 +2,9 @@
 
 Assistente de escrita em português do Brasil. Por padrão, clique em **IA** no WhatsApp para corrigir e substituir o rascunho diretamente, com um tooltip **Carregando IA** durante o processamento. A ação e o comportamento podem ser alterados nas configurações; **Revisar sugestão** recupera a prévia com **Copiar/Substituir**. Nenhuma mensagem é enviada automaticamente. A IA do navegador já preparada tem preferência; também é possível escolher Llama, Qwen ou Gemma para processamento neste computador.
 
-O estado e as evidências ficam em [Progresso](PROGRESSO.md). Consulte o [plano histórico](PLANO.md) e o [README de produto](../README.md). O ajuste vigente [STEP-15-H](steps/STEP-15-H.md) precede a entrega final STEP-16.
+O estado e as evidências ficam em [Progresso](PROGRESSO.md). Consulte o [plano histórico](PLANO.md) e o [README de produto](../README.md). O ajuste vigente [STEP-16-A](steps/STEP-16-A.md) acrescenta streaming direto ao fluxo da STEP-15-H.
 
-A entrega local **0.16.0** e o procedimento de atualização estão no [guia de instalação](INSTALACAO.md). Use `npm.cmd run package` para gerar release/ia-local-whatsapp-0.16.0, sem páginas de desenvolvimento, e seu inventário SHA-256. Confira o [relatório STEP-16](VALIDACAO-STEP-16.md) para saber quais validações passaram e quais permanecem pendentes.
+A entrega local **0.16.1** e o procedimento de atualização estão no [guia de instalação](INSTALACAO.md). Use `npm.cmd run package` para gerar release/ia-local-whatsapp-0.16.1, sem páginas de desenvolvimento, e seu inventário SHA-256. Confira o [relatório de streaming](VALIDACAO-STEP-16-A.md) e o [relatório STEP-16](VALIDACAO-STEP-16.md) para saber quais validações passaram e quais permanecem pendentes.
 
 ## Requisitos e instalação
 
@@ -24,13 +24,13 @@ No PowerShell, use npm.cmd se a política local bloquear npm.ps1. Em chrome://ex
 1. Abra o ícone da extensão e escolha a **Ação do botão IA**: Corrigir, Melhorar, Formal, Profissional, Amigável, Natural, Conciso, Engraçado ou Reescrever.
 2. Ajuste gírias, novos emojis e tema se desejar. Em **IA e modelos**, mantenha Automática ou escolha um modelo. Use **Abrir painel lateral** para preparar a IA do navegador quando necessário.
 3. Escreva o rascunho no WhatsApp e clique em **IA**. Esse gesto captura somente o rascunho atual e inicia a ação salva, sem menu intermediário.
-4. No padrão **Substituir diretamente**, aguarde o tooltip; a resposta final é aplicada ao rascunho sem janela. **Ctrl+Z** desfaz a substituição. Clicar novamente em IA, Escape ou clique fora cancela o pedido. Alteração do rascunho ou troca de conversa impede aplicação. Em **Ao clicar em IA → Revisar sugestão**, confira o resultado e escolha Copiar/Substituir.
+4. No padrão **Substituir diretamente**, a resposta chega ao campo em streaming, sem janela. O primeiro trecho substitui o texto presente naquele momento; os próximos acrescentam somente o sufixo ao final e preservam edições nos trechos recebidos. O cursor pode ir ao final a cada escrita. **Ctrl+Z** usa o histórico nativo, com possíveis operações separadas por trecho. Clicar novamente em IA, Escape ou clique fora cancela o pedido; troca de conversa/editor impede novas escritas. Em **Ao clicar em IA → Revisar sugestão**, confira o resultado e escolha Copiar/Substituir.
 
 Português brasileiro é automático. A extensão consulta as APIs especializadas com idioma declarado; se não estiverem prontas, consulta a Prompt API com a instrução de responder em português do Brasil. Essa compatibilidade foi validada nas versões registradas, sem promessa de qualidade universal. Consulte as [referências de idioma/cache](REFERENCIAS-IA-CHROME.md).
 
 Downloads sempre exigem ação explícita: **Preparar IA** no painel lateral para o navegador e **Baixar modelo** para o modelo escolhido, com tamanho informado, progresso e cancelamento. No modo de prévia, Baixar e continuar também permanece disponível. No modo direto, cache ausente é informado no tooltip; o rascunho permanece intacto até preparar o modelo nas configurações. A inferência preparada funciona offline; o WhatsApp ainda depende da própria conexão. A variante compatível é escolhida automaticamente, sem controles técnicos na interface.
 
-Cada pedido faz uma única geração com o original, sem repetição automática após falha. Trechos em geração não são aplicados. A [STEP-15-E](steps/STEP-15-E.md) retirou a avaliação automática de conteúdo; o usuário decide o conteúdo e quando enviar. Saída idêntica indica **Sem alterações**, sem criar transação de escrita; saídas vazias ou tecnicamente inutilizáveis são erros. Textos multilinha e estruturas especiais preservam o rascunho e orientam escolher Revisar sugestão para copiar, protegendo menções e formatação.
+Cada pedido faz uma única geração com o original, sem repetição automática após falha. A [STEP-15-E](steps/STEP-15-E.md) retirou a avaliação automática de conteúdo; o usuário decide o conteúdo e quando enviar. Saídas vazias ou tecnicamente inutilizáveis são erros. Várias linhas e emojis permitem aplicação direta; estruturas especiais continuam protegidas, com cópia disponível na prévia. O original fica em memória até o fim: falha/cancelamento restaura automaticamente se não houve edição humana após a primeira escrita; com edição, oferece recuperação explícita sem apagá-la. Ação manual de envio encerra o pedido sem restauração.
 
 ## Configurações e privacidade
 
@@ -42,7 +42,7 @@ Somente preferências são persistidas. Rascunhos, prompts, respostas, contatos 
 
 ## Comandos
 
-Os roteiros de navegador STEP-06 até STEP-15-D preservam os contratos históricos e devem ser executados no commit da etapa correspondente. Para o produto vigente, use `check` e `test:step15h:browser`; as evidências anteriores continuam disponíveis nos relatórios.
+Os roteiros de navegador STEP-06 até STEP-16 preservam os contratos históricos e devem ser executados no commit da etapa correspondente. Para o ajuste vigente, use `check` e `test:step16a:browser`; as evidências anteriores continuam disponíveis nos relatórios.
 
 | Comando                                       | Finalidade                                                                                                    |
 | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
@@ -83,6 +83,9 @@ Os roteiros de navegador STEP-06 até STEP-15-D preservam os contratos históric
 | npm run build                                 | Conferir tipos e gerar a extensão completa em dist.                                                           |
 | npm run package                               | Gerar pacote instalável em release e inventário SHA-256; exclui páginas de desenvolvimento.                   |
 | npm run test:step16:browser                   | Validar instalação limpa ou motor preparado; requer STEP16_CHROME e STEP16_MODE.                              |
+| npm run test:step16a:browser                  | Validar streaming do adaptador/sessão no Chrome real com geração e editor sintéticos; aceita STEP16A_CHROME.  |
+| npm run test:step16a:installed                | Instalar release em perfil dedicado e conferir padrões/cache ausente/storage; aceita STEP16A_CHROME.          |
+| npm run test:step16a:whatsapp                 | Conferir edição com geração sintética no WhatsApp autenticado; exige conversa confirmada e STEP16A_CDP.       |
 | npm run preview                               | Servir as páginas construídas em http://127.0.0.1:4173.                                                       |
 | npm run check                                 | Executar tipos, lint, formatação, testes e build; parar na primeira falha.                                    |
 
@@ -113,13 +116,15 @@ O adaptador procura um único textbox contenteditable visível no footer de #mai
 
 MutationObserver acompanha o campo editável, a estrutura direta do compositor e o título da conversa, além dos filhos diretos dos ancestrais. Mudanças transitórias nos demais controles do rodapé ou no status do grupo não invalidam o rascunho. Não observa profundamente body nem o histórico. Uma descoberta estrutural a cada segundo cobre contêineres novos e mudanças externas de CSS; atualizações são agrupadas por frame. O host da extensão é ignorado e o Shadow DOM isola os estilos. ResizeObserver e eventos de scroll/resize atualizam a posição; os listeners, observadores e timers são encerrados ao sair da página. O retorno pelo cache de navegação remonta a integração.
 
-Capturas têm UUIDs aleatórios e revisão, sem identidade de contato. Edição, composição IME, substituição do campo e mudanças no título invalidam a revisão, inclusive quando o texto permanece igual. Não se lê o conteúdo do cabeçalho. A conferência drena mutações pendentes antes de decidir se ela ainda é atual. Cliques sintéticos disparados pela página são ignorados.
+Capturas têm UUIDs aleatórios e revisão, sem identidade de contato. Edição e composição IME invalidam a revisão usada pela prévia. O modo direto confere uma revisão separada do contexto: documento, editor e título devem permanecer os mesmos, inclusive quando outra conversa contém texto idêntico. A escrita aguarda o término da composição IME. Não se lê o conteúdo do cabeçalho. A conferência drena mutações pendentes antes de decidir se ela ainda é atual. Cliques sintéticos disparados pela página são ignorados.
 
-Copiar e Substituir conferem novamente o texto, documento, editor e revisão capturados. A substituição aguarda a restauração de foco/seleção do editor controlado, limita a seleção ao campo e usa execCommand('insertText') exclusivamente no adaptador. O resultado é conferido antes e depois da reconciliação da página. Uma inserção incorreta pode ser desfeita sincronamente pela própria transação; não há segunda tentativa automática nem rollback tardio que possa apagar uma edição posterior. Uma falha não confirmada orienta a conferir o rascunho. A API é obsoleta e o suporte foi validado no Chrome indicado no relatório, sem garantia para versões futuras.
+Copiar e Substituir conferem novamente o texto, documento, editor e revisão capturados. O módulo `native-edit` aguarda foco/seleção do editor controlado, confere texto/contexto antes da mutação e usa edição nativa. Para várias linhas, oferece um evento público de colagem com texto simples, sem ler/escrever o clipboard do sistema; se não tratado, usa insertText/insertLineBreak. Não escreve innerHTML nem usa APIs internas do WhatsApp. O resultado é conferido após a reconciliação da página. As operações mantêm o histórico de desfazer do campo; não há promessa de uma única transação para todo o streaming. A API execCommand é obsoleta e o suporte foi validado no Chrome indicado no relatório, sem garantia para versões futuras.
+
+`StreamingDraft` serializa escritas e agrega prefixos cumulativos rápidos. Depois da primeira substituição, calcula somente o sufixo do modelo e o acrescenta ao conteúdo atual, preservando edições humanas. Espaços finais e surrogate Unicode incompleto são retidos até o próximo trecho. Cada escrita confere contexto e cancelamento antes da mutação; eventos atrasados são descartados. Recuperação automática exige conteúdo igual ao último escrito e ausência de edições observadas; caso contrário, o original permanece disponível em memória para restauração por clique. Mudança de contexto nunca restaura na outra conversa.
 
 ## Geração e revisão opcional
 
-O modelo recebe o rascunho original e gera uma vez. No padrão direto, a resposta final tecnicamente válida é aplicada ao snapshot atual após o clique em IA; não se abre janela. Na opção Revisar sugestão, **Copiar/Substituir** são escolhas explícitas, sem confirmação adicional ou avisos automáticos de conteúdo. Resultado idêntico indica **Sem alterações**; falhas técnicas, cancelamento, desconexão ou rascunho alterado impedem aplicação. A extensão nunca envia mensagens.
+O modelo recebe o rascunho original e gera uma vez. No padrão direto, a resposta chega ao campo em streaming após o clique em IA; a conclusão acrescenta apenas o trecho faltante, sem reaplicar o resultado inteiro. Na opção Revisar sugestão, **Copiar/Substituir** são escolhas explícitas, sem confirmação adicional ou avisos automáticos de conteúdo, e edição do original invalida a sugestão. Cancelamento/desconexão encerra o pedido e usa a recuperação descrita acima. A extensão nunca envia mensagens. Streaming não aumenta o limite do protocolo ou o orçamento de contexto/saída de cada modelo.
 
 Correções de capitalização e ortografia não recebem julgamento automático. A análise de sentido e sua preferência foram removidas; preferências v8 preservam as demais escolhas e incluem o modo direto/prévia. Os dados de avaliação dos benchmarks e relatórios anteriores permanecem históricos.
 

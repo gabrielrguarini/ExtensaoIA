@@ -10,11 +10,15 @@ import { watchTheme } from '../settings/theme';
 const mounted = new WeakMap<Document, () => void>();
 
 /** Uma montagem por documento; o chamador encerra no pagehide. */
-export function mountEditorButton(document: Document): () => void {
+export function mountEditorButton(
+  document: Document,
+  createSession: (adapter: WhatsAppAdapter) => PreviewSession = (adapter) =>
+    new PreviewSession(adapter),
+): () => void {
   const existing = mounted.get(document);
   if (existing) return existing;
   const adapter = new WhatsAppAdapter(document);
-  const session = new PreviewSession(adapter);
+  const session = createSession(adapter);
   const host = document.createElement('div');
   host.setAttribute('data-local-writing-host', '');
   host.style.cssText =
@@ -63,7 +67,9 @@ export function mountEditorButton(document: Document): () => void {
       direct && state.kind === 'notice'
         ? state.message
         : running
-          ? 'Carregando IA'
+          ? state.kind === 'action-loading' && state.partial
+            ? 'Escrevendo…'
+            : 'Carregando IA'
           : 'Aplicar a ação configurada';
     if (tooltip.textContent !== label) tooltip.textContent = label;
     tooltip.hidden =
@@ -199,6 +205,16 @@ export function mountEditorButton(document: Document): () => void {
     else cancel();
   };
   const keydown = (event: KeyboardEvent): void => {
+    if (
+      session.isDirect() &&
+      session.isRunning() &&
+      target &&
+      event.composedPath().includes(target.editor) &&
+      event.key === 'Enter' &&
+      !event.shiftKey &&
+      !event.isComposing
+    )
+      session.close(false);
     if (event.key === 'Escape' && (session.getState().kind !== 'closed' || !tooltip.hidden)) {
       event.preventDefault();
       event.stopPropagation();
@@ -208,7 +224,13 @@ export function mountEditorButton(document: Document): () => void {
     }
   };
   const outside = (event: PointerEvent): void => {
-    if (!event.composedPath().includes(host)) dismiss();
+    if (event.composedPath().includes(host)) return;
+    if (session.isDirect() && target && event.composedPath().includes(target.editor)) return;
+    if (session.isDirect() && target && event.composedPath().includes(target.composer)) {
+      session.close(false);
+      return;
+    }
+    dismiss();
   };
   button.addEventListener('click', click);
   button.addEventListener('mouseenter', mouseenter);

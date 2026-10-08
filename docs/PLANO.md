@@ -22,7 +22,11 @@ Construir uma extensão Chrome instalável localmente que corrija e reescreva o 
 
 Fluxo padrão: configurar na extensão → escrever → clicar em IA → tooltip de carregamento → substituir o rascunho. Corrigir é a ação inicial. A opção Revisar sugestão recupera a prévia com Copiar/Substituir.
 
-A extensão nunca envia a mensagem. O clique em IA autoriza a substituição no modo direto; no modo Revisar sugestão, Copiar/Substituir exigem novo clique. O campo original deve permanecer intacto em cancelamento, incompatibilidade, erro de inferência ou falha técnica. Edição/conversa alteradas impedem aplicação. O usuário continua decidindo o conteúdo e quando enviar.
+A extensão nunca envia a mensagem. O clique em IA autoriza a substituição em streaming no modo direto; no modo Revisar sugestão, Copiar/Substituir exigem novo clique. O primeiro trecho substitui o conteúdo presente naquele instante; depois, os novos trechos são acrescentados ao final e preservam edições humanas. O original fica em memória para recuperação em falha/cancelamento, automática quando não houve edição após a primeira escrita e explícita caso contrário. Mudança de conversa/editor impede novas escritas ou restauração em outro contexto. O usuário continua decidindo o conteúdo e quando enviar.
+
+## Streaming direto autorizado — STEP-16-A
+
+A [STEP-16-A](steps/STEP-16-A.md), solicitada em 08/10/2026, retira a exigência de revisão por múltiplas linhas e aplica trechos diretamente no campo. Substitui a aplicação somente ao final e a invalidação por edição no modo direto da STEP-15-H. A chegada de um trecho pode deixar o cursor no final, conforme autorização do usuário. A prévia continua opcional e conserva suas guardas de rascunho; estruturas especiais permanecem protegidas. Streaming não amplia limites de contexto/saída dos modelos.
 
 ## Interface vigente — ajuste STEP-15-F
 
@@ -56,7 +60,7 @@ O ajuste vigente [STEP-15-H](steps/STEP-15-H.md) torna a substituição direta p
 - Tratar todo texto original e gerado como dado não confiável. Renderizar como texto, sem innerHTML, eval, execução de HTML ou código dinâmico.
 - Não modificar APIs internas do WhatsApp, acessar seu banco de dados, interceptar tráfego ou contornar mecanismos de segurança.
 - Manter permissões restritas ao necessário. Não usar permissões globais ou URLs arbitrárias de modelos.
-- Vincular resultados à solicitação, origem, editor e revisão do rascunho. Uma sugestão antiga não pode sobrescrever novo texto nem migrar para outra conversa.
+- Vincular resultados à solicitação, origem e editor/conversa. A prévia exige também a revisão do rascunho. No modo direto, a primeira escrita autoriza substituir digitação posterior ao clique; depois, acrescentar apenas os novos trechos sem reaplicar o resultado sobre edições humanas.
 - Ao perder contexto ou conexão, encerrar o pedido; não repetir automaticamente uma geração sobre o rascunho.
 - A promessa de uso offline se refere à inferência após preparação completa e cache íntegro, não à disponibilidade do WhatsApp sem rede.
 
@@ -97,7 +101,7 @@ Todo JavaScript e WebAssembly executável acompanha o pacote da extensão. Somen
 - **AIEngine:** initialize, isReady, generate retornando AsyncIterable de texto e unload. Opções locais incluem cancelamento, mapeado pelo adaptador para o runtime.
 - **Comunicação:** mensagens tipadas para iniciar, cancelar, consultar estado, progresso, fragmentos, resultado e erro, com validação em tempo de execução.
 - **Identidade do pedido:** requestId, origem confiável do remetente, documento/frame, snapshot e revisão do editor. Não confiar em aba ou destino arbitrário informado no payload.
-- **Resultado:** texto, identidade do motor e indicação de resposta idêntica; sugestão aplicável depois de completa por escolha do usuário; falha, cancelamento, resultado obsoleto e resultado inválido são estados distintos.
+- **Resultado:** texto, identidade do motor e indicação de resposta idêntica; trechos aplicáveis em streaming no modo direto ou sugestão completa por escolha na prévia; falha, cancelamento, resultado obsoleto e resultado inválido são estados distintos.
 - **Configurações:** esquema versionado contendo somente preferências. Não adicionar API pública de rede ou endpoint de IA.
 
 ## Modelos e compatibilidade
@@ -155,28 +159,29 @@ Mensagens esperadas, contextualizadas conforme o erro real:
 
 Cada etapa depende das anteriores. A conclusão de implementação sem validação obrigatória não permite marcar uma etapa como Concluída.
 
-| Etapa                           | Entrega                                                   |
-| ------------------------------- | --------------------------------------------------------- |
-| [STEP-01](steps/STEP-01.md)     | Organizar o plano e o acompanhamento                      |
-| [STEP-02](steps/STEP-02.md)     | Criar a base do projeto                                   |
-| [STEP-03](steps/STEP-03.md)     | Implementar Manifest V3 e comunicação                     |
-| [STEP-04](steps/STEP-04.md)     | Detectar o editor do WhatsApp                             |
-| [STEP-05](steps/STEP-05.md)     | Criar preview e substituição manual                       |
-| [STEP-06](steps/STEP-06.md)     | Executar o primeiro modelo local                          |
-| [STEP-07](steps/STEP-07.md)     | Implementar a ação Corrigir                               |
-| [STEP-08](steps/STEP-08.md)     | Proteger entidades e validar o resultado                  |
-| [STEP-09](steps/STEP-09.md)     | Adicionar os demais modos                                 |
-| [STEP-10](steps/STEP-10.md)     | Exibir geração progressiva e cancelamento                 |
-| [STEP-11](steps/STEP-11.md)     | Implementar verificação semântica opcional                |
-| [STEP-12](steps/STEP-12.md)     | Adicionar modelos e perfis de hardware                    |
-| [STEP-13](steps/STEP-13.md)     | Consolidar cache, recuperação e desempenho                |
-| [STEP-14](steps/STEP-14.md)     | Finalizar configurações e interfaces auxiliares           |
-| [STEP-15](steps/STEP-15.md)     | Executar STEP-15-A → B → C → D → E antes da entrega final |
-| [STEP-15-E](steps/STEP-15-E.md) | Retirar avaliação de conteúdo e manter revisão manual     |
-| [STEP-15-F](steps/STEP-15-F.md) | Simplificar interface e executar ação configurada         |
-| [STEP-15-G](steps/STEP-15-G.md) | Corrigir idioma de saída na Prompt API                    |
-| [STEP-15-H](steps/STEP-15-H.md) | Substituir diretamente com tooltip e prévia opcional      |
-| [STEP-16](steps/STEP-16.md)     | Validar e preparar a entrega instalável                   |
+| Etapa                           | Entrega                                                     |
+| ------------------------------- | ----------------------------------------------------------- |
+| [STEP-01](steps/STEP-01.md)     | Organizar o plano e o acompanhamento                        |
+| [STEP-02](steps/STEP-02.md)     | Criar a base do projeto                                     |
+| [STEP-03](steps/STEP-03.md)     | Implementar Manifest V3 e comunicação                       |
+| [STEP-04](steps/STEP-04.md)     | Detectar o editor do WhatsApp                               |
+| [STEP-05](steps/STEP-05.md)     | Criar preview e substituição manual                         |
+| [STEP-06](steps/STEP-06.md)     | Executar o primeiro modelo local                            |
+| [STEP-07](steps/STEP-07.md)     | Implementar a ação Corrigir                                 |
+| [STEP-08](steps/STEP-08.md)     | Proteger entidades e validar o resultado                    |
+| [STEP-09](steps/STEP-09.md)     | Adicionar os demais modos                                   |
+| [STEP-10](steps/STEP-10.md)     | Exibir geração progressiva e cancelamento                   |
+| [STEP-11](steps/STEP-11.md)     | Implementar verificação semântica opcional                  |
+| [STEP-12](steps/STEP-12.md)     | Adicionar modelos e perfis de hardware                      |
+| [STEP-13](steps/STEP-13.md)     | Consolidar cache, recuperação e desempenho                  |
+| [STEP-14](steps/STEP-14.md)     | Finalizar configurações e interfaces auxiliares             |
+| [STEP-15](steps/STEP-15.md)     | Executar STEP-15-A → B → C → D → E antes da entrega final   |
+| [STEP-15-E](steps/STEP-15-E.md) | Retirar avaliação de conteúdo e manter revisão manual       |
+| [STEP-15-F](steps/STEP-15-F.md) | Simplificar interface e executar ação configurada           |
+| [STEP-15-G](steps/STEP-15-G.md) | Corrigir idioma de saída na Prompt API                      |
+| [STEP-15-H](steps/STEP-15-H.md) | Substituir diretamente com tooltip e prévia opcional        |
+| [STEP-16](steps/STEP-16.md)     | Validar e preparar a entrega instalável                     |
+| [STEP-16-A](steps/STEP-16-A.md) | Aplicar streaming diretamente e preservar edições recebidas |
 
 Marco de MVP: concluir até STEP-08. Depois, adicionar modos e streaming, revisão opcional, perfis/cache, configurações, benchmark e entrega final.
 

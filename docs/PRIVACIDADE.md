@@ -1,16 +1,16 @@
 # Política de privacidade — IA local para WhatsApp Web
 
-Última atualização: **05/10/2026**. Aplica-se à versão 0.16.0.
+Última atualização: **08/10/2026**. Aplica-se à versão 0.16.1.
 
 ## Finalidade e acesso ao texto
 
-A extensão corrige e reescreve rascunhos no WhatsApp Web. Ao clicar em IA, você solicita que o rascunho atual seja processado neste computador. No modo direto, esse clique também autoriza substituir o texto. A prévia opcional permite copiar ou substituir depois de conferir a sugestão. A extensão nunca envia mensagens.
+A extensão corrige e reescreve rascunhos no WhatsApp Web. Ao clicar em IA, você solicita que o rascunho atual seja processado neste computador. No modo direto, esse clique também autoriza substituir o texto conforme a resposta chega. A prévia opcional permite copiar ou substituir depois de conferir a sugestão. A extensão nunca envia mensagens.
 
 O texto pode conter comunicações pessoais e outros dados fornecidos por você. Somente o rascunho solicitado e sua sugestão são usados para a função de escrita. Fora desse texto, a extensão não acessa histórico, mensagens recebidas, lista de contatos, números de telefone, credenciais ou cookies de autenticação. Dados que você incluir no próprio rascunho fazem parte do processamento local solicitado. A detecção do editor verifica estrutura e estado, sem coletar conteúdo das conversas.
 
 ## Processamento e retenção
 
-Rascunho, instruções e resposta são processados localmente pela IA do Chrome ou por um modelo local selecionado. Não são enviados a um servidor de IA ou ao desenvolvedor. Permanecem temporariamente em memória durante o pedido/prévia e são descartados pelo ciclo de vida da extensão; não ficam gravados em logs ou armazenamento persistente. A extensão não persiste hashes ou identificadores derivados das mensagens.
+Rascunho, instruções e resposta são processados localmente pela IA do Chrome ou por um modelo local selecionado. Não são enviados a um servidor de IA ou ao desenvolvedor. Permanecem temporariamente em memória durante o pedido/prévia, incluindo o original para recuperação em caso de falha ou cancelamento do streaming. São descartados pelo ciclo de vida da extensão; não ficam gravados em logs ou armazenamento persistente. A extensão não persiste hashes ou identificadores derivados das mensagens.
 
 O navegador guarda preferências como ação, modelo, tema e modo direto/prévia. Também guarda os arquivos públicos dos modelos e recibos de integridade desses arquivos. Recibos identificam artefatos, não mensagens. Não há analytics, telemetria, publicidade direcionada ou venda de dados.
 

@@ -2,6 +2,8 @@
 
 [Plano geral](../PLANO.md) · [Progresso](../PROGRESSO.md)
 
+O fluxo direto vigente inclui o ajuste autorizado [STEP-16-A](STEP-16-A.md): primeira escrita substitui o campo e os próximos trechos preservam edições humanas, com cursor no final permitido. A prévia conserva suas guardas. Consulte o [relatório atual](../VALIDACAO-STEP-16-A.md); as evidências da entrega 0.16.0 permanecem históricas.
+
 ## Objetivo
 
 Entregar o pacote local com verificações completas e instruções de instalação, atualização e privacidade.

@@ -4,14 +4,16 @@
 
 Corrija e reescreva seus rascunhos em português do Brasil, diretamente no WhatsApp Web. A IA funciona no computador e a extensão nunca envia a mensagem por você.
 
-**Versão 0.16.0 · Chrome · Manifest V3**
+**Versão 0.16.1 · Chrome · Manifest V3**
 
 ## Como funciona
 
 1. Escreva uma mensagem no WhatsApp Web.
 2. Clique em **IA** ao lado do campo de mensagem.
-3. Aguarde o tooltip **Carregando IA**. Por padrão, o texto corrigido substitui o rascunho.
-4. Confira o resultado e envie quando quiser. **Ctrl+Z** desfaz a substituição.
+3. Aguarde **Carregando IA**. A resposta substitui o campo aos poucos, com **Escrevendo…** durante o streaming, inclusive em textos com várias linhas.
+4. Confira o resultado e envie quando quiser. **Ctrl+Z** usa o histórico de edição do campo.
+
+O primeiro trecho substitui tudo que estiver digitado naquele momento. Depois, os novos trechos são acrescentados ao final, preservando alterações nos trechos recebidos. O cursor pode ir ao final a cada trecho; aguarde a conclusão para editar com conforto. Se houver falha ou cancelamento, o original é recuperado automaticamente quando não houve edição humana; caso contrário, você pode escolher **Restaurar original** ou **Manter edição**.
 
 Prefere revisar antes? Nas configurações da extensão, selecione **Ao clicar em IA → Revisar sugestão**. A prévia oferece **Copiar** e **Substituir**.
 
@@ -21,8 +23,8 @@ Prefere revisar antes? Nas configurações da extensão, selecione **Ao clicar e
 - Ação, comportamento, gírias, emojis, tema e modelo definidos nas configurações.
 - IA do Chrome preferencial quando disponível; Llama, Qwen e Gemma como opções locais.
 - Downloads explícitos, cancelamento e uso offline após preparar o modelo.
-- Proteção contra aplicação de resultados em rascunho ou conversa alterados.
-- Textos com várias linhas ou menções estruturadas disponíveis para cópia pela prévia.
+- Proteção contra aplicação em outra conversa ou campo; no modo direto, edições do texto recebido são preservadas.
+- Streaming direto com várias linhas e emojis. Menções estruturadas e formatação especial continuam disponíveis para cópia pela prévia opcional.
 
 A IA pode alterar conteúdo ou produzir sugestões inadequadas. Confira o rascunho antes de enviar. A qualidade e o tempo de resposta variam por ação, modelo e equipamento.
 
@@ -38,9 +40,9 @@ npm.cmd run check
 npm.cmd run package
 ```
 
-Abra `chrome://extensions`, habilite **Modo do desenvolvedor** e escolha **Carregar sem compactação → release/ia-local-whatsapp-0.16.0**. Recarregue o WhatsApp Web. Não instale simultaneamente as pastas dist e release.
+Abra `chrome://extensions`, habilite **Modo do desenvolvedor** e escolha **Carregar sem compactação → release/ia-local-whatsapp-0.16.1**. Recarregue o WhatsApp Web. Não instale simultaneamente as pastas dist e release.
 
-O pacote também gera **release/ia-local-whatsapp-0.16.0.zip**, com Manifest na raiz e inventário SHA-256. Pesos dos modelos são baixados pelo fluxo explícito da extensão; não acompanham o ZIP.
+O pacote também gera **release/ia-local-whatsapp-0.16.1.zip**, com Manifest na raiz e inventário SHA-256. Pesos dos modelos são baixados pelo fluxo explícito da extensão; não acompanham o ZIP.
 
 ## Requisitos
 
