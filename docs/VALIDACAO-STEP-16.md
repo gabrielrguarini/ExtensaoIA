@@ -4,6 +4,13 @@
 
 Registro histórico da versão 0.16.0. O ajuste autorizado em 08/10/2026 e o pacote 0.16.1 com streaming direto estão no [relatório STEP-16-A](VALIDACAO-STEP-16-A.md); seus novos critérios substituem a aplicação somente ao final e a invalidação por edição no modo direto descritas abaixo.
 
+Atualização em **09/10/2026**: a [STEP-16-C](VALIDACAO-STEP-16-C.md) conferiu
+colagem/streaming, edição, desfazer, cancelamento, recuperação e prévia opcional no
+WhatsApp autenticado, no contato confirmado e somente com geração/rascunhos
+sintéticos. Essa pendência do editor foi satisfeita. A entrega permanece
+**Aguardando validação** por inferência completa do pacote atual em perfil preparado.
+O estado de 05/10 abaixo continua como histórico, sem reescrever as evidências.
+
 ## Estado em 05/10/2026
 
 **Aguardando validação do WhatsApp autenticado.** Pacote, verificações automatizadas e integração em perfis isolados aprovados; não concluir a etapa/plano com essa evidência obrigatória pendente. O controle do Windows pela habilidade computer-use foi interrompido porque não conseguiu confirmar a URL atual do Chrome com segurança. Sua orientação para turnos interrompidos exige “stop issuing app input”; nenhuma conversa foi escolhida, editada ou enviada nessa tentativa. Foi solicitado ao usuário verificar os dois modos, desfazer, cancelamento, edição e troca de conversa somente em @gabrielrguarini, sem envio. A interrupção não foi contornada por outro meio de controle desse navegador.

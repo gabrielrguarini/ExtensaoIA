@@ -2,6 +2,15 @@
 
 [Plano](PLANO.md) · [Progresso](PROGRESSO.md) · [Escopo](steps/STEP-16-A.md) · [Instalação](INSTALACAO.md)
 
+## Atualização em 09/10/2026
+
+A [STEP-16-C](VALIDACAO-STEP-16-C.md) repetiu o roteiro completo no WhatsApp
+autenticado, com a conversa autorizada novamente confirmada e somente geração/rascunhos
+sintéticos. Os oito cenários passaram, incluindo edição, multilinha, desfazer,
+cancelamento, recuperação explícita e prévia opcional. A pendência de conferência
+do editor foi satisfeita. **Inferência completa em perfil preparado ainda pendente**;
+STEP-16/16-A continuam Aguardando validação. O registro de 08/10 abaixo é histórico.
+
 ## Estado em 08/10/2026
 
 **Aguardando validação final no WhatsApp autenticado.** Implementação e pacote 0.16.1 disponíveis. O usuário autorizou a primeira substituição do conteúdo presente no campo e o acréscimo dos próximos trechos, preservando edições nos trechos recebidos. Também autorizou deixar o cursor no final a cada escrita.

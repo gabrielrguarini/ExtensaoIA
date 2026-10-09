@@ -2,9 +2,9 @@
 
 Assistente de escrita em português do Brasil. Por padrão, clique em **IA** no WhatsApp para corrigir e substituir o rascunho diretamente, com um tooltip **Carregando IA** durante o processamento. A ação e o comportamento podem ser alterados nas configurações; **Revisar sugestão** recupera a prévia com **Copiar/Substituir**. Nenhuma mensagem é enviada automaticamente. A IA do navegador já preparada tem preferência; também é possível escolher Llama, Qwen ou Gemma para processamento neste computador.
 
-O estado e as evidências ficam em [Progresso](PROGRESSO.md). Consulte o [plano histórico](PLANO.md) e o [README de produto](../README.md). A [STEP-16-B](steps/STEP-16-B.md) separa IA Nativa/Modelo nas configurações, preservando o streaming da STEP-16-A.
+O estado e as evidências ficam em [Progresso](PROGRESSO.md). Consulte o [plano histórico](PLANO.md) e o [README de produto](../README.md). A [STEP-16-C](steps/STEP-16-C.md) corrige o bloqueio de texto simples colado, preservando as configurações da STEP-16-B e o streaming da STEP-16-A.
 
-A entrega local **0.16.2** e o procedimento de atualização estão no [guia de instalação](INSTALACAO.md). Use `npm.cmd run package` para gerar release/ia-local-whatsapp-0.16.2, sem páginas de desenvolvimento, e seu inventário SHA-256. Confira o [relatório das configurações](VALIDACAO-STEP-16-B.md), o [relatório de streaming](VALIDACAO-STEP-16-A.md) e o [relatório STEP-16](VALIDACAO-STEP-16.md) para saber quais validações passaram e quais permanecem pendentes.
+A entrega local **0.16.3** e o procedimento de atualização estão no [guia de instalação](INSTALACAO.md). Use `npm.cmd run package` para gerar release/ia-local-whatsapp-0.16.3, sem páginas de desenvolvimento, e seu inventário SHA-256. Confira o [relatório do texto colado](VALIDACAO-STEP-16-C.md), o [relatório das configurações](VALIDACAO-STEP-16-B.md), o [relatório de streaming](VALIDACAO-STEP-16-A.md) e o [relatório STEP-16](VALIDACAO-STEP-16.md) para saber quais validações passaram e quais permanecem pendentes.
 
 ## Requisitos e instalação
 
@@ -150,6 +150,14 @@ As campanhas possuem [procedimento reproduzível](benchmark/STEP-15-D.md) e [evi
 Para seguir a recomendação local nesta GPU, selecione **Tipo de IA → Modelo**, escolha **Gemma 4 E2B** e prepare o modelo pelo fluxo explícito de download. O perfil WebLLM anterior permanece preservado para uma futura troca manual.
 
 ## Protocolo e ciclo de vida
+
+O adaptador aceita white-space:pre-wrap mesmo quando o Chrome o enumera pelas
+propriedades white-space-collapse/text-wrap-mode; a combinação precisa continuar
+equivalente a pre-wrap. Em BR, data-lexical-managed-linebreak=true é metadado neutro
+do editor. A guarda de menções/decoradores/atributos ou estilos especiais permanece.
+O roteiro `test:step16c:browser` é a regressão para a serialização CSS do Chrome real,
+que o jsdom não reproduz igualmente. `test:step16c:whatsapp` confere colagem text/plain
+no perfil vinculado e exige contato confirmado, campo vazio e fixture.js gerado.
 
 O diagnóstico solicita ao coordenador um teste em uma aba permitida. O coordenador encaminha a fixture ao content script; este prepara o documento offscreen e abre um canal direto com ele. A resposta faz o caminho Worker → offscreen → content script. Só então o content script devolve o relatório ao diagnóstico. A página não pode substituir o texto sintético por dados arbitrários.
 

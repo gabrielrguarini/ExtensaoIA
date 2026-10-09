@@ -1,0 +1,37 @@
+{
+  "version": "0.16.3",
+  "date": "2026-10-09",
+  "beforeCommit": "f32aadac82a8da1b6ad6cba6043c4f89508d6435",
+  "commands": {
+    "npm.cmd run check": "passed",
+    "npm.cmd run package": "passed",
+    "npm.cmd run test:step16c:browser": "passed",
+    "npm.cmd run test:step16a:browser": "passed",
+    "npm.cmd run test:step16c:whatsapp": "passed",
+    "npm.cmd run test:step16a:whatsapp": "passed",
+    "npm.cmd run test:step16a:installed": "passed"
+  },
+  "tests": 303,
+  "testFiles": 42,
+  "beforeFix": {
+    "structureCasesBlocked": 4,
+    "unitRegressionFailed": true
+  },
+  "afterFix": {
+    "structureCasesPassed": 4,
+    "syntheticStreamingChecks": 8,
+    "realWhatsAppPlainPasteChecks": 5,
+    "realWhatsAppStreamingChecks": 8,
+    "installedPackageChecks": 3
+  },
+  "packageFilesIdenticalToLatestBuild": true,
+  "unchangedPackageFiles": 48,
+  "previousPackageVersion": "0.16.2",
+  "dependenciesChanged": false,
+  "engineAndSettingsSourcesChanged": false,
+  "noModelDownloaded": true,
+  "noMessageSent": true,
+  "noRealConversationContentRecorded": true,
+  "newInferencePerformed": false,
+  "step16And16aPreparedInferenceStillPending": true
+}

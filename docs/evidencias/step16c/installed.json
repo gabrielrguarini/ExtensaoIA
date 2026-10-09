@@ -1,0 +1,57 @@
+{
+  "version": "0.16.3",
+  "browser": "154.0.8037.98",
+  "installedPackage": true,
+  "realWhatsApp": false,
+  "syntheticDraft": true,
+  "noMessageSent": true,
+  "checks": [
+    "Pacote release instalado, popup funcional e padrões diretos.",
+    "Rascunho longo multilinha chegou ao motor sem pedir revisão; cache ausente não baixou nem alterou o original.",
+    "Storage da extensão contém somente preferências."
+  ],
+  "pageErrors": 0,
+  "nativeAvailability": {
+    "ok": true,
+    "language": "pt-BR",
+    "actions": [
+      {
+        "action": "corrigir",
+        "availability": "downloadable"
+      },
+      {
+        "action": "melhorar",
+        "availability": "downloadable"
+      },
+      {
+        "action": "formal",
+        "availability": "downloadable"
+      },
+      {
+        "action": "profissional",
+        "availability": "downloadable"
+      },
+      {
+        "action": "amigavel",
+        "availability": "downloadable"
+      },
+      {
+        "action": "natural",
+        "availability": "downloadable"
+      },
+      {
+        "action": "conciso",
+        "availability": "downloadable"
+      },
+      {
+        "action": "engracado",
+        "availability": "downloadable"
+      },
+      {
+        "action": "reescrever",
+        "availability": "downloadable"
+      }
+    ],
+    "sessionReady": false
+  }
+}

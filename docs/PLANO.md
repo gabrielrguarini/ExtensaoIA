@@ -28,6 +28,8 @@ A extensão nunca envia a mensagem. O clique em IA autoriza a substituição em 
 
 A [STEP-16-A](steps/STEP-16-A.md), solicitada em 08/10/2026, retira a exigência de revisão por múltiplas linhas e aplica trechos diretamente no campo. Substitui a aplicação somente ao final e a invalidação por edição no modo direto da STEP-15-H. A chegada de um trecho pode deixar o cursor no final, conforme autorização do usuário. A prévia continua opcional e conserva suas guardas de rascunho; estruturas especiais permanecem protegidas. Streaming não amplia limites de contexto/saída dos modelos.
 
+A [STEP-16-C](steps/STEP-16-C.md), solicitada em 09/10/2026, corrige falsos bloqueios de estrutura em texto simples colado: propriedades CSS de espaços expandidas pelo Chrome e quebras gerenciadas pelo WhatsApp. Mantém streaming, configurações e guardas de estruturas especiais.
+
 ## Interface vigente — ajuste STEP-15-F
 
 A [STEP-16-B](steps/STEP-16-B.md), solicitada em 08/10/2026, mostra **Tipo de IA → IA Nativa / Modelo** no início das configurações. O seletor Llama/Qwen/Gemma e seus controles aparecem somente em Modelo; IA Nativa mostra seu preparo. Preferências e alternativa automática antes da geração são preservadas. Substitui a escolha misturada e a seção recolhida descritas abaixo, sem alterar motores ou downloads explícitos.
@@ -185,6 +187,7 @@ Cada etapa depende das anteriores. A conclusão de implementação sem validaç�
 | [STEP-16](steps/STEP-16.md)     | Validar e preparar a entrega instalável                          |
 | [STEP-16-A](steps/STEP-16-A.md) | Aplicar streaming diretamente e preservar edições recebidas      |
 | [STEP-16-B](steps/STEP-16-B.md) | Separar IA Nativa/Modelo e seleção condicional nas configurações |
+| [STEP-16-C](steps/STEP-16-C.md) | Corrigir bloqueio de estrutura em texto simples colado           |
 
 Marco de MVP: concluir até STEP-08. Depois, adicionar modos e streaming, revisão opcional, perfis/cache, configurações, benchmark e entrega final.
 

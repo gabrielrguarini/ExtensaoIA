@@ -70,6 +70,15 @@ describe('edição nativa isolada no adaptador', () => {
       replacementAllowed: true,
     });
   });
+  it('aceita o marcador de quebra gerenciado pelo WhatsApp em texto simples', () => {
+    editor.innerHTML =
+      '<p>Primeira</p><p><br data-lexical-managed-linebreak="true"></p><p>Terceira</p>';
+    expect(readDraft(editor)).toEqual({
+      text: 'Primeira\n\nTerceira',
+      replacementAllowed: true,
+    });
+    expect(adapter.canReplace(capture(), 'Novo')).toBe(true);
+  });
   it('usa uma única inserção literal com seleção limitada ao editor', async () => {
     const snapshot = capture();
     const result = adapter.replace(snapshot, 'Novo 👋 <b>literal</b>');
@@ -112,6 +121,8 @@ describe('edição nativa isolada no adaptador', () => {
     '<strong>Texto com formatação</strong>',
     '<img alt="👋">',
     '<span data-unknown="chip">Referência especial</span>',
+    '<span data-lexical-managed-linebreak="true">Marcador fora de uma quebra</span>',
+    '<br data-lexical-managed-linebreak="false">',
   ])('estrutura especial só oferece texto para cópia: %s', async (markup) => {
     editor.innerHTML = markup;
     const snapshot = capture();

@@ -1,0 +1,52 @@
+{
+  "browser": "154.0.8037.98",
+  "realWhatsApp": true,
+  "contactConfirmedByUser": true,
+  "syntheticGeneration": true,
+  "clipboardSystemUsed": false,
+  "noMessageSent": true,
+  "checks": [
+    "Texto simples colado com mais de cinco mil caracteres e linha vazia recebeu o primeiro trecho, substituindo digitação posterior ao clique.",
+    "Sufixos completaram a resposta e preservaram edição humana, linhas vazias e emoji, sem revisão obrigatória.",
+    "Ctrl+Z respondeu após o streaming.",
+    "Escape recuperou o original após escrever parágrafos e linha vazia.",
+    "Resposta atrasada não reaplicou texto após cancelamento."
+  ],
+  "cleaned": true,
+  "plainPasteStructure": [
+    {
+      "tag": "P",
+      "attributes": ["class", "dir", "style"],
+      "styles": [
+        ["text-indent", "0px"],
+        ["margin-top", "0px"],
+        ["margin-bottom", "0px"]
+      ]
+    },
+    {
+      "tag": "SPAN",
+      "attributes": ["class", "data-lexical-text"],
+      "styles": []
+    },
+    {
+      "tag": "BR",
+      "attributes": ["data-lexical-managed-linebreak"],
+      "styles": []
+    },
+    {
+      "tag": "SPAN",
+      "attributes": ["class", "data-lexical-text", "style"],
+      "styles": [
+        [
+          "background-image",
+          "url(\"https://web.whatsapp.com/emoji/v1/16/0/2/single/w/40/01f44b.png\")"
+        ]
+      ]
+    },
+    {
+      "tag": "SPAN",
+      "attributes": ["class"],
+      "styles": []
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "browser": "154.0.8037.98",
+  "syntheticGeneration": true,
+  "realWhatsApp": false,
+  "cases": [
+    {
+      "name": "minimal-pre-wrap",
+      "applied": false,
+      "state": "notice",
+      "notice": "Este campo contém uma estrutura que não permite substituição direta."
+    },
+    {
+      "name": "canonical-longhands",
+      "applied": false,
+      "state": "notice",
+      "notice": "Este campo contém uma estrutura que não permite substituição direta."
+    },
+    {
+      "name": "managed-linebreak",
+      "applied": false,
+      "state": "notice",
+      "notice": "Este campo contém uma estrutura que não permite substituição direta."
+    },
+    {
+      "name": "long-plain-paste",
+      "applied": false,
+      "state": "notice",
+      "notice": "Este campo contém uma estrutura que não permite substituição direta."
+    }
+  ],
+  "pageErrors": 0
+}

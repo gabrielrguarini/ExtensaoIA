@@ -11,8 +11,12 @@ function plainElement(element: Element): boolean {
   if (element.hasAttribute('data-mention') || element.hasAttribute('data-lexical-decorator'))
     return false;
   if (
-    ![...element.attributes].every(({ name }) =>
-      ['class', 'dir', 'style', 'data-lexical-text', 'data-lexical-paragraph'].includes(name),
+    ![...element.attributes].every(
+      ({ name }) =>
+        ['class', 'dir', 'style', 'data-lexical-text', 'data-lexical-paragraph'].includes(name) ||
+        (name === 'data-lexical-managed-linebreak' &&
+          element.tagName === 'BR' &&
+          element.getAttribute(name) === 'true'),
     )
   )
     return false;
@@ -20,7 +24,10 @@ function plainElement(element: Element): boolean {
   return [...element.style].every((name) => {
     const value = element.style.getPropertyValue(name);
     if (['text-indent', 'margin-top', 'margin-bottom'].includes(name)) return value === '0px';
-    if (name === 'white-space') return value === 'pre-wrap';
+    // O Chrome pode enumerar white-space pelos longhands preserve/wrap.
+    // Conferir o shorthand mantém o mesmo estilo neutro permitido anteriormente.
+    if (['white-space', 'white-space-collapse', 'text-wrap-mode'].includes(name))
+      return element.style.getPropertyValue('white-space') === 'pre-wrap';
     // O WhatsApp desenha emojis sobre seu texto Unicode. Reintroduzir o Unicode
     // pela edição nativa permite ao próprio editor reconstruir essa apresentação.
     return (

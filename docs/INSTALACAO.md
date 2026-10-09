@@ -4,9 +4,9 @@
 
 ## Pacote local
 
-Versão **0.16.2**. Na pasta do projeto, execute `npm.cmd ci`, `npm.cmd run check` e `npm.cmd run package`. O último comando gera **release/ia-local-whatsapp-0.16.2**, ZIP com Manifest na raiz e inventário SHA-256. A geração substitui somente os artefatos dessa versão. Não inclui node_modules, caches, pesos baixados, testes, páginas de desenvolvimento, CRX, chaves PEM ou conversas. O [guia da Chrome Web Store](PUBLICACAO-CHROME-WEB-STORE.md) explica a publicação pelo usuário.
+Versão **0.16.3**. Na pasta do projeto, execute `npm.cmd ci`, `npm.cmd run check` e `npm.cmd run package`. O último comando gera **release/ia-local-whatsapp-0.16.3**, ZIP com Manifest na raiz e inventário SHA-256. A geração substitui somente os artefatos dessa versão. Não inclui node_modules, caches, pesos baixados, testes, páginas de desenvolvimento, CRX, chaves PEM ou conversas. O [guia da Chrome Web Store](PUBLICACAO-CHROME-WEB-STORE.md) explica a publicação pelo usuário.
 
-Em chrome://extensions, habilite **Modo do desenvolvedor**, clique **Carregar sem compactação** e selecione a pasta release/ia-local-whatsapp-0.16.2, que contém manifest.json. Fixe o ícone da extensão se desejar. Abra/recarregue o WhatsApp Web e as configurações. O pacote dispensa um servidor local. [Procedimento oficial do Chrome](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-an-unpacked-extension).
+Em chrome://extensions, habilite **Modo do desenvolvedor**, clique **Carregar sem compactação** e selecione a pasta release/ia-local-whatsapp-0.16.3, que contém manifest.json. Fixe o ícone da extensão se desejar. Abra/recarregue o WhatsApp Web e as configurações. O pacote dispensa um servidor local. [Procedimento oficial do Chrome](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-an-unpacked-extension).
 
 Não carregue dist e release simultaneamente: duas instalações podem criar dois botões. Para atualizar uma instalação existente de dist, mantenha essa mesma pasta e use `npm.cmd run build`; em chrome://extensions, clique **Recarregar** na extensão e recarregue as abas do WhatsApp. Mudar a pasta de instalação pode mudar o identificador da extensão, suas preferências e acesso ao cache próprio. Não remova uma instalação antes de decidir se precisará do cache já baixado.
 

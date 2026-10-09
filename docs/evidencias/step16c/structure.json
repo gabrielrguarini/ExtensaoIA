@@ -1,0 +1,36 @@
+{
+  "browser": "154.0.8037.98",
+  "syntheticGeneration": true,
+  "realWhatsApp": false,
+  "cases": [
+    {
+      "name": "minimal-pre-wrap",
+      "applied": true,
+      "state": "action-loading",
+      "notice": "Escrevendo…",
+      "completedWithoutReview": true
+    },
+    {
+      "name": "canonical-longhands",
+      "applied": true,
+      "state": "action-loading",
+      "notice": "Escrevendo…",
+      "completedWithoutReview": true
+    },
+    {
+      "name": "managed-linebreak",
+      "applied": true,
+      "state": "action-loading",
+      "notice": "Escrevendo…",
+      "completedWithoutReview": true
+    },
+    {
+      "name": "long-plain-paste",
+      "applied": true,
+      "state": "action-loading",
+      "notice": "Escrevendo…",
+      "completedWithoutReview": true
+    }
+  ],
+  "pageErrors": 0
+}
