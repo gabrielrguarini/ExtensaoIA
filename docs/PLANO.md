@@ -46,6 +46,8 @@ A [STEP-15-F](steps/STEP-15-F.md) simplifica o produto antes da STEP-16: o botã
 
 A [STEP-15-G](steps/STEP-15-G.md) corrige o aviso relatado sobre saída sem idioma. O usuário autorizou a configuração en com resposta pt-BR por instrução, após verificação real. Preferir idioma real/API especializada quando prontos; a compatibilidade usa saída en e entrada textual sem declarar idioma. As opções são iguais na consulta/criação; se também recusadas, usar o modelo local selecionado antes da geração. Substitui a omissão de saída da compatibilidade B/F e a restrição anterior à declaração en, sem certificar suporte formal ao português. A situação da entrega final está em PROGRESSO.md.
 
+A [STEP-16-G](steps/STEP-16-G.md) seleciona diretamente a compatibilidade autorizada para pt-BR antes da consulta nativa. Evita os erros das declarações rejeitadas, sem alterar as opções da sessão compatível, os downloads ou a alternativa local. Substitui a tentativa inicial de pt-BR declarado da STEP-15-G.
+
 ## Decisões de produto
 
 O ajuste vigente [STEP-15-H](steps/STEP-15-H.md) torna a substituição direta padrão e mantém a prévia como opção explícita nas configurações. Substitui os requisitos históricos de prévia/confirmação obrigatória, preservando guardas técnicas, cancelamento e undo.
@@ -197,6 +199,7 @@ Cada etapa depende das anteriores. A conclusão de implementação sem validaç�
 | [STEP-16-D](steps/STEP-16-D.md) | Refatorar somente a interface das configurações                  |
 | [STEP-16-E](steps/STEP-16-E.md) | Mover acesso ao painel e esclarecer preparo de modelos           |
 | [STEP-16-F](steps/STEP-16-F.md) | Switches, abertura padrão e avisos de preparo                    |
+| [STEP-16-G](steps/STEP-16-G.md) | Evitar consultas nativas com declaração de idioma rejeitada      |
 
 Marco de MVP: concluir até STEP-08. Depois, adicionar modos e streaming, revisão opcional, perfis/cache, configurações, benchmark e entrega final.
 

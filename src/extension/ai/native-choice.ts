@@ -25,18 +25,11 @@ export async function selectNativeQuery(
   signal?: AbortSignal,
 ): Promise<{ query: AvailabilityQuery; availability: EngineAvailability }> {
   signal?.throwIfAborted();
-  const declared = { ...query, chromePortuguesePrompt: false };
-  const availability = await probe(declared);
+  // Chrome 154 rejeita pt-BR declarado e registra erro até em availability().
+  // Selecionar a compatibilidade autorizada antes da consulta, sem provocar a
+  // rejeição nativa. Os demais idiomas conservam as APIs especializadas.
+  const selected = { ...query, chromePortuguesePrompt: query.language === 'pt-BR' };
+  const availability = await probe(selected);
   signal?.throwIfAborted();
-  if (availability.state === 'ready' || query.language !== 'pt-BR')
-    return { query: declared, availability };
-  const compatible = { ...query, chromePortuguesePrompt: true };
-  const fallback = await probe(compatible);
-  signal?.throwIfAborted();
-  if (
-    fallback.state === 'ready' ||
-    (availability.state === 'unavailable' && fallback.state !== 'unavailable')
-  )
-    return { query: compatible, availability: fallback };
-  return { query: declared, availability };
+  return { query: selected, availability };
 }

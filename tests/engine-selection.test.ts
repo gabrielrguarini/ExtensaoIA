@@ -52,21 +52,17 @@ describe('seleção anterior à única geração', () => {
     expect(h.local.reset).toHaveBeenCalledOnce();
     expect(h.local.ensure).not.toHaveBeenCalled();
     expect(h.native.prepare).toHaveBeenCalledWith(
-      { action: 'corrigir', language: 'pt-BR', chromePortuguesePrompt: false },
+      { action: 'corrigir', language: 'pt-BR', chromePortuguesePrompt: true },
       signal,
       request,
     );
     expect(h.native.send).not.toHaveBeenCalled();
   });
-  it('consulta Prompt automaticamente se a API especializada não está pronta', async () => {
+  it('consulta diretamente a Prompt compatível para pt-BR, sem declaração rejeitada', async () => {
     expect(parsePreferences({ version: 6, chromePortuguesePrompt: true })).not.toHaveProperty(
       'chromePortuguesePrompt',
     );
     const h = hosts();
-    h.native.model.availability.mockResolvedValueOnce({
-      state: 'unavailable',
-      nativeAvailability: 'unavailable',
-    });
     await selectEngine(
       request,
       new AbortController().signal,
@@ -77,15 +73,10 @@ describe('seleção anterior à única geração', () => {
     expect(h.native.model.availability).toHaveBeenNthCalledWith(1, {
       action: 'corrigir',
       language: 'pt-BR',
-      chromePortuguesePrompt: false,
-    });
-    expect(h.native.model.availability).toHaveBeenNthCalledWith(2, {
-      action: 'corrigir',
-      language: 'pt-BR',
       chromePortuguesePrompt: true,
     });
     expect(h.native.prepare.mock.calls[0]?.[0]).toEqual(
-      h.native.model.availability.mock.calls[1]?.[0],
+      h.native.model.availability.mock.calls[0]?.[0],
     );
     expect(h.local.ensure).not.toHaveBeenCalled();
   });

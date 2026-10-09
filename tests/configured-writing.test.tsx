@@ -208,7 +208,7 @@ describe('ação salva com um clique', () => {
         nativeAvailability: 'available' as const,
       }),
     );
-    const result = await selectNativeQuery({ action: 'formal', language: 'pt-BR' }, probe);
+    const result = await selectNativeQuery({ action: 'formal', language: 'en' }, probe);
     expect(probe).toHaveBeenCalledOnce();
     expect(result.query.chromePortuguesePrompt).toBe(false);
     const unavailable = vi.fn(() => Promise.resolve({ state: 'unavailable' as const }));

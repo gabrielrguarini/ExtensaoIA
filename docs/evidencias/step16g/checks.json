@@ -1,0 +1,19 @@
+{
+  "version": "0.16.7",
+  "command": "npm.cmd run check",
+  "exitCode": 0,
+  "typecheck": true,
+  "lint": true,
+  "format": true,
+  "testFiles": 44,
+  "tests": 310,
+  "build": true,
+  "chrome": "154.0.8037.98",
+  "nativeErrorsBefore": 7,
+  "nativeErrorsAfter": 0,
+  "visibleSettingsActions": ["corrigir", "profissional"],
+  "offscreenActions": 9,
+  "visualRegressionChecks": 7,
+  "noNewInference": true,
+  "noDownloadRequested": true
+}

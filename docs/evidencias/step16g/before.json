@@ -1,0 +1,65 @@
+{
+  "version": "0.16.6",
+  "browser": "154.0.8037.98",
+  "syntheticOnly": true,
+  "noMessageSent": true,
+  "noModelDownloaded": true,
+  "nativeLanguageErrors": [
+    "The requested language options are not supported.",
+    "Unsupported LanguageModel API languages were specified, and the request was aborted. API calls must only specify supported languages to ensure successful processing and guarantee output characteristics. Please only specify supported language codes: [de, en, es, fr, ja]",
+    "The requested language options are not supported.",
+    "The requested language options are not supported.",
+    "The requested language options are not supported.",
+    "The requested language options are not supported.",
+    "The requested language options are not supported."
+  ],
+  "pageErrors": 0,
+  "status": {
+    "ok": true,
+    "language": "pt-BR",
+    "actions": [
+      {
+        "action": "corrigir",
+        "availability": "downloading"
+      },
+      {
+        "action": "melhorar",
+        "availability": "downloading"
+      },
+      {
+        "action": "formal",
+        "availability": "downloading"
+      },
+      {
+        "action": "profissional",
+        "availability": "downloading"
+      },
+      {
+        "action": "amigavel",
+        "availability": "downloading"
+      },
+      {
+        "action": "natural",
+        "availability": "downloading"
+      },
+      {
+        "action": "conciso",
+        "availability": "downloading"
+      },
+      {
+        "action": "engracado",
+        "availability": "downloading"
+      },
+      {
+        "action": "reescrever",
+        "availability": "downloading"
+      }
+    ],
+    "sessionReady": false
+  },
+  "attachedContexts": 7,
+  "failure": {
+    "name": "AssertionError",
+    "message": "O produto consultou idiomas incompatíveis: [\"The requested language options are not supported.\",\"Unsupported LanguageModel API languages were specified, and the request was aborted. API calls must only specify supported languages to ensure successful processing and guarantee output characteristics. Please only specify supported language codes: [de, en, es, fr, ja]\",\"The requested language options are not supported.\",\"The requested language options are not supported.\",\"The requested language options are not supported.\",\"The requested language options are not supported.\",\"The requested language options are not supported.\"]"
+  }
+}

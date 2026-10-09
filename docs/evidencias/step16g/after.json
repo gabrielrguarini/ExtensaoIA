@@ -1,0 +1,56 @@
+{
+  "version": "0.16.7",
+  "browser": "154.0.8037.98",
+  "syntheticOnly": true,
+  "noMessageSent": true,
+  "noDownloadRequested": true,
+  "nativeLanguageErrors": [],
+  "pageErrors": 0,
+  "status": {
+    "ok": true,
+    "language": "pt-BR",
+    "actions": [
+      {
+        "action": "corrigir",
+        "availability": "downloading"
+      },
+      {
+        "action": "melhorar",
+        "availability": "downloading"
+      },
+      {
+        "action": "formal",
+        "availability": "downloading"
+      },
+      {
+        "action": "profissional",
+        "availability": "downloading"
+      },
+      {
+        "action": "amigavel",
+        "availability": "downloading"
+      },
+      {
+        "action": "natural",
+        "availability": "downloading"
+      },
+      {
+        "action": "conciso",
+        "availability": "downloading"
+      },
+      {
+        "action": "engracado",
+        "availability": "downloading"
+      },
+      {
+        "action": "reescrever",
+        "availability": "downloading"
+      }
+    ],
+    "sessionReady": false
+  },
+  "visibleSettingsActions": ["corrigir", "profissional"],
+  "inferencePerformed": false,
+  "inferenceSkippedReason": "Roteiro de consultas de disponibilidade, sem criação de sessão; estado registrado em status.",
+  "attachedContexts": 7
+}

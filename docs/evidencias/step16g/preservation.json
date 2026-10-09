@@ -1,0 +1,10 @@
+{
+  "visualCommit": "d7eb0ca5157fe263228b3a69d5d48058f7636549",
+  "changedProductSources": ["src/extension/ai/native-choice.ts"],
+  "contentBundleIdentical": true,
+  "interfaceSourcesIdentical": true,
+  "dependenciesUnchanged": true,
+  "permissionsUnchanged": true,
+  "packageFiles": 53,
+  "unchangedPackageFiles": 46
+}
