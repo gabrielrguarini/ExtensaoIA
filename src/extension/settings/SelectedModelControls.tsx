@@ -166,8 +166,8 @@ export function SelectedModelControls({
       ? gemmaBytes(gemmaVariant)
       : MODEL_CHOICES[profile][webVariant].downloadBytes;
   return (
-    <section aria-labelledby="model-title">
-      <h2 id="model-title">{name}</h2>
+    <section className="preparation-card" aria-labelledby="model-title">
+      <h3 id="model-title">{name}</h3>
       {!supported ? (
         <p>Este modelo não está disponível neste computador. Experimente a IA Nativa.</p>
       ) : (

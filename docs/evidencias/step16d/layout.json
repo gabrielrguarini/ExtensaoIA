@@ -1,0 +1,344 @@
+{
+  "version": "0.16.4",
+  "browser": "154.0.8037.98",
+  "layoutSurfaces": "Páginas instaladas de popup/painel em abas, para matriz de larguras/temas.",
+  "nativeSurfacesReport": "native/settings.json",
+  "layouts": [
+    {
+      "mode": "chrome-preferred",
+      "theme": "light",
+      "system": "light",
+      "width": 320,
+      "background": "rgb(243, 246, 247)",
+      "minTextContrast": 5.461239287757174,
+      "minControlContrast": 3.5637635259516367,
+      "scrollWidth": 305
+    },
+    {
+      "mode": "chrome-preferred",
+      "theme": "light",
+      "system": "light",
+      "width": 360,
+      "background": "rgb(243, 246, 247)",
+      "minTextContrast": 5.461239287757174,
+      "minControlContrast": 3.5637635259516367,
+      "scrollWidth": 345
+    },
+    {
+      "mode": "chrome-preferred",
+      "theme": "light",
+      "system": "light",
+      "width": 480,
+      "background": "rgb(243, 246, 247)",
+      "minTextContrast": 5.461239287757174,
+      "minControlContrast": 3.5637635259516367,
+      "scrollWidth": 465
+    },
+    {
+      "mode": "chrome-preferred",
+      "theme": "light",
+      "system": "light",
+      "width": 800,
+      "background": "rgb(243, 246, 247)",
+      "minTextContrast": 5.461239287757174,
+      "minControlContrast": 3.5637635259516367,
+      "scrollWidth": 785
+    },
+    {
+      "mode": "chrome-preferred",
+      "theme": "dark",
+      "system": "dark",
+      "width": 320,
+      "background": "rgb(21, 33, 41)",
+      "minTextContrast": 5.971087942150343,
+      "minControlContrast": 4.362842264337807,
+      "scrollWidth": 305
+    },
+    {
+      "mode": "chrome-preferred",
+      "theme": "dark",
+      "system": "dark",
+      "width": 360,
+      "background": "rgb(21, 33, 41)",
+      "minTextContrast": 5.971087942150343,
+      "minControlContrast": 4.362842264337807,
+      "scrollWidth": 345
+    },
+    {
+      "mode": "chrome-preferred",
+      "theme": "dark",
+      "system": "dark",
+      "width": 480,
+      "background": "rgb(21, 33, 41)",
+      "minTextContrast": 5.971087942150343,
+      "minControlContrast": 4.362842264337807,
+      "scrollWidth": 465
+    },
+    {
+      "mode": "chrome-preferred",
+      "theme": "dark",
+      "system": "dark",
+      "width": 800,
+      "background": "rgb(21, 33, 41)",
+      "minTextContrast": 5.971087942150343,
+      "minControlContrast": 4.362842264337807,
+      "scrollWidth": 785
+    },
+    {
+      "mode": "chrome-preferred",
+      "theme": "system",
+      "system": "light",
+      "width": 320,
+      "background": "rgb(243, 246, 247)",
+      "minTextContrast": 5.461239287757174,
+      "minControlContrast": 3.5637635259516367,
+      "scrollWidth": 305
+    },
+    {
+      "mode": "chrome-preferred",
+      "theme": "system",
+      "system": "light",
+      "width": 360,
+      "background": "rgb(243, 246, 247)",
+      "minTextContrast": 5.461239287757174,
+      "minControlContrast": 3.5637635259516367,
+      "scrollWidth": 345
+    },
+    {
+      "mode": "chrome-preferred",
+      "theme": "system",
+      "system": "light",
+      "width": 480,
+      "background": "rgb(243, 246, 247)",
+      "minTextContrast": 5.461239287757174,
+      "minControlContrast": 3.5637635259516367,
+      "scrollWidth": 465
+    },
+    {
+      "mode": "chrome-preferred",
+      "theme": "system",
+      "system": "light",
+      "width": 800,
+      "background": "rgb(243, 246, 247)",
+      "minTextContrast": 5.461239287757174,
+      "minControlContrast": 3.5637635259516367,
+      "scrollWidth": 785
+    },
+    {
+      "mode": "chrome-preferred",
+      "theme": "system",
+      "system": "dark",
+      "width": 320,
+      "background": "rgb(21, 33, 41)",
+      "minTextContrast": 5.971087942150343,
+      "minControlContrast": 4.362842264337807,
+      "scrollWidth": 305
+    },
+    {
+      "mode": "chrome-preferred",
+      "theme": "system",
+      "system": "dark",
+      "width": 360,
+      "background": "rgb(21, 33, 41)",
+      "minTextContrast": 5.971087942150343,
+      "minControlContrast": 4.362842264337807,
+      "scrollWidth": 345
+    },
+    {
+      "mode": "chrome-preferred",
+      "theme": "system",
+      "system": "dark",
+      "width": 480,
+      "background": "rgb(21, 33, 41)",
+      "minTextContrast": 5.971087942150343,
+      "minControlContrast": 4.362842264337807,
+      "scrollWidth": 465
+    },
+    {
+      "mode": "chrome-preferred",
+      "theme": "system",
+      "system": "dark",
+      "width": 800,
+      "background": "rgb(21, 33, 41)",
+      "minTextContrast": 5.971087942150343,
+      "minControlContrast": 4.362842264337807,
+      "scrollWidth": 785
+    },
+    {
+      "mode": "local",
+      "theme": "light",
+      "system": "light",
+      "width": 320,
+      "background": "rgb(243, 246, 247)",
+      "minTextContrast": 5.461239287757174,
+      "minControlContrast": 3.5637635259516367,
+      "scrollWidth": 305
+    },
+    {
+      "mode": "local",
+      "theme": "light",
+      "system": "light",
+      "width": 360,
+      "background": "rgb(243, 246, 247)",
+      "minTextContrast": 5.461239287757174,
+      "minControlContrast": 3.5637635259516367,
+      "scrollWidth": 345
+    },
+    {
+      "mode": "local",
+      "theme": "light",
+      "system": "light",
+      "width": 480,
+      "background": "rgb(243, 246, 247)",
+      "minTextContrast": 5.461239287757174,
+      "minControlContrast": 3.5637635259516367,
+      "scrollWidth": 465
+    },
+    {
+      "mode": "local",
+      "theme": "light",
+      "system": "light",
+      "width": 800,
+      "background": "rgb(243, 246, 247)",
+      "minTextContrast": 5.461239287757174,
+      "minControlContrast": 3.5637635259516367,
+      "scrollWidth": 785
+    },
+    {
+      "mode": "local",
+      "theme": "dark",
+      "system": "dark",
+      "width": 320,
+      "background": "rgb(21, 33, 41)",
+      "minTextContrast": 5.971087942150343,
+      "minControlContrast": 4.362842264337807,
+      "scrollWidth": 305
+    },
+    {
+      "mode": "local",
+      "theme": "dark",
+      "system": "dark",
+      "width": 360,
+      "background": "rgb(21, 33, 41)",
+      "minTextContrast": 5.971087942150343,
+      "minControlContrast": 4.362842264337807,
+      "scrollWidth": 345
+    },
+    {
+      "mode": "local",
+      "theme": "dark",
+      "system": "dark",
+      "width": 480,
+      "background": "rgb(21, 33, 41)",
+      "minTextContrast": 5.971087942150343,
+      "minControlContrast": 4.362842264337807,
+      "scrollWidth": 465
+    },
+    {
+      "mode": "local",
+      "theme": "dark",
+      "system": "dark",
+      "width": 800,
+      "background": "rgb(21, 33, 41)",
+      "minTextContrast": 5.971087942150343,
+      "minControlContrast": 4.362842264337807,
+      "scrollWidth": 785
+    },
+    {
+      "mode": "local",
+      "theme": "system",
+      "system": "light",
+      "width": 320,
+      "background": "rgb(243, 246, 247)",
+      "minTextContrast": 5.461239287757174,
+      "minControlContrast": 3.5637635259516367,
+      "scrollWidth": 305
+    },
+    {
+      "mode": "local",
+      "theme": "system",
+      "system": "light",
+      "width": 360,
+      "background": "rgb(243, 246, 247)",
+      "minTextContrast": 5.461239287757174,
+      "minControlContrast": 3.5637635259516367,
+      "scrollWidth": 345
+    },
+    {
+      "mode": "local",
+      "theme": "system",
+      "system": "light",
+      "width": 480,
+      "background": "rgb(243, 246, 247)",
+      "minTextContrast": 5.461239287757174,
+      "minControlContrast": 3.5637635259516367,
+      "scrollWidth": 465
+    },
+    {
+      "mode": "local",
+      "theme": "system",
+      "system": "light",
+      "width": 800,
+      "background": "rgb(243, 246, 247)",
+      "minTextContrast": 5.461239287757174,
+      "minControlContrast": 3.5637635259516367,
+      "scrollWidth": 785
+    },
+    {
+      "mode": "local",
+      "theme": "system",
+      "system": "dark",
+      "width": 320,
+      "background": "rgb(21, 33, 41)",
+      "minTextContrast": 5.971087942150343,
+      "minControlContrast": 4.362842264337807,
+      "scrollWidth": 305
+    },
+    {
+      "mode": "local",
+      "theme": "system",
+      "system": "dark",
+      "width": 360,
+      "background": "rgb(21, 33, 41)",
+      "minTextContrast": 5.971087942150343,
+      "minControlContrast": 4.362842264337807,
+      "scrollWidth": 345
+    },
+    {
+      "mode": "local",
+      "theme": "system",
+      "system": "dark",
+      "width": 480,
+      "background": "rgb(21, 33, 41)",
+      "minTextContrast": 5.971087942150343,
+      "minControlContrast": 4.362842264337807,
+      "scrollWidth": 465
+    },
+    {
+      "mode": "local",
+      "theme": "system",
+      "system": "dark",
+      "width": 800,
+      "background": "rgb(21, 33, 41)",
+      "minTextContrast": 5.971087942150343,
+      "minControlContrast": 4.362842264337807,
+      "scrollWidth": 785
+    }
+  ],
+  "checks": [
+    "32 combinações de modo/tema/largura (320–800 px), três grupos e contraste de texto/controles aprovados.",
+    "Tema, gírias, emojis e detalhes operados por teclado; foco visível e controles originais preservados.",
+    "Popup instalado completo: privacidade, licenças, controles e rodapé legíveis, sem rolagem horizontal."
+  ],
+  "pageErrors": 0,
+  "pageModelRequests": 0,
+  "noModelDownloaded": true,
+  "noConversationOpened": true,
+  "noMessageSent": true,
+  "focus": {
+    "focused": true,
+    "visible": true,
+    "outline": "solid",
+    "width": "3px"
+  }
+}

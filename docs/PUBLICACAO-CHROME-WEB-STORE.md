@@ -2,7 +2,7 @@
 
 [README](../README.md) · [Instalação](INSTALACAO.md) · [Privacidade](PRIVACIDADE.md) · [Validação](VALIDACAO-STEP-16.md)
 
-Roteiro conferido na documentação oficial em **05/10/2026**. A versão local é 0.16.3. Nenhum item foi enviado à loja por este trabalho.
+Roteiro conferido na documentação oficial em **05/10/2026**. A versão local é 0.16.4. Nenhum item foi enviado à loja por este trabalho.
 
 ## 1. Concluir a conferência do produto
 
@@ -24,7 +24,7 @@ npm.cmd run check
 npm.cmd run package
 ```
 
-O resultado é **release/ia-local-whatsapp-0.16.3.zip**. O script inclui apenas o produto e confere os hashes de todos os arquivos dentro do ZIP. O Manifest fica na raiz; ícones PNG 16/32/48/128 e licenças acompanham o pacote. O inventário SHA-256 fica ao lado.
+O resultado é **release/ia-local-whatsapp-0.16.4.zip**. O script inclui apenas o produto e confere os hashes de todos os arquivos dentro do ZIP. O Manifest fica na raiz; ícones PNG 16/32/48/128 e licenças acompanham o pacote. O inventário SHA-256 fica ao lado.
 
 Não envie o repositório nem dist.crx/dist.pem. A chave PEM deve permanecer privada e fora do Git. A loja recebe o ZIP; pesos, perfis de teste, node_modules, caches, simulações e páginas de diagnóstico ficam de fora. WASM/JS locais são executáveis necessários e permanecem. [Formato do pacote](https://developer.chrome.com/docs/webstore/prepare#zip-your-extension-files).
 

@@ -73,7 +73,7 @@ export function SettingsApp() {
     }
   }
   return (
-    <main>
+    <main className="settings-shell">
       <header>
         <h1>Configurações</h1>
         <p>Escolha a IA e como o botão IA deve escrever.</p>
@@ -116,8 +116,16 @@ export function SettingsApp() {
           Licenças e informações legais
         </a>
       </footer>
-      {message && <p role="status">{message}</p>}
-      {error && <p role="alert">{error}</p>}
+      {message && (
+        <p className="settings-status" role="status">
+          {message}
+        </p>
+      )}
+      {error && (
+        <p className="settings-error" role="alert">
+          {error}
+        </p>
+      )}
     </main>
   );
 }

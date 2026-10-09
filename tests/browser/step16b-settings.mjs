@@ -5,7 +5,7 @@ import { Buffer } from 'node:buffer';
 import path from 'node:path';
 import { chromium } from 'playwright-core';
 
-const out = path.resolve('.cache/step16b');
+const out = path.resolve(process.env.STEP16B_OUTPUT ?? '.cache/step16b');
 await mkdir(out, { recursive: true });
 const manifest = JSON.parse(await readFile('manifest.json', 'utf8'));
 const extension = path.resolve('release/ia-local-whatsapp-' + manifest.version);

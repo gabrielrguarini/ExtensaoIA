@@ -1,0 +1,50 @@
+{
+  "baseline": "c9a8be96534dab66bae3b1ed10ba360da9d8e230",
+  "version": "0.16.4",
+  "inspected": [
+    {
+      "file": "src/extension/settings/SettingsApp.tsx",
+      "callbacks": 13,
+      "controls": 3,
+      "unchanged": true
+    },
+    {
+      "file": "src/extension/settings/PreferenceFields.tsx",
+      "callbacks": 9,
+      "controls": 7,
+      "unchanged": true
+    },
+    {
+      "file": "src/extension/settings/ChromePreparation.tsx",
+      "callbacks": 14,
+      "controls": 2,
+      "unchanged": true
+    },
+    {
+      "file": "src/extension/settings/SelectedModelControls.tsx",
+      "callbacks": 14,
+      "controls": 7,
+      "unchanged": true
+    }
+  ],
+  "protectedSourcesUnchanged": true,
+  "manifestOnlyVersionChanged": true,
+  "dependenciesUnchanged": true,
+  "contentJsSha256": "225359bb15ad2486bccd2b8730d85a31b708fb2b5a13531a16b4794f2c4a0774",
+  "contentJsByteForByteIdentical": true,
+  "unchangedPackageFiles": 45,
+  "changedLogicalPackageFiles": [
+    "manifest.json",
+    "popup.html",
+    "sidepanel.html",
+    "assets/settings-*.css",
+    "assets/settings-*.js"
+  ],
+  "distMatchesPackage": true,
+  "bytes": 95546004,
+  "zip": {
+    "name": "ia-local-whatsapp-0.16.4.zip",
+    "bytes": 21171024,
+    "sha256": "2b4e8f294571f245342f49e5c3ccb87726452824b993c8fe3790e1a96e9c55e8"
+  }
+}

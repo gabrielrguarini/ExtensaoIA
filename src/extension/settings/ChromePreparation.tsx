@@ -109,8 +109,8 @@ export function ChromePreparation({
       });
   }
   return (
-    <section aria-labelledby="chrome-ai-title">
-      <h2 id="chrome-ai-title">Preparar IA Nativa</h2>
+    <section className="preparation-card" aria-labelledby="chrome-ai-title">
+      <h3 id="chrome-ai-title">Preparar IA Nativa</h3>
       <p role="status">{message}</p>
       {!ready && selected && selected.availability.state !== 'unavailable' && (
         <>

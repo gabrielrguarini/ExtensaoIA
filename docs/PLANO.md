@@ -34,6 +34,8 @@ A [STEP-16-C](steps/STEP-16-C.md), solicitada em 09/10/2026, corrige falsos bloq
 
 A [STEP-16-B](steps/STEP-16-B.md), solicitada em 08/10/2026, mostra **Tipo de IA → IA Nativa / Modelo** no início das configurações. O seletor Llama/Qwen/Gemma e seus controles aparecem somente em Modelo; IA Nativa mostra seu preparo. Preferências e alternativa automática antes da geração são preservadas. Substitui a escolha misturada e a seção recolhida descritas abaixo, sem alterar motores ou downloads explícitos.
 
+A [STEP-16-D](steps/STEP-16-D.md), solicitada em 09/10/2026, reorganiza somente a apresentação das configurações em Inteligência artificial, Como escrever e Aparência. Aplica a skill refactoring-ui à hierarquia, espaçamento e contraste, preservando controles, comportamento e aparência do botão IA no WhatsApp.
+
 A [STEP-15-F](steps/STEP-15-F.md) simplifica o produto antes da STEP-16: o botão IA executa diretamente a ação salva; preferências ficam apenas no popup/painel lateral. Português brasileiro e escolha de variante são automáticos. Nomes de frameworks, provas sintéticas, simulação e diagnóstico não aparecem na interface. A compatibilidade nativa por instrução passa a ser automática quando a configuração específica não está pronta, sempre antes da geração e sem download silencioso. Essa decisão substitui os controles manuais descritos nas etapas históricas.
 
 ## Correção vigente de idioma — STEP-15-G
@@ -188,6 +190,7 @@ Cada etapa depende das anteriores. A conclusão de implementação sem validaç�
 | [STEP-16-A](steps/STEP-16-A.md) | Aplicar streaming diretamente e preservar edições recebidas      |
 | [STEP-16-B](steps/STEP-16-B.md) | Separar IA Nativa/Modelo e seleção condicional nas configurações |
 | [STEP-16-C](steps/STEP-16-C.md) | Corrigir bloqueio de estrutura em texto simples colado           |
+| [STEP-16-D](steps/STEP-16-D.md) | Refatorar somente a interface das configurações                  |
 
 Marco de MVP: concluir até STEP-08. Depois, adicionar modos e streaming, revisão opcional, perfis/cache, configurações, benchmark e entrega final.
 
