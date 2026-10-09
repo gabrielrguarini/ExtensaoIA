@@ -1,0 +1,18 @@
+{
+  "version": "0.16.5",
+  "command": "npm.cmd run check",
+  "typecheck": "passed",
+  "lint": "passed",
+  "format": "passed",
+  "tests": {
+    "passed": 303,
+    "files": 42
+  },
+  "build": "passed",
+  "browserCommand": "npm.cmd run test:step16e:browser",
+  "browser": "154.0.8037.98",
+  "nativeChecks": 8,
+  "noModelDownloaded": true,
+  "noConversationOpened": true,
+  "noMessageSent": true
+}

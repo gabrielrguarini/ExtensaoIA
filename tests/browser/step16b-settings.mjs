@@ -12,6 +12,7 @@ const extension = path.resolve('release/ia-local-whatsapp-' + manifest.version);
 const executablePath =
   process.env.STEP16B_CHROME ?? 'C:/Program Files/Google/Chrome/Application/chrome.exe';
 const port = process.env.STEP16B_PORT ?? '9260';
+const panelAccess = process.env.STEP16E_ACCESS === '1';
 assert.match(port, /^\d{4,5}$/u);
 const profile = path.join(out, 'chrome');
 const options = {
@@ -203,6 +204,37 @@ try {
   assert(nativeState.width >= 360 && nativeState.width <= 400);
   assert(nativeState.scrollWidth <= nativeState.width);
   report.nativePopup = nativeState;
+  if (panelAccess) {
+    report.panelAccess = await evaluate(
+      native.sessionId,
+      `(() => {
+      const button = document.querySelector('.panel-link');
+      return { buttonBelowFields: button.getBoundingClientRect().top >= document.querySelector('fieldset').getBoundingClientRect().bottom };
+    })()`,
+    );
+    await evaluate(
+      native.sessionId,
+      'document.querySelector(".panel-link").scrollIntoView({block:"center"})',
+    );
+    await screenshot(native.sessionId, 'popup-panel-access.png');
+    const point = await evaluate(
+      native.sessionId,
+      `(() => {
+      const r = document.querySelector('.panel-link').getBoundingClientRect();
+      return { x:r.x+r.width/2, y:r.y+r.height/2 };
+    })()`,
+    );
+    for (const type of ['mousePressed', 'mouseReleased'])
+      await command(
+        'Input.dispatchMouseEvent',
+        { type, ...point, button: 'left', clickCount: 1 },
+        native.sessionId,
+      );
+    await attach('sidepanel.html');
+    report.checks.push(
+      'Abrir painel lateral funciona com clique confiável no popup real, após rolar até o botão.',
+    );
+  }
   await screenshot(native.sessionId, 'popup-native.png');
   await browserCDP.send('Target.closeTarget', { targetId: native.targetId });
   report.checks.push(
@@ -257,6 +289,17 @@ try {
       expected,
     );
     await waitFor(panel.sessionId, '!document.querySelector("fieldset").disabled');
+    if (panelAccess) {
+      const downloadButton = `([...document.querySelectorAll('button')].find(x => x.textContent === 'Baixar modelo'))`;
+      await waitFor(panel.sessionId, downloadButton + ' && !' + downloadButton + '.disabled');
+      await controller.waitForFunction(() =>
+        [...document.querySelectorAll('button')].some(
+          (x) => x.textContent === 'Baixar modelo' && x.disabled,
+        ),
+      );
+      report.modelDownloads ??= [];
+      report.modelDownloads.push({ model: expected, panelEnabled: true, popupDisabled: true });
+    }
   }
   report.checks.push(
     'Llama, Qwen 4B/8B e Gemma selecionáveis por teclado, com sincronização entre interfaces.',
@@ -291,6 +334,17 @@ try {
   assert.equal(popupState.theme, 'dark');
   assert.equal(popupState.focused, 'Tipo de IA');
   report.modelPopup = popupState;
+  if (panelAccess) {
+    const disabled = await evaluate(
+      modelPopup.sessionId,
+      `([...document.querySelectorAll('button')].find(x => x.textContent === 'Baixar modelo')).disabled`,
+    );
+    assert(disabled, 'Download deve permanecer restrito ao painel visível.');
+    report.panelAccess.actualModelPopupDownloadDisabled = disabled;
+    report.checks.push(
+      'Quatro modelos: download habilitado no painel compatível e desativado no popup; nenhum download iniciado.',
+    );
+  }
   report.checks.push(
     'Popup alterna modos por teclado, conserva foco e retorna ao último modelo; tema escuro sem rolagem horizontal.',
   );
@@ -307,6 +361,11 @@ try {
   report.checks.push(
     'Ação, comportamento, gírias, emojis e tema preservados; somente preferências persistidas, sem iniciar download.',
   );
+  if (panelAccess)
+    assert(
+      report.panelAccess.buttonBelowFields,
+      'Abrir painel lateral ainda aparece acima dos campos.',
+    );
   socket.close();
   socket = undefined;
   await context.close();

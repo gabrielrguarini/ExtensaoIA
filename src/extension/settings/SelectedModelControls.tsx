@@ -181,7 +181,9 @@ export function SelectedModelControls({
           </p>
           {cached === false && (
             <>
-              {!visiblePanel && <p>Abra o painel lateral para preparar o modelo.</p>}
+              {!visiblePanel && (
+                <p>Para baixar, use “Abrir painel lateral” no final das configurações.</p>
+              )}
               <button
                 disabled={busy || !visiblePanel || f16 === undefined}
                 onClick={(e) => {

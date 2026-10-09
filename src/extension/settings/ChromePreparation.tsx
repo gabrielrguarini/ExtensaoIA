@@ -114,7 +114,9 @@ export function ChromePreparation({
       <p role="status">{message}</p>
       {!ready && selected && selected.availability.state !== 'unavailable' && (
         <>
-          {!visiblePanel && <p>Abra o painel lateral para preparar a IA.</p>}
+          {!visiblePanel && (
+            <p>Para preparar, use “Abrir painel lateral” no final das configurações.</p>
+          )}
           <button
             className="primary"
             disabled={busy || !visiblePanel}

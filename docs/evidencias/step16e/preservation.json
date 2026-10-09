@@ -1,0 +1,22 @@
+{
+  "baseline": "23deb366c785191ba965e24335b8ad2fbdcb0850",
+  "version": "0.16.5",
+  "contentJsByteForByteIdentical": true,
+  "contentJsSha256": "225359bb15ad2486bccd2b8730d85a31b708fb2b5a13531a16b4794f2c4a0774",
+  "unchangedPackageFiles": 46,
+  "protectedSourcesAndStylesUnchanged": true,
+  "manifestOnlyVersionChanged": true,
+  "distMatchesPackage": true,
+  "changedLogicalPackageFiles": [
+    "manifest.json",
+    "popup.html",
+    "sidepanel.html",
+    "assets/settings-*.js"
+  ],
+  "bytes": 95546066,
+  "zip": {
+    "name": "ia-local-whatsapp-0.16.5.zip",
+    "bytes": 21171047,
+    "sha256": "012239e16d7dcdf08a44dde2faccfd958f58123388a669bfc6215b7597cd2a12"
+  }
+}

@@ -4,7 +4,7 @@
 
 Corrija e reescreva seus rascunhos em português do Brasil, diretamente no WhatsApp Web. A IA funciona no computador e a extensão nunca envia a mensagem por você.
 
-**Versão 0.16.4 · Chrome · Manifest V3**
+**Versão 0.16.5 · Chrome · Manifest V3**
 
 ## Como funciona
 
@@ -41,9 +41,9 @@ npm.cmd run check
 npm.cmd run package
 ```
 
-Abra `chrome://extensions`, habilite **Modo do desenvolvedor** e escolha **Carregar sem compactação → release/ia-local-whatsapp-0.16.4**. Recarregue o WhatsApp Web. Não instale simultaneamente as pastas dist e release.
+Abra `chrome://extensions`, habilite **Modo do desenvolvedor** e escolha **Carregar sem compactação → release/ia-local-whatsapp-0.16.5**. Recarregue o WhatsApp Web. Não instale simultaneamente as pastas dist e release.
 
-O pacote também gera **release/ia-local-whatsapp-0.16.4.zip**, com Manifest na raiz e inventário SHA-256. Pesos dos modelos são baixados pelo fluxo explícito da extensão; não acompanham o ZIP.
+O pacote também gera **release/ia-local-whatsapp-0.16.5.zip**, com Manifest na raiz e inventário SHA-256. Pesos dos modelos são baixados pelo fluxo explícito da extensão; não acompanham o ZIP.
 
 ## Requisitos
 

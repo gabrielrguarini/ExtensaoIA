@@ -4,9 +4,11 @@ Assistente de escrita em português do Brasil. Por padrão, clique em **IA** no 
 
 O estado e as evidências ficam em [Progresso](PROGRESSO.md). Consulte o [plano histórico](PLANO.md) e o [README de produto](../README.md). A [STEP-16-C](steps/STEP-16-C.md) corrige o bloqueio de texto simples colado, preservando as configurações da STEP-16-B e o streaming da STEP-16-A.
 
-A entrega local **0.16.4** e o procedimento de atualização estão no [guia de instalação](INSTALACAO.md). Use `npm.cmd run package` para gerar release/ia-local-whatsapp-0.16.4, sem páginas de desenvolvimento, e seu inventário SHA-256. Confira o [relatório da interface](VALIDACAO-STEP-16-D.md), o [relatório do texto colado](VALIDACAO-STEP-16-C.md), o [relatório das configurações](VALIDACAO-STEP-16-B.md), o [relatório de streaming](VALIDACAO-STEP-16-A.md) e o [relatório STEP-16](VALIDACAO-STEP-16.md) para saber quais validações passaram e quais permanecem pendentes.
+A entrega local **0.16.5** e o procedimento de atualização estão no [guia de instalação](INSTALACAO.md). Use `npm.cmd run package` para gerar release/ia-local-whatsapp-0.16.5, sem páginas de desenvolvimento, e seu inventário SHA-256. Confira o [relatório da interface](VALIDACAO-STEP-16-D.md), o [relatório do texto colado](VALIDACAO-STEP-16-C.md), o [relatório das configurações](VALIDACAO-STEP-16-B.md), o [relatório de streaming](VALIDACAO-STEP-16-A.md) e o [relatório STEP-16](VALIDACAO-STEP-16.md) para saber quais validações passaram e quais permanecem pendentes.
 
 A [STEP-16-D](steps/STEP-16-D.md) refatora somente a apresentação das configurações. `npm.cmd run test:step16d:browser` confere popup/painel reais, persistência/teclado e uma matriz visual com 32 combinações de modo, tema e largura. As páginas de layout em abas são identificadas separadamente das superfícies nativas do Chrome; não há download ou inferência.
+
+A [STEP-16-E](steps/STEP-16-E.md) move o acesso ao painel para depois dos campos. `npm.cmd run test:step16e:browser` confere posição, clique real no popup e download habilitado no painel para os quatro modelos, sem baixar pesos. [Relatório E](VALIDACAO-STEP-16-E.md).
 
 ## Requisitos e instalação
 

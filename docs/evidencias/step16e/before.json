@@ -1,0 +1,66 @@
+{
+  "version": "0.16.4",
+  "browser": "154.0.8037.98",
+  "actualChromeActionPopup": true,
+  "actualChromeSidePanel": true,
+  "checks": [
+    "Abrir painel lateral funciona com clique confiável no popup real, após rolar até o botão.",
+    "Popup real mostra IA Nativa/Modelo no início; IA Nativa oculta seletor e controles de modelos.",
+    "Painel lateral real exibe quatro modelos e somente seus controles após escolher Modelo por teclado.",
+    "Llama, Qwen 4B/8B e Gemma selecionáveis por teclado, com sincronização entre interfaces.",
+    "Quatro modelos: download habilitado no painel compatível e desativado no popup; nenhum download iniciado.",
+    "Popup alterna modos por teclado, conserva foco e retorna ao último modelo; tema escuro sem rolagem horizontal.",
+    "Ação, comportamento, gírias, emojis e tema preservados; somente preferências persistidas, sem iniciar download."
+  ],
+  "pageErrors": 0,
+  "panelExceptions": 0,
+  "pageModelRequests": 0,
+  "noModelDownloaded": true,
+  "noConversationOpened": true,
+  "noMessageSent": true,
+  "nativePopup": {
+    "source": "chrome-preferred",
+    "choices": ["IA Nativa", "Modelo"],
+    "models": 0,
+    "nativeControls": true,
+    "width": 375,
+    "scrollWidth": 360,
+    "firstChoiceVisible": true
+  },
+  "panelAccess": {
+    "buttonBelowFields": false,
+    "actualModelPopupDownloadDisabled": true
+  },
+  "modelDownloads": [
+    {
+      "model": "economico",
+      "panelEnabled": true,
+      "popupDisabled": true
+    },
+    {
+      "model": "equilibrado",
+      "panelEnabled": true,
+      "popupDisabled": true
+    },
+    {
+      "model": "qualidade",
+      "panelEnabled": true,
+      "popupDisabled": true
+    },
+    {
+      "model": "gemma",
+      "panelEnabled": true,
+      "popupDisabled": true
+    }
+  ],
+  "modelPopup": {
+    "width": 375,
+    "scrollWidth": 360,
+    "theme": "dark",
+    "focused": "Tipo de IA"
+  },
+  "failure": {
+    "name": "AssertionError",
+    "message": "Abrir painel lateral ainda aparece acima dos campos."
+  }
+}

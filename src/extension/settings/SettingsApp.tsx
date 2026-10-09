@@ -78,6 +78,20 @@ export function SettingsApp() {
         <h1>Configurações</h1>
         <p>Escolha a IA e como o botão IA deve escrever.</p>
       </header>
+      <PreferenceFields
+        value={preferences}
+        disabled={pending}
+        onChange={(patch) => {
+          void save(patch);
+        }}
+      >
+        {loaded &&
+          (preferences.engine === 'chrome-preferred' ? (
+            <ChromePreparation visiblePanel={!popup} action={preferences.defaultAction} />
+          ) : (
+            <SelectedModelControls preferences={preferences} visiblePanel={!popup} />
+          ))}
+      </PreferenceFields>
       {popup && (
         <button
           className="panel-link"
@@ -93,20 +107,6 @@ export function SettingsApp() {
           Abrir painel lateral
         </button>
       )}
-      <PreferenceFields
-        value={preferences}
-        disabled={pending}
-        onChange={(patch) => {
-          void save(patch);
-        }}
-      >
-        {loaded &&
-          (preferences.engine === 'chrome-preferred' ? (
-            <ChromePreparation visiblePanel={!popup} action={preferences.defaultAction} />
-          ) : (
-            <SelectedModelControls preferences={preferences} visiblePanel={!popup} />
-          ))}
-      </PreferenceFields>
       <footer className="privacy-note">
         <p>
           Seus textos são processados neste computador. A IA pode substituir o rascunho; nenhuma
