@@ -98,35 +98,6 @@ button:disabled {
     animation: none;
   }
 }
-.writing-tooltip {
-  position: fixed;
-  width: max-content;
-  max-width: min(296px, calc(100vw - 16px));
-  padding: 6px 10px;
-  border-radius: 6px;
-  background: #172b32;
-  color: #fff;
-  font:
-    12px/1.4 system-ui,
-    sans-serif;
-  box-shadow: 0 2px 8px #0003;
-  pointer-events: none;
-  overflow-wrap: anywhere;
-}
-.writing-tooltip::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: min(var(--tooltip-arrow, 16px), calc(100% - 12px));
-  width: 8px;
-  height: 8px;
-  background: inherit;
-  transform: rotate(45deg);
-}
-.writing-tooltip[data-side='bottom']::after {
-  top: -4px;
-  bottom: auto;
-}
 .panel-container {
   position: fixed;
   width: 380px;

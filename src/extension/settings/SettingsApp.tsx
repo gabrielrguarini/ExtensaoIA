@@ -5,6 +5,7 @@ import { preferenceStore } from '../content/preferences-client';
 import { PreferenceFields } from './PreferenceFields';
 import { ChromePreparation } from './ChromePreparation';
 import { SelectedModelControls } from './SelectedModelControls';
+import { SettingsAccessSwitch } from './SettingsAccessSwitch';
 
 export function SettingsApp() {
   const [preferences, setPreferences] = useState(DEFAULT_PREFERENCES);
@@ -79,6 +80,7 @@ export function SettingsApp() {
         <p>Escolha a IA e como o botão IA deve escrever.</p>
       </header>
       <PreferenceFields
+        appearanceControls={<SettingsAccessSwitch />}
         value={preferences}
         disabled={pending}
         onChange={(patch) => {

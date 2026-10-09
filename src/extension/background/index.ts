@@ -10,14 +10,20 @@ import type { DiagnosticCommand, Probe } from '../../shared/diagnostic';
 import { OffscreenHost } from './offscreen-host';
 import { isPreferenceCommand } from '../../shared/preferences';
 import { readPreferences, updatePreferences, migratePreferences } from './preferences';
+import { isSettingsAccessCommand } from '../../shared/settings-access';
+import { SettingsAccessController } from './settings-access';
 
 const host = new OffscreenHost();
+const settingsAccess = new SettingsAccessController();
+void settingsAccess.initialize().catch(() => undefined);
 
 chrome.runtime.onInstalled.addListener(() => {
   void migratePreferences();
+  void settingsAccess.initialize().catch(() => undefined);
 });
 chrome.runtime.onStartup.addListener(() => {
   void migratePreferences();
+  void settingsAccess.initialize().catch(() => undefined);
 });
 
 async function diagnostic(command: DiagnosticCommand): Promise<unknown> {
@@ -33,6 +39,13 @@ async function diagnostic(command: DiagnosticCommand): Promise<unknown> {
 }
 
 chrome.runtime.onMessage.addListener((value: unknown, sender, sendResponse) => {
+  if (isSettingsAccessCommand(value)) {
+    if (!isSettingsPage(sender, chrome.runtime.id)) return false;
+    const operation =
+      value.type === 'get' ? settingsAccess.read() : settingsAccess.update(value.openInPanel);
+    void operation.then(sendResponse, () => sendResponse({ error: 'SETTINGS_ACCESS_UNAVAILABLE' }));
+    return true;
+  }
   if (
     record(value) &&
     fields(value, ['target', 'type']) &&

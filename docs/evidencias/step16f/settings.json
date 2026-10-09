@@ -1,0 +1,26 @@
+{
+  "version": "0.16.6",
+  "browser": "154.0.8037.98",
+  "actualChromeActionPopup": true,
+  "actualChromeSidePanel": true,
+  "checks": [
+    "Ícone da extensão abre o painel lateral por padrão, com Switch ligado em Aparência.",
+    "Switches de escrita salvam e sincronizam por mouse/Space; eventos não confiáveis ignorados.",
+    "Switch desligado abre popup pelo ícone; a alteração conserva foco e todas as preferências de escrita.",
+    "Popup mantém download desativado; tooltip explica abrir painel e aparece por hover/foco com descrição acessível.",
+    "Preparo real com rede interceptada mostra aviso durante download; Cancelar conserva fluxo e remove aviso.",
+    "Fechar painel durante preparo destrói a página; aviso visível antecipado, sem botão de fechar adicional.",
+    "Preferência de popup restaurada no próximo clique após reiniciar Chrome; valores da escrita intactos."
+  ],
+  "pageErrors": 0,
+  "panelExceptions": 0,
+  "pageModelRequests": 0,
+  "noModelDownloaded": true,
+  "noConversationOpened": true,
+  "noMessageSent": true,
+  "syntheticPreparation": {
+    "actualUI": true,
+    "modelNetworkIntercepted": true,
+    "realWeightsDownloaded": false
+  }
+}

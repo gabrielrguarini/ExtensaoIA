@@ -7,6 +7,7 @@ import { probeHardware } from '../content/model-hardware';
 import { manageModel } from './model-client';
 import { manageGemma } from './gemma-client';
 import type { GemmaVariant } from '../../shared/local-model';
+import { PreparationButton } from './PreparationButton';
 
 export function SelectedModelControls({
   preferences,
@@ -184,19 +185,29 @@ export function SelectedModelControls({
               {!visiblePanel && (
                 <p>Para baixar, use “Abrir painel lateral” no final das configurações.</p>
               )}
-              <button
+              <PreparationButton
                 disabled={busy || !visiblePanel || f16 === undefined}
+                reason={
+                  !visiblePanel
+                    ? 'Abra o painel lateral para fazer o download.'
+                    : busy
+                      ? 'Uma operação está em andamento. Aguarde ou cancele o download.'
+                      : 'Verificando a compatibilidade deste computador.'
+                }
                 onClick={(e) => {
                   if (e.isTrusted) void prepare();
                 }}
               >
                 Baixar modelo
-              </button>
+              </PreparationButton>
             </>
           )}
           {percent !== undefined && (
             <>
               <p role="status">Baixando modelo… {percent}%</p>
+              <p className="download-warning" role="status">
+                Mantenha o painel aberto. Se fechar, o download será cancelado.
+              </p>
               <button
                 onClick={(e) => {
                   if (e.isTrusted) download.current?.abort();

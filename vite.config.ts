@@ -71,6 +71,8 @@ function extensionPackage(): Plugin {
         'LONG-LICENSE',
         'PROTOBUFJS-LICENSE',
         'PLATFORM-LICENSE',
+        'SHADCN-UI-LICENSE',
+        'BASE-UI-LICENSE',
       ])
         await copyFile(
           new URL(`./licenses/${license}`, import.meta.url),

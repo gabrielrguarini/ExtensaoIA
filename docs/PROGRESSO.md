@@ -6,7 +6,7 @@
 
 - Última atualização: 09/10/2026.
 - Etapa atual: **STEP-16 / STEP-16-A — Aguardando validação** por inferência completa em perfil preparado. A conferência do editor no WhatsApp foi satisfeita pela **STEP-16-C**, correção concluída de texto simples colado no pacote 0.16.3. [Correção C](VALIDACAO-STEP-16-C.md) · [Configurações](VALIDACAO-STEP-16-B.md) · [Streaming](VALIDACAO-STEP-16-A.md).
-- Último ajuste concluído: **STEP-16-E — Acesso ao painel**, botão após Aparência e orientação de preparo esclarecida. 303 testes/check e oito verificações no Chrome; download habilitado no painel para os quatro modelos, sem baixar pesos. Pacote 0.16.5 instalado. [Relatório E](VALIDACAO-STEP-16-E.md).
+- Último ajuste concluído: **STEP-16-F — Switches, abertura padrão e avisos**, painel como padrão, tooltip compartilhado com IA e aviso durante download. Check com 308 testes e sete verificações Chrome; pacote 0.16.6. [Relatório F](VALIDACAO-STEP-16-F.md).
 - Situação: **STEP-15 Concluída** pelas novas campanhas D: 108 pares históricos por perfil WebLLM, comparação ENTITY_* e 108 rascunhos reservados distintos × cinco candidatos × três rodadas. Os 191 casos Qwen antes interrompidos foram cobertos em campanhas novas, preservando intactos os relatórios antigos. [Relatório D](VALIDACAO-STEP-15-D.md).
 - Validação complementar histórica no WhatsApp real: 14 pedidos no grupo autorizado, duas alterações consideradas úteis, seis recusas, três respostas sem mudança e três prévias insatisfatórias; duas substituições e uma mensagem sintética enviada manualmente. A qualidade varia e exige revisão. [Resultados](VALIDACAO-STEP-12.md#validação-complementar-no-whatsapp-real--30092026).
 - Ajustes anteriores à entrega final: **STEP-15-H Concluída** incorpora a autorização de aplicar o resultado após clicar em IA; [G](VALIDACAO-STEP-15-G.md) corrige idioma de saída, [F](VALIDACAO-STEP-15-F.md) concentra configurações na extensão e [E](VALIDACAO-STEP-15-E.md) retira a avaliação de alterações. **STEP-16 Aguardando validação**, evidências históricas preservadas.
@@ -55,6 +55,8 @@ Não concluir uma etapa apenas porque o código compila. Pré-requisitos de uma 
 | [STEP-16-C](steps/STEP-16-C.md) | Texto simples colado sem falso bloqueio          | Concluída            | 303 testes/check, quatro regressões Chrome, colagem/streaming no WhatsApp autenticado com geração sintética e pacote 0.16.3 instalado. [Relatório](VALIDACAO-STEP-16-C.md).                   |
 | [STEP-16-D](steps/STEP-16-D.md) | Interface das configurações                      | Concluída            | 303 testes/check, seis verificações de popup/painel reais e 32 combinações visuais; callbacks/content.js intactos, pacote 0.16.4. [Relatório](VALIDACAO-STEP-16-D.md).                        |
 | [STEP-16-E](steps/STEP-16-E.md) | Acesso ao painel no final das configurações      | Concluída            | Pacote 0.16.5, 303 testes/check e oito verificações Chrome; preparo no painel confirmado nos quatro modelos. [Relatório](VALIDACAO-STEP-16-E.md).                                             |
+
+| [STEP-16-F](steps/STEP-16-F.md) | Switches, abertura padrão e avisos de preparo | Concluída | Pacote 0.16.6, 308 testes/check e sete verificações Chrome; tooltip reutilizado, streaming em quatro fixtures preservado. [Relatório](VALIDACAO-STEP-16-F.md). |
 
 ## Registro de execução
 
@@ -481,3 +483,10 @@ Copiar o bloco abaixo para cada execução e preencher somente com fatos verific
 - Preservação: estilos e fontes fora dos três componentes de apresentação intactos; callbacks/guardas desses componentes iguais no diff. Manifest/lockfile somente versão; dependências, modelos, cache, preferências, botão IA e streaming sem mudanças. content.js idêntico ao 0.16.4; 46 dos 50 arquivos do pacote preservados. Release 0.16.5, ZIP/inventário/build conferidos.
 - Evidências: [Relatório E](VALIDACAO-STEP-16-E.md) e docs/evidencias/step16e. Alterações do usuário em .gitignore e skills-lock.json preservadas fora do commit.
 - Status final: **Concluída**, após verificações e commit próprio com identidade humana configurada. Inferência completa da STEP-16/16-A permanece pendente; sem push, publicação ou etapa seguinte.
+
+### STEP-16-F — 09/10/2026
+
+- Switches shadcn/Base UI, painel por padrão com opção de popup em Aparência, tooltip compartilhado com IA e aviso visível durante download. Sem novo botão de fechar, conforme escolha do usuário.
+- Check: 308 testes/43 arquivos e build; sete verificações Chrome 154.0.8037.98, preparo com rede interceptada e persistência após reinício. Quatro fixtures de streaming aprovadas. Sem pesos baixados ou mensagens.
+- Preservação dos motores, cache, escrita v8, adaptador e estilos/interações do botão IA. A extração do tooltip altera o bundle sem mudar comportamento. Licenças e lockfile incluídos; pacote 0.16.6 com 53 arquivos.
+- [Relatório e evidências](VALIDACAO-STEP-16-F.md). Alterações alheias em .gitignore/skills-lock.json preservadas. Pendência de inferência completa da STEP-16/16-A mantida. Erros de idioma seguem em commit separado por solicitação do usuário.

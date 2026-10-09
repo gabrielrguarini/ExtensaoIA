@@ -1,0 +1,19 @@
+{
+  "version": "0.16.5",
+  "browser": "154.0.8037.98",
+  "actualChromeActionPopup": true,
+  "actualChromeSidePanel": true,
+  "checks": ["Fechamento nativo do painel inspecionado com listener beforeunload, sem download."],
+  "pageErrors": 0,
+  "panelExceptions": 0,
+  "pageModelRequests": 0,
+  "noModelDownloaded": true,
+  "noConversationOpened": true,
+  "noMessageSent": true,
+  "nativeCloseProbe": {
+    "dialogs": 0,
+    "beforeUnloadObserved": false,
+    "visibilityAfterClose": "hidden",
+    "panelTargetSurvives": false
+  }
+}

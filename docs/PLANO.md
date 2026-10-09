@@ -38,6 +38,8 @@ A [STEP-16-D](steps/STEP-16-D.md), solicitada em 09/10/2026, reorganiza somente 
 
 A [STEP-16-E](steps/STEP-16-E.md), solicitada em 09/10/2026, move Abrir painel lateral para depois das configurações e esclarece o preparo exclusivo pelo painel visível. Mantém o popup como entrada e todas as guardas de download.
 
+A [STEP-16-F](steps/STEP-16-F.md) adiciona switches, painel como abertura padrão com opção de popup em Aparência, tooltip compartilhado com IA e aviso visível durante o download. Substitui a entrada fixa pelo popup, preservando as guardas e o comportamento do download.
+
 A [STEP-15-F](steps/STEP-15-F.md) simplifica o produto antes da STEP-16: o botão IA executa diretamente a ação salva; preferências ficam apenas no popup/painel lateral. Português brasileiro e escolha de variante são automáticos. Nomes de frameworks, provas sintéticas, simulação e diagnóstico não aparecem na interface. A compatibilidade nativa por instrução passa a ser automática quando a configuração específica não está pronta, sempre antes da geração e sem download silencioso. Essa decisão substitui os controles manuais descritos nas etapas históricas.
 
 ## Correção vigente de idioma — STEP-15-G
@@ -194,6 +196,7 @@ Cada etapa depende das anteriores. A conclusão de implementação sem validaç�
 | [STEP-16-C](steps/STEP-16-C.md) | Corrigir bloqueio de estrutura em texto simples colado           |
 | [STEP-16-D](steps/STEP-16-D.md) | Refatorar somente a interface das configurações                  |
 | [STEP-16-E](steps/STEP-16-E.md) | Mover acesso ao painel e esclarecer preparo de modelos           |
+| [STEP-16-F](steps/STEP-16-F.md) | Switches, abertura padrão e avisos de preparo                    |
 
 Marco de MVP: concluir até STEP-08. Depois, adicionar modos e streaming, revisão opcional, perfis/cache, configurações, benchmark e entrega final.
 

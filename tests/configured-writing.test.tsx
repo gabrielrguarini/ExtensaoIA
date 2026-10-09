@@ -160,7 +160,7 @@ describe('ação salva com um clique', () => {
         ].map((option) => option.textContent),
       ).toEqual(['IA Nativa', 'Modelo']);
       expect(container.querySelector('[aria-label="Modelo"]')).toBeNull();
-      expect(container.querySelectorAll('input[type="checkbox"]')).toHaveLength(2);
+      expect(container.querySelectorAll('[role="switch"]')).toHaveLength(2);
       expect(container.textContent).not.toMatch(
         /WebLLM|Transformers|experimental|shader|VRAM|simula/iu,
       );

@@ -4,7 +4,7 @@
 
 Corrija e reescreva seus rascunhos em português do Brasil, diretamente no WhatsApp Web. A IA funciona no computador e a extensão nunca envia a mensagem por você.
 
-**Versão 0.16.5 · Chrome · Manifest V3**
+**Versão 0.16.6 · Chrome · Manifest V3**
 
 ## Como funciona
 
@@ -22,8 +22,10 @@ Prefere revisar antes? Nas configurações da extensão, selecione **Ao clicar e
 - Nove ações: Corrigir, Melhorar, Formal, Profissional, Amigável, Natural, Conciso, Engraçado e Reescrever.
 - Escolha **IA Nativa** ou **Modelo** no início das configurações. A lista de modelos aparece ao selecionar Modelo.
 - Configurações organizadas em Inteligência artificial, Como escrever e Aparência.
+- Switches para gírias, emojis e abertura padrão: painel lateral ligado; desligue em Aparência para usar popup.
 - IA do Chrome preferencial quando disponível; Llama, Qwen e Gemma como opções locais.
 - Downloads explícitos, cancelamento e uso offline após preparar o modelo.
+- Tooltip orienta abrir o painel quando o download está bloqueado no popup; durante o download, um aviso lembra que fechar o painel cancela a operação.
 - Proteção contra aplicação em outra conversa ou campo; no modo direto, edições do texto recebido são preservadas.
 - Streaming direto com várias linhas e emojis. Menções estruturadas e formatação especial continuam disponíveis para cópia pela prévia opcional.
 
@@ -41,9 +43,9 @@ npm.cmd run check
 npm.cmd run package
 ```
 
-Abra `chrome://extensions`, habilite **Modo do desenvolvedor** e escolha **Carregar sem compactação → release/ia-local-whatsapp-0.16.5**. Recarregue o WhatsApp Web. Não instale simultaneamente as pastas dist e release.
+Abra `chrome://extensions`, habilite **Modo do desenvolvedor** e escolha **Carregar sem compactação → release/ia-local-whatsapp-0.16.6**. Recarregue o WhatsApp Web. Não instale simultaneamente as pastas dist e release.
 
-O pacote também gera **release/ia-local-whatsapp-0.16.5.zip**, com Manifest na raiz e inventário SHA-256. Pesos dos modelos são baixados pelo fluxo explícito da extensão; não acompanham o ZIP.
+O pacote também gera **release/ia-local-whatsapp-0.16.6.zip**, com Manifest na raiz e inventário SHA-256. Pesos dos modelos são baixados pelo fluxo explícito da extensão; não acompanham o ZIP.
 
 ## Requisitos
 

@@ -4,6 +4,7 @@ import type { AvailabilityQuery } from '../../shared/suggestion';
 import { createNative, nativeConfig } from '../ai/chrome-api';
 import { selectNativeQuery } from '../ai/native-choice';
 import { chromeStatus } from './chrome-client';
+import { PreparationButton } from './PreparationButton';
 
 export function ChromePreparation({
   visiblePanel,
@@ -117,25 +118,35 @@ export function ChromePreparation({
           {!visiblePanel && (
             <p>Para preparar, use “Abrir painel lateral” no final das configurações.</p>
           )}
-          <button
+          <PreparationButton
             className="primary"
             disabled={busy || !visiblePanel}
+            reason={
+              !visiblePanel
+                ? 'Abra o painel lateral para preparar a IA.'
+                : 'A preparação está em andamento. Aguarde ou cancele.'
+            }
             onClick={(e) => {
               if (e.isTrusted) prepare(selected.query);
             }}
           >
             Preparar IA
-          </button>
+          </PreparationButton>
         </>
       )}
       {busy && (
-        <button
-          onClick={(e) => {
-            if (e.isTrusted) controller.current?.abort();
-          }}
-        >
-          Cancelar preparação
-        </button>
+        <>
+          <p className="download-warning" role="status">
+            Mantenha o painel aberto. Se fechar, a preparação será cancelada.
+          </p>
+          <button
+            onClick={(e) => {
+              if (e.isTrusted) controller.current?.abort();
+            }}
+          >
+            Cancelar preparação
+          </button>
+        </>
       )}
       {error && <p role="alert">{error}</p>}
     </section>

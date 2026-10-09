@@ -4,9 +4,9 @@
 
 ## Pacote local
 
-Versão **0.16.5**. Na pasta do projeto, execute `npm.cmd ci`, `npm.cmd run check` e `npm.cmd run package`. O último comando gera **release/ia-local-whatsapp-0.16.5**, ZIP com Manifest na raiz e inventário SHA-256. A geração substitui somente os artefatos dessa versão. Não inclui node_modules, caches, pesos baixados, testes, páginas de desenvolvimento, CRX, chaves PEM ou conversas. O [guia da Chrome Web Store](PUBLICACAO-CHROME-WEB-STORE.md) explica a publicação pelo usuário.
+Versão **0.16.6**. Na pasta do projeto, execute `npm.cmd ci`, `npm.cmd run check` e `npm.cmd run package`. O último comando gera **release/ia-local-whatsapp-0.16.6**, ZIP com Manifest na raiz e inventário SHA-256. A geração substitui somente os artefatos dessa versão. Não inclui node_modules, caches, pesos baixados, testes, páginas de desenvolvimento, CRX, chaves PEM ou conversas. O [guia da Chrome Web Store](PUBLICACAO-CHROME-WEB-STORE.md) explica a publicação pelo usuário.
 
-Em chrome://extensions, habilite **Modo do desenvolvedor**, clique **Carregar sem compactação** e selecione a pasta release/ia-local-whatsapp-0.16.5, que contém manifest.json. Fixe o ícone da extensão se desejar. Abra/recarregue o WhatsApp Web e as configurações. O pacote dispensa um servidor local. [Procedimento oficial do Chrome](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-an-unpacked-extension).
+Em chrome://extensions, habilite **Modo do desenvolvedor**, clique **Carregar sem compactação** e selecione a pasta release/ia-local-whatsapp-0.16.6, que contém manifest.json. Fixe o ícone da extensão se desejar. Abra/recarregue o WhatsApp Web e as configurações. O pacote dispensa um servidor local. [Procedimento oficial do Chrome](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-an-unpacked-extension).
 
 Não carregue dist e release simultaneamente: duas instalações podem criar dois botões. Para atualizar uma instalação existente de dist, mantenha essa mesma pasta e use `npm.cmd run build`; em chrome://extensions, clique **Recarregar** na extensão e recarregue as abas do WhatsApp. Mudar a pasta de instalação pode mudar o identificador da extensão, suas preferências e acesso ao cache próprio. Não remova uma instalação antes de decidir se precisará do cache já baixado.
 
@@ -33,6 +33,10 @@ Um segundo clique em IA, **Escape** ou clique fora cancela; trocar de conversa/e
 Para revisar antes, escolha **Ao clicar em IA → Revisar sugestão**. Confira a prévia e use **Copiar** ou **Substituir**, sem confirmação adicional. Várias linhas não exigem revisão. Menções estruturadas ou formatação que a edição nativa não preserva ficam somente para cópia; a aplicação direta informa a incompatibilidade sem alterar essas estruturas. Na prévia, editar o original invalida a sugestão anterior.
 
 As configurações ficam no ícone da extensão/painel lateral: ação, comportamento, preservação de gírias, novos emojis, tema e escolha de modelo. Há nove ações; preservação de gírias e ausência de novos emojis são padrões. A migração v8 conserva as escolhas anteriores e adota substituição direta; a prévia exige seleção explícita.
+
+O ícone abre o painel lateral por padrão. Em **Aparência**, desligue **Abrir configurações no painel lateral** para abrir popup no próximo clique. A escolha é salva separadamente e não altera a IA. Gírias e emojis também usam switches, acionáveis por clique ou Space.
+
+No popup, passe o mouse ou use Tab para focar a área do botão bloqueado: o tooltip orienta abrir o painel para baixar. Durante o download, mantenha o painel aberto; fechar cancela a operação. O aviso permanece visível enquanto ela estiver em andamento. Não há confirmação ao clicar no X nativo do Chrome.
 
 ## Modelos e idioma
 

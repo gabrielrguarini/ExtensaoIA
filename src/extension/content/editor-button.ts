@@ -5,6 +5,8 @@ import { createRoot } from 'react-dom/client';
 import { PreviewPanel } from './PreviewPanel';
 import { PreviewSession } from './preview-session';
 import styles from './editor-button.css?inline';
+import tooltipStyles from '../ui/tooltip.css?inline';
+import { createTooltip, positionTooltip } from '../ui/tooltip';
 import { watchTheme } from '../settings/theme';
 
 const mounted = new WeakMap<Document, () => void>();
@@ -25,19 +27,14 @@ export function mountEditorButton(
     'all:initial;position:fixed;inset:0 auto auto 0;width:0;height:0;z-index:2147483000;pointer-events:none';
   const shadow = host.attachShadow({ mode: 'open' });
   const style = document.createElement('style');
-  style.textContent = styles;
+  style.textContent = styles + tooltipStyles;
   const button = document.createElement('button');
   button.type = 'button';
   button.textContent = 'IA';
   button.className = 'launcher';
   button.setAttribute('aria-label', 'IA — assistente de escrita local');
   button.setAttribute('aria-expanded', 'false');
-  const tooltip = document.createElement('div');
-  tooltip.className = 'writing-tooltip';
-  tooltip.id = 'local-writing-tooltip';
-  tooltip.setAttribute('role', 'tooltip');
-  tooltip.setAttribute('aria-live', 'polite');
-  tooltip.hidden = true;
+  const tooltip = createTooltip(document, 'local-writing-tooltip');
   button.setAttribute('aria-describedby', tooltip.id);
   button.hidden = true;
   const panelContainer = document.createElement('div');
@@ -76,23 +73,7 @@ export function mountEditorButton(
       button.hidden ||
       tooltipDismissed ||
       !(running || (direct && state.kind === 'notice') || hovered || focused);
-    if (!tooltip.hidden) {
-      const rect = button.getBoundingClientRect();
-      const box = tooltip.getBoundingClientRect();
-      const left = Math.max(
-        8,
-        Math.min(rect.left + rect.width / 2 - box.width / 2, innerWidth - box.width - 8),
-      );
-      tooltip.style.left = `${String(left)}px`;
-      tooltip.style.setProperty(
-        '--tooltip-arrow',
-        `${String(rect.left + rect.width / 2 - left - 4)}px`,
-      );
-      const above = rect.top - box.height - 10 >= 8;
-      tooltip.dataset.side = above ? 'top' : 'bottom';
-      tooltip.style.top = above ? 'auto' : `${String(rect.bottom + 10)}px`;
-      tooltip.style.bottom = above ? `${String(innerHeight - rect.top + 10)}px` : 'auto';
-    }
+    if (!tooltip.hidden) positionTooltip(tooltip, button);
   }
   const mouseenter = (): void => {
     hovered = true;

@@ -1,0 +1,10 @@
+{
+  "baseline": "0b24ac1224e057e46ea47b794317eb98d4c7e173",
+  "protectedSourceFiles": 33,
+  "tooltipStylesIdentical": true,
+  "launcherStylesIdentical": true,
+  "sharedTooltipConsumers": ["editor-button", "PreparationButton"],
+  "unchangedPackageFiles": 40,
+  "contentBundleChangedBySharedTooltipExtraction": true,
+  "packageFiles": 53
+}

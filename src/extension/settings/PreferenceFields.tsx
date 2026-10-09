@@ -2,17 +2,20 @@ import type { PreferencePatch, WritingPreferences } from '../../shared/preferenc
 import { WRITING_ACTIONS, writingAction } from '../../shared/actions';
 import { useLayoutEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
+import { Switch, trustedSwitchEvent } from './Switch';
 
 export function PreferenceFields({
   value,
   disabled,
   onChange,
   children,
+  appearanceControls,
 }: {
   value: WritingPreferences;
   disabled: boolean;
   onChange: (patch: PreferencePatch) => void;
   children?: ReactNode;
+  appearanceControls?: ReactNode;
 }) {
   const focus = useRef<HTMLElement | null>(null);
   useLayoutEffect(() => {
@@ -122,32 +125,36 @@ export function PreferenceFields({
           {writingAction(value.defaultAction).summary}. Clique em IA no WhatsApp para aplicar esta
           ação ao rascunho.
         </p>
-        <label className="checkbox-label">
-          <input
-            type="checkbox"
+        <label className="switch-label">
+          <span>Preservar gírias</span>
+          <Switch
+            aria-label="Preservar gírias"
             checked={value.preserveSlang}
-            onChange={(e) => {
-              if (e.nativeEvent.isTrusted) {
-                focus.current = e.currentTarget;
-                onChange({ preserveSlang: e.currentTarget.checked });
+            disabled={disabled}
+            onCheckedChange={(checked, details) => {
+              if (trustedSwitchEvent(details.event)) {
+                focus.current =
+                  document.activeElement instanceof HTMLElement ? document.activeElement : null;
+                onChange({ preserveSlang: checked });
               }
             }}
           />
-          <span>Preservar gírias</span>
         </label>
         <p className="field-hint checkbox-hint">A ação Formal pode adaptar as gírias.</p>
-        <label className="checkbox-label">
-          <input
-            type="checkbox"
+        <label className="switch-label">
+          <span>Permitir novos emojis</span>
+          <Switch
+            aria-label="Permitir novos emojis"
             checked={value.addEmojis}
-            onChange={(e) => {
-              if (e.nativeEvent.isTrusted) {
-                focus.current = e.currentTarget;
-                onChange({ addEmojis: e.currentTarget.checked });
+            disabled={disabled}
+            onCheckedChange={(checked, details) => {
+              if (trustedSwitchEvent(details.event)) {
+                focus.current =
+                  document.activeElement instanceof HTMLElement ? document.activeElement : null;
+                onChange({ addEmojis: checked });
               }
             }}
           />
-          <span>Permitir novos emojis</span>
         </label>
       </section>
       <section className="settings-card" aria-labelledby="appearance-title">
@@ -169,6 +176,7 @@ export function PreferenceFields({
             <option value="dark">Escuro</option>
           </select>
         </label>
+        {appearanceControls}
       </section>
     </fieldset>
   );

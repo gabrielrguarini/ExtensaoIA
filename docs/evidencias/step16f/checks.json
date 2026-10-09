@@ -1,0 +1,15 @@
+{
+  "version": "0.16.6",
+  "command": "npm.cmd run check",
+  "exitCode": 0,
+  "typecheck": true,
+  "lint": true,
+  "format": true,
+  "testFiles": 43,
+  "tests": 308,
+  "build": true,
+  "chrome": "154.0.8037.98",
+  "browserChecks": 7,
+  "streamingFixtures": 4,
+  "syntheticGeneration": true
+}
